@@ -24,9 +24,19 @@ use sdroxide_types::AirspyDevice;
 
 use crate::error::{Error, Result};
 use crate::protocol::{
-    ALT_SETTING, BULK_EP, CONFIGURATION, CTRL_TIMEOUT, INTERFACE, PID, Request, VID, serial_matches,
+    ALT_SETTING, BULK_EP, CONFIGURATION, CTRL_TIMEOUT, INTERFACE, PID, Request, VID,
+    looks_like_hydrasdr, serial_matches,
 };
 use crate::trace::Trace;
+
+/// Whether a device on this USB id is one of ours.
+///
+/// The id is not exclusively Airspy's: HydraSDR's prototype RFOne boards were
+/// flashed with it, and that radio needs the other driver. See
+/// [`looks_like_hydrasdr`].
+fn is_ours(vid: u16, pid: u16, product: Option<&str>, serial: Option<&str>) -> bool {
+    vid == VID && pid == PID && !looks_like_hydrasdr(product, serial)
+}
 
 /// Enumerate the Airspy R2 / Mini receivers on the USB bus.
 ///
@@ -43,7 +53,7 @@ pub fn list() -> Vec<AirspyDevice> {
         }
     };
     devices
-        .filter(|d| d.vendor_id() == VID && d.product_id() == PID)
+        .filter(|d| is_ours(d.vendor_id(), d.product_id(), d.product_string(), d.serial_number()))
         .map(|d| AirspyDevice {
             serial: d.serial_number().map(|s| s.trim().to_string()).filter(|s| !s.is_empty()),
             // An R2 and a Mini share this product string as well as their USB
@@ -74,7 +84,9 @@ impl UsbDev {
     pub fn open(serial: &str, trace: &Trace) -> Result<UsbDev> {
         let want = serial.trim();
         let devices = nusb::list_devices().wait()?;
-        let mut candidates = devices.filter(|d| d.vendor_id() == VID && d.product_id() == PID);
+        let mut candidates = devices.filter(|d| {
+            is_ours(d.vendor_id(), d.product_id(), d.product_string(), d.serial_number())
+        });
 
         let info = if want.is_empty() {
             candidates

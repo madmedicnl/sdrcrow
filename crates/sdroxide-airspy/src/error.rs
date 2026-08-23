@@ -22,6 +22,17 @@ pub enum Error {
     #[error("{0}")]
     Access(String),
 
+    /// What answered is not an Airspy.
+    ///
+    /// Its own variant because it has its own remedy, and because it is the one
+    /// failure this backend can hit that is nobody's fault: HydraSDR's
+    /// prototype RFOne boards were flashed with Airspy's USB id, so a device
+    /// that looked right during enumeration can turn out to be the other radio
+    /// once its firmware has been asked. The answer is to pick the HydraSDR
+    /// interface, not to debug anything.
+    #[error("{0}")]
+    WrongRadio(String),
+
     /// A USB transfer failed.
     #[error("USB {op} failed: {source}")]
     Transfer { op: &'static str, source: nusb::transfer::TransferError },
