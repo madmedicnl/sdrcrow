@@ -1,15 +1,26 @@
 {
-  "name": "SDR Oxide Brown",
-  "short_name": "sdroxide",
-  "description": "PowerSDR/Thetis-style SDR transceiver, served to the browser",
+  "name": "SDRCrow",
+  "short_name": "SDRCrow",
+  "description": "Software-defined-radio receiver and transceiver",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",
-  "display_override": ["fullscreen", "standalone"],
+  "display_override": [
+    "fullscreen",
+    "standalone"
+  ],
   "background_color": "#0a0a0a",
   "theme_color": "#0a0a0a",
   "icons": [
-    { "src": "sdroxide-brown-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "sdroxide-brown-512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "sdroxide-brown-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "sdroxide-brown-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }
