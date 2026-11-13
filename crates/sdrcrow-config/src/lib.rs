@@ -600,6 +600,113 @@ fn sdrcrow_config_dir() -> Result<PathBuf, ConfigError> {
         .ok_or(ConfigError::NoConfigDir)
 }
 
+/// **A configuration this program could inherit from**, named as the operator
+/// knows it.
+///
+/// SDRCrow is detached from two programs that write their own settings beside
+/// it — the Brown build it grew out of and the upstream project before that —
+/// and a first start should offer what is already on the machine rather than
+/// making somebody copy it by hand or, worse, start from nothing because they
+/// did not know it was there.
+#[derive(Debug, Clone, PartialEq)]
+pub struct ImportCandidate {
+    /// What to call it on screen: the program it belongs to.
+    pub label: &'static str,
+    pub dir: PathBuf,
+}
+
+impl ImportCandidate {
+    /// How many settings files this directory holds, for the offer's line:
+    /// a station with a logbook looks different from an empty leftover.
+    pub fn files(&self) -> usize {
+        let mut count = 0;
+        if let Ok(entries) = std::fs::read_dir(&self.dir) {
+            for entry in entries.flatten() {
+                if entry.path().is_file() || entry.path().is_dir() {
+                    count += 1;
+                }
+            }
+        }
+        count
+    }
+
+    /// Whether this is a configuration at all, rather than a directory the
+    /// program made and never wrote to. `config.toml` is the file every start
+    /// writes, so its absence means nothing to inherit.
+    pub fn has_settings(&self) -> bool {
+        self.dir.join("config.toml").is_file()
+    }
+}
+
+/// The configurations found on this machine, in the order they are offered:
+/// the Brown build first — it is the nearest ancestor and the one an operator
+/// of this program most likely has — then upstream.
+///
+/// Only directories that actually hold settings are returned, and never this
+/// program's own directory: copying a configuration onto itself is not an
+/// offer worth making.
+pub fn import_candidates() -> Vec<ImportCandidate> {
+    let Ok(ours) = config_dir() else { return Vec::new() };
+    let mut out = Vec::new();
+    // `directories` gives the platform's own layout for each program, which is
+    // `~/.config/<name>` on Linux and a reverse-DNS directory on macOS.
+    for (label, qualifier, org, app) in [
+        ("SDR Oxide Brown", "org", "sdroxide", "sdroxide-brown"),
+        ("SDR Oxide (upstream)", "org", "sdroxide", "sdroxide"),
+    ] {
+        let Some(dirs) = directories::ProjectDirs::from(qualifier, org, app) else { continue };
+        let dir = dirs.config_dir().to_path_buf();
+        if dir == ours {
+            continue;
+        }
+        let candidate = ImportCandidate { label, dir };
+        if candidate.has_settings() {
+            out.push(candidate);
+        }
+    }
+    out
+}
+
+/// Copy one configuration into this program's own directory.
+///
+/// **Copy, not move**: the other program is left exactly as it was, so running
+/// it afterwards still finds everything, and a half-finished copy cannot
+/// destroy a logbook. Files this program already has are **not** overwritten —
+/// a first start has none, and a later one must not lose what it wrote.
+///
+/// Returns how many files were written.
+pub fn import_config_from(src: &std::path::Path) -> Result<usize, ConfigError> {
+    let dst = config_dir()?;
+    if src == dst {
+        return Ok(0);
+    }
+    if !src.join("config.toml").is_file() {
+        return Err(ConfigError::Io(std::io::Error::new(
+            std::io::ErrorKind::NotFound,
+            "no settings there",
+        )));
+    }
+    copy_tree(src, &dst)
+}
+
+/// Recursively copy `from` into `to`, creating directories, skipping anything
+/// `to` already holds. Returns the number of files written.
+fn copy_tree(from: &std::path::Path, to: &std::path::Path) -> Result<usize, ConfigError> {
+    std::fs::create_dir_all(to)?;
+    let mut written = 0;
+    for entry in std::fs::read_dir(from)?.flatten() {
+        let path = entry.path();
+        let target = to.join(entry.file_name());
+        if path.is_dir() {
+            written += copy_tree(&path, &target)?;
+        } else if !target.exists() {
+            std::fs::copy(&path, &target)?;
+            written += 1;
+        }
+    }
+    Ok(written)
+}
+
 pub fn config_dir() -> Result<PathBuf, ConfigError> {
     // The override exists for the integration tests, which must not write the
     // operator's real configuration, and works as a profile switch for anyone

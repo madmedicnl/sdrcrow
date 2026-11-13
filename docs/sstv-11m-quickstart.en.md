@@ -1,7 +1,7 @@
-# SSTV on 11 m quick-start (sdroxide — CB/11 m)
+# SSTV on 11 m quick-start (sdrcrow — CB/11 m)
 
 A short, task-oriented walkthrough for sending and receiving **SSTV pictures on
-the 11 m (27 MHz) citizens' band** with **sdroxide**: which frequency, how to
+the 11 m (27 MHz) citizens' band** with **sdrcrow**: which frequency, how to
 set it up, how to receive a picture and how to send one. SSTV is an analogue
 image mode — a picture is sent as tones, line by line, over a normal sideband —
 and on 11 m it is the community's picture mode, alongside the FT8 traffic. For
@@ -9,7 +9,7 @@ the reference detail behind each control see [`USER_MANUAL.md`](USER_MANUAL.md)
 §3.6 and the 11 m band in §6.1; for the why of this fork see the
 [README](../README.md).
 
-> This is the CB/SWL fork of sdroxide. SSTV itself is upstream's; what this fork
+> This is the CB/SWL fork of sdrcrow. SSTV itself is upstream's; what this fork
 > adds on 11 m is the band, the per-country channel plans, the 11 m SSTV calling
 > channels and the CB callsign in the banner.
 
@@ -46,11 +46,11 @@ as they appear on screen. `Settings > Radio` is a menu path.
 
 ## What you need
 
-- **An SDR or radio sdroxide supports**: RTL-SDR, RX-888, Airspy HF+, SDRplay
+- **An SDR or radio sdrcrow supports**: RTL-SDR, RX-888, Airspy HF+, SDRplay
   RSP, HackRF, ELAD, PlutoSDR, a **CAT rig** over serial + sound card, TCI,
   OpenHPSDR or SoapySDR.
 - **A 27 MHz antenna** suited to your receiver.
-- **sdroxide installed** (below).
+- **sdrcrow installed** (below).
 - **To *send* a picture you need a transceiver**, keyed by **VOX** (a sound-card
   rig) or **CAT**. A receive-only dongle hears and decodes pictures but cannot
   send them.
@@ -63,14 +63,14 @@ as they appear on screen. `Settings > Radio` is a menu path.
   the portable tarball.
 - **macOS** — the `.dmg`.
 
-You can also run sdroxide as a **server** and open it in a browser:
-`sdroxide --server`, then `http://localhost:4950`.
+You can also run sdrcrow as a **server** and open it in a browser:
+`sdrcrow --server`, then `http://localhost:4950`.
 
 ---
 
 ## Part A — One-time setup
 
-Everything here is saved under `~/.config/sdroxide-brown/`, so you do it once.
+Everything here is saved under `~/.config/sdrcrow/`, so you do it once.
 
 ### 1. Pick your radio
 
@@ -78,7 +78,7 @@ Open **SETTINGS** and go to the **Radio** tab. Pick your interface (for example
 **RTL-SDR**, **RX-888** or **Airspy HF+**), then the **sample rate** and the
 **gain**. Changes apply right after **Apply / reconnect**.
 
-- **Linux — USB receivers:** install the bundled udev rules, or sdroxide will
+- **Linux — USB receivers:** install the bundled udev rules, or sdrcrow will
   see the device but fail to open it:
   `sudo cp 60-sdrcrow-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, then replug.
 - **Windows — RX-888:** bind the device to **WinUSB** once with
@@ -121,7 +121,7 @@ Receiving needs no switch.
    **Signal** meter shows the receive audio level, so you can confirm audio is
    reaching the decoder. If a header was misread as a slow mode, **Restart RX**
    drops the half-picture and starts hunting again.
-6. Received pictures are saved as PNG under `~/.config/sdroxide-brown/sstv_rx/` and
+6. Received pictures are saved as PNG under `~/.config/sdrcrow/sstv_rx/` and
    reload into the gallery next time.
 
 ---
@@ -180,7 +180,7 @@ control that says where you are.
 - The **TRANSMIT** side has **five slots** that work like tabs. **Load image…**,
   or double-click a slot, picks a **PNG or JPEG** (16 MB limit). It is
   centre-cropped and scaled to your chosen mode's size — there is no framing
-  control — and stored under `~/.config/sdroxide-brown/sstv_tx/`. **Clear**
+  control — and stored under `~/.config/sdrcrow/sstv_tx/`. **Clear**
   empties a slot's picture but keeps its message.
 - Type a **message** for the active slot. The **first line is drawn at double
   size as a title**, and a live preview shows exactly what goes out.
@@ -233,7 +233,7 @@ the rig already keyed on its own PTT.
 
 ## Part D — Keeping a record
 
-- Received pictures live as **PNG** files under `~/.config/sdroxide-brown/sstv_rx/`;
+- Received pictures live as **PNG** files under `~/.config/sdrcrow/sstv_rx/`;
   the gallery is stored on the machine the radio is plugged into, so every
   screen sees the same collection. Right-click a thumbnail to delete it.
 - **Profiles** (**Settings > Profiles**) save a whole working setup — dial and

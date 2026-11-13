@@ -1,4 +1,4 @@
-# La météo sur les ondes courtes — démarrage rapide (sdroxide)
+# La météo sur les ondes courtes — démarrage rapide (sdrcrow)
 
 Le service le plus simple de la bande ondes courtes, et presque personne ne l'écoute.
 Navires et stations météorologiques diffusent **la météo là où ils se trouvent
@@ -6,7 +6,7 @@ réellement**, sous forme de chiffres codés en RTTY HF, toutes les quelques heu
 Pas d'internet, pas de compte, pas de créneau à réserver — seulement un horaire
 tenu sur un bout de papier.
 
-sdroxide decodes those numbers and shows you the wind, the pressure, the
+sdrcrow decodes those numbers and shows you the wind, the pressure, the
 temperature and the sea state. This card gets you listening in about five minutes.
 
 > **Celui-ci est en version BÊTA.** Le décodeur a été testé sur quatre vrais messages
@@ -26,7 +26,7 @@ Les noms en gras comme **RTTY** et **WEATHER** sont des boutons tels qu'ils appa
 
 ## What you need
 
-- **N'importe quel récepteur compatible sdroxide**, et une antenne qui couvre les
+- **N'importe quel récepteur compatible sdrcrow**, et une antenne qui couvre les
 > HF.
 - **Rien d'autre.** Vous écoutez, vous n'émettez pas, et aucune licence n'est requise.
 

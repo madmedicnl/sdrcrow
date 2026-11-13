@@ -73,7 +73,7 @@ relies on - `r - 3 >= max(0, w - cap)` - is therefore exercised, not assumed.
   `outputLatency` is an estimate, not a measurement: there is no capture of the
   acoustic output here.
 - **The ewebsock → wake → receive path.** This harness calls
-  `sdroxideAudio.pushPcm` directly, which is the *end* of that path. Whether a
+  `sdrcrowAudio.pushPcm` directly, which is the *end* of that path. Whether a
   hidden tab still receives, decodes and plays is a property of the compiled
   client and needs the built page in a real browser (Lot B).
 - **Background behaviour.** `page.html` is always in front, and the browser's

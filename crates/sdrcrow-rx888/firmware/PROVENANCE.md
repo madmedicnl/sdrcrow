@@ -2,7 +2,7 @@
 
 `SDDC_FX3.img` is the Cypress FX3 firmware that turns an RX-888 Mk2 from a bare
 USB bootloader into a radio. It is **uploaded to the device's RAM**, never linked
-into sdroxide, and is redistributed here under the MIT licence in `LICENSE.txt`.
+into sdrcrow, and is redistributed here under the MIT licence in `LICENSE.txt`.
 
 | | |
 |---|---|

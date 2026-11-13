@@ -1,14 +1,14 @@
-# FT8 on 11 m quick-start (sdroxide — CB/11 m)
+# FT8 on 11 m quick-start (sdrcrow — CB/11 m)
 
 A short, task-oriented walkthrough for working **FT8 on the 11 m (27 MHz)
-citizens' band** with **sdroxide**: which frequency, how to set it up, how to
+citizens' band** with **sdrcrow**: which frequency, how to set it up, how to
 read the decodes and how to answer a station. On 11 m the whole exchange follows
 the community's [WSJT-CB](https://github.com/vash909/WSJT-CB) conventions rather
 than the amateur FT8 ones — because that is who is on the band. For the
 reference detail behind each control see [`USER_MANUAL.md`](USER_MANUAL.md)
 §3.2.8 and §3.2; for the why of this fork see the [README](../README.md).
 
-> This is the CB/SWL fork of sdroxide. FT8 itself is upstream's; what this fork
+> This is the CB/SWL fork of sdrcrow. FT8 itself is upstream's; what this fork
 > adds on 11 m is the band, the per-country channel plans, the WSJT-CB exchange
 > and the country flags.
 
@@ -37,11 +37,11 @@ as they appear on screen. `Settings > Radio` is a menu path.
 
 ## What you need
 
-- **An SDR or radio sdroxide supports**: RTL-SDR, RX-888, Airspy HF+, SDRplay
+- **An SDR or radio sdrcrow supports**: RTL-SDR, RX-888, Airspy HF+, SDRplay
   RSP, HackRF, ELAD, PlutoSDR, a **CAT rig** over serial + sound card, TCI,
   OpenHPSDR or SoapySDR.
 - **A 27 MHz antenna** suited to your receiver.
-- **sdroxide installed** (below).
+- **sdrcrow installed** (below).
 - **An accurate clock.** FT8 will not decode if your computer's clock is off by
   more than about a second. Turn on automatic time sync (NTP).
 
@@ -53,14 +53,14 @@ as they appear on screen. `Settings > Radio` is a menu path.
   the portable tarball.
 - **macOS** — the `.dmg`.
 
-You can also run sdroxide as a **server** and open it in a browser:
-`sdroxide --server`, then `http://localhost:4950`.
+You can also run sdrcrow as a **server** and open it in a browser:
+`sdrcrow --server`, then `http://localhost:4950`.
 
 ---
 
 ## Part A — One-time setup
 
-Everything here is saved under `~/.config/sdroxide-brown/`, so you do it once.
+Everything here is saved under `~/.config/sdrcrow/`, so you do it once.
 
 ### 1. Pick your radio
 
@@ -68,7 +68,7 @@ Open **SETTINGS** and go to the **Radio** tab. Pick your interface (for example
 **RTL-SDR**, **RX-888** or **Airspy HF+**), then the **sample rate** and the
 **gain**. Changes apply right after **Apply / reconnect**.
 
-- **Linux — USB receivers:** install the bundled udev rules, or sdroxide will
+- **Linux — USB receivers:** install the bundled udev rules, or sdrcrow will
   see the device but fail to open it:
   `sudo cp 60-sdrcrow-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, then replug.
 - **Windows — RX-888:** bind the device to **WinUSB** once with

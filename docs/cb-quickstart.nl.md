@@ -1,12 +1,12 @@
-# CB-quickstart (sdroxide — 11 meter)
+# CB-quickstart (sdrcrow — 11 meter)
 
-Een korte, taakgerichte handleiding om **sdroxide** op de **11 meter (27 MHz)**
+Een korte, taakgerichte handleiding om **sdrcrow** op de **11 meter (27 MHz)**
 aan de praat te krijgen: je SDR of CAT-radio instellen, de kanalen per land
 gebruiken, en het digitale WSJT-CB-verkeer volgen. Voor de volledige uitleg per
 knop zie [`USER_MANUAL.md`](USER_MANUAL.md); voor het waarom van deze fork zie
 de [README](../README.md).
 
-> Dit is de CB/SWL-fork van sdroxide. De 11 m en de omroepbanden zijn eraan
+> Dit is de CB/SWL-fork van sdrcrow. De 11 m en de omroepbanden zijn eraan
 > toegevoegd; de amateurbanden en de rest zijn upstream en ongewijzigd.
 
 *English: [cb-quickstart.en.md](cb-quickstart.en.md). Français:
@@ -21,7 +21,7 @@ zoals ze op het scherm staan. `Settings > Radio` is een menupad.
 
 ## Wat je nodig hebt
 
-- **Een SDR of een radio die sdroxide ondersteunt.** Voor 11 m het meest
+- **Een SDR of een radio die sdrcrow ondersteunt.** Voor 11 m het meest
   gebruikt:
   - **RTL-SDR** (dongle) — native, geen SoapySDR nodig.
   - **RX-888 / RX-888 Mk2** — native; de firmware wordt automatisch naar de
@@ -31,27 +31,27 @@ zoals ze op het scherm staan. `Settings > Radio` is een menupad.
     **CAT-radio** (Icom/Yaesu/Xiegu) via serieel + geluidskaart, TCI, OpenHPSDR
     of SoapySDR.
 - **Een 27 MHz-antenne** die bij je ontvanger past.
-- **sdroxide geïnstalleerd** (zie hieronder).
+- **sdrcrow geïnstalleerd** (zie hieronder).
 
 ## Installeren
 
 - **Windows** — de installer (`.msi`) of de portable `.zip` (met
-  `sdroxide.exe`): zie de [Releases-pagina](https://github.com/madmedicnl/sdroxide-brown/releases/latest).
+  `sdrcrow.exe`): zie de [Releases-pagina](https://github.com/madmedicnl/sdroxide-brown/releases/latest).
 - **Linux** — de **AppImage** (één bestand, `chmod +x` en starten), de `.deb`,
   of de portable tarball.
 - **macOS** — de `.dmg`.
 
-Je kunt sdroxide ook als **server** draaien en in de browser openen:
-`sdroxide --server` en dan `http://localhost:4950`. Handig als de antenne
+Je kunt sdrcrow ook als **server** draaien en in de browser openen:
+`sdrcrow --server` en dan `http://localhost:4950`. Handig als de antenne
 ergens anders staat.
 
 ---
 
 ## Deel A — Eenmalig instellen
 
-Alles hier wordt bewaard onder `~/.config/sdroxide-brown/`, dus je doet dit één keer.
+Alles hier wordt bewaard onder `~/.config/sdrcrow/`, dus je doet dit één keer.
 
-### 1. Start sdroxide
+### 1. Start sdrcrow
 
 Het hoofdvenster heeft de bedieningsbalk bovenin en daaronder de panadapter en
 de waterval.
@@ -64,7 +64,7 @@ Open **SETTINGS** en ga naar het tabblad **Radio**. Kies je interface
 reconnect**.
 
 - **Linux — USB-ontvangers:** installeer de meegeleverde udev-regels, anders
-  ziet sdroxide het apparaat wel maar kan het niet openen:
+  ziet sdrcrow het apparaat wel maar kan het niet openen:
   `sudo cp 60-sdrcrow-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, daarna opnieuw aansluiten.
 - **Windows — RX-888:** bind het apparaat eenmalig aan **WinUSB** met
   [Zadig](https://zadig.akeo.ie/) — voor **beide** USB-id's (`04B4:00F3` en
@@ -110,7 +110,7 @@ Deze fork spreekt dezelfde gehashte WSJT-uitwisseling die
    CB-plan.
 3. In de **decodelijst**: klik een regel om je audio op dat signaal te zetten
    en druk **REPLY** of **Call CQ**.
-4. Elke gedecodeerde zender laat zijn **landvlag** zien — sdroxide volgt de
+4. Elke gedecodeerde zender laat zijn **landvlag** zien — sdrcrow volgt de
    roepnaamconventies en de landnummering van WSJT-CB.
 5. In **SWL mode** kun je alles meelezen zonder te zenden.
 

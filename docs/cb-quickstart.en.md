@@ -1,12 +1,12 @@
-# CB quick-start (sdroxide — 11 m)
+# CB quick-start (sdrcrow — 11 m)
 
-A short, task-oriented walkthrough for getting **sdroxide** going on the
+A short, task-oriented walkthrough for getting **sdrcrow** going on the
 **11 m (27 MHz)** citizens band: setting up your SDR or CAT rig, using the
 per-country channel plans, and following the WSJT-CB digital traffic. For the
 reference detail behind each control, see [`USER_MANUAL.md`](USER_MANUAL.md);
 for the why of this fork, see the [README](../README.md).
 
-> This is the CB/SWL fork of sdroxide. The 11 m band and the broadcast bands
+> This is the CB/SWL fork of sdrcrow. The 11 m band and the broadcast bands
 > are added on top; the amateur bands and everything else are upstream and
 > unchanged.
 
@@ -22,7 +22,7 @@ as they appear on screen. `Settings > Radio` is a menu path.
 
 ## What you need
 
-- **An SDR or a radio sdroxide supports.** For 11 m the usual choices are:
+- **An SDR or a radio sdrcrow supports.** For 11 m the usual choices are:
   - **RTL-SDR** (dongle) — native, no SoapySDR needed.
   - **RX-888 / RX-888 Mk2** — native; the firmware is uploaded to the receiver
     automatically.
@@ -31,27 +31,27 @@ as they appear on screen. `Settings > Radio` is a menu path.
     **CAT rig** (Icom/Yaesu/Xiegu) over a serial port + sound card, TCI,
     OpenHPSDR, or SoapySDR.
 - **A 27 MHz antenna** suited to your receiver.
-- **sdroxide installed** (below).
+- **sdrcrow installed** (below).
 
 ## Installing
 
 - **Windows** — the installer (`.msi`) or the portable `.zip` (which contains
-  `sdroxide.exe`): see the [Releases page](https://github.com/madmedicnl/sdroxide-brown/releases/latest).
+  `sdrcrow.exe`): see the [Releases page](https://github.com/madmedicnl/sdroxide-brown/releases/latest).
 - **Linux** — the **AppImage** (one file, `chmod +x` and run), the `.deb`, or
   the portable tarball.
 - **macOS** — the `.dmg`.
 
-You can also run sdroxide as a **server** and open it in a browser:
-`sdroxide --server`, then `http://localhost:4950`. Handy when the antenna is
+You can also run sdrcrow as a **server** and open it in a browser:
+`sdrcrow --server`, then `http://localhost:4950`. Handy when the antenna is
 somewhere else.
 
 ---
 
 ## Part A — One-time setup
 
-Everything here is saved under `~/.config/sdroxide-brown/`, so you do it once.
+Everything here is saved under `~/.config/sdrcrow/`, so you do it once.
 
-### 1. Start sdroxide
+### 1. Start sdrcrow
 
 The main window has the control bar across the top and the panadapter and
 waterfall below it.
@@ -62,7 +62,7 @@ Open **SETTINGS** and go to the **Radio** tab. Pick your interface (for example
 **RTL-SDR**, **RX-888** or **Airspy HF+**), then the **sample rate** and the
 **gain**. Changes apply right after **Apply / reconnect**.
 
-- **Linux — USB receivers:** install the bundled udev rules, or sdroxide will
+- **Linux — USB receivers:** install the bundled udev rules, or sdrcrow will
   see the device but fail to open it:
   `sudo cp 60-sdrcrow-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, then replug.
 - **Windows — RX-888:** bind the device to **WinUSB** once with
@@ -109,7 +109,7 @@ This fork speaks the same hashed WSJT exchange that
    plan.
 3. In the **decode list**: click a row to move your audio onto that signal and
    press **REPLY** or **Call CQ**.
-4. Every decoded station shows its **country flag** — sdroxide follows
+4. Every decoded station shows its **country flag** — sdrcrow follows
    WSJT-CB's callsign conventions and country numbering.
 5. In **SWL mode** you can read it all without transmitting.
 

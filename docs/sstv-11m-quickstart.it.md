@@ -1,7 +1,7 @@
-# SSTV sugli 11 m — avvio rapido (sdroxide — CB/11 m)
+# SSTV sugli 11 m — avvio rapido (sdrcrow — CB/11 m)
 
 Una guida breve e pratica per ricevere e trasmettere **immagini SSTV sugli
-11 m (27 MHz)** con **sdroxide**: quale frequenza, come configurarla, come
+11 m (27 MHz)** con **sdrcrow**: quale frequenza, come configurarla, come
 ricevere un'immagine e come inviarne una. La SSTV è un modo immagine analogico —
 un'immagine viene inviata come toni, riga per riga, su una normale banda
 laterale — e sugli 11 m è il modo immagine della comunità, accanto al traffico
@@ -9,7 +9,7 @@ FT8. Per il dettaglio di ogni comando vedi [`USER_MANUAL.md`](USER_MANUAL.md)
 §3.6 e la banda 11 m in §6.1; per lo spirito di questo fork vedi il
 [README](../README.md).
 
-> Questo è il fork CB/SWL di sdroxide. La SSTV in sé è upstream; ciò che questo
+> Questo è il fork CB/SWL di sdrcrow. La SSTV in sé è upstream; ciò che questo
 > fork aggiunge sugli 11 m sono la banda, i piani canali per paese, i canali
 > SSTV degli 11 m e l'indicativo CB nella bandierina.
 
@@ -47,11 +47,11 @@ menu.
 
 ## Cosa serve
 
-- **Un SDR o una radio che sdroxide supporta**: RTL-SDR, RX-888, Airspy HF+,
+- **Un SDR o una radio che sdrcrow supporta**: RTL-SDR, RX-888, Airspy HF+,
   SDRplay RSP, HackRF, ELAD, PlutoSDR, una **radio CAT** via seriale + scheda
   audio, TCI, OpenHPSDR o SoapySDR.
 - **Un'antenna per i 27 MHz** adatta al tuo ricevitore.
-- **sdroxide installato** (sotto).
+- **sdrcrow installato** (sotto).
 - **Per *trasmettere* un'immagine serve un transceiver**, manipolato via **VOX**
   (una radio con scheda audio) oppure via **CAT**. Un dongle in sola ricezione
   sente e decodifica le immagini ma non può trasmetterle.
@@ -64,14 +64,14 @@ menu.
   l'archivio portatile.
 - **macOS** — il `.dmg`.
 
-Puoi anche avviare sdroxide come **server** e aprirlo nel browser:
-`sdroxide --server`, poi `http://localhost:4950`.
+Puoi anche avviare sdrcrow come **server** e aprirlo nel browser:
+`sdrcrow --server`, poi `http://localhost:4950`.
 
 ---
 
 ## Parte A — Configurazione una volta sola
 
-Tutto qui è salvato in `~/.config/sdroxide-brown/`, quindi si fa una volta sola.
+Tutto qui è salvato in `~/.config/sdrcrow/`, quindi si fa una volta sola.
 
 ### 1. Scegli la radio
 
@@ -80,7 +80,7 @@ Apri **SETTINGS** e vai alla scheda **Radio**. Scegli l'interfaccia (per esempio
 Le modifiche valgono subito dopo **Apply / reconnect**.
 
 - **Linux — ricevitori USB:** installa le regole udev fornite, altrimenti
-  sdroxide vede il dispositivo ma non riesce ad aprirlo:
+  sdrcrow vede il dispositivo ma non riesce ad aprirlo:
   `sudo cp 60-sdrcrow-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, poi ricollega.
 - **Windows — RX-888:** associa il dispositivo a **WinUSB** una volta con
   [Zadig](https://zadig.akeo.ie/) — per **entrambi** gli id USB (`04B4:00F3` e
@@ -127,7 +127,7 @@ di interruttori.
    confermare che l'audio arriva al decodificatore. Se un'intestazione è stata
    letta male come modo lento, **Restart RX** scarta la mezza immagine e riparte
    in ricerca.
-6. Le immagini ricevute sono salvate come PNG in `~/.config/sdroxide-brown/sstv_rx/` e
+6. Le immagini ricevute sono salvate come PNG in `~/.config/sdrcrow/sstv_rx/` e
    si ricaricano nella galleria la volta dopo.
 
 ---
@@ -189,7 +189,7 @@ comando che dice dove ti trovi.
   image…**, o doppio clic su uno slot, sceglie una **PNG o JPEG** (limite 16 MB).
   Viene ritagliata al centro e scalata alle dimensioni del modo — non c'è alcuna
   regolazione dell'inquadratura — e salvata in
-  `~/.config/sdroxide-brown/sstv_tx/`. **Clear** svuota l'immagine di uno slot ma
+  `~/.config/sdrcrow/sstv_tx/`. **Clear** svuota l'immagine di uno slot ma
   ne conserva il messaggio.
 - Digita un **messaggio** per lo slot attivo. La **prima riga è disegnata a
   doppia dimensione come titolo**, e un'anteprima dal vivo mostra esattamente
@@ -244,7 +244,7 @@ in aria, o la radio già manipolata dal suo stesso PTT.
 
 ## Parte D — Tenere traccia
 
-- Le immagini ricevute sono file **PNG** in `~/.config/sdroxide-brown/sstv_rx/`; la
+- Le immagini ricevute sono file **PNG** in `~/.config/sdrcrow/sstv_rx/`; la
   galleria è salvata sulla macchina a cui è collegata la radio, quindi ogni
   schermo vede la stessa raccolta. Clic destro su una miniatura per eliminarla.
 - **Profili** (**Settings > Profiles**): salvi un'intera configurazione —

@@ -1,7 +1,7 @@
-# SSTV op de 11 meter — quickstart (sdroxide — CB/11 m)
+# SSTV op de 11 meter — quickstart (sdrcrow — CB/11 m)
 
 Een korte, taakgerichte handleiding om **SSTV-foto's op de 11 meter (27 MHz)**
-te ontvangen en te verzenden met **sdroxide**: welke frequentie, hoe je het
+te ontvangen en te verzenden met **sdrcrow**: welke frequentie, hoe je het
 instelt, hoe je een foto ontvangt en hoe je er een verzendt. SSTV is een analoog
 beeldmode — een foto wordt regel voor regel als tonen over een gewone zijband
 gestuurd — en op de 11 m is het de beeldmode van de community, naast het
@@ -9,7 +9,7 @@ FT8-verkeer. Voor de volledige uitleg per knop zie
 [`USER_MANUAL.md`](USER_MANUAL.md) §3.6 en de 11 m-band in §6.1; voor het waarom
 van deze fork zie de [README](../README.md).
 
-> Dit is de CB/SWL-fork van sdroxide. SSTV zelf is upstream; wat deze fork op de
+> Dit is de CB/SWL-fork van sdrcrow. SSTV zelf is upstream; wat deze fork op de
 > 11 m toevoegt zijn de band, de kanaalplannen per land, de 11 m-SSTV-kanalen en
 > de CB-roepnaam in de banner.
 
@@ -47,11 +47,11 @@ zoals ze op het scherm staan. `Settings > Radio` is een menupad.
 
 ## Wat je nodig hebt
 
-- **Een SDR of radio die sdroxide ondersteunt**: RTL-SDR, RX-888, Airspy HF+,
+- **Een SDR of radio die sdrcrow ondersteunt**: RTL-SDR, RX-888, Airspy HF+,
   SDRplay RSP, HackRF, ELAD, PlutoSDR, een **CAT-radio** via serieel +
   geluidskaart, TCI, OpenHPSDR of SoapySDR.
 - **Een 27 MHz-antenne** die bij je ontvanger past.
-- **sdroxide geïnstalleerd** (zie hieronder).
+- **sdrcrow geïnstalleerd** (zie hieronder).
 - **Om een foto te *zenden* heb je een transceiver nodig**, getast via **VOX**
   (een radio met geluidskaart) of via **CAT**. Een dongle die alleen ontvangt
   hoort en decodeert foto's wel, maar kan ze niet zenden.
@@ -64,14 +64,14 @@ zoals ze op het scherm staan. `Settings > Radio` is een menupad.
   of de portable tarball.
 - **macOS** — de `.dmg`.
 
-Je kunt sdroxide ook als **server** draaien en in de browser openen:
-`sdroxide --server` en dan `http://localhost:4950`.
+Je kunt sdrcrow ook als **server** draaien en in de browser openen:
+`sdrcrow --server` en dan `http://localhost:4950`.
 
 ---
 
 ## Deel A — Eenmalig instellen
 
-Alles hier wordt bewaard onder `~/.config/sdroxide-brown/`, dus je doet dit één keer.
+Alles hier wordt bewaard onder `~/.config/sdrcrow/`, dus je doet dit één keer.
 
 ### 1. Kies je radio
 
@@ -81,7 +81,7 @@ Open **SETTINGS** en ga naar het tabblad **Radio**. Kies je interface
 reconnect**.
 
 - **Linux — USB-ontvangers:** installeer de meegeleverde udev-regels, anders
-  ziet sdroxide het apparaat wel maar kan het niet openen:
+  ziet sdrcrow het apparaat wel maar kan het niet openen:
   `sudo cp 60-sdrcrow-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, daarna opnieuw aansluiten.
 - **Windows — RX-888:** bind het apparaat eenmalig aan **WinUSB** met
   [Zadig](https://zadig.akeo.ie/) — voor **beide** USB-id's (`04B4:00F3` en
@@ -125,7 +125,7 @@ mededeling één keer. Ontvangen heeft geen schakelaar nodig.
    zeker weet dat er audio bij de decoder komt. Is een header verkeerd gelezen
    als een langzame mode, dan laat **Restart RX** de halve foto vallen en gaat
    de ontvanger weer zoeken.
-6. Ontvangen foto's worden als PNG bewaard onder `~/.config/sdroxide-brown/sstv_rx/`
+6. Ontvangen foto's worden als PNG bewaard onder `~/.config/sdrcrow/sstv_rx/`
    en laden de volgende keer terug in de galerij.
 
 ---
@@ -187,7 +187,7 @@ besturingselement dat zegt waar je bent.
   image…**, of dubbelklik op een slot, kiest een **PNG of JPEG** (grens 16 MB).
   Die wordt in het midden bijgesneden en geschaald naar de afmeting van je mode
   — er is geen knop voor de kadtering — en bewaard onder
-  `~/.config/sdroxide-brown/sstv_tx/`. **Clear** maakt de foto van een slot
+  `~/.config/sdrcrow/sstv_tx/`. **Clear** maakt de foto van een slot
   leeg maar behoudt het bericht.
 - Typ een **bericht** voor het actieve slot. De **eerste regel wordt op dubbel
   formaat als titel getekend**, en een live voorbeeld toont precies wat eruit
@@ -242,7 +242,7 @@ lucht is, of de radio die al op zijn eigen PTT staat.
 
 ## Deel D — Bijhouden wat je ontvangt
 
-- Ontvangen foto's staan als **PNG** onder `~/.config/sdroxide-brown/sstv_rx/`; de
+- Ontvangen foto's staan als **PNG** onder `~/.config/sdrcrow/sstv_rx/`; de
   galerij staat op de machine waar de radio aan hangt, dus elk scherm ziet
   dezelfde verzameling. Rechtsklik een miniatuur om hem te verwijderen.
 - **Profielen** (**Settings > Profiles**) bewaren een hele opstelling —

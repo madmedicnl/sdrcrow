@@ -1,4 +1,4 @@
-# Raspberry Pi Zero 2 W en station SWL sans écran (sdroxide)
+# Raspberry Pi Zero 2 W en station SWL sans écran (sdrcrow)
 
 Un guide court et pratique pour transformer un **Raspberry Pi Zero 2 W** et une
 clé SDR bon marché en **station d'écoute en réseau** pour les ondes courtes et la
@@ -33,7 +33,7 @@ tapent dans le shell du Pi.
 
 - **Un Raspberry Pi Zero 2 W** (le quadricœur — *pas* le Zero W monocœur, qui est
   32 bits et trop lent). Une carte microSD de 16 Go ou plus.
-- **Une clé SDR.** Une **RTL-SDR** est le choix facile : sdroxide lui parle
+- **Une clé SDR.** Une **RTL-SDR** est le choix facile : sdrcrow lui parle
   directement, sans bibliothèque supplémentaire. Un SDRplay RSP fonctionne aussi,
   mais exige d'abord le service de l'API SDRplay — plus de pièces mobiles sur une
   petite carte.
@@ -63,7 +63,7 @@ tapent dans le shell du Pi.
    ```sh
    ssh pi@swl.local
    ```
-3. Mettez à jour, et installez les paquets dont sdroxide a besoin :
+3. Mettez à jour, et installez les paquets dont sdrcrow a besoin :
    ```sh
    sudo apt update && sudo apt full-upgrade -y
    sudo apt install -y libasound2-dev libopus-dev
@@ -74,7 +74,7 @@ l'emploi.
 
 ---
 
-## Partie 2 — Installer sdroxide
+## Partie 2 — Installer sdrcrow
 
 Le Zero 2 W est 64 bits (`armv8`), il exécute donc la version **`aarch64-compat`**
 faite pour Raspberry Pi OS Bookworm. Téléchargez-la sur le Pi lui-même :
@@ -86,7 +86,7 @@ chmod +x sdrcrow-linux-aarch64-compat.AppImage
 ./sdrcrow-linux-aarch64-compat.AppImage --version
 ```
 
-`--version` doit afficher le numéro de build **SDR Oxide Brown**. S'il refuse de
+`--version` doit afficher le numéro de build **SDRCrow**. S'il refuse de
 se lancer avec `GLIBC_2.39 not found`, vous avez pris le mauvais fichier — il vous
 faut celui dont le nom contient **`-compat`**.
 
@@ -94,14 +94,14 @@ Placez-le là où vous pouvez l'appeler par son nom :
 
 ```sh
 mkdir -p ~/bin
-mv sdrcrow-linux-aarch64-compat.AppImage ~/bin/sdroxide
-chmod +x ~/bin/sdroxide
+mv sdrcrow-linux-aarch64-compat.AppImage ~/bin/sdrcrow
+chmod +x ~/bin/sdrcrow
 ```
 
 Un `.deb` convient aussi : la même page de publication contient
 `sdrcrow-linux-aarch64-compat.deb` ; installez-le avec
 `sudo apt install ./sdrcrow-…-aarch64-compat.deb` et la commande est alors
-simplement `sdroxide`.
+simplement `sdrcrow`.
 
 > **Les règles udev comptent.** Un utilisateur Linux a besoin de la permission
 > d'ouvrir une SDR USB. Si vous avez installé le `.deb`, elles sont déjà en
@@ -121,7 +121,7 @@ Vous n'en avez besoin qu'une fois, pour configurer la radio ; ensuite le Pi tour
 sans écran.
 
 ```sh
-DISPLAY=:0 ~/bin/sdroxide
+DISPLAY=:0 ~/bin/sdrcrow
 ```
 
 (Si vous n'avez aucun bureau, passez à la Partie 4 et faites la configuration
@@ -153,7 +153,7 @@ l'utiliser.
 Arrêtez l'instance à fenêtre, puis lancez le serveur :
 
 ```sh
-~/bin/sdroxide --server --port 4950
+~/bin/sdrcrow --server --port 4950
 ```
 
 Le client navigateur est servi depuis le même port. Sur n'importe quel appareil
@@ -168,34 +168,34 @@ les fenêtres SCHEDULE et SWL LOG, les décodeurs, le journal de réception. Le 
 fait la réception et le décodage ; le navigateur fait le dessin, et c'est
 exactement ainsi qu'une carte de 512 Mo reste utile.
 
-Un sdroxide **natif** sur un autre ordinateur peut aussi le piloter, avec
-`sdroxide --connect swl.local:4950`.
+Un sdrcrow **natif** sur un autre ordinateur peut aussi le piloter, avec
+`sdrcrow --connect swl.local:4950`.
 
 ### Le laisser tourner
 
 Pour que le serveur démarre au boot et reste actif, créez un petit service :
 
 ```sh
-sudo tee /etc/systemd/system/sdroxide.service >/dev/null <<'EOF'
+sudo tee /etc/systemd/system/sdrcrow.service >/dev/null <<'EOF'
 [Unit]
-Description=sdroxide SWL listening server
+Description=sdrcrow SWL listening server
 After=network-online.target sound.target
 Wants=network-online.target
 
 [Service]
 User=pi
-ExecStart=/home/pi/bin/sdroxide --server --swl --port 4950
+ExecStart=/home/pi/bin/sdrcrow --server --swl --port 4950
 Restart=on-failure
 RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
 EOF
-sudo systemctl enable --now sdroxide
+sudo systemctl enable --now sdrcrow
 ```
 
-Vérifiez avec `systemctl status sdroxide`, et suivez son journal avec
-`journalctl -u sdroxide -f`.
+Vérifiez avec `systemctl status sdrcrow`, et suivez son journal avec
+`journalctl -u sdrcrow -f`.
 
 ---
 
@@ -241,7 +241,7 @@ Vérifiez avec `systemctl status sdroxide`, et suivez son journal avec
   **dissipateur** et assurez-vous que l'alimentation suffit (une bonne 5 V 2,5 A,
   pas un chargeur de téléphone).
 - **La page du navigateur ne s'ouvre pas.** Vérifiez que le serveur tourne
-  (`systemctl status sdroxide`) et que vous utilisez l'adresse du Pi
+  (`systemctl status sdrcrow`) et que vous utilisez l'adresse du Pi
   (`http://swl.local:4950`, ou l'IP qu'affiche `hostname -I`).
 
 ---

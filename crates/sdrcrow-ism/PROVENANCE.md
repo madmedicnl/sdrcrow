@@ -3,7 +3,7 @@
 `vendor/rtl_433` is a git submodule holding **rtl_433**, Benjamin Larsson's and
 Christian Zuckschwerdt's decoder collection for ISM-band devices. It is used
 **unmodified**: no upstream line is edited, removed or reordered, and nothing is
-copied out of it into sdroxide's own sources.
+copied out of it into sdrcrow's own sources.
 
 | | |
 |---|---|
@@ -41,7 +41,7 @@ Upstream factored its whole demodulation flow into a small public API —
 `push_sdr_flow()`, `reset_sdr_flow()` and `flush_sdr_flow()` in
 `include/r_flow.h` — in commit `2d029fb` on 2026-07-18, after 25.12 shipped. That
 API is exactly what an embedder feeding its own samples needs, and it is the one
-sdroxide uses.
+sdrcrow uses.
 
 In 25.12 the same work is only reachable through `sdr_callback()`, which is
 `static` and lives in `src/rtl_433.c` — the one file upstream's own `r_433`
@@ -59,13 +59,13 @@ tag would be.
 static library target — everything except `main()`. The source list is upstream's,
 so a decoder added upstream is picked up by moving the submodule and nothing else.
 
-Three CMake options are forced off, all for the same reason — sdroxide feeds
+Three CMake options are forced off, all for the same reason — sdrcrow feeds
 rtl_433 samples from its own device backends and must not link a second SDR
 stack:
 
 - `ENABLE_RTLSDR=OFF` — **not** merely a default: upstream defaults it **ON** and
   makes it a fatal error when librtlsdr is missing, so without this the build
-  would depend on a library sdroxide deliberately does not use.
+  would depend on a library sdrcrow deliberately does not use.
 - `ENABLE_SOAPYSDR=OFF`
 - `ENABLE_OPENSSL=OFF`
 
@@ -75,7 +75,7 @@ Two more are set for the build to work at all:
 - `CMAKE_POLICY_VERSION_MINIMUM=3.5` — upstream still declares
   `cmake_minimum_required(VERSION 2.6...3.10)`, which CMake 4 refuses outright.
 
-The only C written by sdroxide is `crates/sdrcrow-ism/src/rtl433/shim.c`, which
+The only C written by sdrcrow is `crates/sdrcrow-ism/src/rtl433/shim.c`, which
 is ours, GPL-3.0-or-later like the rest of the workspace, and calls upstream
 through its public headers.
 

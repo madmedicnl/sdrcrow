@@ -17,7 +17,7 @@ python3 -m venv /tmp/trusdx-venv
 ```
 
 Most default to `/dev/ttyUSB0` at 115200 8N1, DTR high, RTS low. Stop anything
-else that holds the port first — sdroxide, `rigctld`, the community streaming
+else that holds the port first — sdrcrow, `rigctld`, the community streaming
 drivers.
 
 **Transmit scripts key the radio.** Attach a dummy load.

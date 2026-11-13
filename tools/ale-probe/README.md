@@ -21,7 +21,7 @@ cd ../rsp1-capture && cargo build --release
   the channel, its neighbours and any dial error.
 - **Gain 25.** At 40 the capture clipped (peak 0.999) on 11 MHz in the morning;
   the burst is not the loudest thing in the slice, so leave it headroom.
-- Close sdroxide first: the SDRplay API is single-client.
+- Close sdrcrow first: the SDRplay API is single-client.
 - Channels worth trying, USB. The amateur HFLINK channels sound about **once an
   hour per channel**, which is the predictable traffic there is: **3596.0,
   7102.0, 10145.5, 14109.0, 18106.0, 21096.0, 24926.0, 28146.0 kHz** (data and

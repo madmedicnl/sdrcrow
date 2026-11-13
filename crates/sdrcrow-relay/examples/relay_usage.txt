@@ -1,4 +1,4 @@
-sdroxide T/R switch prober
+sdrcrow T/R switch prober
 
   --list                       USB HID relay boards and GPIO-capable sound cards
 

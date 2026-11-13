@@ -1,7 +1,7 @@
-# SSTV sur la 11 m — démarrage rapide (sdroxide — CB/11 m)
+# SSTV sur la 11 m — démarrage rapide (sdrcrow — CB/11 m)
 
 Un guide court et pratique pour recevoir et émettre des **images SSTV sur la
-bande 11 m (27 MHz)** avec **sdroxide** : quelle fréquence, comment régler le
+bande 11 m (27 MHz)** avec **sdrcrow** : quelle fréquence, comment régler le
 poste, comment recevoir une image et comment en envoyer une. La SSTV est un mode
 d'image analogique — une image est envoyée en tonalités, ligne par ligne, sur
 une bande latérale ordinaire — et en 11 m c'est le mode image de la communauté,
@@ -9,7 +9,7 @@ aux côtés du trafic FT8. Pour le détail de chaque commande, voir
 [`USER_MANUAL.md`](USER_MANUAL.md) §3.6 et la bande 11 m en §6.1 ; pour l'esprit
 de ce fork, voir le [README](../README.md).
 
-> Ceci est le fork CB/SWL de sdroxide. La SSTV elle-même vient d'upstream ; ce
+> Ceci est le fork CB/SWL de sdrcrow. La SSTV elle-même vient d'upstream ; ce
 > que ce fork ajoute en 11 m, ce sont la bande, les plans de canaux par pays, les
 > canaux SSTV 11 m et l'indicatif CB dans la bannière.
 
@@ -48,11 +48,11 @@ menu.
 
 ## Ce qu'il vous faut
 
-- **Un SDR ou un poste que sdroxide prend en charge** : RTL-SDR, RX-888,
+- **Un SDR ou un poste que sdrcrow prend en charge** : RTL-SDR, RX-888,
   Airspy HF+, SDRplay RSP, HackRF, ELAD, PlutoSDR, un **poste CAT** en série +
   carte son, TCI, OpenHPSDR ou SoapySDR.
 - **Une antenne 27 MHz** adaptée à votre récepteur.
-- **sdroxide installé** (ci-dessous).
+- **sdrcrow installé** (ci-dessous).
 - **Pour *émettre* une image il faut un transceiver**, manipulé par **VOX** (un
   poste à carte son) ou par **CAT**. Un dongle en réception seule entend et
   décode les images mais ne peut pas les émettre.
@@ -65,14 +65,14 @@ menu.
   `.deb`, ou l'archive portable.
 - **macOS** — le `.dmg`.
 
-Vous pouvez aussi lancer sdroxide en **serveur** et l'ouvrir dans un navigateur :
-`sdroxide --server`, puis `http://localhost:4950`.
+Vous pouvez aussi lancer sdrcrow en **serveur** et l'ouvrir dans un navigateur :
+`sdrcrow --server`, puis `http://localhost:4950`.
 
 ---
 
 ## Partie A — Configuration initiale
 
-Tout ici est enregistré sous `~/.config/sdroxide-brown/`, donc à faire une seule fois.
+Tout ici est enregistré sous `~/.config/sdrcrow/`, donc à faire une seule fois.
 
 ### 1. Choisir votre poste
 
@@ -82,7 +82,7 @@ d'échantillonnage** et le **gain**. Les changements s'appliquent juste après
 **Apply / reconnect**.
 
 - **Linux — récepteurs USB :** installez les règles udev fournies, sinon
-  sdroxide voit l'appareil mais n'arrive pas à l'ouvrir :
+  sdrcrow voit l'appareil mais n'arrive pas à l'ouvrir :
   `sudo cp 60-sdrcrow-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, puis rebranchez.
 - **Windows — RX-888 :** associez l'appareil à **WinUSB** une fois avec
   [Zadig](https://zadig.akeo.ie/) — pour **les deux** identifiants USB
@@ -127,7 +127,7 @@ confirmez la mention une fois. La réception ne demande aucun interrupteur.
    **Signal**-mètre montre le niveau audio reçu, pour vérifier que l'audio
    arrive au décodeur. Si un en-tête a été mal lu comme un mode lent,
    **Restart RX** abandonne la demi-image et relance la recherche.
-6. Les images reçues sont enregistrées en PNG sous `~/.config/sdroxide-brown/sstv_rx/`
+6. Les images reçues sont enregistrées en PNG sous `~/.config/sdrcrow/sstv_rx/`
    et rechargent dans la galerie la fois suivante.
 
 ---
@@ -191,7 +191,7 @@ réglage qui dit où vous êtes.
   onglets. **Load image…**, ou double-clic sur un emplacement, choisit une
   **PNG ou JPEG** (limite 16 Mo). Elle est recadrée au centre et mise à l'échelle
   des dimensions du mode — il n'y a aucun réglage de cadrage — et enregistrée
-  sous `~/.config/sdroxide-brown/sstv_tx/`. **Clear** vide l'image d'un
+  sous `~/.config/sdrcrow/sstv_tx/`. **Clear** vide l'image d'un
   emplacement mais garde son message.
 - Tapez un **message** pour l'emplacement actif. La **première ligne est
   dessinée en double taille comme titre**, et un aperçu en direct montre
@@ -248,7 +248,7 @@ l'air, ou le poste déjà manipulé par son propre PTT.
 
 ## Partie D — Garder une trace
 
-- Les images reçues sont des fichiers **PNG** sous `~/.config/sdroxide-brown/sstv_rx/` ;
+- Les images reçues sont des fichiers **PNG** sous `~/.config/sdrcrow/sstv_rx/` ;
   la galerie est stockée sur la machine où le poste est branché, donc chaque
   écran voit la même collection. Clic droit sur une vignette pour la supprimer.
 - **Profils** (**Settings > Profiles**) : enregistrez toute une configuration —

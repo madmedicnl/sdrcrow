@@ -1,6 +1,6 @@
-# Démarrage rapide écoute (sdroxide — ondes courtes & radiodiffusion)
+# Démarrage rapide écoute (sdrcrow — ondes courtes & radiodiffusion)
 
-Un guide court et pratique pour utiliser **sdroxide** en **écouteur** :
+Un guide court et pratique pour utiliser **sdrcrow** en **écouteur** :
 parcourir la grille des émissions, régler les grandes ondes, les ondes moyennes
 et les ondes courtes, noter ce que vous entendez et envoyer un rapport de
 réception. Rien ici n'exige une licence ni un émetteur — l'écran de l'écouteur
@@ -8,7 +8,7 @@ est un récepteur propre par choix. Pour le détail de chaque commande, voir
 [`USER_MANUAL.md`](USER_MANUAL.md) ; pour l'esprit de ce fork, voir le
 [README](../README.md).
 
-> Ceci est le fork CB/SWL de sdroxide. Les outils d'écoute sont ajoutés
+> Ceci est le fork CB/SWL de sdrcrow. Les outils d'écoute sont ajoutés
 > par-dessus le programme amateur ; le côté amateur, et tout le reste, viennent
 > d'upstream et sont inchangés.
 
@@ -24,7 +24,7 @@ tels qu'ils apparaissent à l'écran. `Settings > Radio` est un chemin de menu.
 
 ## Ce qu'il vous faut
 
-- **Un SDR ou une radio que sdroxide prend en charge.** N'importe lequel fera
+- **Un SDR ou une radio que sdrcrow prend en charge.** N'importe lequel fera
   l'affaire ; pour l'écoute, les choix habituels sont :
   - **RTL-SDR** (dongle) — natif, sans SoapySDR.
   - **RX-888 / RX-888 Mk2** — natif ; le firmware est téléversé automatiquement.
@@ -36,7 +36,7 @@ tels qu'ils apparaissent à l'écran. `Settings > Radio` est un chemin de menu.
     un **poste CAT** via port série + carte son, TCI, OpenHPSDR ou SoapySDR.
 - **Une antenne.** En ondes courtes, même un long fil fait des merveilles ; une
   bande de radiodiffusion veut plus de fil qu'un brin de 11 m.
-- **sdroxide installé** (ci-dessous).
+- **sdrcrow installé** (ci-dessous).
 
 ## Installation
 
@@ -46,14 +46,14 @@ tels qu'ils apparaissent à l'écran. `Settings > Radio` est un chemin de menu.
   ou l'archive portable.
 - **macOS** — le `.dmg`.
 
-Vous pouvez aussi lancer sdroxide en **serveur** et l'ouvrir dans un navigateur :
-`sdroxide --server`, puis `http://localhost:4950`.
+Vous pouvez aussi lancer sdrcrow en **serveur** et l'ouvrir dans un navigateur :
+`sdrcrow --server`, puis `http://localhost:4950`.
 
 ---
 
 ## Partie A — Réglage initial
 
-Tout ici est enregistré sous `~/.config/sdroxide-brown/`, donc vous le faites une fois.
+Tout ici est enregistré sous `~/.config/sdrcrow/`, donc vous le faites une fois.
 
 ### 1. Choisissez votre radio
 

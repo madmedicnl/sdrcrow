@@ -1,6 +1,6 @@
 # Headless install — for a club's software manager
 
-Install SDR Oxide Brown, and a station's settings, on as many machines as you
+Install SDRCrow, and a station's settings, on as many machines as you
 like **without answering a single question**. The idea is the one a club already
 uses for its other software: set one machine up properly by hand, take that
 machine's configuration away with you, and put both the program and the
@@ -33,21 +33,21 @@ That is the whole procedure. Nothing is asked, and running it twice is safe.
 
 | | |
 |---|---|
-| **The program** | `--package`, or the first `sdrcrow-*` file beside the script. `.deb` (apt/dpkg), `.rpm` (dnf/zypper/rpm), `.pkg.tar.*` (pacman), `.AppImage`, `.tar.gz` (unpacked under `/opt/sdroxide`), `.msi` (Windows, silently), `.dmg` (macOS, copied into `/Applications`), `.zip`. |
+| **The program** | `--package`, or the first `sdrcrow-*` file beside the script. `.deb` (apt/dpkg), `.rpm` (dnf/zypper/rpm), `.pkg.tar.*` (pacman), `.AppImage`, `.tar.gz` (unpacked under `/opt/sdrcrow`), `.msi` (Windows, silently), `.dmg` (macOS, copied into `/Applications`), `.zip`. |
 | **Device rules** | `rules/*.rules` → `/usr/lib/udev/rules.d/`, then `udevadm` reload, and the station's user added to `plugdev`. The `.deb` and `.rpm` already carry these, so this step is usually a no-op. |
 | **The configuration** | `config/` (or `sdrcrow-config*.tar.gz`) → the directory the program itself reads. An existing one is **moved aside first**, as `<config>-<date>.bak`. |
-| **A headless server** | only with `--server-unit`: a systemd unit running `sdroxide --server`, enabled and started. |
+| **A headless server** | only with `--server-unit`: a systemd unit running `sdrcrow --server`, enabled and started. |
 
 ## Where the configuration goes
 
-The program uses `ProjectDirs::from("org", "sdroxide", "sdroxide")` with
+The program uses `ProjectDirs::from("org", "sdrcrow", "sdrcrow")` with
 `-brown` appended to the last component, so:
 
 | System | Directory |
 |---|---|
-| Linux | `~/.config/sdroxide-brown` (or `$XDG_CONFIG_HOME/sdroxide-brown`) |
-| macOS | `~/Library/Application Support/org.sdroxide.sdroxide-brown` |
-| Windows | `%APPDATA%\sdroxide\sdroxide\config-brown` |
+| Linux | `~/.config/sdrcrow` (or `$XDG_CONFIG_HOME/sdrcrow`) |
+| macOS | `~/Library/Application Support/org.sdrcrow.sdrcrow` |
+| Windows | `%APPDATA%\sdrcrow\sdrcrow\config-brown` |
 
 `SDROXIDE_CONFIG_DIR` overrides all of it, which is how you run two independent
 stations from one login.
@@ -58,7 +58,7 @@ Everything the station knows lives in one directory:
 
 ```sh
 mkdir -p headless-install/config
-cp -a ~/.config/sdroxide-brown/. headless-install/config/
+cp -a ~/.config/sdrcrow/. headless-install/config/
 ```
 
 That carries the radios, the memories, the band plan, the logbook, the display

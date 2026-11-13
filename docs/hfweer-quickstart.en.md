@@ -1,11 +1,11 @@
-# Weather on shortwave — quick-start (sdroxide)
+# Weather on shortwave — quick-start (sdrcrow)
 
 The plainest service on the shortwave band, and almost nobody listens to it.
 Ships and weather stations broadcast the **weather where they actually are** as
 coded numbers on HF RTTY, every few hours. No internet, no account, no timeslot
 to book — just a schedule you can read off a piece of paper.
 
-sdroxide decodes those numbers and shows you the wind, the pressure, the
+sdrcrow decodes those numbers and shows you the wind, the pressure, the
 temperature and the sea state. This card gets you listening in about five minutes.
 
 > **This one is BETA.** The decoder is tested against four real published
@@ -25,7 +25,7 @@ on screen. `Settings > Radio` is a menu path.
 
 ## What you need
 
-- **Any receiver sdroxide supports**, and an antenna that reaches HF.
+- **Any receiver sdrcrow supports**, and an antenna that reaches HF.
 - **Nothing else.** You are listening, not transmitting, and no licence is
   involved.
 

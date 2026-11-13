@@ -1,4 +1,4 @@
-# Building sdroxide-brown on Windows (headless / no admin)
+# Building sdrcrow on Windows (headless / no admin)
 
 This is a headless (no-GUI) dev setup for preparing PRs on Windows, without
 administrator rights. It mirrors what CI does (`windows-msi.yml`) and adds a

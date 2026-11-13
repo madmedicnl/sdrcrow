@@ -20,15 +20,15 @@ size — so it can be started from the launcher as well as from a shell.
 
 First start makes `~/.config/sdrcrow` and begins from defaults: no stations,
 no logbook, no themes. Copying a Brown installation over is a plain
-`cp -a ~/.config/sdroxide-brown/. ~/.config/sdrcrow/` and is a decision, not a
-default — SDRCrow never reads the other directory by itself.
+`cp -a ~/.config/sdroxide-brown/. ~/.config/sdrcrow/` and is a decision, not
+a default — SDRCrow never reads the other directory by itself.
 
 ## What is its own
 
 | Thing | Now |
 | --- | --- |
 | The program's name | `SDRCrow` (`sdrcrow_version::FLAVOR`) |
-| `--version` | `sdrcrow SDRCrow 2.3.0` |
+| `--version` | `sdrcrow SDRCrow 1.0.0` |
 | The binary and the crate | `sdrcrow` |
 | Every crate | `sdrcrow-*` (67 of them), and every `use sdrcrow_*` with them |
 | Log targets | `sdrcrow_radio::…`, `sdrcrow_digi::…` (they follow the crate names) |
@@ -50,9 +50,6 @@ there is no shared directory any more.
 
 ## What is still Brown
 
-- **The i18n domain** is `sdroxide` and the catalogues are
-  `i18n/*/sdrcrow.ftl`. Internal, and a rename touches the loader and
-  `tools/i18n_add.py` — worth doing in one quiet step.
 - **`SDROXIDE_CONFIG_DIR`** as a second accepted variable (test harness).
 - **The documentation**: `README.md`, `AGENTS.md`, `TODO.md`, `CHANGELOG.md`,
   `docs/` and `BUILD-WINDOWS.md` are Brown's text and history. The house rules
@@ -61,8 +58,6 @@ there is no shared directory any more.
 - **The rest of the packaging**: `packaging/windows`, `packaging/macos`,
   `packaging/snap`, the AppImage and the `.deb` container scripts still carry
   the Brown names and logos.
-- **The version number**: still `2.3.0` from the Brown workspace. Whether
-  SDRCrow starts its own count at `0.1.0` is a product decision, not a rename.
 - **The engine's shared resources**: SDRCrow and Brown both take the first
   RSP/dongle, TCI port 50001, the server port and rigctld's. Two of them at
   once fight; running both needs at least one of those made configurable per

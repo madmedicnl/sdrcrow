@@ -1,12 +1,12 @@
-# Avvio rapido CB (sdroxide — 11 m)
+# Avvio rapido CB (sdrcrow — 11 m)
 
-Una guida breve e pratica per far funzionare **sdroxide** sulla banda
+Una guida breve e pratica per far funzionare **sdrcrow** sulla banda
 **11 m (27 MHz)**: configurare l'SDR o la radio CAT, usare i piani canali per
 paese e seguire il traffico digitale WSJT-CB. Per il dettaglio di ogni comando
 vedi [`USER_MANUAL.md`](USER_MANUAL.md); per lo spirito di questo fork vedi il
 [README](../README.md).
 
-> Questo è il fork CB/SWL di sdroxide. La banda 11 m e le bande di diffusione
+> Questo è il fork CB/SWL di sdrcrow. La banda 11 m e le bande di diffusione
 > sono aggiunte sopra; le bande amatoriali e tutto il resto sono upstream e
 > restano invariati.
 
@@ -32,27 +32,27 @@ menu.
     **radio CAT** (Icom/Yaesu/Xiegu) via porta seriale + scheda audio, TCI,
     OpenHPSDR o SoapySDR.
 - **Un'antenna per i 27 MHz** adatta al tuo ricevitore.
-- **sdroxide installato** (sotto).
+- **sdrcrow installato** (sotto).
 
 ## Installazione
 
 - **Windows** — l'installer (`.msi`) o lo `.zip` portatile (che contiene
-  `sdroxide.exe`): vedi la [pagina Releases](https://github.com/madmedicnl/sdroxide-brown/releases/latest).
+  `sdrcrow.exe`): vedi la [pagina Releases](https://github.com/madmedicnl/sdroxide-brown/releases/latest).
 - **Linux** — l'**AppImage** (un solo file, `chmod +x` e avvia), il `.deb`, o
   l'archivio portatile.
 - **macOS** — il `.dmg`.
 
-Puoi anche avviare sdroxide come **server** e aprirlo nel browser:
-`sdroxide --server`, poi `http://localhost:4950`. Comodo quando l'antenna è
+Puoi anche avviare sdrcrow come **server** e aprirlo nel browser:
+`sdrcrow --server`, poi `http://localhost:4950`. Comodo quando l'antenna è
 altrove.
 
 ---
 
 ## Parte A — Configurazione iniziale
 
-Tutto viene salvato in `~/.config/sdroxide-brown/`, quindi si fa una volta sola.
+Tutto viene salvato in `~/.config/sdrcrow/`, quindi si fa una volta sola.
 
-### 1. Avvia sdroxide
+### 1. Avvia sdrcrow
 
 La finestra principale ha la barra dei comandi in alto e sotto il panadapter e
 la cascata.
@@ -65,7 +65,7 @@ campionamento** e il **guadagno**. Le modifiche si applicano dopo
 **Apply / reconnect**.
 
 - **Linux — ricevitori USB:** installa le regole udev fornite, altrimenti
-  sdroxide vede il dispositivo ma non riesce ad aprirlo:
+  sdrcrow vede il dispositivo ma non riesce ad aprirlo:
   `sudo cp 60-sdrcrow-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, poi ricollega.
 - **Windows — RX-888:** associa il dispositivo a **WinUSB** una volta con
   [Zadig](https://zadig.akeo.ie/) — per **entrambi** gli id USB (`04B4:00F3` e
@@ -108,7 +108,7 @@ Questo fork parla lo stesso scambio WSJT con hash che
 2. Scegli il canale digitale dal piano / elenco canali del tuo piano CB.
 3. Nella **lista dei decode**: clicca una riga per portare l'audio su quel
    segnale, poi **REPLY** o **Call CQ**.
-4. Ogni stazione decodificata mostra la **bandiera del paese** — sdroxide segue
+4. Ogni stazione decodificata mostra la **bandiera del paese** — sdrcrow segue
    le convenzioni di nominativo e la numerazione dei paesi di WSJT-CB.
 5. In **SWL mode** puoi leggere tutto senza trasmettere.
 

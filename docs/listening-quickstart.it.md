@@ -1,6 +1,6 @@
-# Avvio rapido all'ascolto (sdroxide — onde corte & radiodiffusione)
+# Avvio rapido all'ascolto (sdrcrow — onde corte & radiodiffusione)
 
-Una guida breve e pratica per usare **sdroxide** come **ascoltatore**: sfogliare
+Una guida breve e pratica per usare **sdrcrow** come **ascoltatore**: sfogliare
 il palinsesto delle trasmissioni, sintonizzare onde lunghe, onde medie e onde
 corte, annotare quello che senti e inviare un rapporto di ricezione. Niente qui
 richiede una licenza o un trasmettitore — lo schermo dell'ascoltatore è un
@@ -8,7 +8,7 @@ ricevitore pulito per scelta. Per il dettaglio di ogni comando vedi
 [`USER_MANUAL.md`](USER_MANUAL.md); per lo spirito di questo fork vedi il
 [README](../README.md).
 
-> Questo è il fork CB/SWL di sdroxide. Gli strumenti d'ascolto sono aggiunti
+> Questo è il fork CB/SWL di sdrcrow. Gli strumenti d'ascolto sono aggiunti
 > sopra il programma amatoriale; il lato amatoriale, e tutto il resto, è upstream
 > e resta invariato.
 
@@ -25,7 +25,7 @@ menu.
 
 ## Cosa ti serve
 
-- **Un SDR o una radio supportata da sdroxide.** Va bene qualsiasi cosa; per
+- **Un SDR o una radio supportata da sdrcrow.** Va bene qualsiasi cosa; per
   l'ascolto le scelte più comuni sono:
   - **RTL-SDR** (dongle) — nativo, senza SoapySDR.
   - **RX-888 / RX-888 Mk2** — nativo; il firmware viene caricato automaticamente.
@@ -37,7 +37,7 @@ menu.
     **radio CAT** via porta seriale + scheda audio, TCI, OpenHPSDR o SoapySDR.
 - **Un'antenna.** Sulle onde corte anche un lungo filo fa miracoli; una banda di
   radiodiffusione vuole più filo di uno stilo da 11 m.
-- **sdroxide installato** (qui sotto).
+- **sdrcrow installato** (qui sotto).
 
 ## Installazione
 
@@ -47,14 +47,14 @@ menu.
   l'archivio portatile.
 - **macOS** — il `.dmg`.
 
-Puoi anche avviare sdroxide come **server** e aprirlo in un browser:
-`sdroxide --server`, poi `http://localhost:4950`.
+Puoi anche avviare sdrcrow come **server** e aprirlo in un browser:
+`sdrcrow --server`, poi `http://localhost:4950`.
 
 ---
 
 ## Parte A — Configurazione iniziale
 
-Tutto qui è salvato sotto `~/.config/sdroxide-brown/`, quindi si fa una volta sola.
+Tutto qui è salvato sotto `~/.config/sdrcrow/`, quindi si fa una volta sola.
 
 ### 1. Scegli la radio
 

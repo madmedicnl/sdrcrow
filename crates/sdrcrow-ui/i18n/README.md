@@ -1,4 +1,4 @@
-# Translating sdroxide
+# Translating sdrcrow
 
 The interface's text lives here, one [Fluent](https://projectfluent.org) file
 per language:

@@ -1,13 +1,13 @@
-# SDR Oxide Brown
+# SDRCrow
 
 > **Windows download** — [**installer (`.msi`)**](https://github.com/madmedicnl/sdroxide-brown/releases/latest/download/sdrcrow-windows-x86_64.msi)
-> · [**portable `.zip`** (contains `sdroxide.exe`)](https://github.com/madmedicnl/sdroxide-brown/releases/latest/download/sdrcrow-windows-x86_64.zip)
+> · [**portable `.zip`** (contains `sdrcrow.exe`)](https://github.com/madmedicnl/sdroxide-brown/releases/latest/download/sdrcrow-windows-x86_64.zip)
 > · [every platform and build](https://github.com/madmedicnl/sdroxide-brown/releases/latest)
 >
 > Linux (AppImage · `.deb` · tarball) and macOS (`.dmg`) are on the same
 > [Releases page](https://github.com/madmedicnl/sdroxide-brown/releases/latest).
 
-> **A fork of [sdroxide](https://github.com/dividebysandwich/sdroxide), and a
+> **A fork of [sdrcrow](https://github.com/dividebysandwich/sdrcrow), and a
 > complete copy of it.** Every ham feature is here — the whole transceiver, all
 > the digital modes, the logbook, awards, rig control. The fork changes the
 > **focus**: it is tuned for the **11 m citizens' band (CB)** and the
@@ -61,16 +61,16 @@ rest.
    (Linux AppImage / `.deb` / tarball, Windows `.msi` / `.zip`, macOS `.dmg`),
    or [build it yourself](#building).
 2. **Point it at a radio.** Plug in an SDR, or use a network radio
-   (SpyServer, KiwiSDR, an OpenHPSDR, a CAT rig, …). `sdroxide --probe` lists
+   (SpyServer, KiwiSDR, an OpenHPSDR, a CAT rig, …). `sdrcrow --probe` lists
    what it can see and says in words what is missing. Linux USB receivers need
    the packaged udev rules (the `.deb` installs them); Windows USB receivers
    usually need [Zadig](https://zadig.akeo.ie/) to bind WinUSB. See
    [Radio-specific notes](docs/USER_MANUAL.md#15-radio-specific-notes).
 3. **Run it.**
    ```sh
-   sdroxide                       # native desktop
-   sdroxide --server              # UI in a browser at http://<host>:4950
-   sdroxide --connect host:4950   # desktop UI driving a remote server
+   sdrcrow                       # native desktop
+   sdrcrow --server              # UI in a browser at http://<host>:4950
+   sdrcrow --connect host:4950   # desktop UI driving a remote server
    ```
 4. **Tune.** The band/mode menu leads with a **Primary modes** row
    (**AM · FM · USB · LSB**) and an **HF / VHF / UHF / ALL** band row, and lists
@@ -102,7 +102,7 @@ rest.
 Upstream is an amateur transceiver. This build runs **the CB band used to the
 full — voice *and* the digital modes — plus the listener's tools**.
 
-| | Upstream (`dividebysandwich/sdroxide`) | This fork |
+| | Upstream (`dividebysandwich/sdrcrow`) | This fork |
 | --- | --- | --- |
 | **Focus** | amateur (ham) transceiver | **CB used in full (voice and digital), SWL and decoding**; 11 m transmit is a one-time opt-in only because the ham lockout is generic |
 | **Amateur bands** | 160 m … 3 cm, by IARU region, with band-plan lockout | identical, untouched |
@@ -141,12 +141,12 @@ modes **MSK144 / JT65 / JT9 / FST4 / Q65 / FSK441**, the wide **VDL2 window
 rate**, and the **FT4/FT2/JS8 successive-interference cancellation**. What the
 table lists is what this fork still adds on top — plus, of those, **FSK441
 transmit**, DSC and UVPacket, which upstream has not taken. The CW work is
-offered upstream as [#568](https://github.com/dividebysandwich/sdroxide/pull/568)
-(the Morse trainer), [#569](https://github.com/dividebysandwich/sdroxide/pull/569)
+offered upstream as [#568](https://github.com/dividebysandwich/sdrcrow/pull/568)
+(the Morse trainer), [#569](https://github.com/dividebysandwich/sdrcrow/pull/569)
 (the iambic/straight keyer) and
-[#572](https://github.com/dividebysandwich/sdroxide/pull/572)
+[#572](https://github.com/dividebysandwich/sdrcrow/pull/572)
 (the no-control-link keying fix), with the whole key as
-[#573](https://github.com/dividebysandwich/sdroxide/pull/573).
+[#573](https://github.com/dividebysandwich/sdrcrow/pull/573).
 
 </details>
 
@@ -245,7 +245,7 @@ client — are in [`docs/images/`](docs/images).
   order them** and the picture takes everything else. Off by default; Settings →
   UI ([manual §6.3](docs/USER_MANUAL.md#63-ui-display-preferences-and-voice-announcements)).
 - **Persistence** — device, rates, gains, memories, band stacks, network/QSL
-  credentials, control bindings and the logbook under `~/.config/sdroxide-brown/`,
+  credentials, control bindings and the logbook under `~/.config/sdrcrow/`,
   plus named **station profiles**.
 
 </details>
@@ -330,7 +330,7 @@ module; nothing else (including RTL-SDR) needs an SDR system library, so
 
 ```sh
 cargo build --release
-./target/release/sdroxide --probe        # verify your device is seen
+./target/release/sdrcrow --probe        # verify your device is seen
 ```
 
 **Browser client** (separate WebAssembly crate, built with
@@ -360,16 +360,16 @@ package:
 
 | Path | What |
 |---|---|
-| `/usr/bin/sdroxide` | the binary — client and server are the same program |
-| `/usr/share/applications/sdroxide.desktop` | the desktop menu entry |
+| `/usr/bin/sdrcrow` | the binary — client and server are the same program |
+| `/usr/share/applications/sdrcrow.desktop` | the desktop menu entry |
 | `/usr/lib/udev/rules.d/60-sdrcrow-*.rules` | 9 dongle rules, so no root is needed |
-| `/usr/share/icons/hicolor/*/apps/sdroxide-brown.{png,svg}` | the icon, nine sizes |
-| `/usr/share/sdroxide/voices/` | the speech voice, for spoken announcements |
-| `/usr/share/doc/sdroxide/` | README, `copyright` and the four licence notices |
+| `/usr/share/icons/hicolor/*/apps/sdrcrow.{png,svg}` | the icon, nine sizes |
+| `/usr/share/sdrcrow/voices/` | the speech voice, for spoken announcements |
+| `/usr/share/doc/sdrcrow/` | README, `copyright` and the four licence notices |
 
 ```sh
-sudo apt purge sdrcrow-soapysdr      # or sdroxide — removes every path above
-rm -rf ~/.config/sdroxide-brown      # every setting, logbook and recording it wrote
+sudo apt purge sdrcrow-soapysdr      # or sdrcrow — removes every path above
+rm -rf ~/.config/sdrcrow      # every setting, logbook and recording it wrote
 ```
 
 Three things worth stating plainly, because "is anything left?" is the question:
@@ -377,10 +377,10 @@ Three things worth stating plainly, because "is anything left?" is the question:
 - **No systemd service is installed**, so a purge cannot leave one running or
   enabled. If you created a unit yourself, it is yours to disable and delete.
 - **Nothing is written to `/etc` or `/var`**, and no configuration is created by
-  the installer — the program makes `~/.config/sdroxide-brown` on first run, and
+  the installer — the program makes `~/.config/sdrcrow` on first run, and
   that directory is the other half of a complete removal.
 - **The tarball** adds nothing outside the folder you unpacked it into, except
-  `~/.local/share/applications/sdroxide.desktop` and its icon if you ran
+  `~/.local/share/applications/sdrcrow.desktop` and its icon if you ran
   `install-desktop-entry.sh` — `./install-desktop-entry.sh --uninstall` removes
   both.
 
@@ -390,10 +390,10 @@ other program using `libsoapysdr0.8`.
 ## Running
 
 ```sh
-sdroxide --freq 14074000 --mode ft8               # native desktop, 20 m FT8
-sdroxide --server                                 # server + UI at http://<host>:4950
-sdroxide --server --web-root crates/sdrcrow-web/dist
-sdroxide --connect 192.168.1.10:4950              # native UI driving a remote server
+sdrcrow --freq 14074000 --mode ft8               # native desktop, 20 m FT8
+sdrcrow --server                                 # server + UI at http://<host>:4950
+sdrcrow --server --web-root crates/sdrcrow-web/dist
+sdrcrow --connect 192.168.1.10:4950              # native UI driving a remote server
 ```
 
 **It works with the network unplugged.** Receiving, transmitting, every
@@ -408,8 +408,8 @@ everything else carries on. The manual's **Offline by default** table (2.1)
 names each one and what happens without a route out.
 
 **Raspberry Pi 4/5.** Mesa's Vulkan driver (V3DV) makes the display flicker;
-sdroxide detects it and renders through OpenGL ES instead, at the cost of about
-one core. `WGPU_BACKEND=vulkan sdroxide` takes Vulkan back where it is steady.
+sdrcrow detects it and renders through OpenGL ES instead, at the cost of about
+one core. `WGPU_BACKEND=vulkan sdrcrow` takes Vulkan back where it is steady.
 
 <details>
 <summary><h2>Startup parameters — every command-line flag</h2></summary>
@@ -473,7 +473,7 @@ One part goes further than GPLv3: CW decoding uses the
 [DeepCW](https://github.com/e04/deepcw-engine) model, which is **AGPL-3.0-only**
 and is linked into the binary rather than read as data, so its terms cover the
 built program as a whole. The practical difference is AGPL section 13: **running
-`sdroxide --server` and letting other people use it over a network counts as
+`sdrcrow --server` and letting other people use it over a network counts as
 conveying, so they must be offered the Corresponding Source.** Running it for
 yourself changes nothing.
 
@@ -558,7 +558,7 @@ protocol this build speaks fluently, not code it runs.
 ## Acknowledgements
 
 The amateur-side FT8/FT4/FT2 that 11 m builds on comes from the WSJT-X project.
-The original program is [sdroxide](https://github.com/dividebysandwich/sdroxide)
+The original program is [sdrcrow](https://github.com/dividebysandwich/sdrcrow)
 by dividebysandwich; this fork is upstream's work plus the CB and listener
 additions. All of it stands on your work.
 

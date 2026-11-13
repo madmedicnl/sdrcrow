@@ -8,7 +8,7 @@ radio (such as a Xiegu, Icom, Yaesu, Kenwood, Elecraft, ELAD, an RS-HFIQ, or a
 QRP Labs QMX)
 with audio over a USB sound card. The
 same interface runs as a native desktop application, streams to a web browser,
-or connects to a remote sdroxide server.
+or connects to a remote sdrcrow server.
 
 ---
 
@@ -195,7 +195,7 @@ or connects to a remote sdroxide server.
   is also exposed to NVDA, Orca and VoiceOver. See
   [6.3](#63-ui-display-preferences-and-voice-announcements).
 - **Remote and web operation:** run headless as a server and control it from a
-  browser or from a second sdroxide instance over the network, behind a username
+  browser or from a second sdrcrow instance over the network, behind a username
   and password. A station reached that way opens as a radio tab beside your own
   ones — enter its address on **Settings → General** and press CONNECT.
 
@@ -208,13 +208,13 @@ or connects to a remote sdroxide server.
 Start the native application with no arguments to use your configured radio:
 
 ```
-sdroxide
+sdrcrow
 ```
 
 To try the interface with no hardware, use the built-in signal generator:
 
 ```
-sdroxide --siggen
+sdrcrow --siggen
 ```
 
 #### Offline by default
@@ -496,7 +496,7 @@ The **VFO** module has:
 - **A / B** select buttons in the Frequency module (the active VFO is highlighted).
 - Above them, the **⛓ link button**: the same **LINK** switch the radio's tab on
   the strip carries (see [§2.17](#217-running-more-than-one-radio)), lit while
-  sdroxide's link to the radio is open. It is on the main window so that a
+  sdrcrow's link to the radio is open. It is on the main window so that a
   *single*-radio session — which has no tab strip — can still put its radio down
   and pick it back up. On the compact layouts, where the frequency box has no
   room to stack it, it is the first thing in the **VFO** menu instead, labelled
@@ -573,11 +573,11 @@ dial + XIT — so you can see at a glance how far RX and TX are shifted.
 
 On an SDR, all three offsets — RIT, XIT and split — are software: the receiver
 and transmitter are tuned inside the IQ stream and the hardware never moves. A
-**CAT radio** has no such stream, only its dial, so sdroxide puts them on the
+**CAT radio** has no such stream, only its dial, so sdrcrow puts them on the
 dial instead: it sits on your receive frequency (VFO + RIT) while you listen and
 moves to the transmit frequency (the other VFO when split is on, plus XIT) for
 the length of each over, then comes straight back. The radio's frequency display
-follows, which is also how you can see it working. sdroxide switches the radio's
+follows, which is also how you can see it working. sdrcrow switches the radio's
 *own* RIT, XIT and split off when it connects, so an offset left over on the rig
 can't quietly add itself to the one you set here.
 
@@ -671,7 +671,7 @@ mode. What is in the box never changes; only where the two rows are cut does.
 - **SQL** — squelch; below the open threshold it reads
   `off`.
 
-  On a radio that hands sdroxide audio it has **already squelched** — a CAT rig
+  On a radio that hands sdrcrow audio it has **already squelched** — a CAT rig
   on a sound card, an Icom sending AF over the network — this rail sets the
   *radio's own* squelch over the control link instead, and reads as a
   percentage of the radio's scale (`open` at the bottom). That is the gate the
@@ -681,8 +681,8 @@ mode. What is in the box never changes; only where the two rows are cut does.
   control link opens, so the rail starts where you left the knob rather than
   imposing a remembered figure on it, and a keyboard or MIDI binding on the
   squelch action follows the same rail. Every other front end — anything
-  sending sdroxide I/Q — keeps the dBFS threshold, which is the honest one
-  there: the whole passband arrives and sdroxide does the gating.
+  sending sdrcrow I/Q — keeps the dBFS threshold, which is the honest one
+  there: the whole passband arrives and sdrcrow does the gating.
 
   The dBFS rail runs from fully open up to **full scale**, and hovering it says
   what the passband is reading *now* so you can put the threshold between the
@@ -792,7 +792,7 @@ mode. What is in the box never changes; only where the two rows are cut does.
   are handled automatically, at the same volume, so there is no jump when one
   hands over to the other. Click it to force mono.
 
-  On a weak station sdroxide blends back toward mono by itself. That is not a
+  On a weak station sdrcrow blends back toward mono by itself. That is not a
   compromise — the difference channel is recovered from a 38 kHz subcarrier,
   high on FM's noise slope, so it carries roughly 20 dB more hiss than the
   mono sum. Clean mono beats noisy stereo, and the blend is gradual enough that
@@ -811,7 +811,7 @@ mode. What is in the box never changes; only where the two rows are cut does.
 
   - **The name** — the eight characters the station calls itself. Some
     broadcasters abuse this field by scrolling a message through it a word at a
-    time; sdroxide only shows a name it has seen twice running, which stops a
+    time; sdrcrow only shows a name it has seen twice running, which stops a
     fragment of somebody's advertisement being displayed as the station's name,
     but on those stations the name will still change as you watch. That is the
     station doing it, not the receiver.
@@ -989,12 +989,12 @@ decimation are remembered in `session.json` and restored the next time you
 start, along with the front end's own gain stages
 ([§6.2.1](#621-soapysdr-devices)). They are
 settings you arrive at by ear against your own antenna and noise floor, so
-sdroxide brings the receiver back up where you left it rather than on defaults.
+sdrcrow brings the receiver back up where you left it rather than on defaults.
 
 #### The RIG box: the radio's own aerial and power switches
 
 A transceiver with an aerial selector, a separate receiving antenna, or a power
-switch sdroxide can reach over the control link, gets a **RIG** box of its own
+switch sdrcrow can reach over the control link, gets a **RIG** box of its own
 on the control bar — next to the receive controls on a desktop layout, and
 behind a **RIG** button in the menu strip on a narrow window. Like **DIV** and
 **SUB**, it appears only for hardware that has what it drives; a radio with one
@@ -1004,7 +1004,7 @@ socket, no receive aerial and no remote power never sees it.
   to the next one: `ANT1` → `ANT2` → `ANT1` on an Icom, and round the ports of
   an RSPdx or a LimeSDR in the same way. It is the radio's own setting, the same
   one as the **ANT** button on its front panel, and it is remembered per band
-  like every other antenna choice in sdroxide — so this is the control for
+  like every other antenna choice in sdrcrow — so this is the control for
   *changing your mind*, and the band memory is what saves you from having to.
   It appears only where there is a choice of sockets: an IC-7300MK2 has one,
   and shows **RX ANT** alone.
@@ -1014,15 +1014,15 @@ socket, no receive aerial and no remote power never sees it.
   main socket stays on transmit throughout. An IC-7300MK2's RX ANT IN/OUT, an
   IC-7610's RX ANT.
 
-  Unlike the socket above, sdroxide does **not** remember this one. The radio
-  holds it per band itself, so sdroxide asks the radio again after every band
+  Unlike the socket above, sdrcrow does **not** remember this one. The radio
+  holds it per band itself, so sdrcrow asks the radio again after every band
   change and shows what it answers; clicking the chip is the only thing that
   moves it. The one thing that will not reach the chip is the **RX ANT** button
   on the radio's own front panel pressed without changing band — it catches up
   at the next band change.
 - **PWR** — **ON** and **OFF** switch the radio itself, over the control link.
-  This is the one true on/off in sdroxide; the **LINK** switch in the tab strip
-  is sdroxide's own end of the connection and leaves the radio running
+  This is the one true on/off in sdrcrow; the **LINK** switch in the tab strip
+  is sdrcrow's own end of the connection and leaves the radio running
   ([2.17](#217-running-more-than-one-radio)). Two buttons rather than a switch,
   because a radio that is off answers nothing and there is no position to read
   back.
@@ -1339,7 +1339,7 @@ wide the panadapter actually is *in pixels*, and picks the most the machine can
 carry. The number it settled on is shown beside the buttons.
 
 The steps are **2048**, **4096** and **8192** columns. 2048 is what every
-sdroxide before this one drew, and about what a 1080p panadapter can show; 4096
+sdrcrow before this one drew, and about what a 1080p panadapter can show; 4096
 is one column per pixel of a 4K panel, which is the point of the setting; 8192
 is two per pixel, which keeps a carrier sharp while the view is panned off the
 pixel grid. A step this machine cannot hold is shown greyed, with the reason on
@@ -1479,13 +1479,13 @@ riding above it has already gone. See the RDS diagnostics tab
 first.
 
 `OVL` answers to two different measurements, and either one lights it. The
-first is what sdroxide measures here, from the samples the radio sends: how many
+first is what sdrcrow measures here, from the samples the radio sends: how many
 of them sat at full scale over the last meter window. The second is the **radio's
 own overflow flag**, on the few front ends that report one — a Hermes Lite 2
 does. That second one matters on a direct-sampling radio, where the converter
 takes a whole band at once and then hands over a narrow slice of it: a
 broadcaster three bands away can be driving the ADC into its rails while every
-sample that reaches sdroxide sits at a tenth of full scale, so only the board
+sample that reaches sdrcrow sits at a tenth of full scale, so only the board
 can tell you. A Hermes Lite 2 can also be left to fix it by itself — see
 **Overload protection** in [6.2.3](#623-hpsdr-network-radios).
 
@@ -1517,7 +1517,7 @@ every radio comes back up wearing it.
 On transmit all three switch to a transmit meter, stacked in two rows. The top
 row is **ALC**. On a rig that reports its own ALC over CAT — Icom CI-V rigs do —
 that is the rig's figure, which is the one that answers "am I overdriving it";
-on anything else it is sdroxide's own drive level, which is how hard the audio
+on anything else it is sdrcrow's own drive level, which is how hard the audio
 being sent is driving the modulator. The two are different measurements, and on
 a CAT rig driving an external radio only the rig's says anything about whether
 the audio is too hot for it.
@@ -1543,7 +1543,7 @@ the space.
 a figure, one or two bars and a scale — and a needle sitting at 50 during an
 over does not say by itself whether that is half the power, half the modulation
 or something else. The tooltip names each quantity and its units, and on
-transmit it says outright when the radio measures nothing: an SDR that sdroxide
+transmit it says outright when the radio measures nothing: an SDR that sdrcrow
 modulates itself — a HackRF, a Pluto, a LimeSDR, an RTL-SDR-class transmitter —
 has **no SWR bridge and no power sensor at all**, so those rows are absent
 because there is nothing to put in them rather than because a reading has gone
@@ -1632,7 +1632,7 @@ On a TX-capable rig the **Transmit** module appears:
   The same control is in each mode's setup window, where there is one, and the
   radio's own input level is the other half of it either way.
 
-  On a radio sdroxide modulates itself — a Pluto, an HPSDR board, an SDR — none
+  On a radio sdrcrow modulates itself — a Pluto, an HPSDR board, an SDR — none
   of this applies and the rail does not appear: there the modulator and Drive
   own the level.
 
@@ -1652,7 +1652,7 @@ including while you are transmitting, so you can set it by ear against the
 transmit monitor.
 
 It sits after **Mic** gain and before whatever modulates the audio, on every
-interface: a radio sdroxide modulates itself, and a rig that modulates its own
+interface: a radio sdrcrow modulates itself, and a rig that modulates its own
 audio (a CAT rig over its sound card, TCI, Icom LAN, SmartSDR) alike. Boosting
 a band therefore raises the level going into the transmitter, and there is
 nothing behind it but a limiter at full scale — on a transmitter, clipping is
@@ -1660,7 +1660,7 @@ splatter on your neighbours' frequencies. **After boosting anything, watch the
 ALC/TX meter and take the same amount back off Mic gain.** Cutting is free; a
 cut band and a little more mic gain gets the same tone with none of the risk.
 
-> **Transmit safety:** by default sdroxide refuses to transmit outside the
+> **Transmit safety:** by default sdrcrow refuses to transmit outside the
 > amateur bands (`tx_ham_only`), and stops the transmission if the radio reports
 > a high SWR (`swr_guard`, below). Transmit hardware gains start at minimum and
 > the tune drive defaults low. Raise drive deliberately. The one exception
@@ -1707,7 +1707,7 @@ has had its five seconds, and still stops the carrier.
 On a rig with its own power control — a TCI rig, or a **CAT rig** on any of the
 three dialects — Drive and Tune command the rig's output power directly rather
 than scaling anything on this side, and the slider adopts the rig's own setting
-when sdroxide connects: a level set in ExpertSDR3, or on the radio's front
+when sdrcrow connects: a level set in ExpertSDR3, or on the radio's front
 panel, carries over instead of being overwritten. The level that applies is
 asserted before every over, including a CW message handed to the rig's own
 keyer — which is the one place where the rig's power is the *only* transmit
@@ -1721,7 +1721,7 @@ because a rig keeps its output power *per mode*: a radio set to 100 W in USB and
 in, and one put into AM is held to a quarter of its rated power on top of that.
 So a mode command and a power command go out in that order at every key-down,
 and the level lands in the register the over will actually transmit on. This
-matters most on a **quadrature rig**, where sdroxide demodulates the I/Q itself
+matters most on a **quadrature rig**, where sdrcrow demodulates the I/Q itself
 and the radio only learns which mode to transmit in when the transmitter comes
 up: there *every* over changes the rig's mode, and so the register its power
 comes out of.
@@ -1749,7 +1749,7 @@ converter resolution and Drive is the one with the limiter behind it.
 **What Mic gain does depends on the mode.** In SSB it sets how hard the
 microphone drives the modulator, so Drive and Mic between them decide both
 level and how much the limiter is working. In FM it sets **deviation** —
-sdroxide's FM modulator is constant-envelope, so Drive changes the power and
+sdrcrow's FM modulator is constant-envelope, so Drive changes the power and
 does nothing to the audio, while Mic gain alone decides how wide the signal is.
 50% is unity gain, which puts a full-scale recording at the ±5 kHz peak
 deviation NFM wants; higher over-deviates and distorts however low Drive is. In
@@ -1784,7 +1784,7 @@ sound like a processor rather than like you. It is set by ear, remembered per
 radio, and it does not touch Drive: what leaves the processor is still held at
 full scale, so your power setting means what it did before.
 
-It applies where sdroxide makes the sideband itself — an HPSDR board or Hermes
+It applies where sdrcrow makes the sideband itself — an HPSDR board or Hermes
 Lite 2, a Pluto, a LimeSDR, a SoapySDR device. A transceiver that modulates the
 audio from its own sound card is making the envelope in its own DSP, where this
 cannot reach it. The rail is drawn where it can do something and nowhere else,
@@ -1809,7 +1809,7 @@ Each row is one slot:
 - **✕** erases the recording.
 
 Recordings are stored as plain 48 kHz mono WAV files in
-`~/.config/sdroxide-brown/voice` (see [12. Configuration files](#13-configuration-files)),
+`~/.config/sdrcrow/voice` (see [12. Configuration files](#13-configuration-files)),
 one per slot, so you can also record a message in an audio editor, name it
 `slot3.wav`, and drop it in.
 
@@ -2127,8 +2127,8 @@ is audible.
   remembered.
 - **On a transceiver that keys its own transmitter, that same figure is what
   the radio's VFO reads.** It has to be: the rig makes the carrier itself, on
-  its VFO, so leaving the VFO on sdroxide's zero-beat would answer every station
-  a sidetone low. sdroxide puts the VFO on the contact and tunes the pitch out
+  its VFO, so leaving the VFO on sdrcrow's zero-beat would answer every station
+  a sidetone low. sdrcrow puts the VFO on the contact and tunes the pitch out
   on its own side, so the two readouts differ by exactly your pitch and both are
   right. Radios that shift their own I.F. in CW instead — a K3 on
   `CONFIG:CW WGHT: VFO OFS`, a QMX sending I/Q — have already done that
@@ -2298,7 +2298,7 @@ PTT binding the key note keys the over by itself, as above.
   press tries again.
 - Changing mode switches **KEY** off.
 
-It works wherever sdroxide makes the CW signal itself: an IQ radio, or a CAT
+It works wherever sdrcrow makes the CW signal itself: an IQ radio, or a CAT
 radio keyed as MCW audio. A CAT radio sending text through its own keyer has
 nothing a hand key can drive: **KEY** is greyed out there, and says so on hover
 along with the setting that changes it.
@@ -2335,7 +2335,7 @@ neither is on this page:
 A **straight key plugged into a paddle box** works without any of the above
 changing: a box with a straight key in it reports that key on a single contact —
 the middle one where the box has a middle jack, the dit contact where it does not
-— and sdroxide reads whichever it reports.
+— and sdrcrow reads whichever it reports.
 
 **Learning Morse (the trainer).** The **TRAINER** chip in the CW panel opens a
 learning tool, not a sending one: it plays Morse through
@@ -2421,7 +2421,7 @@ correct half of the published table is read wherever you are.
 
 **Where the numbers come from.** [hamqsl.com](https://www.hamqsl.com/), fetched
 in the background once an hour for as long as the program is running. This is
-the one exception to the rule that sdroxide's space-weather requests happen only
+the one exception to the rule that sdrcrow's space-weather requests happen only
 while the [3D view](#7-solar-system-3d-view) is open: the band menu is always
 there, so these have to be too. It stays one request an hour — the two share a
 cache, so with the 3D view open the second one comes back "not modified" —
@@ -2585,7 +2585,7 @@ corrections is one too many.
 
 ![Rotator setup](images/rotator.jpg)
 
-sdroxide points motorized antennas two ways, chosen in Settings ▸ Servers.
+sdrcrow points motorized antennas two ways, chosen in Settings ▸ Servers.
 
 **A Hamlib `rotctld` daemon** (the default) — run it next to the hardware:
 
@@ -2627,16 +2627,16 @@ configured and your grid locator set.
 
 **PSTRotator** works too: choose it under **Program**, with the host it runs
 on and its UDP control port (12000 unless you changed it). In PSTRotator, turn
-on **UDP Control** in Setup. sdroxide takes over from PSTRotator's own tracking
+on **UDP Control** in Setup. sdrcrow takes over from PSTRotator's own tracking
 when it starts pointing, and asks where the antenna is once a second; PSTRotator
 answers on the next port up (12001), which must be free on the machine
-sdroxide runs on. Until it answers the status line says so — PSTRotator stays
+sdrcrow runs on. Until it answers the status line says so — PSTRotator stays
 silent while it has no controller connected — but the pointing commands still
 go out.
 
 ### 2.17 Running more than one radio
 
-SDR Oxide can run several radios at once — an HF transceiver and a VHF dongle,
+SDRCrow can run several radios at once — an HF transceiver and a VHF dongle,
 a network rig at the station and an RTL-SDR on the desk, or two receivers
 inside the same box. Each radio is complete and independent: its own interface,
 its own tuning, mode and band, its own panadapter and waterfall, its own
@@ -2687,7 +2687,7 @@ be dragged about too, but they are in no roster here, so they come back at the
 end of the strip next time.
 
 **Adding somebody else's station.** A radio in a tab does not have to be
-attached to this machine. **Settings → General** takes the address of an sdroxide
+attached to this machine. **Settings → General** takes the address of an sdrcrow
 server and gives it a tab of its own, exactly like a local radio
 ([8.2](#82-connect-a-native-remote-client)) — the engine stays where the antenna
 is, and what crosses the network is the spectrum, the audio and the commands.
@@ -2709,14 +2709,14 @@ roster entry goes, its configuration stays on that machine, its engine stops and
 its device is released, and every client on that station — not just this one —
 sees the radio leave. A station's *first* radio is never offered: it runs the
 station-wide services and answers at the plain `/ws` that every client arrives
-at. A station that does not allow this at all — one whose sdroxide was not
+at. A station that does not allow this at all — one whose sdrcrow was not
 started as a server, or an older one — offers only "Close this tab".
 
 > Radios you did not mean to create live on the **station**, not on the screen
 > that made them, so closing their tabs is not enough — they are announced again
 > on the next connection. **Close it on** *station* is what removes them. If you
 > want to know when they appeared, the server logs each one:
-> `journalctl -u sdroxide | grep "radio added to the roster"`.
+> `journalctl -u sdrcrow | grep "radio added to the roster"`.
 
 **The tab strip.** Each radio gets a tab of its own, and the open one is joined
 to the page below it. Click anywhere on a tab — not just its name — to switch
@@ -2734,14 +2734,14 @@ scanning. Besides its name, each tab carries:
   background radio still fills its FT8 list and still spots.
 - **⊞** — open this radio in a split view of its own, or close the one it
   has (see below).
-- **LINK** — open or close sdroxide's link to this radio (see below). The chip
+- **LINK** — open or close sdrcrow's link to this radio (see below). The chip
   is lit while the link is open, like every other chip in the program.
 
 Closing a radio is deliberately *not* on the strip — that lives in
 **Settings → Radio**, behind a dialog rather than one stray click away.
 
 **Putting a radio down.** A station does not always have every radio it is set
-up for plugged in. Each tab carries a **LINK** switch — lit while sdroxide's
+up for plugged in. Each tab carries a **LINK** switch — lit while sdrcrow's
 link to that radio is open, dark when it is not — and pressing it changes that.
 With the link closed, the radio's interface is closed with it: no device
 claimed, no CAT port held, no network rig dialled, and no reconnecting in the
@@ -2750,18 +2750,18 @@ stays too, with its name greyed, and its whole Settings → Radio page is still
 there to be read and edited. Press the switch again and the radio opens where
 it left off.
 
-It says **LINK** rather than on and off because it is *sdroxide's* switch rather
+It says **LINK** rather than on and off because it is *sdrcrow's* switch rather
 than the radio's, and the difference matters on a station with more than one rig
-on it. On/off in sdroxide means one thing and one control: **PWR**, which throws
+on it. On/off in sdrcrow means one thing and one control: **PWR**, which throws
 the set's own switch over the control link
 ([2.7](#27-receiver-controls)). What it lets go of is this end of
 the connection — the USB device, the serial CAT port, the LAN session — so
-sdroxide is demonstrably no longer holding that radio: the dongle can be
+sdrcrow is demonstrably no longer holding that radio: the dongle can be
 unplugged, the port is free for another program, and the rig's network session
 is hung up. A transceiver with a power switch of its own is not touched by it
-and stays on, receiving into its own speaker; sdroxide has no way to press that
+and stays on, receiving into its own speaker; sdrcrow has no way to press that
 switch and, having pressed it, no way to press it back. What is guaranteed is
-the transmit side: a radio that is off has no transmitter as far as sdroxide is
+the transmit side: a radio that is off has no transmitter as far as sdrcrow is
 concerned, so nothing — not PTT, not TUNE, not a digital-mode sequence, not a
 program on its built-in server — can key it until it is switched back on. That
 is on top of the station-wide interlock below, which applies to every radio
@@ -2777,7 +2777,7 @@ because a single-radio station has neither a tab strip nor a roster switch —
 the button in the Frequency module is the only one it gets — while a station
 with several wants it on the strip, next to the radio it belongs to. It is
 remembered: a radio switched off is still switched off after a restart, and
-sdroxide never touches its device at start-up. That is what makes it the right
+sdrcrow never touches its device at start-up. That is what makes it the right
 place to leave the rig that is boxed for the summer, or the dongle somebody has
 borrowed — rather than deleting the radio and setting it up again later.
 
@@ -2800,7 +2800,7 @@ so the button shows where the switch really stands, not what this screen asked
 for a moment ago. Everyone connected sees it move, including whoever is sitting
 at the station. This is how a headless station's radio is put down at all: with
 no screen of its own, the browser is the only place its switch exists. A station
-running an older sdroxide than this screen offers no switch, and none is drawn
+running an older sdrcrow than this screen offers no switch, and none is drawn
 rather than one that would be quietly ignored.
 
 **Split view.** The **⊞** toggle gives a radio a pane of its own: toggle it
@@ -2940,11 +2940,11 @@ not, which on 70 cm (a 7.6 MHz shift in Region 1) it never is.
 > **Settings → General** ([6.1](#61-general-station-audio-and-remote-access)),
 > and set the shift by hand wherever your local plan differs.
 
-**On a CAT-controlled rig, sdroxide owns the shift.** These controls work by
+**On a CAT-controlled rig, sdrcrow owns the shift.** These controls work by
 moving the radio's dial for the length of the over — the same way RIT, XIT and
 split do on a rig whose VFO is its whole frequency control — so the radio's own
 duplex setting has to be off, or the two would be added together and the over
-would go out a shift away from where you asked for it. sdroxide therefore puts
+would go out a shift away from where you asked for it. sdrcrow therefore puts
 an Icom back to simplex whenever the dial moves — on HF once per band, and on
 VHF and up every time the dial moves at all, including into the transmit
 frequency at the start of an over.
@@ -2986,7 +2986,7 @@ they simply take effect when you are in FM.
 > **NOTE:** On a radio that modulates its own audio — a CAT rig fed through its
 > microphone or data input, or a TCI rig — a sub-audible tone has to survive
 > that input's own high-pass filter, and most microphone inputs are built to
-> keep exactly this sort of thing out. sdroxide sends it regardless, because
+> keep exactly this sort of thing out. sdrcrow sends it regardless, because
 > where the input passes it (a data or line input, or a rig fed at baseband) it
 > works. If the repeater will not open, use the rig's own CTCSS encoder, set at
 > the radio. The 1750 Hz burst is in-band and passes either way.
@@ -3136,7 +3136,7 @@ the radio starts and used if it is there. Install it and restart:
 | Debian / Ubuntu | `sudo apt install libfdk-aac2` |
 | Arch | `sudo pacman -S libfdk-aac` |
 | macOS | `brew install fdk-aac` |
-| Windows | put `libfdk-aac-2.dll` beside `sdroxide.exe` |
+| Windows | put `libfdk-aac-2.dll` beside `sdrcrow.exe` |
 
 **Opus** is not part of the DRM standard — it is an extension a few
 experimental transmissions use — and decodes if **libopus** is installed, the
@@ -3168,23 +3168,23 @@ like WFM and DRM: there is nothing to transmit and no transcript. The panel is
 receive-only.
 
 **It needs nrsc5 installed.** The decoder is **libnrsc5**, from the
-[nrsc5](https://github.com/theori-io/nrsc5) project, and sdroxide does not
+[nrsc5](https://github.com/theori-io/nrsc5) project, and sdrcrow does not
 include it: HD Radio's audio codec is proprietary, so the library is looked for
-on the computer the radio runs on when sdroxide starts, and used if it is there.
+on the computer the radio runs on when sdrcrow starts, and used if it is there.
 Without it **HD RADIO** stays on the **MODE** button but greyed out — hover it
 for the reason — and the keyboard's next/previous-mode keys step past it. On
 Arch it is the `nrsc5-git` AUR package; elsewhere it is usually built from the
 nrsc5 source, whose `sudo make install` puts it in `/usr/local/lib`, where
-sdroxide looks. On Windows, put `libnrsc5.dll` and the DLLs it needs beside
-`sdroxide.exe`; anywhere, `libnrsc5` beside the executable is found, and the
+sdrcrow looks. On Windows, put `libnrsc5.dll` and the DLLs it needs beside
+`sdrcrow.exe`; anywhere, `libnrsc5` beside the executable is found, and the
 `SDROXIDE_NRSC5_LIB` environment variable names a library in any other place.
-**Restart sdroxide after installing it** — the library is looked for once, at
+**Restart sdrcrow after installing it** — the library is looked for once, at
 startup. With a remote client it is the *station's* computer that needs it, not
 the one the client runs on.
 
 An nrsc5 built without its audio decoder (`-DUSE_FAAD2=OFF`, which a
 distribution unwilling to ship the patched codec might do) can find a station
-and read its name but never play it. sdroxide notices after a couple of seconds
+and read its name but never play it. sdrcrow notices after a couple of seconds
 of locked signal with no audio at all, stops decoding, and the HD Radio window
 says so.
 
@@ -3293,7 +3293,7 @@ recording: what a closed squelch silences is recorded as silence. Where a mode
 replaces what you hear rather than filtering it — decoded FreeDV/RADE speech, or
 a voice-keyer message you are monitoring — the recording follows the speaker.
 
-On transmit, it takes the audio sdroxide sends: the microphone after mic gain
+On transmit, it takes the audio sdrcrow sends: the microphone after mic gain
 and the transmit EQ, with any CTCSS tone or 1750 Hz burst that goes under it; a
 digital mode's burst; the CW keyer's sidetone; and, for a tune-up, a 1 kHz tone
 at the tune level standing in for the unmodulated carrier — without which the
@@ -3328,8 +3328,8 @@ is greyed out while a recording runs. A file already being written keeps the cha
 count it began with, so switching the sub receiver on, or a broadcast's stereo
 pilot coming and going, cannot change it halfway through.
 
-**Where it goes.** Recordings land in `<Music>/sdroxide/` (or
-`~/.config/sdroxide-brown/recordings` on a platform with no music folder) — or wherever
+**Where it goes.** Recordings land in `<Music>/sdrcrow/` (or
+`~/.config/sdrcrow/recordings` on a platform with no music folder) — or wherever
 **Settings → General → Recordings → CHOOSE…** points; **DEFAULT** puts it back.
 The setting is a path on the machine the radio is attached to, so a remote client
 sets it on the station rather than on its own laptop. Files are named for when
@@ -3413,7 +3413,7 @@ places those programs look, so a capture opens tuned to where it was made:
 SDRoxide_20260829_134507Z_14074000Hz_2400000sps_IQ.wav
 ```
 
-It also plays back here, with nothing to type — `sdroxide --file <capture>`
+It also plays back here, with nothing to type — `sdrcrow --file <capture>`
 takes the rate and the frequency out of the header. `--rate` and `--freq` still
 win if you give them.
 
@@ -3539,7 +3539,7 @@ its beacon-sync step.
   check and shows the beacon's own status text when it locks; it is not needed
   for calibration.
 
-  The beacon alternates two frame formats and sdroxide reads both. The
+  The beacon alternates two frame formats and sdrcrow reads both. The
   **uncoded** frame is 514 bytes behind a sync word and a CRC, and it either
   checks out or it does not — which on a station with a phase-noisy LNB
   usually means it does not, because a CRC over 514 bytes wants a nearly
@@ -3742,7 +3742,7 @@ antenna -- --help`), which writes the 3D pattern as PLY/SVG files.
 
 ## 3. Digital modes
 
-sdroxide has several families of digital mode. What they all share — how a mode
+sdrcrow has several families of digital mode. What they all share — how a mode
 is entered, the calling-frequency buttons, and the bands with more than one
 agreed frequency — is in 3.1. **FT8**, **FT4** and **FT2** are automatic, timeslot-based
 modes with QSO sequencing, a world map, and automatic logging; they and the
@@ -3906,7 +3906,7 @@ the FSQCall set are global conventions built around the Region 2 band plan, and 
 few of them land in Region 1's CW or phone segments (1.845, 3.567 and 24.911 for
 FT8 — of which only 3.567 and 24.911 are still amber in Region 2, where the top
 of each band is an all-modes segment). The DX will be there and so will everyone
-chasing it — but check your own band plan before you key, because sdroxide will
+chasing it — but check your own band plan before you key, because sdrcrow will
 not stop you.
 
 #### Saving what a panel has decoded
@@ -3967,7 +3967,7 @@ decodes ([3.2.3](#323-working-stations)).
 > client) that is the **server**, not your phone or your PC. If the server's
 > clock is a couple of seconds out, **nothing decodes at all**: the waterfall
 > is full of signals, the audio sounds perfect, a phone app held to the
-> speaker decodes the same audio — and sdroxide's list stays empty, with no
+> speaker decodes the same audio — and sdrcrow's list stays empty, with no
 > error in the log. The `DT` figure on the station card cannot warn you either,
 > because it is measured from decodes and there are none.
 >
@@ -3984,7 +3984,7 @@ decodes ([3.2.3](#323-working-stations)).
 > ```
 > apt install systemd-timesyncd
 > timedatectl set-ntp true
-> systemctl restart sdroxide
+> systemctl restart sdrcrow
 > ```
 >
 > Decodes appear within a minute or two. See also
@@ -4092,7 +4092,7 @@ The panel has two halves:
   it does not touch spotting or the online logbooks, so a station you have muted
   is still uploaded if you work it by hand.
   The list is memory only — there is no file and no saved copy, so **closing
-  sdroxide brings every station back** and nothing stays hidden because of
+  sdrcrow brings every station back** and nothing stays hidden because of
   something pressed by accident one evening. That is also the fastest way out of
   it. Within the session there are two more: press **−** again on the same
   station's row to unmute it, or press the **N ignored · clear** chip in the
@@ -4124,7 +4124,7 @@ The panel has two halves:
   of each row is the dial it was heard on plus its audio tone, so a row keeps
   its frequency after a move within the band. **CSV** is one row per decode, for
   a spreadsheet. **ADIF** is one record per station heard, marked `SWL` so a
-  logger — sdroxide's own **IMPORT** included — takes it as a received report
+  logger — sdrcrow's own **IMPORT** included — takes it as a received report
   rather than a contact, with no report sent or received; a decode that names
   no sender (free text, a hashed call not yet resolved) has no call to log and
   is left out.
@@ -4194,7 +4194,7 @@ double-click to hand the view back to the auto-fit.
 
 #### 3.2.3 Working stations
 
-- **Answer a call:** click **REPLY** on a decode. sdroxide adopts that station,
+- **Answer a call:** click **REPLY** on a decode. sdrcrow adopts that station,
   takes the time slot opposite theirs, and runs the exchange automatically. The
   slot is chosen from when that station was actually last heard transmitting —
   not from the period the clock happens to be in when you press the button — so
@@ -4207,14 +4207,14 @@ double-click to hand the view back to the auto-fit.
   pressed **STOP QSO** — or who called while you were busy with someone else —
   is answered with one press.
 - **Losing a pile-up:** if the station you called comes back to someone else
-  instead, sdroxide stops calling and holds at `Wait CQ` rather than doubling
+  instead, sdrcrow stops calling and holds at `Wait CQ` rather than doubling
   into their QSO. The transcript shows a pink line — *"W9XYZ is working K1ABC"* —
   so it's clear they aren't talking to you, and calling resumes automatically
   when they call CQ again (or come back to you). The hold gives up after five
   minutes. A 73 / RR73 you already owe still goes out, so a finished contact is
   never dropped unlogged.
 - **Call CQ:** click **CALL CQ**. When several stations come back in the same
-  slot, sdroxide picks which to work first rather than taking whichever decoded
+  slot, sdrcrow picks which to work first rather than taking whichever decoded
   first: a station already worked this session goes last, among signals of
   similar strength a new DXCC entity wins, and otherwise the strongest does —
   it is the one most likely to complete. The others are listed in the transcript
@@ -4250,7 +4250,7 @@ double-click to hand the view back to the auto-fit.
   decode list, or the setup window). Answering on the frequency of the station
   you are calling looks right and isn't: they transmit in the period opposite
   yours, so their frequency says nothing about who is transmitting there when
-  *you* key — and whoever is will not hear you. Instead sdroxide picks the
+  *you* key — and whoever is will not hear you. Instead sdrcrow picks the
   quietest spot in your own transmit period, from the stations it has decoded
   there, and moves no further than it has to. While it is on, clicking a decode
   or a station label on the waterfall no longer drags your transmit frequency
@@ -4292,7 +4292,7 @@ double-click to hand the view back to the auto-fit.
   empty the queue. The transmit watchdog still stops the run: it exists to stop
   an unattended station transmitting, and the queue does not override it.
 - **Directed CQs are read as directed.** `CQ DX`, `CQ EU`, `CQ JA`, `CQ POTA`,
-  `CQ TEST` — sdroxide works out whether the call names you. One that does gets
+  `CQ TEST` — sdrcrow works out whether the call names you. One that does gets
   a thicker accent bar than a plain CQ; one aimed at somebody else is neither
   coloured as a CQ nor listed under **CQ only**. Continents (`EU`, `NA`, `AS`…)
   are matched against your own entity's continent, country prefixes (`JA`,
@@ -4302,7 +4302,7 @@ double-click to hand the view back to the auto-fit.
   the setup window, e.g. `CQ EU {MYCALL} {MYGRID}`.
 - **The decoder knows who you are waiting for.** Once you are working someone,
   both callsigns in their next message are already known — 58 of its 77 bits.
-  sdroxide hands them to the decoder as *a-priori* bits, which recovers replies
+  sdrcrow hands them to the decoder as *a-priori* bits, which recovers replies
   a few dB weaker than a blind decode manages. It runs only where an ordinary
   decode has already failed and the result still has to pass its checksum, so it
   can add decodes but never invent one. Nothing to switch on.
@@ -4342,7 +4342,7 @@ passband, `FOX` below 1000 Hz and `HOUNDS` above it, with the half you transmit
 in tinted more strongly.
 
 **As a Hound**, click **REPLY** on the DXpedition's decode and call from
-wherever in the calling zone you have set your transmit frequency — sdroxide
+wherever in the calling zone you have set your transmit frequency — sdrcrow
 refuses to move it down into the Fox's half, and does not follow the Fox down
 when you answer it. Three things then differ from ordinary operation:
 
@@ -4353,7 +4353,7 @@ when you answer it. Three things then differ from ordinary operation:
   for at that point.
 - The Fox's `RR73` completes and logs the contact and you send nothing further.
   It usually arrives inside a message addressed to the next Hound
-  (`YOURCALL RR73; W9XYZ <DX1FOX> +03`), which sdroxide reads for you.
+  (`YOURCALL RR73; W9XYZ <DX1FOX> +03`), which sdrcrow reads for you.
 
 **As a Fox**, **CALL CQ** starts the pile-up and **STOP QSO** stands it down.
 Callers appear in a `PILE-UP` strip above the transcript — green for the
@@ -4373,7 +4373,7 @@ to be in it for the exchange to be read at all.
 
 Set **Contest** to **EU VHF Contest** in the FT8 setup window and put a
 six-character locator in **My grid** (`JN88DD`, not `JN88`). Without one there
-is no honest message to send, so sdroxide sends the ordinary exchange instead
+is no honest message to send, so sdrcrow sends the ordinary exchange instead
 and the setup window says so beside the serial number. The activity applies to
 FT8, FT4 and FT2; every other mode ignores it.
 
@@ -4395,7 +4395,7 @@ out appears as `<...>`; that is the layout's own bargain and not a fault. It is
 also why the exchange is preceded by the two ordinary messages.
 
 The number in the middle is the exchange itself: `59` is the signal report, as
-the two digits of an RS, and `0003` is the serial number. sdroxide derives the
+the two digits of an RS, and `0003` is the serial number. sdrcrow derives the
 report from the measured signal exactly as WSJT-X does, so it is a real report
 and not a formality.
 
@@ -4414,10 +4414,10 @@ becomes the station's grid, so the map and the distance get the better answer.
 
 > **The FT8 exchange takes a second decoding pass, so it only runs with the
 > contest selected.** The 77-bit layout the exchange rides in is one the FT8
-> decoder underneath sdroxide does not know how to write out, and it discards
+> decoder underneath sdrcrow does not know how to write out, and it discards
 > what it cannot write — so the exchange used to decode correctly and then be
 > thrown away before anything could see it, in FT8 and only in FT8 (FT4 and FT2
-> take a different path and were never affected). sdroxide now runs a second
+> take a different path and were never affected). sdrcrow now runs a second
 > pass over each slot that keeps exactly that layout and nothing else. It costs
 > about what the ordinary decode costs, which is why it runs only while
 > **Contest** is set to **EU VHF Contest**: switch the contest on to *hear*
@@ -4426,7 +4426,7 @@ becomes the station's grid, so the map and the distance get the better answer.
 
 > Only EU VHF is implemented. WSJT-X offers five other special operating
 > activities — ARRL Field Day, the RTTY Roundup, NA VHF, WW Digi and ARRL Digi —
-> each with its own message layout and its own exchange. sdroxide *decodes* the
+> each with its own message layout and its own exchange. sdrcrow *decodes* the
 > Field Day and RTTY Roundup layouts when it hears them; it does not transmit
 > them.
 
@@ -4865,7 +4865,7 @@ It is a 33-tone incremental-FSK mode; choose the **speed** (FSQ-2/3/4.5/6) and a
 - **Heard list** (left) — every station whose transmission is decoded is listed,
   most-recent first. Click a callsign to make it the directed target.
 - **Compose** (right) — the **To:** line shows the current target (or ALLCALL).
-  Type a message and press **SEND** (or Enter); sdroxide prefixes your call and
+  Type a message and press **SEND** (or Enter); sdrcrow prefixes your call and
   transmits one burst (`YOURCALL:TARGET message`). **? heard** asks the selected
   station to send its heard list; incoming `?` queries addressed to you are
   answered automatically. **CALL CQ** sends a broadcast CQ.
@@ -4903,7 +4903,7 @@ does the rest.
 
 **Reading the strip.** Received text scrolls in from the right. Because nothing
 synchronises the vertical position, a character can straddle the top and bottom
-of the strip — so, like fldigi, sdroxide draws **every column twice, stacked**.
+of the strip — so, like fldigi, sdrcrow draws **every column twice, stacked**.
 Whatever the alignment happens to be, one complete legible copy of the text is
 always on screen. That is what the **2ROW** button controls; turn it off for a
 single-height strip and drag the raster up or down to line the text up yourself.
@@ -5017,7 +5017,7 @@ is the other, at 320×256 in three minutes. The transmit compositor follows the
 mode's size automatically, so picking PD180 gives you a 640×496 canvas to crop
 into.
 
-**If a mode arrives that sdroxide does not have**, the panel says so where it
+**If a mode arrives that sdrcrow does not have**, the panel says so where it
 would otherwise say *listening…* — for example `Pasokon P3 — not decoded`. That
 is not a fault at your end: the header was read perfectly and there is simply no
 decoder for that one. Before 1.6.9 nothing was said at all, which made an
@@ -5057,7 +5057,7 @@ when it is not.
 
 **Which sideband:** SSTV is a phone emission and follows phone practice rather
 than the other digital modes' fixed USB — **LSB on 160, 80 and 40 m, USB on
-20 m and up**. sdroxide switches for you: the passband flips to the other side
+20 m and up**. sdrcrow switches for you: the passband flips to the other side
 of the dial as you tune across the boundary, and a CAT-controlled rig is
 commanded into the matching sideband. Nothing to set, and nothing to undo when
 you go back up — a picture sent on the wrong sideband arrives at everyone else
@@ -5115,7 +5115,7 @@ one of the two.
   **LIVE** view without touching the decoder: a completed frame that is still on
   screen is removed so the next one can be seen arriving, and an in-progress
   decode keeps running. Use **Restart RX** to abandon an in-progress picture.
-- Received images are saved as PNG under `~/.config/sdroxide-brown/sstv_rx/` and reload
+- Received images are saved as PNG under `~/.config/sdrcrow/sstv_rx/` and reload
   into the gallery next time.
 - **Sending one back out — Re-upload.** Open a received picture and **Re-upload**
   loads it into the transmit slot you have selected, so you can send it again for
@@ -5161,20 +5161,20 @@ one of the two.
   the message box below then edits *that slot's* message. Use the **Load image…**
   button (or **double-click** a slot) to pick an image file, which is
   automatically cropped and scaled to the current mode's dimensions and stored
-  under `~/.config/sdroxide-brown/sstv_tx/`.
+  under `~/.config/sdrcrow/sstv_tx/`.
 - Type a **message** for the active slot. Each slot keeps its own message —
   switching slots swaps the text — and the messages are saved to
-  `~/.config/sdroxide-brown/sstv_messages.json`, so they persist across restarts. The
+  `~/.config/sdrcrow/sstv_messages.json`, so they persist across restarts. The
   lines are drawn over the image in bold with a black outline for readability;
   the **first line is rendered at double size** as a title. A **live preview**
   shows exactly what will be transmitted, banner and all.
 - **Banner…** opens the editor for the strip across the top of every picture
-  this station sends. Out of the box it is the one sdroxide has always drawn: a
+  this station sends. Out of the box it is the one sdrcrow has always drawn: a
   red→black strip with your **callsign** at the top left and `SDRoxide` + the
   version at the top right. All of it is yours to change:
   - **Top left** and **Top right** are free text, with three placeholders
     substituted when the picture is composed — `{call}` (your callsign, put into
-    capitals), `{grid}` (your locator) and `{version}` (the sdroxide version).
+    capitals), `{grid}` (your locator) and `{version}` (the sdrcrow version).
     Anything else in braces is printed as you typed it, so a mistyped
     placeholder shows up in the preview instead of quietly printing nothing.
     Leave a field empty to print nothing at that end.
@@ -5201,23 +5201,23 @@ one of the two.
   receiver whose sound-card clock differs slightly from yours — nudge it until a
   test picture decodes straight on the far end; **0** resets it. It applies to
   the next transmission and is persisted. (Received pictures are auto-deslanted
-  by sdroxide, so this is only for the transmit direction.)
+  by sdrcrow, so this is only for the transmit direction.)
 - **FSK ID** sends your callsign as tones for about two and a half seconds after
   each picture, in the format MMSSTV published and every SSTV program and
   unattended repeater reads. This is the identification a *machine* can act on:
   a repeater logs and announces the station that just sent, which no banner
   drawn into the picture can give it. It is on by default and sends nothing at
   all until you have set a callsign ([§6.1](#61-general-station-audio-and-remote-access)).
-  sdroxide reads them too — a callsign heard this way appears as **ID** beside
+  sdrcrow reads them too — a callsign heard this way appears as **ID** beside
   the mode readout, and stays there until another station sends one. A receiver
   that tuned in halfway through a picture still gets it, because the ID does not
   depend on having caught the header.
-- **TX lead** is how long sdroxide sends silence after keying the transmitter
+- **TX lead** is how long sdrcrow sends silence after keying the transmitter
   before the picture's own leader and VIS code go out — 500 ms by default. That
   header is what tells the far end a picture is coming and which mode it is in,
   and a decoder that misses part of it does not draw a late picture, it draws
   nothing at all. On a CAT-controlled rig the moment PTT is asked for and the
-  moment RF is really on the air are not the same one — sdroxide alone spends
+  moment RF is really on the air are not the same one — sdrcrow alone spends
   165–240 ms getting there, and the rig's T/R relay, PLL and PA settling come on
   top — so the header goes out into the gap unless something covers it. Turn it
   up if a WebSDR or OpenWebRX on the far end hears your transmission but shows no
@@ -5242,7 +5242,7 @@ the same five transmit slots with their own overlay messages — with a RIFP
 control strip in place of the SSTV mode buttons. Pictures you load are shared
 between the two modes.
 
-> ⚠ **Bandwidth.** 25 kHz does not fit in a narrow-band segment. sdroxide will
+> ⚠ **Bandwidth.** 25 kHz does not fit in a narrow-band segment. sdrcrow will
 > transmit RIFP wherever you tune it, and the panel says so in red whenever the
 > dial is somewhere the channel does not fit. The segments it treats as wide
 > enough are **10 m FM (29.510–29.700)**, the **6 m all-modes part
@@ -5288,7 +5288,7 @@ between the two modes.
   many chunks arrived first time.
 - The counters read **frames** (valid), **bad** (failed their CRC and were not
   recovered) and **pictures** (complete and verified).
-- Received pictures are saved as PNG under `~/.config/sdroxide-brown/sstv_rx/`,
+- Received pictures are saved as PNG under `~/.config/sdrcrow/sstv_rx/`,
   alongside the SSTV ones — and are deleted the same way (3.6): right-click a
   thumbnail, or **Delete…** in the enlarged window.
 
@@ -5330,7 +5330,7 @@ a warbling two-tone note.
 
 **Starting and stopping.** A transmission opens with a five-second start tone
 and closes with a stop tone, and with **AUTO START** and **AUTO STOP** on
-sdroxide uses both — leave the mode running and charts appear on their own.
+sdrcrow uses both — leave the mode running and charts appear on their own.
 Since a chart takes a quarter of an hour, though, you will usually have tuned to
 one already in progress: press **START** to begin recording mid-chart, and
 **STOP** to end it and save. Turn **AUTO STOP** off to record straight through a
@@ -5344,7 +5344,7 @@ carrier on its own starts nothing, at any frequency. With no tone to say so, the
 corrected from that same signal, so the chart is not washed out or too dark.
 
 A stop tone is five seconds long and it is the first thing a fade takes, so
-AUTO START does not wait for one: while a chart is being drawn sdroxide also
+AUTO START does not wait for one: while a chart is being drawn sdrcrow also
 listens for the *next* transmission — its start tone, and failing that the
 thirty seconds of phasing signal behind it, which is far too long to miss. When
 one turns up the page in progress is saved and the new one is phased from the
@@ -5365,7 +5365,7 @@ STOP, which is what an operator recording a continuous transmission wants.
 **Straightening the picture.** Two controls, and both are normal to need:
 
 - **PHASE** ◀ ▶ shifts the picture sideways in 10- or 100-pixel steps. A chart
-  begins with about thirty seconds of phasing signal that tells sdroxide where a
+  begins with about thirty seconds of phasing signal that tells sdrcrow where a
   line starts; if you tuned in after that went by, the chart arrives cut
   vertically and wrapped, and this is what puts it back together. The shift
   applies to the part of the chart already received as well as the lines still
@@ -5402,7 +5402,7 @@ top. The **VIEW** controls decide how it is shown:
   second; scrolling back to the bottom turns it on again.
 
 **The gallery.** Completed charts are written as grayscale PNG to
-`~/Pictures/sdroxide/wefax/` — with your pictures rather than in a hidden config
+`~/Pictures/sdrcrow/wefax/` — with your pictures rather than in a hidden config
 directory, because a weather chart usually gets printed, mailed or opened next
 to a routing program, and all of that happens in a file manager. Each is named
 for when it was received and what it was tuned to:
@@ -5427,7 +5427,7 @@ chart you are viewing leaves the window on the next-older one — the same place
 **OLDER ▶** would have gone — so a run of blank pages goes in a sequence of
 clicks.
 
-Charts saved by earlier versions in `~/.config/sdroxide-brown/wefax_rx/` are still
+Charts saved by earlier versions in `~/.config/sdrcrow/wefax_rx/` are still
 listed alongside the new ones, so nothing you have already received disappears.
 Deleting one takes both copies, so a chart that was in the old directory too
 does not reappear on the next listing.
@@ -5753,7 +5753,7 @@ Everything is in the `STATUS` pane; WSPR has no separate setup dialog.
   `10% / 20% / 33% / 50%` is the fraction of two-minute slots this station
   beacons in. **20%** is the convention — enough to be heard, sparse enough that
   a hundred beacons can share two hundred hertz. The slots are drawn from your
-  callsign, so two stations running sdroxide do not pick the same ones.
+  callsign, so two stations running sdrcrow do not pick the same ones.
 - **POWER** is what you actually radiate, in watts. Only the nineteen levels
   WSPR's fifty-bit message can name are offered — 1 mW through 1 kW in 1-2-5
   steps — because the figure goes out on the air and everyone who hears you
@@ -5782,7 +5782,7 @@ unaffected either way — all three message types decode.
 
 One receive limitation worth knowing: a **Type-3** message spends its callsign
 field on a 15-bit hash so it can carry a six-character grid instead of four.
-That hash is not invertible, and sdroxide cannot currently compute it either, so
+That hash is not invertible, and sdrcrow cannot currently compute it either, so
 such a station is listed as `<#0a3f7>` rather than by name. Its **grid arrives
 in the clear**, so the path is real, the map places it and the propagation heat
 map counts it — only the name is missing. Those spots are deliberately *not*
@@ -5887,7 +5887,7 @@ vanishing without trace looks like a receiver problem.
 **MESSAGES** is the one part of APRS that is a conversation. Pick a station, or
 type a callsign in the **to** box, write in the message box and press **SEND**
 or Enter. A message carries an identifier, so the far end acknowledges it and
-sdroxide retries until it does — five attempts, thirty seconds apart to begin
+sdrcrow retries until it does — five attempts, thirty seconds apart to begin
 with and doubling, because the far end is usually a mobile behind a hill rather
 than somebody who is slow to answer. The mark beside your message says where it
 has got to:
@@ -5932,7 +5932,7 @@ on your channel is sending a format this build does not read.
   on the whole channel. `WIDE1-1,WIDE2-1` — one local fill-in hop then one wide
   one — reaches almost anywhere. Every extra hop multiplies the transmissions
   the *whole network* makes on one shared frequency, so a long path does not get
-  you further out; past three hops it stops other people being heard. sdroxide
+  you further out; past three hops it stops other people being heard. sdrcrow
   says so in the dialog if you ask for one, and transmits it anyway: local
   practice varies, and a path that is wasteful in a European city is reasonable
   in the outback.
@@ -5958,14 +5958,14 @@ on your channel is sending a format this build does not read.
   reachable too.
 - **TX delay** — flags sent ahead of every frame so the far end's modem hears
   the carrier and locks its clock before the data starts. It has to outlast
-  everything between pressing transmit and actually radiating: sdroxide alone
+  everything between pressing transmit and actually radiating: sdrcrow alone
   spends 165–240 ms of it on a CAT rig, and a radio taking its audio over a
   network buffers more on top of that. Too little and the far end never locks —
   the transmission is on the air and nothing decodes it. Shared with the packet
   mode, since it is a property of the radio rather than of the protocol.
 - **TX audio** — APRS's own **deviation**, in dB below full scale, into a radio
   that modulates the audio we hand it: a CAT rig on its sound card, a FLEX, an
-  Icom on its network port. A radio sdroxide modulates itself always gets full
+  Icom on its network port. A radio sdrcrow modulates itself always gets full
   scale, because there the modulator and Drive own the level instead.
 
   An FM transmitter turns audio level into frequency swing and has no ALC to
@@ -5994,7 +5994,7 @@ doubling on somebody.
 
 The bar beside `1200 baud` is the audio actually reaching the modem, and it is
 the first thing to look at. Flat means nothing is arriving at all — the radio's
-data output is not the one sdroxide is listening to. It lights green while the
+data output is not the one sdrcrow is listening to. It lights green while the
 modem hears a carrier, and `BUSY` appears beside it for the same reason.
 
 If the bar is moving and the map stays empty, switch the message pane to **RAW**
@@ -6011,7 +6011,7 @@ Nothing at all, with a healthy level, usually means one of:
 - **the rig is not in FM.** APRS is an FM channel; selecting the mode commands
   FM over CAT, but a radio that is not being commanded (no CAT cable, or a
   control port nothing answers on) has to be put in FM by hand.
-- **the radio is not in its data mode.** sdroxide asks for FM-D (or whatever
+- **the radio is not in its data mode.** sdrcrow asks for FM-D (or whatever
   the rig calls FM with DATA on) over CAT, because plain FM puts the
   microphone path's speech processing and pre-emphasis on the way out — and
   pre-emphasis alone tilts the 1200 and 2200 Hz tones about 6 dB apart, which
@@ -6028,7 +6028,7 @@ ffmpeg -i <recording>.mp3 -af "pan=mono|c0=c1" -ar 44100 tx.wav
 atest tx.wav          # from Direwolf
 ```
 
-A frame printed there is a frame that left sdroxide correctly, and anything
+A frame printed there is a frame that left sdrcrow correctly, and anything
 still wrong is between the radio's modulation input and the air — the **TX
 audio** level above, the radio's own input level, or its data-mode setting.
 
@@ -6037,7 +6037,7 @@ is `digital transmit audio is being rate-matched to the radio`. Some radios
 receive at one sample rate and transmit at another — an Icom on its 12 kHz IF
 output receives a stream decimated to 24 kHz while taking transmit audio at 48 —
 and the modems are built for the receive rate, because a digital mode keeps one
-clock for both directions. sdroxide rate-matches the transmit audio for you and
+clock for both directions. sdrcrow rate-matches the transmit audio for you and
 says so once per over; before it did, a packet burst went out at exactly twice
 its baud rate, which is structurally perfect and readable by nothing.
 
@@ -6428,7 +6428,7 @@ There is a signal generator in the source tree that synthesises a sky:
 
 ```
 cargo run --release -p sdrcrow-adsb --example adsb_iq -- /tmp/sky.iq
-sdroxide --file /tmp/sky.iq --rate 2400000 --freq 1090000000 --mode ADS-B
+sdrcrow --file /tmp/sky.iq --rate 2400000 --freq 1090000000 --mode ADS-B
 ```
 
 Six aircraft at descending signal levels, flying. It proves the whole chain
@@ -6453,7 +6453,7 @@ reference does not also find.
 Record a few seconds and look at what the receiver actually heard:
 
 ```
-sdroxide --server --freq 1090000000 --mode ADS-B --record-iq /tmp/air.iq
+sdrcrow --server --freq 1090000000 --mode ADS-B --record-iq /tmp/air.iq
 cargo run --release -p sdrcrow-adsb --example adsb_replay -- /tmp/air.iq <rate>
 ```
 
@@ -6510,7 +6510,7 @@ fault.
   NAVAREA co-ordinator allocated), the subject, and a serial number.
   Navigational warnings, meteorological warnings and search-and-rescue
   bulletins are shown in red — a ship's receiver is not allowed to filter those
-  three out, and sdroxide does not offer to either. A message that was cut
+  three out, and sdrcrow does not offer to either. A message that was cut
   short, or that lost characters, says so under its heading.
 - **READING** — the message selected, or the one arriving. Monospaced and
   unwrapped, because a NAVTEX message is laid out in columns by the station
@@ -6524,11 +6524,11 @@ of the format: a gale warning states when it was issued, a station's time
 broadcast is an ordinary message that happens to carry a clock reading. Only a
 four-digit time **marked** as one is taken, so a position (`5103N 00109E`) or a
 serial is not mistaken for a time of day. It is shown for the reader and
-**nothing else** — sdroxide never sets the system clock from it.
+**nothing else** — sdrcrow never sets the system clock from it.
 
 **A station repeats itself, and that is the point.** Each transmitter has a ten
 minute slot every four hours, and it sends the same messages again on the next
-one. sdroxide keeps *one* entry per message — a repeat replaces the copy already
+one. sdrcrow keeps *one* entry per message — a repeat replaces the copy already
 held when it is better, meaning it reached its `NNNN` where the first did not, or
 lost fewer characters. So a warning that faded halfway through fills itself in
 over the next few hours instead of appearing four times half-copied.
@@ -6755,7 +6755,7 @@ There is a signal generator in the source tree that synthesises a band:
 
 ```
 cargo run --release -p sdrcrow-vdl2 --example vdl2_iq -- /tmp/vdl2.iq
-sdroxide --file /tmp/vdl2.iq --rate 2400000 --freq 136825000 --mode VDL2
+sdrcrow --file /tmp/vdl2.iq --rate 2400000 --freq 136825000 --mode VDL2
 ```
 
 Ground stations beaconing, aircraft exchanging ACARS on four channels at
@@ -6779,7 +6779,7 @@ can contribute.
 Record a minute and look at what the receiver actually heard:
 
 ```
-sdroxide --server --freq 136825000 --mode VDL2 --record-iq /var/tmp/air.iq
+sdrcrow --server --freq 136825000 --mode VDL2 --record-iq /var/tmp/air.iq
 cargo run --release -p sdrcrow-vdl2 --example vdl2_replay -- /var/tmp/air.iq <rate> 136825000
 ```
 
@@ -6871,7 +6871,7 @@ ETA, and the position with its accuracy.
 **The last line of the card is the message as an `!AIVDM` sentence.** That is
 the form every other AIS program in the world reads, and it is there on purpose:
 this decoder was written from ITU-R M.1371 rather than from a recording, so if
-you want to know whether sdroxide is reading a message correctly, copy that line
+you want to know whether sdrcrow is reading a message correctly, copy that line
 into any other AIS decoder and compare. (Up to 1.6.6 every received byte was
 read the wrong way round, which put ships all over the world map or left it
 empty; the decoder is now checked against a published sentence decoded by
@@ -7015,7 +7015,7 @@ requested back and resent until the file checks out, so a transfer that
 survives fades and drop-outs rather than one that has to be started over.
 
 A received file is written under a `received/` folder — created next to
-wherever sdroxide was started from — named `<transfer-id>_<filename>`, so two
+wherever sdrcrow was started from — named `<transfer-id>_<filename>`, so two
 stations sending a file with the same name never collide.
 
 ### 3.18 ACARS (airline datalink on airband)
@@ -7155,7 +7155,7 @@ target — the address *is* the sender's own ID — so the reading pane shows
 **The position and time** on a distress alert are the sender's claim, not the
 receiver's: a station that did not know where it was sends the all-nines
 "unknown" sentinel and the pane says *not stated*. The time the pane shows at
-the top of the reading is when *sdroxide* decoded it, which is the figure to
+the top of the reading is when *sdrcrow* decoded it, which is the figure to
 compare the sender's against.
 
 **Nothing to set.** There is no tone reversal control, unlike NAVTEX: the
@@ -7907,9 +7907,9 @@ They live in one file:
 
 | Platform | Location |
 | --- | --- |
-| Linux | `~/.config/sdroxide-brown/rtl433_flex.conf` |
-| macOS | `~/Library/Application Support/org.sdroxide.sdroxide-brown/rtl433_flex.conf` |
-| Windows | `%APPDATA%\sdroxide\sdroxide\config-brown\rtl433_flex.conf` |
+| Linux | `~/.config/sdrcrow/rtl433_flex.conf` |
+| macOS | `~/Library/Application Support/org.sdrcrow.sdrcrow/rtl433_flex.conf` |
+| Windows | `%APPDATA%\sdrcrow\sdrcrow\config-brown\rtl433_flex.conf` |
 
 The file is created for you, with a worked example commented out, the first time
 the ISM decoder runs. **SDRoxide never rewrites it**, so what you put there stays
@@ -8012,7 +8012,7 @@ the outside.
    near the four channels the sensor protocols use. Record and survey:
 
    ```bash
-   sdroxide --record-iq band.iq            # 8 bytes a sample: 16 MB/s at 2 Msps
+   sdrcrow --record-iq band.iq            # 8 bytes a sample: 16 MB/s at 2 Msps
    cargo run --release -p sdrcrow-ism --example ism_replay -- band.iq 868880000 2025000 --survey
    ```
 
@@ -8060,7 +8060,7 @@ look like.
 
 ## 6. Settings
 
-Everything that configures sdroxide lives in one window, opened with the
+Everything that configures sdrcrow lives in one window, opened with the
 **⚙ SETTINGS** button in the System module (the **⚙ SETUP** button in the SPOTS
 window opens the same dialog on its Spots tab).
 
@@ -8079,9 +8079,9 @@ than cutting labels off.
 | Page | What it holds |
 | --- | --- |
 | **General** | Which version this is, your callsign, grid, IARU region and channel plan (11M/CB), and who may connect remotely. [6.1](#61-general-station-audio-and-remote-access) |
-| **Radio** | Which rig sdroxide talks to, and how. [6.2](#62-radio-choosing-and-configuring-the-rig) |
+| **Radio** | Which rig sdrcrow talks to, and how. [6.2](#62-radio-choosing-and-configuring-the-rig) |
 | **Audio** | Your speakers and microphone, this radio's sound card, and where recordings are written. [6.13](#613-audio-your-sound-the-radios-and-recordings) |
-| **Radio** | Which rig sdroxide talks to, and how. [6.2](#62-radio-choosing-and-configuring-the-rig) |
+| **Radio** | Which rig sdrcrow talks to, and how. [6.2](#62-radio-choosing-and-configuring-the-rig) |
 | **UI** | Frame rate, waterfall palette, spectrum background, spot label colours, 3D cloud rendering, and the spoken announcements. [6.3](#63-ui-display-preferences-and-voice-announcements) |
 | **Alerts** | Sounds that ring when a decode matters: a station calling you, a new DXCC entity or grid. [Audible alerts](#audible-alerts) |
 | **Controls** | Keyboard, mouse and MIDI bindings. [6.4](#64-controls-keyboard-mouse-and-midi) |
@@ -8131,7 +8131,7 @@ section of the General tab is only shown there.
 
 ![The General tab: callsign, grid square, the reception-report identity, and your own speakers and microphone](images/settings-general.jpg)
 
-At the top is **SDR Oxide Brown** and the version number this copy was built
+At the top is **SDRCrow** and the version number this copy was built
 from — the one to quote in a bug report, so there is no need to go looking for
 the binary to ask it. **Brown** names which build this is: this fork's variant,
 told apart at a glance from the upstream program, since the two install happily
@@ -8139,7 +8139,7 @@ side by side and read the same settings. It is a *variant* name, the way SDR++
 Brown names that program's second build — it says "this build, not upstream"
 without saying what is in it. It is also the window and taskbar title, which carries the version beside it,
 and `--version` on the command line prints it (with the `_brown` release suffix, e.g.
-`SDR Oxide Brown 1.9.2_brown`).
+`SDRCrow 1.9.2_brown`).
 
 The release **tags** carry the same suffix: `v1.9.2_brown` rather than upstream's
 `v1.9.2`. The version the program *reports to other software* — the SSTV id, the
@@ -8161,7 +8161,7 @@ SSTV setup dialog; there is only one copy of it.
 | **Region 3** | Southern and eastern Asia, Australasia, the Pacific |
 
 The amateur allocations are not the same in all three, so this one setting
-decides every band plan sdroxide draws and enforces:
+decides every band plan sdrcrow draws and enforces:
 
 - **Band edges** — 70 cm is 430–440 MHz in Region 1, 420–450 in Region 2 and
   430–450 in Region 3, so 446 MHz is out of band in Europe and in band in the
@@ -8191,7 +8191,7 @@ decides every band plan sdroxide draws and enforces:
   with country flags on every decode; see
   [§3.2.9](#329-11-m-and-the-citizens-band-wsjt-cb). What does not follow is
   permission to transmit: with `tx_ham_only`
-  set (the default) sdroxide refuses to key up there, because an amateur
+  set (the default) sdrcrow refuses to key up there, because an amateur
   licence does not grant the citizens' band and this end cannot check what
   else you hold — the refusal names the band and says how to lift it. A
   contact there logs with an **empty ADIF band**, because ADIF's enumeration
@@ -8199,7 +8199,7 @@ decides every band plan sdroxide draws and enforces:
 
   The frequencies **above the forty-channel grid** that circulate on the same
   lists — 27.500, 27.585, 27.635, 27.710 — are the freeband, which no
-  administration grants, and sdroxide does not offer them as channels (the
+  administration grants, and sdrcrow does not offer them as channels (the
   27.700 SSTV calling channel aside). They tune by hand like anything else —
   the widened band edges reach them — and a licence that does cover part of
   that range (the UK's second CB block starts at 27.60125) goes in
@@ -8288,7 +8288,7 @@ decides every band plan sdroxide draws and enforces:
   own region's plan puts narrow-band modes on, and the other is annotated in the
   picker.
 
-The default is **Region 1**, which is the band plan every sdroxide before this
+The default is **Region 1**, which is the band plan every sdrcrow before this
 setting had; an existing installation is not moved by upgrading. It is a
 property of the *station*, stored as `region` in `config.toml` on the machine
 the radio is attached to and announced to every client, so a remote operator
@@ -8369,7 +8369,7 @@ the air, mobile phones and, among them, the amateur bands. It does not say what 
 transmit, so a converted plan changes what the waterfall strip draws and names and
 **never the transmit lockout**: the allocations stay the built-in IARU ones. The rows
 become sub-segments, each named after its row, in the region of the list's country (a
-list for the whole world, or for a country sdroxide does not know, goes into all three
+list for the whole world, or for a country sdrcrow does not know, goes into all three
 regions; the other regions keep the built-in tables). Amateur rows are drawn as CW, data,
 phone, beacon or all-modes when their name says so; CB, PMR 446, pagers and the like, which
 such lists often file under *amateur*, are drawn as what they are named and are never a
@@ -8431,7 +8431,7 @@ A plan file is one row per line, in **megahertz**, and it explains itself in a
 ```
 
 That edit is the common one: **narrow a band to your own licence**, and with
-`tx_ham_only` set (the default) sdroxide refuses to transmit outside it. The
+`tx_ham_only` set (the default) sdrcrow refuses to transmit outside it. The
 band buttons, the waterfall strip and the frequency displays all follow.
 
 **On a slotted digital mode the lockout vets what actually radiates**, not the
@@ -8448,7 +8448,7 @@ becomes a lockout for someone legitimately in it. Auto TX FRQ obeys the same
 limit when it hunts for a slot, so it stops choosing frequencies the lockout
 would then refuse.
 
-**A band sdroxide adds later** — 4 m (`M4`) was the first, and 1.25 m (`M125`),
+**A band sdrcrow adds later** — 4 m (`M4`) was the first, and 1.25 m (`M125`),
 33 cm (`Cm33`), 23 cm (`Cm23`), 13 cm (`Cm13`), 9 cm (`Cm9`), 6 cm (`Cm6`),
 3 cm (`Cm3`), 11 m (`M11`) and the broadcast services
 `Lw`, `Mw`, `Sw`, `Fm` since — is not in a file
@@ -8461,8 +8461,8 @@ everywhere again, in all three regions, like every other band.
 If a row says something impossible — edges the wrong way round, a band listed
 twice, `GEN` where a real band belongs — that row is dropped, the rest of the
 file is used, and the notice bar says which one and why. If the file will not
-parse as JSON at all, sdroxide runs on the built-in tables for that session and
-tells you so; **your file is left exactly as it is**, unlike the files sdroxide
+parse as JSON at all, sdrcrow runs on the built-in tables for that session and
+tells you so; **your file is left exactly as it is**, unlike the files sdrcrow
 writes for itself, because a half-finished edit should survive the start that
 could not read it. Going back to the built-in tables loses nothing: every plan
 you added is still in the folder.
@@ -8475,7 +8475,7 @@ you added is still in the folder.
 
 **SWR guard** — **Stop transmitting on high SWR**, and the ratio it trips at.
 Armed by default at **2.5:1**. When the radio reports an SWR at or above the
-figure, sdroxide stops the transmission and *keeps transmit locked out* until
+figure, sdrcrow stops the transmission and *keeps transmit locked out* until
 you acknowledge it — the point being that a fault which clears itself when you
 release PTT teaches you nothing and lets you carry on transmitting into it. See
 [§ 2.10 Transmit](#210-transmit) for what it does on the air and how to clear a
@@ -8493,7 +8493,7 @@ they used to sit here under one heading and then, for the radio's own half, on
 the Radio tab as well.
 
 **Remote access** — the **Username** and **Password** a remote client has to
-give before this station will let it operate: the browser page, another sdroxide
+give before this station will let it operate: the browser page, another sdrcrow
 started with `--connect`, and the 3D view's tab. See
 [§ 7.3 Sign-in](#83-sign-in-who-may-operate-the-station).
 
@@ -8510,7 +8510,7 @@ started with `--connect`, and the 3D view's tab. See
   look as though the station's password had changed when it had not. Set them at
   the shack machine, or edit `[remote_access]` in `config.toml` by hand.
 
-Like every other password sdroxide stores — the cluster login, QRZ, eQSL — it is
+Like every other password sdrcrow stores — the cluster login, QRZ, eQSL — it is
 kept in the clear, so `config.toml` is worth the same file permissions as the
 rest of your config directory.
 
@@ -8526,7 +8526,7 @@ holding a password. See
 [§ 8.3 Sign-in](#83-sign-in-who-may-operate-the-station).
 
 **Connect to a server** — the same thing `--connect` does without the command
-line. The machine this screen runs on can drive an sdroxide somewhere else —
+line. The machine this screen runs on can drive an sdrcrow somewhere else —
 the shack, a remote site — as a radio tab of its own. Enter the server's
 **Address** and **Port** and press **CONNECT**; a pasted `ws://` or `wss://`
 URL is used exactly as typed and leaves those two boxes greyed out. See
@@ -8547,7 +8547,7 @@ application switches to that radio, this dialog included. The **Name** box
 under the buttons renames the highlighted radio's tab — left empty, the tab
 names itself after the interface selected below.
 
-**Radio interface**, under the roster, selects how sdroxide talks to your
+**Radio interface**, under the roster, selects how sdrcrow talks to your
 radio. Everything below the selector changes to match the choice:
 
 - **SoapySDR** — a SoapySDR device (wideband IQ). The default, and listed only
@@ -8564,7 +8564,7 @@ radio. Everything below the selector changes to match the choice:
   IC-705, IC-7610, IC-7760, IC-7851, IC-9700, IC-905, IC-R8600. Control, audio and the radio's
   spectrum scope over one network connection, with no serial cable and no sound
   card. See [6.2.10](#6210-icom-lan-network-radios).
-- **RTL-SDR (USB)** — an RTL2832U dongle, driven by sdroxide's own USB driver
+- **RTL-SDR (USB)** — an RTL2832U dongle, driven by sdrcrow's own USB driver
   with no SoapySDR involved. See [6.2.5](#625-rtl-sdr-usb-dongles).
 - **RTL-SDR over rtl_tcp (network)** — the same dongle plugged into another
   machine — a Raspberry Pi at the antenna, say — and published with `rtl_tcp`.
@@ -8590,27 +8590,27 @@ radio. Everything below the selector changes to match the choice:
   ADC clock and how much of the digitised band the panadapter shows at once are
   selectable — up to all of it. See [15.20](#1520-rx-888-mk1--rx-888-mk2).
 - **Airspy HF+ (USB)** — an Airspy HF+ Dual, Discovery or Ranger, driven by
-  sdroxide's own USB driver with no SoapySDR and no libairspyhf involved. See
+  sdrcrow's own USB driver with no SoapySDR and no libairspyhf involved. See
   [6.2.9](#629-airspy-hf-usb).
-- **Airspy R2 / Mini (USB)** — an Airspy R2 or Mini, driven by sdroxide's own
+- **Airspy R2 / Mini (USB)** — an Airspy R2 or Mini, driven by sdrcrow's own
   USB driver. A different receiver from the Airspy HF+ above, with its own
   interface. See [6.2.13](#6213-airspy-r2--mini-usb).
-- **HydraSDR RFOne (USB)** — a HydraSDR RFOne, driven by sdroxide's own USB
+- **HydraSDR RFOne (USB)** — a HydraSDR RFOne, driven by sdrcrow's own USB
   driver with no SoapySDR and no libhydrasdr involved. A fork of the Airspy R2
   above rather than a relative of it, and its own interface for that reason:
   the two cannot drive each other's hardware. Three RF sockets and seven sample
   rates. See [6.2.18](#6218-hydrasdr-rfone-usb).
 - **HackRF One / Pro (USB)** — a HackRF One, HackRF Pro, Jawbreaker or rad1o,
-  driven by sdroxide's own USB driver with no SoapySDR and no libhackrf
+  driven by sdrcrow's own USB driver with no SoapySDR and no libhackrf
   involved. The one USB interface here that transmits, and half duplex. See
   [6.2.12](#6212-hackrf-one--pro-usb).
 - **SDRplay RSP (USB)** — any RSP, through the vendor's API service. See
   [6.2.8](#628-sdrplay-rsp-usb).
-- **PlutoSDR (network)** — an ADALM-Pluto, driven by sdroxide's own IIOD client
+- **PlutoSDR (network)** — an ADALM-Pluto, driven by sdrcrow's own IIOD client
   with no SoapySDR and no libiio involved. See
   [6.2.7](#627-plutosdr-adalm-pluto).
 - **ELAD FDM-DUO / FDM-S (USB)** — an ELAD FDM-DUO, FDM-DUOr, FDM-S2 or FDM-S1,
-  driven by sdroxide's own USB driver. On an FDM-DUO this one interface covers
+  driven by sdrcrow's own USB driver. On an FDM-DUO this one interface covers
   the whole radio: the wideband receiver, the CAT control link and the transmit
   sound card. See [6.2.16](#6216-elad-fdm-duo--fdm-s-usb).
 - **LimeSDR + LimeRFE (LimeSuite)** — the LimeSDR family through LimeSuite,
@@ -8635,15 +8635,15 @@ opened falls back to a silent source rather than guessing at another one.
 
 > After changing the radio interface, serial port, sound format, or
 > radio-audio device, press **Apply / reconnect** at the bottom of the Radio
-> tab (or under the CAT radio-audio settings on the General tab). sdroxide
+> tab (or under the CAT radio-audio settings on the General tab). sdrcrow
 > rebuilds the radio live — no restart. If the new interface can't be opened,
 > the previous one keeps running and an error is shown; your tuning resets to
 > the new radio's default frequency, as it would on a fresh start.
 
 **Apply / reconnect is for *changing* the radio, not for attaching it.** If the
-radio you already configured isn't there when sdroxide starts — a network rig
+radio you already configured isn't there when sdrcrow starts — a network rig
 still booting, ExpertSDR3 launched a moment later, a USB cable plugged in
-afterwards — sdroxide keeps trying it in the background and attaches by itself,
+afterwards — sdrcrow keeps trying it in the background and attaches by itself,
 retrying at first every second and then more slowly. The same happens if the
 link drops mid-session: it reconnects when the radio comes back.
 
@@ -8660,7 +8660,7 @@ The offset is **in hertz**, and it is the same number, with the same sign, that
 the converter's own documentation and every other SDR program (SDR++, SDR#,
 GQRX) states: how far the converter moves the signal on its way to the receiver.
 A Ham It Up is `125000000`. Positive means an upconverter — you type 10.1008 MHz
-and sdroxide quietly sends the receiver to 135.1008 MHz. Negative means a
+and sdrcrow quietly sends the receiver to 135.1008 MHz. Negative means a
 down-converter: a universal Ku-band LNB is `-9750000000`, so a 10.489 GHz
 downlink is received at 739 MHz while the dial reads 10.489 GHz. A transverter
 follows the same rule — one working 2 m into a 28 MHz I.F. is `-116000000`,
@@ -8685,7 +8685,7 @@ after a digital contact, and the tuning range quoted if you ask for a frequency
 the radio cannot reach. Nothing needs a second correction anywhere.
 
 **Transmit**, the row under the offset, is where you say what is in the
-*transmit* line — because a converter is a receive accessory and sdroxide cannot
+*transmit* line — because a converter is a receive accessory and sdrcrow cannot
 see what the other half of your station looks like. Three answers:
 
 - **Off while converting** (the default). Nothing is transmitted while an offset
@@ -8723,7 +8723,7 @@ A few things to know:
 
 - **Taking the converter back off is not symmetrical.** The dial is on the sky
   frequency by then, and the bare radio usually cannot reach it — a Pluto tops
-  out at 6 GHz. sdroxide moves the dial to the nearest frequency the radio does
+  out at 6 GHz. sdrcrow moves the dial to the nearest frequency the radio does
   cover and says so in a notice, rather than leaving you with a dial that
   refuses every tune; type where you actually want to be.
 - **Frequencies you saved before setting the offset are now wrong.** If you have
@@ -8747,7 +8747,7 @@ A few things to know:
   **Panadapter** section below
   ([6.2.15](#6215-panadapter-borrowing-another-radios-receiver)).
 
-This has been tested against sdroxide's own simulated front ends, not against a
+This has been tested against sdrcrow's own simulated front ends, not against a
 physical converter. If you have one, reports are welcome.
 
 **Transverters**, below the transmit row, are the other half of the same idea
@@ -8794,7 +8794,7 @@ selecting the transverter's antenna once on the band leaves it there
 HL2IOBoard that means its **IO board RX input** — offered on the ANT control
 once the setting is moved off *Radio's own input* ([6.2.3](#623-hpsdr-network-radios)).
 
-**RX range** and **TX range**, below the offset, are where you tell sdroxide
+**RX range** and **TX range**, below the offset, are where you tell sdrcrow
 which frequencies this radio actually covers. They are **in megahertz**, written
 low-high and separated by commas — `144-146, 430-440`, which is
 144000000-146000000 Hz and 430000000-440000000 Hz. (The offset above them is the
@@ -8810,11 +8810,11 @@ between something you can widen and something you cannot. A band the radio
 reaches only *part* of keeps its button — a receiver that covers 50.1–51 MHz has
 6 m, whatever its edges say.
 
-Leave both empty — the default — and sdroxide uses whatever the device says
+Leave both empty — the default — and sdrcrow uses whatever the device says
 about itself. There are two reasons to fill them in:
 
 - **The device says nothing.** Publishing a tuning range is optional in
-  SoapySDR, and a good many drivers never implement it; `sdroxide --probe` shows
+  SoapySDR, and a good many drivers never implement it; `sdrcrow --probe` shows
   `not published by this driver` for those. An unpublished range is treated as
   *unknown*, not as *nothing* — the driver is taken at its word, every band
   button stays live and transmit is allowed — so a transceiver whose driver is
@@ -8885,7 +8885,7 @@ no trim at all.
 
 The numbers are decibels of **output power** — what a wattmeter reads — not
 "drive units", so the same table means the same thing whether the drive control
-scales sdroxide's own modulator (an HPSDR board, a Pluto, a SoapySDR device) or
+scales sdrcrow's own modulator (an HPSDR board, a Pluto, a SoapySDR device) or
 commands the rig's power setting over CAT, TCI or a LAN. The range is −20 to
 +6 dB, and the trim applies to voice, digital modes and **TUNE** alike.
 
@@ -8933,7 +8933,7 @@ exposes, and nothing it does not:
   Changing either reopens the radio.
 - **<driver> settings** — every setting the driver publishes, drawn from what it
   says about itself: a HackRF's `bias_tx`, an RTL-SDR's `direct_samp`, an RSP's
-  `rfnotch_ctrl`. sdroxide does not know what any of them mean, which is the
+  `rfnotch_ctrl`. sdrcrow does not know what any of them mean, which is the
   point — a radio it has never heard of still gets the controls its driver
   author wrote. Switches appear as tick boxes, settings with a fixed set of
   values as drop-downs, and everything else as a text box; hover a name for the
@@ -8974,7 +8974,7 @@ this tab, but `--rate` still wins over it, and an untouched **Stream** section
 leaves the app-wide `sample_rate` in charge exactly as before.
 
 **Why your VFO does not sit in the middle of the waterfall.** On a SoapySDR
-device with a wide enough span, sdroxide parks the hardware LO a quarter of the
+device with a wide enough span, sdrcrow parks the hardware LO a quarter of the
 span *above* the dial and tunes down to the signal in software, so your VFO
 marker sits a quarter of the way in from the left rather than dead centre. That
 is deliberate. Most SoapySDR hardware mixes straight to baseband, which piles
@@ -8985,7 +8985,7 @@ discriminator has no passband to hide behind: on a HackRF One tuned straight
 onto a strong FM broadcast station, the offset measures about the same amplitude
 as the station itself, and what comes out of the speaker is static. Moving the
 LO clear of the dial is worth about 14 dB of recovered signal over simply
-subtracting the offset, so sdroxide does both. Narrow streams (under 1 Msps) and
+subtracting the offset, so sdrcrow does both. Narrow streams (under 1 Msps) and
 devices whose analogue filter is too narrow to reach the offset keep the LO on
 the dial and rely on the offset subtraction alone.
 
@@ -9041,14 +9041,14 @@ the sound card it was given.
 
 > **IQ needs a stereo device.** IQ format requires a two-channel capture
 > interface (I and Q). A mono USB audio adapter cannot carry IQ; if you pick one
-> for IQ, sdroxide refuses it and shows a warning banner. Use a stereo line-input
+> for IQ, sdrcrow refuses it and shows a warning banner. Use a stereo line-input
 > interface for IQ, or choose **Demod audio**.
 
 On a PipeWire system, the desktop audio server can hold a USB radio codec's
-capture device open, which intermittently blocks sdroxide from opening it (the
+capture device open, which intermittently blocks sdrcrow from opening it (the
 symptom is silent receive and a "waiting for spectrum" panadapter). For a
 sound card dedicated to the radio, the reliable fix is to tell WirePlumber to
-stop managing that card, leaving it for sdroxide. Create a drop-in such as
+stop managing that card, leaving it for sdrcrow. Create a drop-in such as
 `~/.config/wireplumber/wireplumber.conf.d/51-radio.conf` that disables the
 card, then restart WirePlumber. See [troubleshooting](#14-troubleshooting).
 
@@ -9067,7 +9067,7 @@ card, then restart WirePlumber. See [troubleshooting](#14-troubleshooting).
   the spectrum or a spot box, the frequency readout, the keypad, a memory or
   band recall, wheel- and drag-tuning on the panadapter, and anything arriving
   from WSJT-X or another program over the rigctld or TCI server — down to a
-  single-hertz step, so the radio's readout and sdroxide's never disagree.
+  single-hertz step, so the radio's readout and sdrcrow's never disagree.
   That agreement is not cosmetic: CW keyed from the panel goes out through the
   radio's own keyer, and a microphone keyed at the radio transmits wherever
   its dial is, so a dial left behind by a click would put those overs on the
@@ -9080,17 +9080,17 @@ card, then restart WirePlumber. See [troubleshooting](#14-troubleshooting).
 
   On any other kind of receiver — an SDR, or a transceiver paired with one
   under **Panadapter** — none of this applies: the window is the receiver's
-  own, so every kind of tuning moves sdroxide's receiver inside it and the
+  own, so every kind of tuning moves sdrcrow's receiver inside it and the
   hardware is only retuned when the frequency would leave the span.
 
   **With no control cable**, all of the above is off. A radio that never
   answers on its control port has a dial only its own knob can turn, so
-  sdroxide stops trying to command it and tunes inside the I/Q the radio is
+  sdrcrow stops trying to command it and tunes inside the I/Q the radio is
   already sending instead — a click, the wheel or a drag moves the receiver
   within that span, exactly as on an SDR, and the window stays where the radio
   put it. Set the band on the radio itself, then type its dial frequency into
   the readout here once to line the panadapter's labels up with it; from then
-  on everything inside the span is yours. sdroxide says so on screen when it
+  on everything inside the span is yours. sdrcrow says so on screen when it
   starts, so if you *do* have a cable, that notice is the sign to check the
   port, the baud rate and the **CAT family**. Plug the cable in or switch the
   radio on later and the dial is picked up as soon as the radio answers,
@@ -9103,17 +9103,17 @@ on the air are the radio's own settings, commanded over CAT, on a quadrature rig
 exactly as on a demod-audio one.
 
 The **mode** travels in both directions on either sound format, subject to the
-**Mode control** setting below: change it on the radio and sdroxide follows on
-the next poll, change it in sdroxide and the radio follows. On a quadrature rig
-sdroxide is the one demodulating, so the mode is not what shapes what you hear —
+**Mode control** setting below: change it on the radio and sdrcrow follows on
+the next poll, change it in sdrcrow and the radio follows. On a quadrature rig
+sdrcrow is the one demodulating, so the mode is not what shapes what you hear —
 but it is what the radio's own display shows, and it is the sideband the radio
-will transmit on, so the two readouts are not allowed to disagree. What sdroxide
+will transmit on, so the two readouts are not allowed to disagree. What sdrcrow
 does *not* send a quadrature rig is the filter width: on that path the passband
-is sdroxide's own, and narrowing the radio's I.F. against it would cut into the
+is sdrcrow's own, and narrowing the radio's I.F. against it would cut into the
 span it is sending. A **demod audio** rig gets both, because there the radio's
 filter is the only one in the path.
 
-Neither the dial nor the mode is imposed when the port opens — sdroxide adopts
+Neither the dial nor the mode is imposed when the port opens — sdrcrow adopts
 whatever the radio is already sitting on rather than retuning it out of a saved
 session.
 
@@ -9139,7 +9139,7 @@ much that matters — the panadapter is unaffected (every block it transforms is
 still real signal, so the waterfall looks perfect) while the demodulated audio,
 which has to be continuous, breaks up into clicks and stutters. **Audio
 breaking up while the waterfall still looks right is that symptom and not a
-DSP fault**; sdroxide logs a warning naming the count when it happens. If you
+DSP fault**; sdrcrow logs a warning naming the count when it happens. If you
 see it, come back down a rate.
 
 That warning counts only what is dropped while you are **receiving**. A rig that
@@ -9155,7 +9155,7 @@ Changing this takes effect on **Apply**, without restarting.
 **Invert spectrum (Swap I/Q)** (IQ format only) — mirrors the panadapter about
 the tuned frequency, for a radio that carries I and Q the other way round on its
 sound card. Which channel a quadrature rig calls I is a wiring convention, and
-one that disagrees with sdroxide's (I left, Q right) looks perfectly healthy
+one that disagrees with sdrcrow's (I left, Q right) looks perfectly healthy
 until you read the waterfall: it fills with convincing signals that are all on
 the wrong side of the dial, and SSB comes out on the opposite sideband.
 Swapping the two cables at the sound card fixes it just as well — this is the
@@ -9170,7 +9170,7 @@ it to modulate, and a real signal has no sideband to invert.
 > same signal on both channels, and two identical channels make a real signal,
 > whose spectrum is symmetric about the dial by definition: there is no second
 > sideband to recover, so **Invert spectrum** has nothing to swap and **I/Q
-> correction** has no imbalance to trim. sdroxide notices it within a second of
+> correction** has no imbalance to trim. sdrcrow notices it within a second of
 > the stream starting and says so in the log window. Either put **Sound format**
 > on `Demod audio`, which is what the card is actually carrying, or switch the
 > radio to its raw I/Q output — in PowerSDR that is the **Direct I/Q** box in
@@ -9202,7 +9202,7 @@ ignored.
 If signals end up at *twice* the offset from where they belong, the sign is the
 other way round for your radio — enter `-8000` instead. Receive only, as above.
 
-A **QMX** is the other kind of case, and sdroxide fills this field in for you:
+A **QMX** is the other kind of case, and sdrcrow fills this field in for you:
 its receiver is a superhet with a 12 kHz I.F., so its synthesiser sits 12 kHz
 *below* the dial and everything on the sound card is 12 kHz *above* the middle
 of the span. Picking the `QRP Labs` family with the sound format on `IQ` sets
@@ -9228,7 +9228,7 @@ overlook on a quiet band and strong enough to be a problem on a busy one — it
 looks like a station, it decodes like one on FT8, and it moves when you tune,
 which is exactly what a real signal does. Radios with a pair of front-panel
 balance trimmers are adjusting this by hand; radios without them are why
-sdroxide does it in software.
+sdrcrow does it in software.
 
 Nothing needs setting. The correction measures the imbalance off whatever the
 receiver is hearing — noise will do — and converges in a second or two, then
@@ -9317,7 +9317,7 @@ only.
   receive bandwidth (flrig snaps a dragged filter to the nearest one the rig
   has), the S-meter, and the SWR and power-out meters while transmitting. It
   also shares the rig: flrig's own panel and every other program pointed at
-  flrig stay live alongside sdroxide.
+  flrig stay live alongside sdrcrow.
 
   What it does not reach: flrig's interface has no RIT/XIT clear (only split),
   so unlike the native profiles a rig left with RIT on offsets the dial
@@ -9346,9 +9346,9 @@ only.
 - **Force RTS** / **Force DTR** — hold a control line high or low (some
   interfaces need this).
 - **PTT method** — `CAT`, `DTR`, `RTS`, or `VOX` (how transmit is keyed).
-- **Mode control** — `CAT` (sdroxide sets the radio's mode to match) or
-  `Radio controlled` (you set the mode on the radio and sdroxide follows).
-- **Digimode mode** — what to switch the rig to for a mode sdroxide modulates
+- **Mode control** — `CAT` (sdrcrow sets the radio's mode to match) or
+  `Radio controlled` (you set the mode on the radio and sdrcrow follows).
+- **Digimode mode** — what to switch the rig to for a mode sdrcrow modulates
   through its sound card: `USB` (the plain sideband), `DIGI` (the rig's DATA /
   PKT position, so the over is taken from the data input with the microphone
   path's speech processing out of it), or `Radio controlled` (leave the rig's
@@ -9364,13 +9364,13 @@ only.
   data input selected where the family has one) whatever this is set to.
 - **CW keying** — where CW you send comes from, `Rig keyer (CAT)` or
   `Sound card (MCW)`. See below.
-- **Poll rate** — how often (Hz) sdroxide reads the rig's frequency, mode and
+- **Poll rate** — how often (Hz) sdrcrow reads the rig's frequency, mode and
   meters. This is the half of the control link that runs *from* the radio: turn
   the rig's own VFO knob, or change its mode on the front panel, and the
   readout, the band and the panadapter follow within one poll. It applies to
   every CAT family.
 
-  It is also the whole of the control traffic sdroxide generates, and on a
+  It is also the whole of the control traffic sdrcrow generates, and on a
   fair number of radios that traffic is not free. A modern Icom is a USB hub
   with the CI-V port and the sound card behind it — an IC-7300 enumerates a
   4-port hub carrying a CP2102 serial bridge and a PCM2901 audio codec, both at
@@ -9395,7 +9395,7 @@ only.
 
   **Icom only:** if **CI-V Transceive** is switched on in the radio's own menu
   (SET → Connectors → CI-V), the rig broadcasts its dial and its mode the
-  instant either moves. sdroxide watches for those broadcasts, and the first
+  instant either moves. sdrcrow watches for those broadcasts, and the first
   time it sees one it stands the dial poll down to a three-second safety net —
   the knob is then followed *faster* than any poll rate could manage, for none
   of the traffic. Nothing needs setting at this end; with transceive off,
@@ -9430,7 +9430,7 @@ only.
     with no separate data input. The ordinary send, on the main band.
   - `TS-590 style (TX1;)` — TS-590S/SG, TS-890, TS-990. DATA SEND, which keys
     with the ACC2/USB audio input live. On these rigs the plain send selects the
-    *microphone* instead and mutes the audio sdroxide transmits — the classic
+    *microphone* instead and mutes the audio sdrcrow transmits — the classic
     "it keys but nothing goes out" fault.
 
   The default is `TS-2000 style`, because the two mistakes are not equally bad:
@@ -9457,12 +9457,12 @@ only.
   the same setting as the **ANT** button on its front panel. The row only
   appears on a radio that *has* a selector, because that is not something CI-V
   states: every Icom speaks one dialect, an IC-7610 answers the antenna read and
-  an IC-705 refuses it, so sdroxide asks when the port opens and draws the row
+  an IC-705 refuses it, so sdrcrow asks when the port opens and draws the row
   only if an answer comes back. The socket it is on is read back at the same
   time, so the control opens showing the truth rather than a remembered guess,
-  and the choice is remembered per band like every other antenna in sdroxide.
+  and the choice is remembered per band like every other antenna in sdrcrow.
   A radio with four sockets (the IC-785x line) is offered the first two; select
-  ANT3 or ANT4 at the radio, and sdroxide shows no socket rather than claiming
+  ANT3 or ANT4 at the radio, and sdrcrow shows no socket rather than claiming
   the wrong one.
 
   One thing CI-V cannot be asked is *how many* sockets a radio has, and one
@@ -9484,7 +9484,7 @@ only.
   socket where there is one to carry, and the socket alone where there is not.
 
   It is deliberately not remembered here, and not carried in a memory channel.
-  The radio recalls it per band itself, so sdroxide reads it back after every
+  The radio recalls it per band itself, so sdrcrow reads it back after every
   band change — including one you made at the radio — and shows what the radio
   says. Ticking the box is the only thing that moves it, which is the point: a
   receive-only input switched out behind your back is an aerial gone quiet with
@@ -9493,8 +9493,8 @@ only.
   Also on the main window's **RIG** box, as **RX ANT** — see
   [2.7](#27-receiver-controls).
 - **Radio power** (Icom only) — **On** and **Off** switch *the radio* over the
-  CI-V link, the way RS-BA1 and wfview do. This is not sdroxide's own **LINK**
-  switch in the tab strip, which closes sdroxide's end and leaves the radio
+  CI-V link, the way RS-BA1 and wfview do. This is not sdrcrow's own **LINK**
+  switch in the tab strip, which closes sdrcrow's end and leaves the radio
   running: this one leaves the interface open and switches the radio off, which
   is the way round that matters, because the link has to survive for the switch
   back on to reach anything. Over the network that is what **Network Control** keeps
@@ -9506,8 +9506,8 @@ only.
 
   Two buttons rather than a switch, deliberately: a radio that is off answers
   nothing, so there is no position to read back, and a toggle could only ever
-  show you your own last click. This is sdroxide's only on/off control; the
-  **LINK** switch is sdroxide's own end of the connection.
+  show you your own last click. This is sdrcrow's only on/off control; the
+  **LINK** switch is sdrcrow's own end of the connection.
 
   These two are on the main window's **RIG** box as well, as **PWR ON** / **OFF**
   — see [2.7](#27-receiver-controls).
@@ -9527,7 +9527,7 @@ only.
   It needs the radio set up for it, both under **MENU » SET > Connectors >
   CI-V**: **CI-V USB Baud Rate** = `115200`, and **CI-V USB Port** = `Unlink
   from [REMOTE]`. Then set the **Baud** above to 115200 to match. Below that
-  rate the sweeps physically do not fit down the link, so sdroxide declines to
+  rate the sweeps physically do not fit down the link, so sdrcrow declines to
   ask for them and says so in the status line rather than burying every poll
   and PTT under sweep fragments.
 
@@ -9548,18 +9548,18 @@ settings.
 ##### When you key the radio itself
 
 Pressing the microphone button on the transceiver — or its foot switch, or
-letting its VOX or its own keyer key it — is an over sdroxide never asked for,
-and it is treated as one. sdroxide notices it within about a fifth of a second
+letting its VOX or its own keyer key it — is an over sdrcrow never asked for,
+and it is treated as one. sdrcrow notices it within about a fifth of a second
 and follows it: the meter goes to transmit and reads the SWR of *that* over, and
 comes back to receive when you let go. It does not join in. No audio from the
-computer goes anywhere near it, and a PTT arriving in sdroxide meanwhile —
+computer goes anywhere near it, and a PTT arriving in sdrcrow meanwhile —
 the on-screen button, a key binding, a program on the rigctld or TCI server — is
 refused with a notice rather than queued, so an over cannot start the instant you
 release the microphone.
 
 That refusal is only ever for as long as your hand is on the button. It is also
 fail-safe in the direction that matters: if the control port goes quiet while the
-radio is keyed, sdroxide gives up on it after two seconds, says so in the log,
+radio is keyed, sdrcrow gives up on it after two seconds, says so in the log,
 and goes back to receive rather than sitting there refusing to transmit.
 
 Which radios can report it, and how:
@@ -9578,9 +9578,9 @@ Which radios can report it, and how:
 **These reads need to be verified against real radios.** Each is taken
 from the manufacturer's published command reference, and the end-to-end
 behaviour was proven against a simulator written from the same documents — which
-demonstrates that sdroxide does the right thing with the answer, not that the
+demonstrates that sdrcrow does the right thing with the answer, not that the
 question is the right one to ask. The Icom read is the one to trust furthest: it
-is the read form of the command sdroxide already keys Icoms with. The Kenwood
+is the read form of the command sdrcrow already keys Icoms with. The Kenwood
 read is the one to trust least, because it alone depends on a field *position*
 rather than a command of its own.
 
@@ -9590,7 +9590,7 @@ to, thanks to the length check on the Kenwood reply.
 
 The one thing this does *not* do is hold the station transmit interlock across
 radios: with two radios configured, keying one at its own microphone does not
-lock the other out. Only overs sdroxide keys take that interlock.
+lock the other out. Only overs sdrcrow keys take that interlock.
 
 **CW keying.** A transceiver told to be in CW keys its own transmitter: it does
 not modulate what arrives at its sound card, so a keyer's sidetone sent there
@@ -9601,17 +9601,17 @@ only route that puts CW on the air from a rig that is *in* CW. There is no PTT
 
 On `Sound card (MCW)` the same rig is held on a sideband and the tone is
 modulated like any other audio, so it needs the rig's own mode to be a sideband
-too — and on a radio sdroxide cannot command the mode of, that is a setting on
+too — and on a radio sdrcrow cannot command the mode of, that is a setting on
 the radio itself ([6.2.21](#6221-usb-audio-radio-sound-card-only)). The failure
 is worth recognising, because nothing reports it: the tone sounds, the send
 decodes back into text, the transmit indicators behave, and the air is silent.
 
 What that needs on the radio:
 
-- **Break-in on.** sdroxide asserts it on Yaesu (`BI1`) with every message,
+- **Break-in on.** sdrcrow asserts it on Yaesu (`BI1`) with every message,
   because with break-in off the keyer runs into the sidetone and never keys the
   transmitter. On Kenwood the same switch is `VX`, which is the *VOX* switch in
-  every mode except CW — so sdroxide sends it only once the rig has reported
+  every mode except CW — so sdrcrow sends it only once the rig has reported
   that it is in CW, rather than risk turning VOX on under a live sound card. On
   Icom it is `16 47`, sent with every message for the same reason: an Icom sends
   a message given to it by a computer only while `[TRANSMIT]` is on, an external
@@ -9634,7 +9634,7 @@ What that needs on the radio:
   Straight Key mode.
 - **A longer break-in delay, and consider SEND ON RETURN.** The rig takes the
   text a message at a time and switches to transmit for each one, so how often
-  it drops back to receive is set by two things sdroxide does not control: your
+  it drops back to receive is set by two things sdrcrow does not control: your
   **break-in (QSK) delay**, and how much text arrives at once. Typed live, that
   is a message per word. **SEND ON RETURN** in the CW panel
   ([2.14](#214-cw-decoding-and-keyboard-sending)) holds the line until you press
@@ -9649,11 +9649,11 @@ What that needs on the radio:
   A Yaesu keyer holds two kinds of memory on the same five channels: the ones
   recorded from the paddle, and the ones written as text. Which playback command
   reaches the text differs by model — the FT-710 is the one radio of the family
-  that inverts it — so sdroxide asks the rig what it is (`ID;`) at connect and
+  that inverts it — so sdrcrow asks the rig what it is (`ID;`) at connect and
   keys accordingly. Getting this wrong is silent: the rig transmits whatever was
   recorded on that channel, or nothing at all, while the CW panel colours your
   text as sent.
-- **The Drive slider is the power CW goes out at.** Nothing sdroxide sends
+- **The Drive slider is the power CW goes out at.** Nothing sdrcrow sends
   reaches the air here — the rig keys its own transmitter — so the level of the
   audio going into its sound card means nothing in CW, and the transmit level is
   the rig's own power control, commanded over the same serial link before each
@@ -9666,34 +9666,34 @@ frequency. Because a rig *in* CW would ignore that audio entirely, selecting CW
 with this route follows the **Digimode mode** setting instead of switching the
 rig to CW: `USB` or `DIGI` command that sideband, `Radio controlled` leaves the
 rig on whatever mode you parked it in. It is here for radios whose keyer
-sdroxide cannot drive — on a Xiegu G90, set **CW keying** to `Sound card (MCW)`
+sdrcrow cannot drive — on a Xiegu G90, set **CW keying** to `Sound card (MCW)`
 and **Digimode mode** to `Radio controlled`, and park the rig in its U-D
 position, exactly as for FT8: the G90's U-D cannot be selected over CI-V, and
 its other modes take audio from the microphone rather than the interface. What
 you give up against a rig in CW is its CW filtering; the sideband filter is
 what does the selecting.
 
-> **Note (Kenwood):** at connect sdroxide turns the rig's auto-information off
+> **Note (Kenwood):** at connect sdrcrow turns the rig's auto-information off
 > (`AI0`), clears RIT and XIT, and selects **VFO A** for receive, which is also
-> how this family turns split off. sdroxide carries RIT, XIT and split on the
+> how this family turns split off. sdrcrow carries RIT, XIT and split on the
 > dial itself, and it tunes VFO A — so a rig left on VFO B or in memory mode
 > would answer every frequency read and ignore every retune.
 
 > **Note (Kenwood meters):** the S-meter and the transmit SWR come from the
-> radio's own meters, and both are read against the *model*, which sdroxide asks
+> radio's own meters, and both are read against the *model*, which sdrcrow asks
 > for at connect (`ID;`). It has to: `SM` and `RM` answer with a count of lit
 > bars, and full deflection is 20 bars on a TS-2000, 30 on a TS-590 and 70 on a
 > TS-890 — so the same reading of 12 is a 3:1 fault on one rig and very nearly
 > flat on another. Scales are carried for the TS-480, TS-590S/SG, TS-890S,
 > TS-990S and TS-2000.
 >
-> On a model sdroxide has no scales for, the S-meter still reads — on a generic
+> On a model sdrcrow has no scales for, the S-meter still reads — on a generic
 > straight line, so approximately — and the **SWR meter stays blank** rather
 > than showing a number with no meaning behind it. The log line
 > `Kenwood CAT: rig reports model ID …` carries the number, which is what would
 > let the model be added.
 
-> **Note (Elecraft):** at connect sdroxide does the same — auto-information off,
+> **Note (Elecraft):** at connect sdrcrow does the same — auto-information off,
 > clarifier cleared, RIT, XIT and split off — and two things besides. It puts
 > the rig into `K20;K31;`, because a K3 left in K2 command mode 1 or 3 by
 > whatever ran before reports DATA and DATA-REV *as LSB and USB*, so it would
@@ -9705,7 +9705,7 @@ what does the selecting.
 >
 > A K3 whose `CONFIG:CW WGHT` is set to `VFO OFS` shifts its own dial by the CW
 > pitch whenever the mode crosses into or out of CW, so that zero-beat stays
-> zero-beat. That is useful at the radio and invisible over CAT, so sdroxide
+> zero-beat. That is useful at the radio and invisible over CAT, so sdrcrow
 > re-asserts the frequency behind every mode command it sends an Elecraft —
 > otherwise an operator who asked for 14.050 would find themselves transmitting
 > six hundred hertz away with nothing on screen to say so. Nothing on the wire
@@ -9716,7 +9716,7 @@ what does the selecting.
 > **DATA A** — the sound-card path. It has to: `MD6;` on its own restores
 > whichever of the four sub-modes that band was last left in, and on a rig used
 > for RTTY that is the K3's own FSK keyer, which has nothing to send. For the
-> same reason sdroxide follows the rig into DATA only when it reports DATA A;
+> same reason sdrcrow follows the rig into DATA only when it reports DATA A;
 > left in AFSK A, FSK D or PSK D it reports no mode at all rather than one the
 > two would then argue about.
 
@@ -9726,7 +9726,7 @@ what does the selecting.
 > by an AGC that has ridden the interference down — so narrowing it here would
 > only cut what the radio had let through, long after the damage was done.
 >
-> What each family can express differs, and where sdroxide cannot say a
+> What each family can express differs, and where sdrcrow cannot say a
 > passband exactly it leaves the radio's filter alone rather than guess:
 >
 > - **Elecraft** — `BW`, a real bandwidth in 10 Hz steps, every mode. The rig
@@ -9767,7 +9767,7 @@ what does the selecting.
 
 > **Note:** on a Yaesu USB interface the *Enhanced* port is the CAT port
 > configured above. The *Standard* port is the one whose RTS/DTR lines are wired
-> to PTT and KEY; sdroxide does not use it, and `PTT method` `DTR`/`RTS` set on
+> to PTT and KEY; sdrcrow does not use it, and `PTT method` `DTR`/`RTS` set on
 > the Enhanced port will not key anything. Use `CAT` there.
 
 > **Note (Icom over USB):** if the dial and the waterfall follow the radio but
@@ -9779,7 +9779,7 @@ what does the selecting.
 > VOX is on at the radio. The **Radio ID (hex)** must also be the rig's CI-V
 > address — 94h on an IC-7300, B6h on an IC-7300MK2, 70h on a Xiegu X6100 — though a wrong one stops
 > the frequency working too, so it is rarely the answer here. When the radio
-> answers the key-down with a refusal, sdroxide says so in the log: *the radio
+> answers the key-down with a refusal, sdrcrow says so in the log: *the radio
 > refused the transmit command*.
 
 > **Note (ELAD):** this family is the FDM-DUO and FDM-DUOr. Set **Baud** to
@@ -9821,7 +9821,7 @@ what does the selecting.
 >
 > ⚠️ **Never open a terminal program on the same port.** A QMX takes a carriage
 > return as an instruction to leave CAT and become a terminal, for the rest of
-> the session. sdroxide never sends one; a terminal emulator will, on the first
+> the session. sdrcrow never sends one; a terminal emulator will, on the first
 > Enter you press.
 >
 > **The transmit power is set at the radio.** There is no CAT command for it, so
@@ -9831,21 +9831,21 @@ what does the selecting.
 > the radio *does* report while transmitting is the SWR and the forward power it
 > has measured, in real watts, and both appear on the meter.
 >
-> **Modes.** The radio's DIGI-U and DIGI-L are what sdroxide's digital modes go
+> **Modes.** The radio's DIGI-U and DIGI-L are what sdrcrow's digital modes go
 > out on (`MD6` and `MD9`); CW and CW-R are both CW; LSB, USB and AM are
 > themselves. `MD8` is not a mode — it is SWR Tune, a carrier into the radio's
-> own bridge — so sdroxide never asks for it, and a radio sitting in it is
+> own bridge — so sdrcrow never asks for it, and a radio sitting in it is
 > reported as being in no mode rather than in some sideband it is not on. A QMX
 > has no FM position at all.
 >
 > **CW** goes to the radio's own keyer (`KY`), 24 characters at a time, at the
 > speed the CW panel is set to (`KS`). Do not set that speed to zero: on a QMX
 > zero words per minute is not a slow keyer, it is Straight Key mode, and
-> sdroxide holds the bottom of the range at 5 for exactly that reason.
+> sdrcrow holds the bottom of the range at 5 for exactly that reason.
 >
-> **SWR protection.** On firmware 1.04.004 and later sdroxide reads the radio's
+> **SWR protection.** On firmware 1.04.004 and later sdrcrow reads the radio's
 > protection latch (`SR`). If it has tripped, the radio will not transmit until
-> it is reset *at the radio* — sdroxide says so in the log and deliberately does
+> it is reset *at the radio* — sdrcrow says so in the log and deliberately does
 > not reset it for you, because clearing a protection trip is a decision about an
 > antenna.
 >
@@ -9861,13 +9861,13 @@ what does the selecting.
 > times the dial, so what the sound card carries is complex baseband centred on
 > the operating frequency, in both directions. Everything a CAT command does on
 > another radio — the mode, the filter, the modulation, the demodulation — is
-> sdroxide's here, and the serial link is left with the two things that really
+> sdrcrow's here, and the serial link is left with the two things that really
 > are the radio's: where to put the oscillator, and whether to transmit.
 >
 > Selecting the family fills in three things that are facts rather than
 > preferences, so leave them: **Sound format** goes to `IQ (stereo)`, **PTT
 > method** to `CAT`, and the port to **57600 8N1** — the firmware's one rate,
-> with no menu to change it, so sdroxide pins it when the port opens. The
+> with no menu to change it, so sdrcrow pins it when the port opens. The
 > **centre offset** is set to zero, because the oscillator is on the dial. Set
 > **IQ rate** to whatever your sound card is actually running at; that is what
 > makes the panadapter as wide as it is.
@@ -9878,36 +9878,36 @@ what does the selecting.
 >
 > **What there is nothing to reach.** No mode, power, filter, squelch, meter or
 > keyer command exists, because the radio has none of them: transmit power is
-> set at the radio, the S-meter is sdroxide's own measurement of the I/Q, and
+> set at the radio, the S-meter is sdrcrow's own measurement of the I/Q, and
 > CW goes out as a keyed tone through the transmit chain like any other audio.
 > (The firmware has an internal CW generator on `*X2`; its own documentation
-> says do not use it, and sdroxide never does.)
+> says do not use it, and sdrcrow never does.)
 >
 > Written from HobbyPCB's published *Interface Commands* page. **Not verified
 > against a radio**, and one thing in particular is a guess: the page says what
-> each query reports but not how the reply is framed, so sdroxide accepts a bare
+> each query reports but not how the reply is framed, so sdrcrow accepts a bare
 > number, one with the command echoed in front of it, and either line ending. If
 > the dial readout does not follow the radio, that is the thing to report.
 
 > **Note:** RIT, XIT and split are driven over the same serial link, by moving
-> the radio's dial — see [2.6](#26-rit-and-xit). Set them in sdroxide rather than
-> on the radio: sdroxide clears the rig's own copies on connect so the two can't
+> the radio's dial — see [2.6](#26-rit-and-xit). Set them in sdrcrow rather than
+> on the radio: sdrcrow clears the rig's own copies on connect so the two can't
 > stack up.
 
-**Which bands are offered.** CAT carries no band table, so sdroxide cannot tell
+**Which bands are offered.** CAT carries no band table, so sdrcrow cannot tell
 an HF-only FT-891 from an FT-991A on 70 cm or an IC-9700 on 23 cm. Rather than
 guess, it leaves every band live and lets the rig answer: ask a radio for a band
-it does not have and it simply declines over CAT, which sdroxide reports in the
+it does not have and it simply declines over CAT, which sdrcrow reports in the
 log. The real limits on transmit are your licence — the amateur-band gate, which
 follows your region ([6.1](#61-general-station-audio-and-remote-access)) — and
-the rig itself. If you would rather sdroxide held the dial to the radio you
+the rig itself. If you would rather sdrcrow held the dial to the radio you
 actually own, state an **RX range** and **TX range** at the top of this tab.
 
 #### 6.2.3 HPSDR (network radios)
 
 ![The Radio tab with the HPSDR (network) interface selected](images/settings-radio-hpsdr.jpg)
 
-With the **HPSDR (network)** interface, sdroxide reaches an OpenHPSDR
+With the **HPSDR (network)** interface, sdrcrow reaches an OpenHPSDR
 (Hermes/Metis-family) Ethernet SDR over the LAN — no sound card or serial port
 involved:
 
@@ -9926,7 +9926,7 @@ involved:
   without being able to stop it. The gateware sends to whichever host started
   it and ignores a start command from anywhere else while it is running, and it
   reports itself as **in use** in the discovery listing and the log while that
-  lasts. sdroxide sends a stop before every start for exactly this reason, and
+  lasts. sdrcrow sends a stop before every start for exactly this reason, and
   repeats the start command each second while nothing arrives, so a board in
   that state is normally reclaimed within a second or two (issue #365). If it
   is not, close whatever else is holding it — and check that UDP port 1024 is
@@ -10030,7 +10030,7 @@ involved:
   Every move it makes is logged with the running count of overflow reports — which is worth having on its own when you are trying to work out
   whether a preamplifier or an antenna is marginal (issue #362).
 
-  Only a Hermes Lite 2 has a front-end gain sdroxide can command, so this is a
+  Only a Hermes Lite 2 has a front-end gain sdrcrow can command, so this is a
   Hermes Lite feature today; the loop itself knows nothing about the board and
   will follow any front end that grows one.
 - **Filter board** — how the board's seven open-collector outputs are driven.
@@ -10095,14 +10095,14 @@ involved:
   while a preset is selected, so switching to one to compare and back again does
   not lose it.
 
-  What is driven is the seven open collectors, and only those. sdroxide does not
+  What is driven is the seven open collectors, and only those. sdrcrow does not
   send a genuine Alex board's own 32-bit filter word on either protocol — the
   **Alex / Hermes band code** preset is that band code on the open collectors,
   which is what the boards listed above read. The Protocol 2 byte carrying these
   outputs is taken from the published field layout and has **not** been verified
   against a Protocol 2 board here; reports are welcome.
 - **Transmit buffer** — how far ahead of real time transmit audio is fed toward
-  the board, 10 to 500 ms, before sdroxide slows down to feed it at exactly the
+  the board, 10 to 500 ms, before sdrcrow slows down to feed it at exactly the
   rate the board consumes it. That head start is the only thing covering a
   hiccup between one block and the next: a stall shorter than it is inaudible,
   a longer one empties the buffer and goes out as chopped audio. The **30 ms**
@@ -10112,7 +10112,7 @@ involved:
   latency: the same delay is added between speaking and transmitting, and
   between releasing PTT and the transmitter dropping. Unlike the Icom LAN
   setting of the same name, this is not a buffer inside the radio — OpenHPSDR
-  has no such thing — so it only widens sdroxide's own margin on this side of
+  has no such thing — so it only widens sdrcrow's own margin on this side of
   the network. Takes effect on **APPLY**, which reconnects to the board.
 - **PureSignal** — adaptive predistortion: linearise the transmitter from a
   sample of what it actually emitted. Every amplifier compresses near its
@@ -10175,14 +10175,14 @@ keeps what it has learned.
 > coupled in, so nothing learned and the transmitter left alone — is the one it
 > is built around, but treat the first over as an experiment and watch the log.
 
-The radio's own **PTT input** keys sdroxide too: a foot switch or mic button on
+The radio's own **PTT input** keys sdrcrow too: a foot switch or mic button on
 the board's PTT connector (a Hermes Lite 2's CN4 jack) transmits exactly as the
 on-screen PTT button does, safety rails and all. It belongs to the DDC1 radio —
 the one that owns the transmitter — so a second radio tab on another DDC never
 keys on it. Currently Protocol 1 only.
 
 An **N2ADR HL2IOBoard** on the accessory bus is found and driven automatically:
-there is nothing to switch on. sdroxide asks the bus whether one is there when it
+there is nothing to switch on. sdrcrow asks the bus whether one is there when it
 connects, clears its registers (they are static, and survive whatever program
 drove the board last), and from then on keeps it told of both frequencies:
 
@@ -10196,12 +10196,12 @@ Updates are limited to one every half second, as the board's documentation asks,
 so a spun dial cannot flood its I2C bus — and the receive code covers a whole
 band at a time, so ordinary tuning puts nothing on the bus at all. What the
 board's outputs then *do* is decided by the firmware **you** program into its
-Pico: by design, sdroxide sends the frequencies and nothing else. Run with
+Pico: by design, sdrcrow sends the frequencies and nothing else. Run with
 `RUST_LOG=sdrcrow_hpsdr=debug` to watch the board being found and each update
 going out.
 
 - **IO board RX input** — the board's `REG_RF_INPUTS`, and the one thing about it
-  sdroxide cannot work out for itself. Leave it at **Radio's own input** unless
+  sdrcrow cannot work out for itself. Leave it at **Radio's own input** unless
   you have wired the IO board's own SMA jacks: J9 can replace the radio's receive
   input, and J10 is a PureSignal (transmit sample) input. Selecting **IO board
   J9** with nothing connected to it leaves the receiver deaf. Takes effect on
@@ -10216,7 +10216,7 @@ going out.
 > and reporting what you see:
 >
 > ```sh
-> RUST_LOG=sdrcrow_hpsdr=debug sdroxide
+> RUST_LOG=sdrcrow_hpsdr=debug sdrcrow
 > ```
 >
 > Use `sdrcrow_hpsdr=trace` for per-packet detail. The log shows discovery
@@ -10234,7 +10234,7 @@ going out.
 
 ![The Radio tab with the TCI (network) interface selected](images/settings-radio-tci.jpg)
 
-With the **TCI (network)** interface, sdroxide connects to a TCI server — such as
+With the **TCI (network)** interface, sdrcrow connects to a TCI server — such as
 Expert Electronics **ExpertSDR3** or **Thetis** — over a WebSocket, receiving a
 wideband IQ stream and transmitting audio back:
 
@@ -10245,13 +10245,13 @@ wideband IQ stream and transmitting audio back:
 - **Receiver** — which of the rig's receivers this radio runs. A rig with two
   (a SunSDR2DX) can serve two radio tabs from one connection: one radio on
   **RX1** and a second radio, same server address, on **RX2**, each
-  independently tunable — sdroxide's dials and the SDR software's dials track
+  independently tunable — sdrcrow's dials and the SDR software's dials track
   each other per receiver ([§2.17](#217-running-more-than-one-radio)). The two
   radios share the WebSocket, so closing either tab leaves the other
   streaming. The transmitter belongs to the RX1 radio, and the IQ rate belongs
   to the connection: whichever radio connects first sets it. Asking for a
   receiver the rig does not have is refused with the count it reported.
-- **Test connection** — verify sdroxide can reach the server and report what it
+- **Test connection** — verify sdrcrow can reach the server and report what it
   found, without leaving the dialog.
 
 Receive is wideband IQ (full panadapter and skimmers); transmit sends audio to
@@ -10261,15 +10261,15 @@ up on 2 m without a stated TX range; the amateur-band gate keeps you inside your
 region's allocation, and the rig declines anything it cannot do.
 
 > **The SDR software has to be running.** TCI is served by ExpertSDR3 or Thetis,
-> not by the radio's own firmware, so sdroxide connects to that program rather
+> not by the radio's own firmware, so sdrcrow connects to that program rather
 > than to the transceiver. On a **standalone set — an MB1, a Colibri, any SunSDR
 > with a computer inside it — that program runs on the computer inside the
 > radio**, and it has to be started there with *TCI* switched on before anything
-> can attach. This is not a limitation of sdroxide and no other TCI client avoids
+> can attach. This is not a limitation of sdrcrow and no other TCI client avoids
 > it: the same is true of the TS-480 CAT emulation those radios offer, which
 > ExpertSDR3 also provides. A refused connection says as much in the message.
 
-> This is sdroxide acting as a TCI *client*. For the other direction — sdroxide
+> This is sdrcrow acting as a TCI *client*. For the other direction — sdrcrow
 > acting as the rig so WSJT-X and friends can drive it — see
 > [§ 5.8.2 Built-in TCI server](#682-built-in-tci-server).
 
@@ -10278,14 +10278,14 @@ region's allocation, and the rig declines anything it cannot do.
 ![The Radio tab with the RTL-SDR interface selected](images/settings-radio-rtlsdr.jpg)
 
 The **RTL-SDR (USB)** interface drives an RTL2832U dongle directly, using
-sdroxide's own USB driver. There is no SoapySDR and no libusb involved, so this
+sdrcrow's own USB driver. There is no SoapySDR and no libusb involved, so this
 works in every build — including the standard Windows `.msi` and macOS `.dmg` —
 with nothing extra to install beyond access to the device itself (see the
 README's *RTL-SDR permissions*).
 
 Supported tuners are the **R820T**, **R820T2** and **R828D**, which between them
 cover essentially every dongle still sold, including the RTL-SDR Blog V3 and V4.
-Older E4000 and FC001x sticks are not supported; sdroxide names the button it
+Older E4000 and FC001x sticks are not supported; sdrcrow names the button it
 found and suggests the SoapySDR backend instead.
 
 Receive only — there is no transmit path in this hardware.
@@ -10309,7 +10309,7 @@ Receive only — there is no transmit path in this hardware.
   You do not have to guess it: run
 
   ```sh
-  RUST_LOG=sdrcrow_rtlsdr=debug sdroxide
+  RUST_LOG=sdrcrow_rtlsdr=debug sdrcrow
   ```
 
   and after about twenty seconds the log prints a line like
@@ -10352,7 +10352,7 @@ Receive only — there is no transmit path in this hardware.
   R820T has no offset-tuning mode to move the oscillator out of the passband, so
   correcting the samples is the only way to get a clean centre.
 
-  sdroxide measures the imbalance from the samples themselves and needs no
+  sdrcrow measures the imbalance from the samples themselves and needs no
   calibration: it converges in around a third of a second at 2.4 Msps and then
   tracks slowly, so it settles on the dongle rather than chasing a fading
   signal. Typical dongles gain 25–40 dB of image rejection from it.
@@ -10363,7 +10363,7 @@ Receive only — there is no transmit path in this hardware.
 
   Two things are worth knowing. A spectrum that genuinely is symmetric about the
   centre — two equally strong carriers the same distance either side of the dial
-  — looks exactly like an imbalance; sdroxide recognises a measurement no
+  — looks exactly like an imbalance; sdrcrow recognises a measurement no
   receiver could produce and holds its estimate instead of chasing it, so the
   worst such a signal does is stop the correction improving while it is there.
   And an **AM station tuned dead on the dial has its carrier at DC as well**, so
@@ -10375,11 +10375,11 @@ Receive only — there is no transmit path in this hardware.
 
 > **The bias tee puts DC on the feedline.** Never enable it with a transceiver,
 > a DC-grounded antenna, or a preamplifier powered from somewhere else on the
-> other end of the cable. sdroxide turns it off again on a clean shutdown, and
+> other end of the cable. sdrcrow turns it off again on a clean shutdown, and
 > shows a standing warning while it is on, because the setting is remembered
 > across restarts and there is otherwise nothing to tell you.
 
-If the dongle is unplugged, sdroxide notices within a few seconds and reconnects
+If the dongle is unplugged, sdrcrow notices within a few seconds and reconnects
 by itself when you plug it back in — no need to press Apply. A dongle left
 streaming by a program that was killed rather than closed is reset automatically
 on the next open, so it does not need physically replugging either.
@@ -10388,11 +10388,11 @@ on the next open, so it does not need physically replugging either.
 
 ![The Radio tab with the SmartSDR interface selected](images/settings-radio-smartsdr.jpg)
 
-With the **SmartSDR / FlexRadio (network)** interface, sdroxide drives a
+With the **SmartSDR / FlexRadio (network)** interface, sdrcrow drives a
 FLEX-6000 or FLEX-8000 over the LAN. It connects as a GUI client on TCP 4992,
 creates a panadapter and a **DAX IQ** stream, and receives raw complex baseband
 from it — so the panadapter, the waterfall, the skimmers and every digital mode
-are sdroxide's own, working from the radio's samples rather than from a picture
+are sdrcrow's own, working from the radio's samples rather than from a picture
 the radio already drew. Transmit sends audio over a DAX TX stream, which the
 radio modulates.
 
@@ -10404,7 +10404,7 @@ radio modulates.
   or a VPN never broadcast to you, so those have to be entered by hand.
 - **IQ sample rate** — 24, 48, 96 or 192 kHz. **192 kHz is the radio's maximum
   for a DAX IQ stream**, and therefore the widest span this interface can show;
-  it is not a limit sdroxide imposes. Nor is there a setting that gets round it:
+  it is not a limit sdrcrow imposes. Nor is there a setting that gets round it:
   binding a DAX IQ channel to a panadapter makes the radio set that panadapter's
   span *to the DAX IQ rate*, so the two are one number. A wider view of the band
   has to come from the radio's own panadapter picture, which is what SmartSDR
@@ -10414,10 +10414,10 @@ radio modulates.
   the network already holds channel 1; the radio refuses the same channel twice.
 - **Station name** — shown against this session in the radio's client list. The
   radio also remembers a client by it and restores that client's slices, so
-  renaming makes the radio treat sdroxide as a new one.
+  renaming makes the radio treat sdrcrow as a new one.
 - **GUI client ID** — the identity the radio files those restored slices under.
-  Leave it empty and sdroxide derives one from the station name, which is stable
-  across restarts but *not* unique: every sdroxide that kept the default station
+  Leave it empty and sdrcrow derives one from the station name, which is stable
+  across restarts but *not* unique: every sdrcrow that kept the default station
   name derives the same one. See **Two clients, one identity** below.
 - **Invert spectrum (Swap I/Q)** — mirrors the radio's I/Q about the centre of
   the panadapter. **Off by default**, which is how a FLEX-6600 was verified.
@@ -10444,39 +10444,39 @@ from the radio's meters while you transmit.
 and settles two clients arriving with the same one by disconnecting whoever had
 it first — reporting `duplicate_client_id` and handing the newcomer their
 slices. Because the default identity is derived from the station name, and the
-station name defaults to `sdroxide`, two sdroxide installations on one radio
+station name defaults to `sdrcrow`, two sdrcrow installations on one radio
 arrive holding the same UUID, as do two windows of one installation. Left alone
 that is not an eviction but a tug-of-war, each side reconnecting and throwing
 the other off every few seconds.
 
-sdroxide asks the radio who is already connected before it registers, and takes
+sdrcrow asks the radio who is already connected before it registers, and takes
 a one-session identity instead of evicting anyone it finds holding its UUID. If
 the radio evicts *it* anyway, it remembers that and reconnects transiently
 rather than fighting back. The cost either way is the radio's session restore —
 a transient identity is one the radio has never seen, so it has no slices filed
 under it. Set a **GUI client ID** of your own (any UUID will do) to keep the
-restore and still be distinct from every other sdroxide.
+restore and still be distinct from every other sdrcrow.
 
 **Panadapters are a fixed resource.** A DAX I/Q stream is centred on a
-panadapter, so sdroxide needs one — and the radio has only so many: two on a
+panadapter, so sdrcrow needs one — and the radio has only so many: two on a
 FLEX-6400, four on a 6600 and up, shared with whatever SmartSDR has open. A
 radio also *restores* a GUI client's panadapters when that client comes back
-under an id it has used before, so the one from your last sdroxide session is
+under an id it has used before, so the one from your last sdrcrow session is
 usually still waiting.
 
-sdroxide takes that one up again rather than asking for another, and removes it
+sdrcrow takes that one up again rather than asking for another, and removes it
 on the way out. When every panadapter on the radio is in use anyway — SmartSDR
 with two open on a 6400, say — it borrows one instead of refusing to receive:
-that panadapter's span and centre follow this receiver while sdroxide is
+that panadapter's span and centre follow this receiver while sdrcrow is
 connected, and it is left alone at shutdown because it belongs to somebody else.
 The log and the diagnostic report say when that has happened. Close a panadapter
-in SmartSDR if you would rather sdroxide had one of its own.
+in SmartSDR if you would rather sdrcrow had one of its own.
 
 **No spectrum.** The control link is TCP and the spectrum is UDP, so a radio can
 answer everything you ask it and still send you nothing. If the panadapter stays
 empty while the frequency readout tracks the radio, suspect the UDP path. On a
 computer that has never run SmartSDR, **its own firewall is the usual answer**:
-SmartSDR's installer adds a rule for itself and sdroxide arrives without one. A
+SmartSDR's installer adds a rule for itself and sdrcrow arrives without one. A
 VPN comes next, then an MTU smaller than the **Network MTU** setting.
 
 **Unintelligible audio.** Two faults sound the same and nothing on screen tells
@@ -10486,22 +10486,22 @@ each DAX I/Q stream carries a line stating the rate it is *measured* to be
 delivering against the rate its packets claim, and flags them when they
 disagree. If those two agree, try **Invert spectrum** above for the second.
 
-sdroxide says so on connect when nothing arrives, and the diagnostic report's
+sdrcrow says so on connect when nothing arrives, and the diagnostic report's
 `--- streams ---` section is where to confirm it. It opens with a count of the
 datagrams that reached the machine at all, which separates the two silences: zero
-means the radio's UDP never got here and the fault is outside sdroxide, while a
-non-zero count with no streams listed means it did arrive and sdroxide could not
+means the radio's UDP never got here and the fault is outside sdrcrow, while a
+non-zero count with no streams listed means it did arrive and sdrcrow could not
 read it — a bug worth reporting.
 
-One case sdroxide repairs by itself: some firmware ignores the UDP port a client
+One case sdrcrow repairs by itself: some firmware ignores the UDP port a client
 asks for and streams to 4991, FlexLib's own. When the radio refuses that request
-sdroxide listens on 4991 too and says so in the report. It takes that port *only*
+sdrcrow listens on 4991 too and says so in the report. It takes that port *only*
 in that case, so SmartSDR can still be started alongside on the same machine.
 
 Receive covers 30 kHz to 54 MHz, and to 165 MHz on the models with a VHF
 receiver (the 6600, the 6700 and the 8000 family). On those, transmit is offered
 on 2 m as well as HF and 6 m — a FLEX's own PA stops at 6 m, but a transverter
-on the XVTR port transmits at the band the slice is showing, and sdroxide cannot
+on the XVTR port transmits at the band the slice is showing, and sdrcrow cannot
 see SmartSDR's transverter table to tell the two apart. Without a transverter
 the radio simply declines the key-down.
 
@@ -10527,7 +10527,7 @@ the radio simply declines the key-down.
 ![The Radio tab with the PlutoSDR interface selected](images/settings-radio-plutosdr.jpg)
 
 An **ADALM-Pluto** — the AD9361/AD9363 learning radio — driven directly over
-**IIOD**, the protocol its on-board daemon speaks on TCP port 30431. sdroxide
+**IIOD**, the protocol its on-board daemon speaks on TCP port 30431. sdrcrow
 implements that protocol itself, so **there is nothing to install**: no
 SoapySDR, no libiio, no driver package. It is in every build, including the
 standard Windows and macOS packages.
@@ -10576,7 +10576,7 @@ configured in exactly the same way as one on your desk.
 
   **A stock Pluto cannot go below about 2.084 Msps.** With the AD9361's
   internal FIR decimator bypassed — which is how the radio arrives, and how
-  sdroxide leaves it — the lowest rate the button's clock tree can produce is
+  sdrcrow leaves it — the lowest rate the button's clock tree can produce is
   25 MHz ÷ 12. The rates under that are still offered, because a board someone
   has loaded a filter into can honour them, but on an ordinary Pluto they are
   rounded up and the connection message says so. They are marked in the list.
@@ -10611,16 +10611,16 @@ configured in exactly the same way as one on your desk.
   quietest *first* and your value applied second, so nothing the previous
   program left in the attenuator is ever live. This is the **hardware**
   level, and it is not the Drive slider on the Transmit module: Drive scales
-  the samples sdroxide sends, TX gain sets how loudly the radio plays them, and
+  the samples sdrcrow sends, TX gain sets how loudly the radio plays them, and
   the two multiply ([2.10](#210-transmit)).
 - **Frequency correction** — reference error in parts per million, applied by
-  sdroxide to every frequency it asks for. It is deliberately **not** written to
+  sdrcrow to every frequency it asks for. It is deliberately **not** written to
   the radio's own `xo_correction`, which is persistent and would outlive the
   session and surprise the next program to open the radio. Run with
   `RUST_LOG=sdrcrow_pluto=debug` and the log prints the measured clock error
   after about twenty seconds — that is the number to enter.
 - **Duplex** — whether the AD9361 runs both directions at once (**FDD**, how a
-  Pluto boots and what sdroxide has always left it in) or one at a time
+  Pluto boots and what sdrcrow has always left it in) or one at a time
   (**TDD**). Leave it on FDD unless you want the **PTT pins** below: TDD is what
   those key from, and it rules out *Full duplex*. Takes effect on Apply.
 - **PTT pins** — which pair of the Pluto's four GPO test points follows the
@@ -10649,11 +10649,11 @@ configured in exactly the same way as one on your desk.
 
 **AD9363 or AD9364.** A stock Pluto is an AD9363 and covers **325 MHz–3.8 GHz**;
 a great many have had the well-known firmware change applied, which turns them
-into an AD9364 covering **70 MHz–6 GHz** with a 56 MHz filter. sdroxide does not
+into an AD9364 covering **70 MHz–6 GHz** with a 56 MHz filter. sdrcrow does not
 ask you which you have and does not guess — it reads the limits off the device
 every time it connects, so the band buttons and the transmit gate follow the
 radio you actually own. Press **Test connection** to see which it reported. (If
-a firmware publishes no limits at all, sdroxide says so rather than quoting the
+a firmware publishes no limits at all, sdrcrow says so rather than quoting the
 fallback figures as fact.)
 
 **70 MHz is not the floor any more.** The two figures above are the ones
@@ -10680,10 +10680,10 @@ exactly 5 V. A supply that falls short shows up as `EAGAIN` errors on the
 stream, and running the board away from a precise 5 V exposes you to errors and
 crashes.
 
-Nothing has to be configured in sdroxide to use it. The tuning range, the
+Nothing has to be configured in sdrcrow to use it. The tuning range, the
 sample rate and the on-the-wire sample format are all read off the device as it
 connects rather than assumed, so a board running tezuka reports its own limits
-and its own format and sdroxide follows them. What that means in practice is
+and its own format and sdrcrow follows them. What that means in practice is
 that the band buttons open up as far as the firmware says and no further. This
 is read from what the firmware publishes rather than measured here — no
 tezuka board has been on this bench — so treat the 47.5 MHz figure as the
@@ -10698,7 +10698,7 @@ shell watchers that re-run themselves (`api_controller.sh`, `bitrate_strategy.sh
 `mqtt_obs_ctrl.sh`, `watchconsoletx.sh`, `watchdatveasy.sh`, `watchconsolefreq.sh`,
 `pluto_mqtt_ctrl`, `pluto_stream`). On the Zynq 7020's two Cortex-A9 cores and
 743 MB of RAM that costs real capacity even when no DATV transmission is running,
-and one station using the board purely as a wideband receiver for sdroxide
+and one station using the board purely as a wideband receiver for sdrcrow
 reported it climbing to a load average above 12, a kernel RCU stall, and then an
 IIOD link that collapsed into a tight `os error 11` / `os error 32` loop until
 the board was unreachable. After shutting the stack down, the same board held
@@ -10775,7 +10775,7 @@ Three things to know before you switch it on:
 - **The panadapter still shows your transmission during an over**, not the
   receiver: the wideband display is fed the modulated I/Q as it goes out, which
   is the transmit monitor. It is the *audio* that keeps coming.
-- **A board in TDD cannot do it at all.** sdroxide asks the AD9361 which duplex
+- **A board in TDD cannot do it at all.** sdrcrow asks the AD9361 which duplex
   it is configured for when you enable this and says so on connect if it is TDD; a
   stock Pluto boots in FDD, so this is only a concern on a board somebody has
   deliberately reconfigured — or on one you have put there yourself with the
@@ -10796,7 +10796,7 @@ pins** setting does:
   want. Analog Devices' own note uses GPO0/GPO1 to switch an external LNA, so
   **use GPO2/GPO3 if your board is already wired that way** (choosing GPO0/GPO1
   stands the eLNA control down, because one pin cannot do both jobs).
-- **This puts the radio in TDD**, whatever *Duplex* is set to, and sdroxide says
+- **This puts the radio in TDD**, whatever *Duplex* is set to, and sdrcrow says
   so on connect. The pins follow the AD9361's enable lines, and in FDD both of
   those are asserted the entire session — a pin slaved to transmit would go high
   when the radio opened and stay there. So *Full duplex* is turned off with it:
@@ -10807,7 +10807,7 @@ pins** setting does:
   or an opto-isolator with them — never a relay coil, and never an amplifier's
   key line directly unless its datasheet says that level is enough.
 - Nothing else changes: PTT, VOX, the digital modes and the tune button all key
-  the radio the way they always did, and the pins follow. sdroxide moves the
+  the radio the way they always did, and the pins follow. sdrcrow moves the
   state machine to transmit a few milliseconds *before* the signal starts and
   back to receive *after* the last sample has gone out, so the amplifier is
   switched in ahead of the RF and out behind it rather than hot-switched.
@@ -10815,11 +10815,11 @@ pins** setting does:
   that used to sit in front of them was the transmit oscillator: writing it makes
   the AD9361 force its state machine to ALERT, retune and calibrate, which is the
   better part of a second, and it was being paid on every over even when the dial
-  had not moved. sdroxide now reads where the synthesiser actually is and only
+  had not moved. sdrcrow now reads where the synthesiser actually is and only
   writes it when this over needs it somewhere else, so an over on the same
   frequency as the last one throws the relay straight away. The first over after
   a band change still pays for the retune once.
-- On the way out sdroxide puts the state machine back to receive, so closing it
+- On the way out sdrcrow puts the state machine back to receive, so closing it
   does not leave your amplifier keyed. If the radio is pulled off the network
   mid-over that cannot be delivered — the pin stays high until the Pluto is
   reset. Anything that can transmit for hours wants a hardware timeout of its
@@ -10829,15 +10829,15 @@ The settings are written as the AD9361 driver's device-tree properties
 (`adi,frequency-division-duplex-mode-enable`, `adi,gpo…-slave-rx-enable` and
 `adi,gpo…-slave-tx-enable`) and committed with `initialize`, which is the same
 sequence the Analog Devices note gives for `iio_attr`. They **persist in the
-radio** until it is rebooted or something writes them again, so sdroxide both
+radio** until it is rebooted or something writes them again, so sdrcrow both
 writes and unwrites them: it rewrites the whole set every time it connects with
 a pair selected — including on **Apply / reconnect**, which really does redial
 the board now rather than re-attaching to the connection that was already open,
 so a changed pair (or sample rate, or duplex) takes effect without restarting
-sdroxide — and setting **PTT pins** back to *Off* puts the radio back into
+sdrcrow — and setting **PTT pins** back to *Off* puts the radio back into
 FDD and un-slaves all four pins on the next connect. A radio that has never had
 these settings touched is left exactly as it booted, and so is one you have put
-in TDD yourself with no pin slaved to it — sdroxide undoes its own arrangement,
+in TDD yourself with no pin slaved to it — sdrcrow undoes its own arrangement,
 not somebody else's.
 
 **If the radio connects but hears nothing at all.** The same state machine
@@ -10845,12 +10845,12 @@ decides whether the receiver is on, and it can be left off with every other
 setting intact: the AD9361 driver parks it in *alert* while it calibrates, and
 does not always put it back. A Pluto in that state still streams, but what it
 streams is one value repeated — no signal and no noise, however the gain is
-set. sdroxide checks the state machine as the last step of every connect. On a
+set. sdrcrow checks the state machine as the last step of every connect. On a
 board in FDD — every stock Pluto — it switches the receiver back on and logs
 that it did. It does not touch a board in TDD that you have not asked it to
 drive, or one whose state machine follows its enable pins, because both are
 somebody else's arrangement; it says on connect that the radio is not receiving
-and why instead. Choosing **TDD** under *Duplex* has sdroxide drive a TDD board
+and why instead. Choosing **TDD** under *Duplex* has sdrcrow drive a TDD board
 itself.
 
 **The sample rate is a transmit setting too.** Every I/Q sample is four bytes in
@@ -10860,7 +10860,7 @@ buffer and then stops. If the link cannot keep up, the result on the air is not
 a quiet signal but a chopped one: the envelope switches on and off at the buffer
 rate, which is buzzy and thin in SSB and completely unreadable in NFM, where
 every restart is a click in the receiver's discriminator. Nothing on screen
-shows this — sdroxide's own monitor sees the samples it sent, not the gaps
+shows this — sdrcrow's own monitor sees the samples it sent, not the gaps
 between them — so run with `RUST_LOG=sdrcrow_pluto=debug` if you suspect it and
 watch for the line that says the link is not carrying the full sample rate.
 The cure is to ask for less: **2.083 Msps**, the lowest a stock Pluto accepts,
@@ -10873,7 +10873,7 @@ Pluto goes quiet part-way through a transfer while the board itself is fine — 
 fresh connection is answered in milliseconds. It has been reported over the USB
 gadget and over a dedicated gigabit link alike, on stock and Tezuka firmware;
 the bytes stop reaching this computer, and why is not yet understood. Once the
-receive connection has been silent for half a second, sdroxide asks the board,
+receive connection has been silent for half a second, sdrcrow asks the board,
 on a connection of its own, whether it is still answering. If it is, the stuck
 connection is replaced and the buffer reopened straight away — well under a
 second of audio — and the log says
@@ -10883,7 +10883,7 @@ PlutoSDR: the receive socket failed (… nothing on this socket for 0.5s while t
 ```
 
 If the board does not answer either, it has paused — usually its own processor
-too busy to feed the network — and sdroxide waits for it, a few seconds at
+too busy to feed the network — and sdrcrow waits for it, a few seconds at
 most, rather than redialling around it. Neither touches your dial, your gains or
 a transmission in progress: the control connection is a separate socket.
 
@@ -10899,7 +10899,7 @@ that will find the cause, so it is worth attaching to a report.
 **Transmit, the first time.** Set TX gain to its minimum, key into a **dummy
 load**, and check the signal is where the dial says before you raise it. The
 transmit path of an AD9361 can be fed either by a DMA buffer or by four on-chip
-tone generators, and the tone generators win by default; sdroxide silences them
+tone generators, and the tone generators win by default; sdrcrow silences them
 on every key-up, but a steady carrier where your modulation should be is the
 symptom to report if that ever fails.
 
@@ -10948,8 +10948,8 @@ only, 1 kHz–2 GHz, up to 10 Msps of complex IQ.
 userland library plus a background service that owns the hardware. Install it
 from [sdrplay.com/api](https://www.sdrplay.com/api/) (v3.x) and make sure the
 service is running — on Linux `sudo systemctl enable --now sdrplay`; the
-Windows and macOS installers start automatically. SDR Oxide finds the library
-at runtime, so every build has this backend, and `sdroxide --probe` tells you
+Windows and macOS installers start automatically. SDRCrow finds the library
+at runtime, so every build has this backend, and `sdrcrow --probe` tells you
 which piece is missing when the device list stays empty: the library, the
 service, or the device.
 
@@ -10959,7 +10959,7 @@ own in-tree `msi2500` driver binds to — so on a stock Ubuntu (or Mint, or
 Debian) the kernel claims the receiver before the SDRplay service ever sees it,
 and the service reports no device however plainly the RSP is plugged in. The
 RSPs after it use other product ids and are not affected, which is why this is
-an RSP1 story, and why the same receiver works on a Mac and not here. SDR Oxide
+an RSP1 story, and why the same receiver works on a Mac and not here. SDRCrow
 looks for this and names it in the error, and the fix is to keep those drivers
 out of the way — put
 
@@ -10999,7 +10999,7 @@ unplug the receiver and plug it back in.
   is maximum gain**, 59 dB minimum.
 - **Extended IF range** — lets that reduction go below 20 dB, down to 0: the
   last 20 dB of gain the receiver has, which the API keeps behind a switch of
-  its own and sdroxide leaves off by default. Off is the right setting for
+  its own and sdrcrow leaves off by default. Off is the right setting for
   ordinary listening, the bottom of the range being where an RSP is easiest to
   overload; on is for weak signals with the LNA already at state 0. It also
   lets the AGC set point go up to 0 dBFS.
@@ -11041,7 +11041,7 @@ unplug the receiver and plug it back in.
   > 450 kHz IF, and every LO setting. The parameter blocks match SDRplay's own
   > header and SoapySDRPlay3 drives the mode the same way, so whatever it needs
   > is not on the documented API surface. Leave the switch off unless you are
-  > the one looking for it; sdroxide says so on screen while it is on.
+  > the one looking for it; sdrcrow says so on screen while it is on.
 - **Bias tee** — about 4.7 V DC up the coax for an active antenna (every model
   except the original RSP1).
 
@@ -11049,9 +11049,9 @@ unplug the receiver and plug it back in.
 > RTL-SDR applies: never enable it with a transceiver, a DC-grounded antenna,
 > or a preamplifier powered from somewhere else on the other end of the cable.
 
-If the service reports the ADC **overloaded**, sdroxide shows it on screen and
+If the service reports the ADC **overloaded**, sdrcrow shows it on screen and
 in the log: raise the LNA state, lower the IF gain, or turn the AGC on. If the
-RSP is unplugged — or the service restarted under sdroxide — it notices within
+RSP is unplugged — or the service restarted under sdrcrow — it notices within
 a few seconds and reconnects by itself when the device returns.
 
 ##### The RSPduo's second tuner
@@ -11173,7 +11173,7 @@ what puts it into dual-tuner mode:
 
 It does not matter whether the two radios name the board the same way — one
 picked from the list by serial and the other left on *first found* are the same
-receiver, and sdroxide resolves them to it before looking for a session to join
+receiver, and sdrcrow resolves them to it before looking for a session to join
 (issue #392). A second radio that reports *no SDRplay RSP found* while the first
 one is happily receiving is the older behaviour, from before that; if you still
 see it, the message now says instead that the board is already open here and
@@ -11209,7 +11209,7 @@ second tuner of a board being used for diversity, is told so and does not open.
 > possible.
 
 The **Airspy HF+ (USB)** interface drives an Airspy HF+ **Dual**, **Discovery**
-or **Ranger** directly, using sdroxide's own USB driver. There is no SoapySDR, no
+or **Ranger** directly, using sdrcrow's own USB driver. There is no SoapySDR, no
 libusb and no libairspyhf involved, so this works in every build — including the
 standard Windows `.msi` and macOS `.dmg` — with nothing to install beyond access
 to the device itself (see the README's *Airspy HF+ permissions*).
@@ -11219,7 +11219,7 @@ a Dual, at up to 912 kSPS of complex baseband. Receive only — there is no
 transmit path in this hardware.
 
 All three models share one USB id, so the device list cannot tell them apart;
-sdroxide asks the receiver which it is once the device is open, and the model
+sdrcrow asks the receiver which it is once the device is open, and the model
 appears in the interface label at the top of the window.
 
 - **Receiver** — which one to open, by the serial in its USB descriptor.
@@ -11229,7 +11229,7 @@ appears in the interface label at the top of the window.
   so once a receiver is connected the list shows that receiver's own rates. Before
   one is connected it shows every rate any HF+ is known to offer, annotated with
   who each belongs to. Takes effect on **Apply**. If the configured rate is not
-  one the hardware has, sdroxide uses the nearest one it does and says so on
+  one the hardware has, sdrcrow uses the nearest one it does and says so on
   screen rather than refusing to open.
 - **AGC** and **AGC threshold** — the receiver's own gain control. Leave it on
   for general listening. *High* threshold trades a little sensitivity for
@@ -11256,7 +11256,7 @@ appears in the interface label at the top of the window.
 > RTL-SDR applies: never enable it with a transceiver, a DC-grounded antenna, or
 > a preamplifier powered from somewhere else on the other end of the cable.
 
-**What the host does.** The receiver's firmware does the filtering; sdroxide does
+**What the host does.** The receiver's firmware does the filtering; sdrcrow does
 what the vendor library does, and for the same reasons:
 
 - An **adaptive IQ image balancer** on the zero-IF rates (768 and 912 kSPS),
@@ -11281,7 +11281,7 @@ only to the nearest kilohertz. It is also the quickest way to tell a driver
 problem from a DSP one: if something looks wrong and turning this off changes it,
 the DSP is where to look.
 
-If the receiver is unplugged, sdroxide notices within a few seconds and
+If the receiver is unplugged, sdrcrow notices within a few seconds and
 reconnects by itself when you plug it back in — no need to press Apply.
 
 #### 6.2.10 Icom LAN (network radios)
@@ -11289,7 +11289,7 @@ reconnects by itself when you plug it back in — no need to press Apply.
 The **Icom LAN (network)** interface drives an Icom over the Ethernet or WiFi
 port on the radio itself, using the same IP-remote protocol Icom's own RS-BA1
 software speaks. No licence for RS-BA1 is needed, and no computer at the radio
-end: sdroxide talks to the transceiver directly.
+end: sdrcrow talks to the transceiver directly.
 
 It covers every Icom with a network port — the **IC-7300MK2**, **IC-705**,
 **IC-7610**, **IC-7760**, **IC-7851/IC-7850**, **IC-9700**, **IC-905** and
@@ -11317,23 +11317,23 @@ Three settings, all under **MENU » SET**:
 
 1. **Network > Network Control** — ON. Without it the radio never answers.
 2. **Network > Network User1 (or User2)** — set a **network user name** and
-   **password**, and enter the same pair in sdroxide.
+   **password**, and enter the same pair in sdrcrow.
 3. **Connectors > MOD Input > DATA OFF MOD** and **DATA MOD** — **LAN** (on an
    IC-705, **WLAN**), or transmit audio is not heard. An **IC-7610**, **IC-7760**
    or **IC-7851** has three data slots rather than one, **DATA1 MOD** through
-   **DATA3 MOD**, and all of them want LAN. sdroxide writes this for you on a
+   **DATA3 MOD**, and all of them want LAN. sdrcrow writes this for you on a
    model whose menu numbering it knows — every transceiver in the list above —
    and on any other it says so in the status line and leaves the menu alone. Not
    on a receiver: an **IC-R8600** has no modulation input to set, so neither the
    write nor the warning appears.
 
-   It is a loan, not a keep: sdroxide reads what these items hold before it
+   It is a loan, not a keep: sdrcrow reads what these items hold before it
    writes anything, and puts them back the way it found them when the session
-   ends — the radio switched off in sdroxide, its tab closed, the interface
+   ends — the radio switched off in sdrcrow, its tab closed, the interface
    changed, or the program quit. A rig left on LAN is deaf to its own
    microphone and its own key the next time it is used on its own in the shack,
    with nothing on the radio saying why (issue #252). The same goes for the
-   **LAN AF/IF Output > Output Select** item sdroxide sets for the 12 kHz IF.
+   **LAN AF/IF Output > Output Select** item sdrcrow sets for the 12 kHz IF.
    Two things it cannot put back: an item the radio never answered a read for,
    and a session that ends because the link *died* — a radio unplugged or a
    WiFi that went away keeps whatever it had at that moment.
@@ -11343,14 +11343,14 @@ Three settings, all under **MENU » SET**:
    with `LAN` at the end of a nine-entry list. Same three settings, different
    signposting.
 
-   The numbering is what sdroxide has to know, and it is not the menu path: it
+   The numbering is what sdrcrow has to know, and it is not the menu path: it
    is a flat index the manufacturer renumbers between models, with the radio's
    calibration marker a few places away from the modulation block. That is why
    an unrecognised model is asked to set the item by hand rather than guessed
    at. A radio whose CI-V address you have changed in **Connectors > CI-V** is
    still recognised: the name it reports is matched too, and either piece of
    evidence on its own is enough. Only when the two name *different* Icoms —
-   a network radio name typed over the model's — does sdroxide fall back to the
+   a network radio name typed over the model's — does sdrcrow fall back to the
    address alone.
 
 A receiver in the **IC-R** line gets no PTT, drive, tune or SWR controls at all,
@@ -11363,7 +11363,7 @@ announce itself on the network, so there is no Discover button.
 ##### A tune over a network
 
 A frequency sent over this link is a UDP datagram, and the radio never says it
-acted on one. So sdroxide watches for the radio to report the new frequency
+acted on one. So sdrcrow watches for the radio to report the new frequency
 back, and if it has not within a fraction of a second it sends the tune again —
 up to a second, after which the radio has the last word. Over the same second
 the one frequency it will *not* accept from the radio is the one you just tuned
@@ -11371,7 +11371,7 @@ away from: the answer to a question asked before the tune can arrive late, and
 out of order, and adopting it puts you back on the band you just left. That was
 a band change in FT8 taking three to five clicks (issues #285 and #297).
 
-None of this overrules the radio. Turn its own dial and sdroxide follows at
+None of this overrules the radio. Turn its own dial and sdrcrow follows at
 once, and a frequency the radio will not go to — outside its range, or a lock
 switch — wins after that second rather than being argued with.
 
@@ -11381,7 +11381,7 @@ switch — wins after that second rather than being argued with.
 RF deck has a USB 3.0 socket that streams 1.92 Msps I/Q, but only through a
 manufacturer-supplied FTDI driver on Windows, and nothing of it reaches the
 [LAN] port beside it. So over the network the ceiling is the same on every model,
-for sdroxide and RS-BA1 alike:
+for sdrcrow and RS-BA1 alike:
 
 - On **AF** the radio has already demodulated, so the audio stream is not a
   picture of the band at all — it is a picture of what came through the rig's
@@ -11430,7 +11430,7 @@ A scope that stops in the middle of a session **restarts itself**. Nothing on
 this link reports that the sweeps have stopped, and several ordinary things stop
 them — an enable lost on the way (these are single UDP datagrams that nothing
 re-sends), the radio's own scope screen being closed and reopened, or the CI-V
-stream reconnecting under a session that otherwise carries on. sdroxide notices
+stream reconnecting under a session that otherwise carries on. sdrcrow notices
 the silence after about three seconds and sends the enables again, backing off
 while the scope stays quiet, so the strip comes back without a reconnect. The
 watchdog holds off while you transmit, since a radio that stops sweeping for the
@@ -11464,14 +11464,14 @@ Select`), which decides who does the demodulating:
 - **AF — the radio demodulates.** The radio's filters, AGC and detector do the
   work, and the panadapter is the radio's own scope — see above. This is the safe
   default and works on every model at every sample rate.
-- **12 kHz IF — sdroxide demodulates.** The radio sends its DRM intermediate
-  frequency instead of audio. sdroxide mixes it down to baseband and treats it
+- **12 kHz IF — sdrcrow demodulates.** The radio sends its DRM intermediate
+  frequency instead of audio. sdrcrow mixes it down to baseband and treats it
   as an ordinary receiver front end, so its own filters, noise reduction,
   notches, digital-mode decoders and skimmer all apply — over roughly ±12 kHz
   around the dial.
 
   This needs the **48000 Hz** audio rate; at anything lower there is no room for
-  a 12 kHz IF and sdroxide falls back to AF and says so. How much of that
+  a 12 kHz IF and sdrcrow falls back to AF and says so. How much of that
   ±12 kHz is genuinely usable is not documented by Icom and has not been
   measured here, so treat the width as approximate.
 
@@ -11482,11 +11482,11 @@ Transmit is unaffected by the choice: it is always audio the radio modulates.
 Only on the 12 kHz IF, and only worth touching if something is wrong.
 
 A 12 kHz IF is a *real* signal, so it carries the band you want and a mirror of
-it, and sdroxide has to pick one. Pick the wrong one and everything still sounds
+it, and sdrcrow has to pick one. Pick the wrong one and everything still sounds
 like a radio — it is just mirrored, which on SSB means the audio comes out on the
 opposite sideband to the one it was sent on. The giveaway is having to select
 **USB** on 40 m and **LSB** on 20 m to make anybody intelligible, with the
-radio's own mode display agreeing with sdroxide the whole time.
+radio's own mode display agreeing with sdrcrow the whole time.
 
 - **Automatic** (the default) uses what the model is known to do: mirrored on an
   **IC-7760**, normal on every other Icom.
@@ -11503,22 +11503,22 @@ nobody has reported it, so it is left alone.
 ##### The dial and the mode belong to the radio
 
 Both travel in both directions, on either receive path. Turn the radio's dial or
-change its mode and sdroxide follows within a fifth of a second; change VFO or
-mode in sdroxide and the radio follows. On the 12 kHz IF the mode still matters
-even though sdroxide is the one demodulating — it is the mode the radio will
+change its mode and sdrcrow follows within a fifth of a second; change VFO or
+mode in sdrcrow and the radio follows. On the 12 kHz IF the mode still matters
+even though sdrcrow is the one demodulating — it is the mode the radio will
 transmit in, and the radio's own display should not disagree with yours. What it
-will *not* fix is a mirrored IF: the sideband you hear on that path is sdroxide's
+will *not* fix is a mirrored IF: the sideband you hear on that path is sdrcrow's
 to choose, not the radio's, which is why a swap there is the **IF spectrum**
 setting above and not this one.
 
-What sdroxide will *not* do is impose the session's dial or mode when the
+What sdrcrow will *not* do is impose the session's dial or mode when the
 connection opens: it adopts whatever the transceiver is already sitting on.
 Starting a session by retuning somebody's radio out of a config file is not what
 a transceiver operator expects — unlike an SDR dongle, this radio was somewhere
 deliberate before you connected.
 
 If the radio refuses a mode it does not have, it keeps the one it was in and
-sdroxide follows it back after about a second.
+sdrcrow follows it back after about a second.
 
 ##### The rest of the tab
 
@@ -11556,7 +11556,7 @@ The **RTL-SDR over rtl_tcp (network)** interface is the dongle from
 [§6.2.5](#625-rtl-sdr-usb-dongles) on a *different machine* — typically a
 Raspberry Pi at the foot of the mast, so the coax run is a metre instead of
 thirty. The far end runs `rtl_tcp`, which owns the dongle and performs every
-register write on sdroxide's behalf; this end sends five-byte commands and
+register write on sdrcrow's behalf; this end sends five-byte commands and
 receives the same 8-bit I/Q the USB endpoint would have produced.
 
 On the remote machine:
@@ -11582,7 +11582,7 @@ because it is the same radio; only these differ:
   complex sample: 1.024 Msps is 16 Mbit/s, 2.4 Msps is 38 Mbit/s. The default is
   1.024 Msps rather than the USB tab's 2.4, since it has to fit down a network.
   **A rate the link cannot carry does not degrade gracefully** — `rtl_tcp` drops
-  a client that stops keeping up, and sdroxide then reconnects, so the symptom
+  a client that stops keeping up, and sdrcrow then reconnects, so the symptom
   is a stream that restarts every few seconds rather than one that gets choppy.
   Wired Ethernet carries any rate on the list; a single WiFi hop is usually good
   for 1.8 Msps and reliable at 1.024.
@@ -11600,14 +11600,14 @@ because it is the same radio; only these differ:
   known frequency and adjust until it sits on the dial.
 - **HF reception** — with one wrinkle the USB tab does not have. The protocol
   reports the tuner chip and nothing else, and a Blog V4 is an R828D like any
-  other R828D, so sdroxide cannot tell them apart over the wire. *Automatic*
+  other R828D, so sdrcrow cannot tell them apart over the wire. *Automatic*
   therefore leaves an R828D alone — right for a V4, which upconverts inside the
   server's own tuning call — and switches anything else to direct sampling below
   24 MHz. If your remote dongle is a *plain* R828D that hears nothing on HF,
   choose **Direct sampling (Q branch)** explicitly; that is always obeyed. The
   second-Nyquist note above applies at the far end just the same.
 - **Bias tee** — feeds the coax at the far end, which may be out of sight and up
-  a mast. sdroxide turns it off when the connection closes cleanly, and warns
+  a mast. sdrcrow turns it off when the connection closes cleanly, and warns
   while it is on. Older servers do not implement the command at all; because the
   protocol has no replies, a bias tee that fails to come on cannot be
   distinguished from one that did.
@@ -11620,7 +11620,7 @@ and are not:
 
 - **Nothing is ever reported back.** There are no replies in either direction:
   the gain slider shows what was asked for, not what the far end's tuner snapped
-  it to, and the sample rate is the requested one. Over USB sdroxide reads both
+  it to, and the sample rate is the requested one. Over USB sdrcrow reads both
   back from the hardware.
 - **The dongle is not selectable from here.** `rtl_tcp` chose its dongle when it
   started, with `-d`. There is no serial, no product string and no device list in
@@ -11632,7 +11632,7 @@ anything on the Radio tab.
 
 ##### SDRplay servers (rsp_tcp)
 
-`rsp_tcp` publishes an SDRplay RSP over the same protocol, and sdroxide connects
+`rsp_tcp` publishes an SDRplay RSP over the same protocol, and sdrcrow connects
 to one through this interface — not the SDRplay one, which drives an RSP on
 *this* machine through the vendor API.
 
@@ -11645,7 +11645,7 @@ greeting, and only when it was started with **`-E`**.
 
 So run the server with `-E` if you can. With it:
 
-- sdroxide names the radio properly on the Device tab — hardware version,
+- sdrcrow names the radio properly on the Device tab — hardware version,
   antenna inputs, tuner count, IF gain-reduction range and which filters it has —
   instead of repeating the R820T the server is pretending to be;
 - **16-bit samples work.** A server started with `-b 16` streams signed 16-bit
@@ -11677,7 +11677,7 @@ reduction is a **reduction**, so a bigger number is less signal.
 #### 6.2.12 HackRF One / Pro (USB)
 
 A HackRF One or HackRF Pro — or a Jawbreaker or a rad1o — driven directly over
-USB by sdroxide's own pure-Rust driver. No SoapySDR, no libusb and no libhackrf,
+USB by sdrcrow's own pure-Rust driver. No SoapySDR, no libusb and no libhackrf,
 so this interface is in every build variant on every platform. DC to 7.25 GHz,
 2 to 20 Msps, wideband IQ in both directions; a Pro takes narrower rates, down
 to 250 ksps.
@@ -11699,18 +11699,18 @@ and nobody types the whole thing. Leave it empty for "the first one found".
 A **HackRF Pro** appears in this list as "HackRF Pro" and is otherwise the same
 radio to drive: it carries the HackRF One's USB id, answers the same vendor
 requests, and streams the same 8-bit I/Q. Three things about it are different
-and sdroxide reads all three off the board rather than assuming — see the notes
+and sdrcrow reads all three off the board rather than assuming — see the notes
 on sample rate, tuning range and baseband filter below. Its half-precision
 (4-bit, 40 Msps) and extended-precision (16-bit) gateware modes are **not**
 driven here; if some other program has loaded one with `hackrf_debug -P`, the
-radio stays in it until you unplug it and sdroxide will show noise.
+radio stays in it until you unplug it and sdrcrow will show noise.
 
 **Sample rate.** 2 Msps is the default and the gentlest on the host. Everything
 below 8 Msps is outside the MAX5864's specified range — it is what everyone
 uses regardless, and it is the rate the LO-offset behaviour was measured at, so
 it is offered with a note rather than hidden. 20 Msps is 40 MB/s, which is what
 the High-Speed USB 2.0 link every HackRF has is rated for; there is no
-SuperSpeed HackRF to move it to, and sdroxide only says something about the
+SuperSpeed HackRF to move it to, and sdrcrow only says something about the
 link if the board has enumerated *below* high speed — a cable or hub problem,
 and one no sample rate will survive. Changing the rate reopens the radio.
 
@@ -11737,17 +11737,17 @@ The hardware **truncates** rather than rounds: ask the LNA for 15 dB and you get
 hand at the boundaries. That is the radio being honest, not the UI fighting you.
 
 **The RF amplifier is one switch with two settings.** There is a single 14 dB
-amplifier in the signal path, and it sits in *both* directions. sdroxide gives
+amplifier in the signal path, and it sits in *both* directions. sdrcrow gives
 you a receive setting and a transmit setting for it and applies whichever
 belongs to the direction the radio is entering — so you can run the preamp
 bypassed on receive, where a HackRF front end overloads easily on a real
 antenna, and in circuit on transmit for the extra output. This works because
-sdroxide reprograms the entire front end on every change of direction. Reaching
+sdrcrow reprograms the entire front end on every change of direction. Reaching
 the same radio through SoapySDR cannot express it at all: there the receive amp
 goes dead after the first over and the transmit amp never engages.
 
 **Baseband filter.** Leave it on Automatic. The filter is coupled to something
-invisible: sdroxide parks the local oscillator a quarter of the span above your
+invisible: sdrcrow parks the local oscillator a quarter of the span above your
 dial so the radio's own DC spike lands clear of the signal, and it *withdraws*
 that offset when the filter is too narrow to reach where the signal was moved
 to. So a filter chosen by hand and set too low does not merely soften the band
@@ -11760,7 +11760,7 @@ filter itself and discards what the host asks for. Its analog chain is nothing
 like a HackRF One's — the narrowest setting its transceiver offers is around
 10 MHz wide, and everything below that is a switched filter plus decimation
 that only the radio's own firmware knows how to combine — so it derives the
-same 0.75 × sample rate itself and applies it across the whole chain. sdroxide
+same 0.75 × sample rate itself and applies it across the whole chain. sdrcrow
 does not send the request at all on that board rather than send one that would
 be accepted and ignored; if you have a filter pinned from another radio, the
 status line at open says so.
@@ -11775,7 +11775,7 @@ That is a wider span than any of these boards is *specified* for. A HackRF One
 is a 1 MHz – 6 GHz radio, a Pro is 100 kHz – 6 GHz, and outside those the
 receiver is heavily attenuated and the transmitter makes little or no power.
 But attenuated is not the same as absent: people listen to shortwave below
-1 MHz on a HackRF, and 5 GHz Wi-Fi is visible above 6, so sdroxide lets the dial
+1 MHz on a HackRF, and 5 GHz Wi-Fi is visible above 6, so sdrcrow lets the dial
 go there and lets you judge what you hear rather than deciding in advance that
 you cannot. Expect a deaf radio at the edges, and do not expect to transmit
 usefully there.
@@ -11788,7 +11788,7 @@ a DSP one.
 
 **Bias tee.** About 3 V at 50 mA on the antenna port, for an active antenna or a
 preamp. A HackRF One or Pro only — the Jawbreaker and the rad1o have no such
-circuit, and on those sdroxide does not send the command at all and says so
+circuit, and on those sdrcrow does not send the command at all and says so
 rather than leaving a switch that quietly does nothing. A board that refuses the
 command anyway — the firmware answers it with a stall on anything that is not a
 One, an r9 or a Pro, and some boards do not identify themselves as any of those
@@ -11800,7 +11800,7 @@ Off by default, behind an **Enable transmit** switch, and the default is
 deliberate. A HackRF is a wideband transmitter with poor harmonic suppression:
 it wants an external low-pass filter for whatever band you are on, and it will
 happily radiate outside it. Somebody who plugged one in to listen should not be
-one PTT away from that. While the switch is off, sdroxide publishes no transmit
+one PTT away from that. While the switch is off, sdrcrow publishes no transmit
 channel at all, so nothing anywhere in the program can key the radio.
 
 With it on:
@@ -11813,12 +11813,12 @@ With it on:
   runs the DAC at a fraction of full scale, which raises intermodulation and
   the carrier leakage relative to your signal by the same amount you turned it
   down.
-- **The carrier sits on your signal.** sdroxide's transmit chain centres the
+- **The carrier sits on your signal.** sdrcrow's transmit chain centres the
   signal at DC and tunes the radio straight to it, so the oscillator's own
   leakage lands on the carrier frequency rather than off to one side. This is
   inherent to the current transmit path, not a setting.
 - **Receive stops.** Half duplex. The panadapter freezes for the length of the
-  over and resumes afterwards, and sdroxide throws away what was buffered when
+  over and resumes afterwards, and sdrcrow throws away what was buffered when
   the receiver stopped — those samples are from before you keyed up.
 
 > **Transmit has not yet been measured against hardware.** Receive has. If
@@ -11829,7 +11829,7 @@ With it on:
 
 #### 6.2.13 Airspy R2 / Mini (USB)
 
-An Airspy R2 or Airspy Mini, driven directly over USB by sdroxide's own
+An Airspy R2 or Airspy Mini, driven directly over USB by sdrcrow's own
 pure-Rust driver. No SoapySDR, no libusb and no libairspy, so this interface is
 in every build variant on every platform. 24 MHz to 1800 MHz, receive only.
 
@@ -11852,7 +11852,7 @@ The serial is matched on its suffix, so the last eight digits are enough.
 rates; before that it shows both models' and says which is which.
 
 Underneath, the receiver runs at **twice** the rate shown. Its ADC is real
-rather than complex — it digitises a real signal at the full rate — and sdroxide
+rather than complex — it digitises a real signal at the full rate — and sdrcrow
 makes complex baseband from it on the host with a quarter-rate translate and a
 half-band decimator. Two consequences are worth knowing:
 
@@ -11870,7 +11870,7 @@ clock dividers together, so it cannot be changed under a running stream.
 **Gain is a step along a curve, not three sliders.** The R820T2 has an LNA, a
 mixer and a VGA, and setting them independently is a good way to build a
 receiver that either overloads or hisses. Airspy publishes two curated curves
-through the three stages and sdroxide offers the same choice, because that is
+through the three stages and sdrcrow offers the same choice, because that is
 what the numbers were tuned for and what every other Airspy program does:
 
 | Curve | Use |
@@ -11891,7 +11891,7 @@ or the other, not both.
 its 12-bit samples three-to-a-word instead of padding each to 16 bits, which is
 a third less USB traffic — and this is a USB 2.0 device carrying up to 30 MB/s
 packed against 40 unpacked. Firmware too old to have the request streams
-unpacked and sdroxide says so. Applies on reconnect, because it changes how
+unpacked and sdrcrow says so. Applies on reconnect, because it changes how
 every transfer is decoded.
 
 **Bias tee.** DC on the antenna port for an active antenna or preamp. Off by
@@ -11944,7 +11944,7 @@ Two other keys in that file are worth knowing about before you start it:
   being listed is what you want.
 - **`allow_control`** decides whether a client may retune the receiver and
   change its gain. With it off, or with another client already holding control,
-  sdroxide is limited to the slice that client is receiving — see below.
+  sdrcrow is limited to the slice that client is receiving — see below.
 
 **Test connection** connects, reads what the server says about itself, and
 disconnects again *without starting a stream*, so it is safe to press against a
@@ -12037,7 +12037,7 @@ When another client has it:
   the samples are not.
 - The gain is theirs. No gain control is offered at all, because one that was
   silently ignored would be worse than none.
-- When they retune, your span moves with it and sdroxide follows rather than
+- When they retune, your span moves with it and sdrcrow follows rather than
   fighting back.
 - A line on screen says all of this, so a dial that will not move is never a
   mystery.
@@ -12055,7 +12055,7 @@ Two encodings in this protocol are documented nowhere and thus not implemented:
 - **4-bit differential FFT** is never requested. A server that sends one anyway
   is ignored — the strip stays empty and the receiver carries on.
 
-The protocol's demodulated-audio streams are not used either: sdroxide
+The protocol's demodulated-audio streams are not used either: sdrcrow
 demodulates its own.
 
 > **Security.** SpyServer has no authentication and no encryption. A server you
@@ -12117,11 +12117,11 @@ the whole display out by that much instead of correcting it.
 **Per-mode offsets** appear under an I.F. tap, because on many transceivers the
 carrier — and with it the I.F. — sits in a different place in each mode. Tick a
 mode to give it an offset of its own; leave it clear and it uses the plain
-offset above. The classes are the rig's, not sdroxide's: every digital and
+offset above. The classes are the rig's, not sdrcrow's: every digital and
 keyboard mode counts as **DATA**, because that is the one setting the rig is in
 for all of them.
 
-These follow the mode the **radio reports**, not the mode named in sdroxide, so
+These follow the mode the **radio reports**, not the mode named in sdrcrow, so
 they stay right even when the two differ — which they routinely do, since
 **Digimode mode** ([6.2.2](#622-cat-radios-serial-control--usb-audio)) may leave
 the rig in plain USB for a digital mode. Changing mode retunes the receiver by
@@ -12144,7 +12144,7 @@ let the radio go elsewhere.
 
 **Audio from** — which of the two you actually listen to:
 
-- **The attached receiver** — sdroxide demodulates its I/Q, so the filter, AGC,
+- **The attached receiver** — sdrcrow demodulates its I/Q, so the filter, AGC,
   noise reduction, notch and squelch in the panel are the ones doing the work.
 - **The transceiver** — its own demodulated audio, over its sound card. Then the
   rig is the receiver in every sense that can be heard: the digital-mode
@@ -12184,7 +12184,7 @@ to watch.
   the SWR and power meters and CW keying. The receiver's own gains, antenna and
   sample rate are still its own, and are set on its page.
 - **In CW the transceiver's own VFO sits a sidetone pitch above the dial**, and
-  is put there for you. sdroxide's CW dial is a zero-beat — the note you copy is
+  is put there for you. sdrcrow's CW dial is a zero-beat — the note you copy is
   a pitch above it, which is where the passband is centred and what the QRG
   readout shows ([2.14](#214-cw-decoding-and-keyboard-sending)) — but a
   transceiver put in CW makes its own carrier on its own VFO, whether the key is
@@ -12201,7 +12201,7 @@ to watch.
 #### 6.2.16 ELAD FDM-DUO / FDM-S (USB)
 
 An ELAD FDM-DUO, FDM-DUOr, FDM-S2 or FDM-S1, driven directly over USB by
-sdroxide's own pure-Rust driver. No SoapySDR, no libusb and no gr-elad, so this
+sdrcrow's own pure-Rust driver. No SoapySDR, no libusb and no gr-elad, so this
 interface is in every build variant on every platform.
 
 All three are direct-sampling receivers: a 122.88 MHz ADC (61.44 MHz on the
@@ -12213,11 +12213,11 @@ down-converter delivering one wideband I/Q channel. The FDM-S2 covers
 **One radio, three USB devices.** An FDM-DUO's rear panel has three USB sockets
 and they are three separate devices to the computer:
 
-| Socket | What it is | What sdroxide does with it |
+| Socket | What it is | What sdrcrow does with it |
 |---|---|---|
 | **RX** | ELAD's own vendor interface | The wideband I/Q — the panadapter, the demodulators, the skimmers |
 | **CAT** | An FTDI serial bridge | The dial, the mode, PTT, the S-meter, the SWR, the transmit power |
-| **USB Audio** | A USB sound card | Transmit audio out of sdroxide and into the radio |
+| **USB Audio** | A USB sound card | Transmit audio out of sdrcrow and into the radio |
 
 This one interface drives all three, so there is nothing to pair up and no
 second radio tab. An FDM-S1 or FDM-S2 has only the first of them.
@@ -12257,10 +12257,10 @@ sudo install -m 755 elad-firmware-2.0-intel /usr/local/bin/elad-firmware
 > prints `XYLINX programming correct` and takes about six seconds — check that
 > once by hand before blaming anything else.
 
-sdroxide then runs it for you every time it opens the receiver, loading the
+sdrcrow then runs it for you every time it opens the receiver, loading the
 image for the sample rate you picked. It takes about six seconds, once per
 session. If you keep the loader somewhere else, point `SDROXIDE_ELAD_FIRMWARE`
-at it. If sdroxide cannot find it at all, it says so on screen rather than
+at it. If sdrcrow cannot find it at all, it says so on screen rather than
 retrying in silence.
 
 **Sample rate.** The down-converter delivers 192, 384, 768, 1536, 3072 or
@@ -12273,7 +12273,7 @@ FDM-S2 this setting therefore *is* a command: it chooses the image loaded above.
 menu for the rate, so it arrives at whatever it powered up in — 192 kHz on a
 fresh one — or whatever FDM-SW2 last left it in, and this setting says which one
 that is. Set it wrong and you still get samples: the panadapter is simply the
-wrong width, with every frequency inside it scaled to match. sdroxide measures
+wrong width, with every frequency inside it scaled to match. sdrcrow measures
 the real throughput a couple of seconds after the stream starts and tells you on
 screen when the two disagree, naming the rate to pick. The one exception is
 6144 kHz, where the samples themselves are half as wide — a wrong guess there is
@@ -12305,7 +12305,7 @@ The choice applies immediately and is remembered, and every start re-asserts it
 on the radio — the antenna belongs to the station's coax rather than to the
 radio's memory. Until you have picked one, what is shown is the rig's own
 setting, read when the control port opens: a socket chosen at the front panel
-with sdroxide not running is adopted rather than overridden. On an FDM-DUO
+with sdrcrow not running is adopted rather than overridden. On an FDM-DUO
 reached through its receive cable alone the command still goes out, but nothing
 can be read back, so the setting shown is the one you last picked rather than one
 the radio confirmed.
@@ -12328,14 +12328,14 @@ than a continuous control).
 > radio that ignores the dial and will not key, on every serial port you try.
 > This setting is shared with the CAT / Audio interface ([6.2.2](#622-cat-radios-serial-control--usb-audio)),
 > whose own default is 19200, so a configuration in which you have never touched
-> **Baud** starts out at a rate the radio has no setting for. sdroxide falls back
+> **Baud** starts out at a rate the radio has no setting for. sdrcrow falls back
 > to 38400 in that case and says so on screen, but the honest fix is to set this
 > to whatever menu 70 says.
 
 Leave the port **empty** and an FDM-DUO is still usable on its receive cable
 alone: the driver tunes, changes mode and keys through the CAT gateway on the
 same USB interface, and the radio's own dial is followed — the receive cable
-carries a read-back of the frequency the radio is tuned to, which sdroxide asks
+carries a read-back of the frequency the radio is tuned to, which sdrcrow asks
 for four times a second, so turning the knob moves the panadapter with it. What
 you give up is the rest of what needs an *answer*: the S-meter, the SWR, the
 power readback, and any notice of a mode changed at the front panel. That is
@@ -12343,20 +12343,20 @@ also the setting for an FDM-S1 or FDM-S2, which have no CAT port at all.
 
 **A and B are the radio's own two VFOs on that cable.** The FDM-DUO has the
 pair a transceiver has, and its receive window follows whichever is selected, so
-taking up sdroxide's VFO B takes up the radio's: its display, its knob and its
+taking up sdrcrow's VFO B takes up the radio's: its display, its knob and its
 A/B button are all on the dial you are working, and each VFO keeps its own mode
 at both ends. What it cannot see is that button being pressed *at the radio* —
-the read-back reports a frequency, not which VFO produced it, so sdroxide reads
+the read-back reports a frequency, not which VFO produced it, so sdrcrow reads
 a press of A/B as the dial having moved and follows it onto the VFO it already
-thinks you are on. To put the two back in step, click sdroxide's **A** or **B**
+thinks you are on. To put the two back in step, click sdrcrow's **A** or **B**
 for the VFO you want, even the one already lit: that selects it at the radio
 too. With a CAT serial port set instead, the radio is kept on its
-VFO A and sdroxide drives that one dial, because the dial is read there by
+VFO A and sdrcrow drives that one dial, because the dial is read there by
 asking `FA;`, which answers VFO A whichever VFO is selected.
 
 **Transmit input** is the radio's `TI` command, menu 32 `TX IN` at the front
 panel, asserted when the port opens. **USB audio** is what makes transmit work
-here — the radio sends what sdroxide puts into its sound card. A radio left on
+here — the radio sends what sdrcrow puts into its sound card. A radio left on
 **Microphone** transmits the room instead, with nothing on screen to say so,
 which is why this is a visible setting rather than an assumption. Pick the
 radio's own USB Audio device beside it, or under Settings → Radio → Radio
@@ -12366,7 +12366,7 @@ audio.
 This front end hands over a whole down-converter window, but that window is
 centred on the transceiver's own VFO: the receiver being streamed is the one the
 radio tunes for itself, so moving the VFO moves the window with it, hertz for
-hertz. There is no arrangement in which the radio's display and sdroxide's
+hertz. There is no arrangement in which the radio's display and sdrcrow's
 readout are different numbers and both are true — except in CW, where they are
 *supposed* to differ by your sidetone pitch, and the paragraph on CW below says
 why.
@@ -12376,10 +12376,10 @@ digits, the mouse wheel, a click on the waterfall, a memory, a band button —
 moves the radio's VFO, and the panadapter re-centres on the dial as it goes.
 Turning the **front-panel knob** moves the readout here. Nothing is commanded
 back at a frequency the radio itself reported, so your hand on the knob and
-sdroxide cannot fight over it.
+sdrcrow cannot fight over it.
 
 With no CAT port — or one the radio does not answer on — there is no VFO to
-command, and sdroxide tunes inside the window the radio is already sending, the
+command, and sdrcrow tunes inside the window the radio is already sending, the
 way it does on any other SDR. The frequency axis is then only as right as the
 number you have typed into it, so set the band on the radio and type its dial
 frequency here to line the two up. That is also how an FDM-S1 or FDM-S2 works,
@@ -12391,13 +12391,13 @@ the radio* — so the CW panel cannot key it over CAT. Menu 37 `CW IN` set to
 `Key+DTR` is the other route, using the CAT cable's DTR line as a straight key.
 
 Which is why, in CW and only in CW, **the radio's VFO sits a sidetone pitch
-above sdroxide's readout**. The down-converter comes out on the VFO whatever
+above sdrcrow's readout**. The down-converter comes out on the VFO whatever
 mode the radio is in, so the station you are copying at 700 Hz is 700 Hz above
 the number in the big readout — and the VFO is what the radio keys its own
-transmitter on. sdroxide therefore leaves the VFO on the station and tunes its
+transmitter on. sdrcrow therefore leaves the VFO on the station and tunes its
 own receiver the 700 Hz down, so the radio's display reads the frequency you are
 working (the same figure the CW panel shows beside the pitch, and the one to
-log) while sdroxide's readout stays the zero-beat it has always been — unless
+log) while sdrcrow's readout stays the zero-beat it has always been — unless
 **QRG** is on ([2.14](#214-cw-decoding-and-keyboard-sending)), which reads the
 worked frequency on this side too, so the two displays then agree. Nothing on
 the waterfall moves. Without it the paddle answered every station a whole
@@ -12419,7 +12419,7 @@ sidetone low and nobody came back.
 > FDM-DUO, and the answer was no: the down-converter feeding this USB interface
 > is *not* independent of the receiver the transceiver uses for its own audio —
 > they are one receiver, and the paragraph on the panadapter centre above is
-> what sdroxide now does about it. The other still stands: whether the stream
+> what sdrcrow now does about it. The other still stands: whether the stream
 > survives a transmit cycle. It is assumed *not* to — receive stops for the
 > length of an over — which is the safe way to be wrong.
 
@@ -12721,7 +12721,7 @@ command and goes deaf. LimeSuite's own GUI and SDRangel both leave a receiving
 board in receive for the same reason, and reach for *both at once* only on the
 cellular bands, which have duplexers.
 
-So an over costs one short transaction either side of it, and sdroxide waits for
+So an over costs one short transaction either side of it, and sdrcrow waits for
 the relay before letting drive out. On the GPIO/I²C link that transaction is the
 better part of a second — another reason to use the LimeRFE's own USB cable if
 you transmit.
@@ -12777,9 +12777,9 @@ comes through.
 > radio half from a terminal.
 >
 > The **console log** is the other half, and it is where an over is described:
-> start sdroxide from a terminal to see it. `RUST_LOG=info sdroxide` is enough
+> start sdrcrow from a terminal to see it. `RUST_LOG=info sdrcrow` is enough
 > for the transmit and LimeRFE lines; `RUST_LOG=sdrcrow_lime=debug,sdrcrow_limerfe=debug,info`
-> adds every retune. On Windows, run `sdroxide.exe` from `cmd` or PowerShell
+> adds every retune. On Windows, run `sdrcrow.exe` from `cmd` or PowerShell
 > rather than from Explorer, or the console goes nowhere.
 >
 > See "LimeSDR and LimeRFE permissions" in the README for the Linux udev rule —
@@ -12788,7 +12788,7 @@ comes through.
 
 #### 6.2.18 HydraSDR RFOne (USB)
 
-A HydraSDR RFOne, driven directly over USB by sdroxide's own pure-Rust driver.
+A HydraSDR RFOne, driven directly over USB by sdrcrow's own pure-Rust driver.
 No SoapySDR, no libusb and no libhydrasdr, so this interface is in every build
 variant on every platform. 24 MHz to 1800 MHz, receive only.
 
@@ -12801,7 +12801,7 @@ rate, with the host doing the downconversion.
 It has its own interface all the same, because **the two drivers cannot drive
 each other's hardware**. The RFOne takes an eight-byte tuning command where the
 Airspy takes four, and a receiver programmed by the wrong one tunes somewhere
-nobody asked for without saying so. sdroxide checks: pick the wrong interface
+nobody asked for without saying so. sdrcrow checks: pick the wrong interface
 for either radio and you are told the name of the right one.
 
 **Permissions.** Linux needs the packaged udev rule — see "HydraSDR RFOne
@@ -12810,7 +12810,7 @@ package. macOS needs nothing.
 
 **Receiver, and the shared USB id.** Rescan lists what is on the bus. Production
 boards enumerate as `38af:0001`; the prototypes came up on `1d50:60a1`, which is
-the **Airspy R2 and Mini's own pair**. sdroxide separates them twice — by the
+the **Airspy R2 and Mini's own pair**. sdrcrow separates them twice — by the
 USB descriptors during the scan, which opens nothing, and by the firmware
 version string after opening, which is the check HydraSDR's own library makes.
 A board on the legacy id is marked as such in the list. The serial is matched on
@@ -12822,11 +12822,11 @@ descriptor carries may be left on or taken off.
 and 2.5 — and says nothing about the other four, which live in a second table in
 its firmware and are reached by naming the ADC rate directly. The menu marks
 which is which. If a particular firmware turns out not to carry an alternate it
-answers with a refusal, and sdroxide falls back to the nearest listed rate and
+answers with a refusal, and sdrcrow falls back to the nearest listed rate and
 says so on the status line rather than leaving the span quietly wrong.
 
 Underneath, the receiver runs at **twice** the rate shown, for the same reason
-as the Airspy R2 above: its ADC is real rather than complex, and sdroxide makes
+as the Airspy R2 above: its ADC is real rather than complex, and sdrcrow makes
 complex baseband from it on the host with a quarter-rate translate and a
 half-band decimator. The same two consequences follow — the receiver's own DC
 offset lands at the **edge** of the span rather than its centre, and image
@@ -12873,7 +12873,7 @@ or the other, not both.
 its 12-bit samples three-to-a-word instead of padding each to 16 bits, which is
 a third less USB traffic — and this is a USB 2.0 device carrying up to 36 MB/s
 packed against 48 unpacked at the top rate. Firmware too old to have the request
-streams unpacked and sdroxide says so. Applies on reconnect, because it changes
+streams unpacked and sdrcrow says so. Applies on reconnect, because it changes
 how every transfer is decoded.
 
 **Bias tee.** DC on the antenna port for an active antenna or preamp. Off by
@@ -12943,10 +12943,10 @@ A **Fobos SDR**, driven through RigExpert's own **libfobos**. Receive only.
 
 **The library is found at runtime, not linked.** libfobos is LGPL-2.1 and open
 source ([github.com/rigexpert/libfobos](https://github.com/rigexpert/libfobos)),
-but sdroxide loads it the same way it loads the SDRplay API and LimeSuite —
+but sdrcrow loads it the same way it loads the SDRplay API and LimeSuite —
 by name, when you open the interface. The reason is build portability rather
 than licensing: this interface is in every build variant on every platform,
-nobody needs libfobos installed to compile sdroxide, and a machine without it
+nobody needs libfobos installed to compile sdrcrow, and a machine without it
 simply lists no receivers and says what to install. Build and install it from
 that repository, then press **Rescan**.
 
@@ -12962,7 +12962,7 @@ sampling. **HF1 + HF2** runs both at once and combines them.
 
 That split matters more than a socket choice usually does, because the HF ports
 have **no local oscillator at all**. The receiver hands back two independent
-*real* ADC channels — HF1 in one, HF2 in the other — and sdroxide makes complex
+*real* ADC channels — HF1 in one, HF2 in the other — and sdrcrow makes complex
 baseband from them itself, with the same wideband channelizer the RX-888 uses
 for the identical problem. Two consequences follow:
 
@@ -12979,7 +12979,7 @@ hardware paths, and the HF ports build their downconverter at open time.
 **Sample rate, and why it decides how low you can tune.** On **RF** this is the
 ADC's own I/Q rate, picked from the list the receiver reports. Below about
 8 Msps the hardware snaps the request up to 8 Msps whatever you asked for; the
-rate it actually landed on is what sdroxide reports and works from, so the span
+rate it actually landed on is what sdrcrow reports and works from, so the span
 on screen stays honest.
 
 On the **HF** ports the figure is a *target* for the software downconverter,
@@ -12991,7 +12991,7 @@ rate**. At 2.5 Msps that floor is 1.25 MHz, which puts the entire AM/mediumwave
 broadcast band out of reach. The default is **625 kHz** for exactly that reason
 — a floor of 312.5 kHz, below every mediumwave channel.
 
-Ask for a dial below the current floor and sdroxide does *not* quietly receive
+Ask for a dial below the current floor and sdrcrow does *not* quietly receive
 something else and label it with the frequency you asked for: the log says the
 request was below the floor, and the frequency the receiver really landed on is
 reported back so the panadapter's own scale agrees with the spectrum under it.
@@ -13034,7 +13034,7 @@ provide.
 
 #### 6.2.21 USB audio radio (sound card only)
 
-For a radio sdroxide cannot control at all — a handheld, a walkie, a USB
+For a radio sdrcrow cannot control at all — a handheld, a walkie, a USB
 dongle rig — but can hear and talk through. Nothing is commanded: no
 frequency, no mode, no PTT. There are two sound cards and the radio's own VOX.
 
@@ -13048,7 +13048,7 @@ computer's own headset or speakers — and the log says so when the radio opens.
 ones back first, so the same card can be picked again or moved to a CAT rig
 without a restart.
 
-**The dial is a label.** The radio sits wherever its own knob is, and sdroxide
+**The dial is a label.** The radio sits wherever its own knob is, and sdrcrow
 has no way to read or move it. Type the frequency the radio is on into the dial
 anyway: it is what the log, the spots and the transmit lockout go by. Received
 audio is already demodulated by the radio, so the panadapter shows a few
@@ -13061,7 +13061,7 @@ does not overdrive it. Speech, digital-mode tones and CW (sent as keyed audio
 tones, MCW) all go out the same way.
 
 > **Leave the radio on a sideband — USB, the mode FT8 rides — and not in CW.**
-> Nothing is commanded on this interface: sdroxide cannot read or move the
+> Nothing is commanded on this interface: sdrcrow cannot read or move the
 > radio's mode, so this one is set by hand and it is the setting that makes CW
 > send do nothing while everything on screen says otherwise. MCW *is* audio,
 > and a radio switched to CW does not modulate what arrives at its sound card
@@ -13069,7 +13069,7 @@ tones, MCW) all go out the same way.
 > still sounds locally, the send is still decoded straight back into text, and
 > the transmitter is never touched: no power, no signal, nothing on the air,
 > and no error anywhere. If CW sends and only you can hear it, this is why. Set
-> the radio back to USB. (A CAT rig held on a sideband by sdroxide is the same
+> the radio back to USB. (A CAT rig held on a sideband by sdrcrow is the same
 > requirement, [6.2.2](#622-cat-radios-serial-control--usb-audio).)
 
 Two consequences of a radio that keys on
@@ -13080,7 +13080,7 @@ whatever it hears:
   card of its own, and keep it out of the operating system's choice of default
   output.
 - **The transmit lockout still applies, to the frequency typed in the dial.**
-  With `tx_ham_only` set (the default) sdroxide refuses to key outside the
+  With `tx_ham_only` set (the default) sdrcrow refuses to key outside the
   amateur bands, and a licence-free radio — PMR446, FRS, CB — is outside them.
   See [§12](#12-command-line-reference) for `--oob-tx`, which lifts the lockout
   for one run, and check that you are licensed for what you are about to do.
@@ -13475,24 +13475,24 @@ For **i3**, in `~/.config/i3/config` (match on the window class / title):
 
 ```i3
 # Float the panadapter and pin it to a workspace
-for_window [class="sdroxide" title="panadapter"] floating enable, move to workspace 2
-for_window [class="sdroxide" title="controls"] floating enable, move to workspace 2
-for_window [class="sdroxide" title="panel"] floating enable
+for_window [class="sdrcrow" title="panadapter"] floating enable, move to workspace 2
+for_window [class="sdrcrow" title="controls"] floating enable, move to workspace 2
+for_window [class="sdrcrow" title="panel"] floating enable
 # All tool windows float
-for_window [class="sdroxide" title="sdrcrow-tool-"] floating enable
+for_window [class="sdrcrow" title="sdrcrow-tool-"] floating enable
 ```
 
 For **AwesomeWM**, in `~/.config/awesome/rc.lua` (inside the `awful.rules.rules`
 table):
 
 ```lua
-{ rule = { class = "sdroxide", name = "panadapter" },
+{ rule = { class = "sdrcrow", name = "panadapter" },
   properties = { floating = true, tag = "2" } },
-{ rule = { class = "sdroxide", name = "controls" },
+{ rule = { class = "sdrcrow", name = "controls" },
   properties = { floating = true, tag = "2" } },
-{ rule = { class = "sdroxide", name = "panel" },
+{ rule = { class = "sdrcrow", name = "panel" },
   properties = { floating = true } },
-{ rule = { class = "sdroxide", name = "sdrcrow-tool-" },
+{ rule = { class = "sdrcrow", name = "sdrcrow-tool-" },
   properties = { floating = true } },
 ```
 
@@ -13505,7 +13505,7 @@ The last section of the UI tab reads the radio out loud, so it can be operated
 without seeing it. Tick **Speak changes to the radio** to switch it on; it is
 off until you ask for it.
 
-The voice is a neural one that ships with sdroxide and runs on your own machine.
+The voice is a neural one that ships with sdrcrow and runs on your own machine.
 Nothing is sent anywhere, no speech service has to be installed, and it works
 with no network at all.
 
@@ -13569,7 +13569,7 @@ Keys for **Speak status**, **Repeat last announcement**, **Stop speaking** and
 ([6.4](#64-controls-keyboard-mouse-and-midi)) under **Speech**. They have no
 defaults; bind the ones you want.
 
-sdroxide also exposes its whole window to the platform screen reader — NVDA on
+sdrcrow also exposes its whole window to the platform screen reader — NVDA on
 Windows, Orca on Linux, VoiceOver on macOS — so the controls can be navigated
 and read as well as heard.
 
@@ -13578,7 +13578,7 @@ and read as well as heard.
 The **Alerts** tab is the other half of the same idea, aimed the other way: the
 announcements read out what *changed*, the alerts ring when a *decode matters*.
 They listen to the FT8, FT4, FT2 and JS8 decodes, and they ring whether or not
-sdroxide's window is in front — reaching you while you are looking at something
+sdrcrow's window is in front — reaching you while you are looking at something
 else is what they are for. Tick **Sound an alarm when a decode matters** to switch
 them on; they are off until you do, and they need your callsign
 ([6.1](#61-general-station-audio-and-remote-access)) to know which calls are for
@@ -13618,7 +13618,7 @@ through the spoken-announcement voice (Settings → UI → Voice announcements) 
 "Juliett Alfa One, new one on 20 metres", "Juliett Alfa One, new grid". The
 callsign leads every phrase, so the one thing you act on is never the part that
 is clipped, and the spoken alert fires from the alarm path, so it too is heard
-whether or not sdroxide's window is in front. With the voice switched off a
+whether or not sdrcrow's window is in front. With the voice switched off a
 **Voice** reply is silent — there is no tone to fall back on — so pick **Tone +
 voice** if you would rather hear something either way; the sound is greyed on a
 voice-only row because it is not used. A phrase is not spoken while you
@@ -13637,7 +13637,7 @@ yet.
 
 ### 6.4 Controls: keyboard, mouse and MIDI
 
-Everything sdroxide can be told to do is an **action** — tune, PTT, change band,
+Everything sdrcrow can be told to do is an **action** — tune, PTT, change band,
 cycle noise reduction, open the logbook — and the **Controls** tab binds actions
 to whatever you would rather press or turn than click. The three sections of the
 tab (keyboard, mouse, MIDI) all draw on the same list of actions.
@@ -13867,7 +13867,7 @@ General tab:
 ![The FreeDV tab: FreeDV Reporter station, server and reporting settings](images/settings-freedv.jpg)
 
 [FreeDV Reporter](https://qso.freedv.org/) is where FreeDV operators announce
-where they are listening and who they are hearing; sdroxide talks to it in both
+where they are listening and who they are hearing; sdrcrow talks to it in both
 directions. What that gets you is [§10.5](#105-freedv-reporter-qsofreedvorg); the
 tab itself is:
 
@@ -13936,7 +13936,7 @@ stored in plaintext in `net.json`. How the features behave is
     [LOG11DX](https://log11dx.com/), the 11 m logbook. Both are on your LOG11DX
     profile page; the URL defaults to the one its own WSJT-X bridge posts to,
     and the token is masked there, so copy it when you generate it. **The site's
-    bridge program is not needed** — sdroxide is the program that logs the QSO,
+    bridge program is not needed** — sdrcrow is the program that logs the QSO,
     so it posts each one straight to the same API, with no UDP listener and no
     second program to keep running. Only your `station_callsign` and the QSO's
     own fields are sent. **Test LOG11DX** checks the token against the site.
@@ -14016,7 +14016,7 @@ Uploads tab are.
 - **Password** — the **account** password, not the `CMSTelnet` gateway password.
   It is **case-sensitive**: the login challenge is computed from it, and
   `FOOBAR` and `FooBar` produce different answers, so it has to be entered
-  exactly as it was issued. sdroxide does not silently upper-case it, because a
+  exactly as it was issued. sdrcrow does not silently upper-case it, because a
   guess that is wrong fails at the server with nothing but a rejected login to
   explain it.
 - **Locator** — reported in the session greeting. Cosmetic; nothing depends on
@@ -14061,7 +14061,7 @@ line, and the session transcript names the speed it called at.
 #### My gateways
 
 Winlink publishes its gateway list through an API that refuses every request
-without an access key sdroxide does not have, so you keep your own list. That is
+without an access key sdrcrow does not have, so you keep your own list. That is
 what a packet operator does anyway — the two or three gateways reachable from
 one location are learned by trying, and they rarely change.
 
@@ -14085,7 +14085,7 @@ modem and the dial where that gateway wants them.
 > **Client name, and why it is a field you may have to change.** Winlink's
 > production servers accept only client names that have been registered with
 > them, and answer anything else with `*** Unknown client types are not allowed
-> on production servers`. sdroxide is not registered yet, so out of the box a
+> on production servers`. sdrcrow is not registered yet, so out of the box a
 > connection to the production CMS is refused. Until that is resolved this field
 > is how an operator gets in. It is deliberately visible here rather than
 > quietly defaulted to another project's name.
@@ -14105,7 +14105,7 @@ network tab, the fields above are edited in a scratch copy until it is pressed �
 
 ### 6.9 Servers: letting other programs drive the radio
 
-The **Servers** tab makes sdroxide the radio for other software. Three sections
+The **Servers** tab makes sdrcrow the radio for other software. Three sections
 share the tab, one above the other, and all can run at the same time.
 
 > **Which server should I use?** rigctld carries *control only* and is understood
@@ -14129,7 +14129,7 @@ free port here.
 ![The Servers tab, Hamlib rigctld section](images/settings-servers-hamlib.jpg)
 
 Most amateur software reaches a radio through **Hamlib**, over the network
-protocol its `rigctld` daemon speaks. sdroxide serves that protocol directly, so
+protocol its `rigctld` daemon speaks. sdrcrow serves that protocol directly, so
 WSJT-X, fldigi, JS8Call, N1MM, Log4OM, GPredict and CQRLOG can drive it with no
 extra daemon, no serial cable and no virtual COM port pair.
 
@@ -14183,7 +14183,7 @@ Setting up clients:
 - **N1MM+ / Log4OM** — pick the Hamlib/rigctld radio type and enter the same
   host and port.
 
-sdroxide reports every digital mode (FT8, FT4, FT2, PSK, RTTY's neighbours, SSTV,
+sdrcrow reports every digital mode (FT8, FT4, FT2, PSK, RTTY's neighbours, SSTV,
 RADE…) as Hamlib's `PKTUSB`, because that is what they are on the air. Clients
 that read the mode and periodically write it back — WSJT-X does — therefore
 cannot knock a running FT8 session out of its mode: setting the mode already
@@ -14193,7 +14193,7 @@ reported changes nothing.
 
 ![The Servers tab, built-in TCI server section](images/settings-servers-tci.jpg)
 
-sdroxide also *is* a TCI server, so TCI-capable programs can use it as their
+sdrcrow also *is* a TCI server, so TCI-capable programs can use it as their
 radio: frequency and mode control, a wideband IQ stream, receive audio to
 decode, and transmit audio to put on the air. It is **on by default**.
 
@@ -14213,11 +14213,11 @@ and **how many clients are connected right now**. Press **APPLY** to save and
 (re)bind.
 
 Setting up WSJT-X: under *Settings → Radio*, choose the **TCI Client RX1** rig,
-put sdroxide's address in **TCI Server** (e.g. `127.0.0.1:50002`), set PTT to
+put sdrcrow's address in **TCI Server** (e.g. `127.0.0.1:50002`), set PTT to
 **CAT**, and tick **TCI audio** so both audio devices come over TCI. JTDX and
 MSHV are configured the same way. Verified against WSJT-X on this address.
 
-If a client won't connect, run sdroxide with
+If a client won't connect, run sdrcrow with
 `RUST_LOG=sdrcrow_tci=debug` — the whole TCI conversation is logged in both
 directions, which is usually enough to see which command it gave up on. WSJT-X
 also records the reason in `~/.local/share/WSJT-X/wsjtx_syslog.log`
@@ -14226,22 +14226,22 @@ also records the reason in `~/.local/share/WSJT-X/wsjtx_syslog.log`
 A few things worth knowing:
 
 - **Port 50001 may already be taken.** If you also run ExpertSDR3 or Thetis on
-  this machine, it owns that port and sdroxide's server can't bind — the status
-  line says so. Move sdroxide's server to another port and point your clients
+  this machine, it owns that port and sdrcrow's server can't bind — the status
+  line says so. Move sdrcrow's server to another port and point your clients
   there.
 - **No authentication.** TCI has none, which is why the default is localhost. On
   `0.0.0.0`, anyone who can reach the port can tune and key your transmitter.
 - **The transmitter has one owner.** A second program asking to transmit while
   another is mid-over is refused, and keying up yourself (PTT, TUNE, or a
   digital-mode burst) always takes the transmitter back from a client.
-- **A CAT radio has no IQ to share.** On the CAT interface sdroxide only
+- **A CAT radio has no IQ to share.** On the CAT interface sdrcrow only
   receives demodulated audio, so it offers control and audio to clients but no
   IQ stream.
 - **Receive pauses while you transmit**, unless the radio is full-duplex — the
   same as any other TCI rig.
 - **Transmit audio is paced by the server, not the client.** TCI has the radio
   ask for each buffer of transmit audio as it needs it (a *chrono*), and the
-  client answers one packet per request. sdroxide asks for everything the
+  client answers one packet per request. sdrcrow asks for everything the
   transmitter has consumed plus a quarter of a second of lead, so a client that
   falls behind is asked for *more* rather than for whatever it managed to send,
   and one that runs ahead is not asked at all. When the client unkeys, the
@@ -14257,7 +14257,7 @@ A few things worth knowing:
 
 The logging ecosystem around FT8 — **GridTracker**, **JTAlert**, **N1MM+** and
 **Log4OM** — learns what a station is doing from the datagrams WSJT-X sends on
-UDP port 2237. sdroxide sends the same ones, so those programs work with it
+UDP port 2237. sdrcrow sends the same ones, so those programs work with it
 unchanged: decodes as they arrive, station status (frequency, mode, who you are
 working, what you are about to transmit), and every completed QSO — as both the
 structured message and an ADIF record, so a logger can take whichever it
@@ -14279,12 +14279,12 @@ deliberately silent: a file of last year's contacts is not a contact being made.
 
 Changing band tells the clients to empty their decode windows, exactly as
 WSJT-X does on its own band change — otherwise a logger goes on showing the band
-you have left, which is the one list sdroxide's own window has just been taken
+you have left, which is the one list sdrcrow's own window has just been taken
 out of. Tuning about within a band sends nothing, and WSPR band hopping is
 exempt.
 
 This one is **output only**: nothing is read from the socket, so no program on
-it can tune or key the radio. Programs that want to *drive* sdroxide use rigctld
+it can tune or key the radio. Programs that want to *drive* sdrcrow use rigctld
 or the TCI server above.
 
 **N1MM+ contactinfo** sits on the same page, with its own switch and its own
@@ -14408,7 +14408,7 @@ browser tab — and **UPDATE NOW** asks the engine to do the fetching.
 ![The TLE subscriptions management](images/settings-tle1.jpg)
 
 A two-line element set is only good for a few days: SGP4 accuracy decays
-quickly, and sdroxide refuses to propagate elements more than a fortnight past
+quickly, and sdrcrow refuses to propagate elements more than a fortnight past
 their epoch at all. So anything you mean to *keep* tracking wants a
 **subscription** — a URL serving an element-set listing, refetched on the same
 six-hourly cadence as the amateur set.
@@ -14424,7 +14424,7 @@ Each row has:
   | | |
   | --- | --- |
   | **none** | Plain dots, visible only under `ALL SATS`. It really does mean none: the curated few are not exempt. |
-  | **curated** | Rings and labels only for the satellites in sdroxide's own curated list — QO-100, the ISS, AO-7, FO-29, SO-50, AO-73, JO-97, RS-44, XW-3 and IO-117. |
+  | **curated** | Rings and labels only for the satellites in sdrcrow's own curated list — QO-100, the ISS, AO-7, FO-29, SO-50, AO-73, JO-97, RS-44, XW-3 and IO-117. |
   | **all** | Everything in the listing. |
 
   A whole group wants **curated**: ninety rings at once is unreadable, and none
@@ -14552,7 +14552,7 @@ yourself to `dialout` as you would for a CAT cable.
 Every packaged rule — this one and every receiver's — grants access two ways: an
 ACL for whoever is logged in at the seat (`TAG+="uaccess"`), and a group for
 everyone else. The ACL grants nothing where there is no seat to be logged in at
-— WSL2, a headless machine over ssh, a container, or sdroxide running as a
+— WSL2, a headless machine over ssh, a container, or sdrcrow running as a
 systemd service — and the device stays root-owned with nothing on screen saying
 why. In that case join the group the rule names (`plugdev` for USB receivers and
 HID relay boards, `gpio` for GPIO lines, `dialout` for serial), then log out and
@@ -14623,15 +14623,15 @@ preamp bypass, where a loose USB cable ending a contest is the worse outcome.
 #### 6.11.3 The transmit sense input
 
 When you key a transceiver *at the radio* — its own microphone button, a foot
-switch, VOX, or its keyer — sdroxide does not know until it next asks over CAT.
+switch, VOX, or its keyer — sdrcrow does not know until it next asks over CAT.
 That question rides the meter poll, so the answer arrives a few hundred
 milliseconds into the over, and the relay throws then.
 
 The fix is a wire. Bring the rig's SEND / PTT / accessory key line, through an
 opto-isolator, into a handshake input on the same serial port that drives the
-relay, and set **Line** to CTS, DSR or DCD. sdroxide watches it every five
+relay, and set **Line** to CTS, DSR or DCD. sdrcrow watches it every five
 milliseconds, so the over is seen almost at once — and not only by the relay:
-the meter switches to transmit, and the interlock that stops sdroxide keying on
+the meter switches to transmit, and the interlock that stops sdrcrow keying on
 top of you starts working, at the same speed.
 
 Most opto-isolated interfaces pull the line *down* when the rig keys, so leave
@@ -14641,7 +14641,7 @@ transceiver is.
 
 #### 6.11.4 Wire it so that a dead relay is the safe one
 
-This is the only fail-safe that survives sdroxide not running, the USB cable
+This is the only fail-safe that survives sdrcrow not running, the USB cable
 being pulled, or the computer being off — and no setting can substitute for it.
 
 Choose **TX closes** so that the **de-energised** contact is the state you want
@@ -14659,20 +14659,20 @@ With a real amplifier behind it, take the first.
 
 It cannot protect from transmissions initiated at the radio itself.
 
-Keying from sdroxide is the arrangement this was designed for: the contacts lead
+Keying from sdrcrow is the arrangement this was designed for: the contacts lead
 the RF by construction, because the transmit path waits for them. Set your rig's
 PTT method on the **Radio** tab and press PTT here rather than on the microphone,
 and the guarantee holds every time.
 
 A transmission initiated at the radio is different. Without the sense input above,
-sdroxide learns of it a few hundred milliseconds late; with the sense input, in a
+sdrcrow learns of it a few hundred milliseconds late; with the sense input, in a
 few milliseconds — but even then the relay itself still has to throw, *after* the
 RF has started. No program on a computer can make that zero.
 
 For a receiver genuinely worth protecting, use an **RF-sensed hardware T/R
 switch** as well. It costs a fraction of the SDR and it does not depend on a
 computer being awake. What this tab gives you is sequencing, an amplifier
-interlock, and protection on every over sdroxide keys — which on a digital-modes
+interlock, and protection on every over sdrcrow keys — which on a digital-modes
 or remote station is all of them.
 
 An HPSDR operator already has a hardware-timed version of the same thing in the
@@ -14692,7 +14692,7 @@ J16 open-collector outputs; see [6.2.3](#623-hpsdr-network-radios).
   [6.11.4](#6114-wire-it-so-that-a-dead-relay-is-the-safe-one) before you settle
   on which way.
 - **A Numato board operating the wrong relay.** It numbers relays from zero on
-  the wire; sdroxide converts, so use the number on the silkscreen.
+  the wire; sdrcrow converts, so use the number on the silkscreen.
 - **Reporting a fault.** Settings → Radio → the diagnostic report includes what
   the switch was told and what it answered. On these boards there is no other
   record of anything, anywhere.
@@ -14848,7 +14848,7 @@ do the thing is worse than no row.
 
 **Recording** — the folder the audio recordings, the scheduled recordings and the
 raw I/Q captures are written to, with **CHOOSE…** to pick another and **DEFAULT**
-to go back to the music folder (`<Music>/sdroxide`, or the config directory's
+to go back to the music folder (`<Music>/sdrcrow`, or the config directory's
 `recordings` where the system exposes no music folder). It is a path on the
 machine the radio is attached to, so it is shown only where the engine is in this
 process. In `config.toml` it is `recordings_dir`.
@@ -15335,7 +15335,7 @@ aimed at, exactly as the arc itself does.
 
 Wound back off `LIVE`, the white "decoded just now" dots go away: what is on the
 globe then is the hour being replayed, not the present, and the two are not
-mixed. The history is kept only while sdroxide runs, so a fresh start begins
+mixed. The history is kept only while sdrcrow runs, so a fresh start begins
 with an empty hour that fills as the decodes come in.
 
 ### 7.8 The propagation heat map
@@ -15642,13 +15642,13 @@ populated places from [Natural Earth](https://www.naturalearthdata.com/).*
 
 ## 8. Remote operation
 
-sdroxide can run as a headless server and be controlled from a second sdroxide
+sdrcrow can run as a headless server and be controlled from a second sdrcrow
 instance (a native remote client) elsewhere on the network.
 
 ### 8.1 Start the server
 
 ```
-sdroxide --server --port 4950
+sdrcrow --server --port 4950
 ```
 
 The server opens the configured radio, streams spectrum and audio, and accepts a
@@ -15709,12 +15709,12 @@ second one to start finds the address taken.
 
 ### 8.2 Connect a native remote client
 
-From the GUI, on any other machine running sdroxide: open **Settings →**
+From the GUI, on any other machine running sdrcrow: open **Settings →**
 **General**, enter the server's **Address** and **Port** in the connect section at
 the bottom, and press **CONNECT**.
 
 The station comes up as a radio tab of its own, beside whatever radios that
-sdroxide already has open — the tab strip at the top of the window switches
+sdrcrow already has open — the tab strip at the top of the window switches
 between them, and ⊞ puts two side by side ([2.17](#217-running-more-than-one-radio)).
 Your own radio keeps running while you work the remote one. To hang up, close
 the tab from the roster at the top of **Settings → Radio**; nothing on the
@@ -15730,11 +15730,11 @@ a reverse proxy — a URL is used exactly as typed and ignores the port box.
 **Port** is `server_port` from the server's own `config.toml`, 4950 unless it
 was given `--port`.
 
-The same thing from the command line, which starts sdroxide as a client and
+The same thing from the command line, which starts sdrcrow as a client and
 nothing else:
 
 ```
-sdroxide --connect HOST:4950
+sdrcrow --connect HOST:4950
 ```
 
 `--connect` accepts `host`, `host:port`, or a full `ws://…` URL. A client
@@ -15758,11 +15758,11 @@ radios you are not using: a tab you close stays closed until you dial the
 station again.
 
 To open just one radio of a station, name it in the address:
-`sdroxide --connect HOST:4950/ws/1`, or type the full `ws://HOST:4950/ws/1` in
+`sdrcrow --connect HOST:4950/ws/1`, or type the full `ws://HOST:4950/ws/1` in
 the **Address** box. `/radios` on the server says which id is which
 ([8.1](#81-start-the-server)).
 
-Either way, a remote client is the full sdroxide GUI running against the server:
+Either way, a remote client is the full sdrcrow GUI running against the server:
 control, state, memories, meters, spectrum, FT8 decodes and logging, and skimmer
 spots all work. Receive audio streams down (48 kHz mono), and your microphone is
 sent up to the server while you transmit. The remote client uses your local
@@ -15910,7 +15910,7 @@ typed and said no.
   A client that has not opted in ignores stored bindings entirely, and the
   opt-in itself stays local to that client: it is a decision you make on a
   machine, not something a profile carries to another one. (A fork-only feature
-  — it is not in upstream SDR Oxide.)
+  — it is not in upstream SDRCrow.)
 - **No encryption.** The server speaks plain `ws://` and binds to all interfaces
   by default. The sign-in ([8.3](#83-sign-in-who-may-operate-the-station))
   decides who may operate the radio, but nothing here is confidential in
@@ -15939,7 +15939,7 @@ Builds that bundle the web UI (compiled with the `embed-web` feature, including
 the packaged binaries) serve it automatically:
 
 ```
-sdroxide --server
+sdrcrow --server
 ```
 
 Then open a browser at:
@@ -15966,7 +15966,7 @@ If you are running a build without the embedded web UI, point the server at a
 trunk-built web directory:
 
 ```
-sdroxide --server --web-root path/to/sdrcrow-web/dist
+sdrcrow --server --web-root path/to/sdrcrow-web/dist
 ```
 
 ### 9.2 What works in the browser
@@ -16023,7 +16023,7 @@ Everything else — the panadapter and waterfall, tuning, decodes, the logbook �
 works either way; it is only audio that the browser gates. A page opened on a
 non-secure origin says so in a banner across the top.
 
-This is a browser rule, not a server setting: sdroxide cannot opt out of it. To
+This is a browser rule, not a server setting: sdrcrow cannot opt out of it. To
 get audio from another machine, put the server behind an HTTPS reverse proxy (a
 [VPN](#8-remote-operation) or tunnel with TLS), or forward the port to your own
 machine so the browser sees `localhost`:
@@ -16033,7 +16033,7 @@ ssh -N -L 4950:localhost:4950 user@radio-host
 # then open http://localhost:4950
 ```
 
-The native remote client (`sdroxide --connect`) has no such restriction — it
+The native remote client (`sdrcrow --connect`) has no such restriction — it
 uses your local sound devices directly and carries audio over the same
 WebSocket.
 
@@ -16072,13 +16072,13 @@ heard your answer from the server.
 ### 9.4 Behind a reverse proxy on a subpath
 
 The web client works from any path, not only the root. Behind a reverse proxy
-that gives it a prefix — `https://shack.example/sdroxide/` — everything hangs
+that gives it a prefix — `https://shack.example/sdrcrow/` — everything hangs
 off the page's own address rather than the top of the host: the WebSocket, the
 radio listing, the wasm bundle and the scripts beside it. So the two ways a
 proxy can be configured both work, and neither needs anything from you:
 
 - **The prefix is stripped before forwarding** (Caddy's `handle_path
-  /sdroxide/*`, nginx's `proxy_pass` with a trailing slash). The server sees
+  /sdrcrow/*`, nginx's `proxy_pass` with a trailing slash). The server sees
   ordinary root-level requests; the page's own links are relative, so the
   browser puts the prefix back on its own.
 - **The prefix is forwarded intact** (Caddy's plain `reverse_proxy`, nginx
@@ -16091,7 +16091,7 @@ A Caddyfile for the second, which is the shorter one to write:
 
 ```
 shack.example {
-    reverse_proxy /sdroxide/* localhost:4950
+    reverse_proxy /sdrcrow/* localhost:4950
 }
 ```
 
@@ -16108,21 +16108,21 @@ and the microphone ([9.3](#93-audio-needs-a-secure-context)).
 Asked for on [fork discussion #17](https://github.com/madmedicnl/sdroxide-brown/discussions/17),
 and here it is so nobody has to ask again.
 
-The Debian package (`sdroxide`, or `sdrcrow-soapysdr`) owns **exactly** this,
+The Debian package (`sdrcrow`, or `sdrcrow-soapysdr`) owns **exactly** this,
 and every line of it goes with the package:
 
 | Path | What |
 | --- | --- |
-| `/usr/bin/sdroxide` | the binary — client and server are the same program |
-| `/usr/share/applications/sdroxide.desktop` | the desktop menu entry |
+| `/usr/bin/sdrcrow` | the binary — client and server are the same program |
+| `/usr/share/applications/sdrcrow.desktop` | the desktop menu entry |
 | `/usr/lib/udev/rules.d/60-sdrcrow-*.rules` | nine dongle rules, so no root is needed |
-| `/usr/share/icons/hicolor/*/apps/sdroxide-brown.{png,svg}` | the icon, in nine sizes |
-| `/usr/share/sdroxide/voices/` | the speech voice, for spoken announcements |
-| `/usr/share/doc/sdroxide/` | README, `copyright`, and four licence notices |
+| `/usr/share/icons/hicolor/*/apps/sdrcrow.{png,svg}` | the icon, in nine sizes |
+| `/usr/share/sdrcrow/voices/` | the speech voice, for spoken announcements |
+| `/usr/share/doc/sdrcrow/` | README, `copyright`, and four licence notices |
 
 ```sh
-sudo apt purge sdrcrow-soapysdr      # or sdroxide — removes every path above
-rm -rf ~/.config/sdroxide-brown      # every setting, logbook and recording it wrote
+sudo apt purge sdrcrow-soapysdr      # or sdrcrow — removes every path above
+rm -rf ~/.config/sdrcrow      # every setting, logbook and recording it wrote
 ```
 
 Three things worth stating plainly, because "is anything left behind?" is the
@@ -16131,12 +16131,12 @@ real question:
 - **No systemd service is installed**, so a purge cannot leave one running or
   enabled. A unit you wrote yourself is yours to disable and delete.
 - **Nothing is written to `/etc` or `/var`**, and the installer creates no
-  configuration at all: the program makes `~/.config/sdroxide-brown` on its
+  configuration at all: the program makes `~/.config/sdrcrow` on its
   first run. That directory — settings, the station roster, the logbook, the
   reception log, memories, recordings, the solar cache — is the other half of a
   complete removal. `SDROXIDE_CONFIG_DIR` puts it elsewhere if you have set that.
 - **The portable tarball** adds nothing outside the folder you unpacked it into,
-  except `~/.local/share/applications/sdroxide.desktop` and its icon if you ran
+  except `~/.local/share/applications/sdrcrow.desktop` and its icon if you ran
   `install-desktop-entry.sh`; `./install-desktop-entry.sh --uninstall` removes
   both. **The Arch package** installs the same paths as the `.deb`.
 
@@ -16331,14 +16331,14 @@ and tablet strips, just after the **MEM** chip; the desktop layout has none.
   lock it straight back. A tap in those 10 seconds shows
   `UNLOCKED · lock in N s`; after them, a tap locks as usual.
 
-The home-screen icon is sdroxide's own, the same artwork the desktop
+The home-screen icon is sdrcrow's own, the same artwork the desktop
 application and the packaged builds use.
 
 ---
 
 ## 10. Spotting, awards, and QSL upload
 
-SDR Oxide features spots you can click to work, automatic callsign lookup, 
+SDRCrow features spots you can click to work, automatic callsign lookup, 
 one-click QSO upload, and award tracking. This chapter is about what they *do*;
 the settings behind them are on the **Spots** ([§6.5](#65-spots-spot-feeds)),
 **FreeDV** ([§6.6](#66-freedv-freedv-reporter)) and **Uploads**
@@ -16447,7 +16447,7 @@ is nothing more to enter. Its logbook wants a date, time, callsign, mode, band
 and **both signal reports** on every contact; a QSO missing one is refused
 before it is sent, naming the field, rather than coming back as HamQTH's
 unexplained *QSO Rejected* (which is also what it says for a duplicate). Upload
-one contact at a time, as sdroxide does — HamQTH asks specifically that this
+one contact at a time, as sdrcrow does — HamQTH asks specifically that this
 route not be used to push a whole log, and offers a file upload on the website
 for that.
 
@@ -16456,7 +16456,7 @@ ARRL's TQSL. Export your log to **ADIF** from the logbook and sign/upload it wit
 TQSL as usual.
 
 **Confirmations** — enter your **LoTW** login (and/or use your eQSL credentials)
-and press **SYNC CONFIRMATIONS**. sdroxide downloads your LoTW/eQSL confirmations
+and press **SYNC CONFIRMATIONS**. sdrcrow downloads your LoTW/eQSL confirmations
 and matches them against the log to set the **✓** (confirmed) status, which drives
 worked-vs-confirmed in the awards view. (LoTW upload stays manual; only the
 confirmation download is automated.)
@@ -16542,7 +16542,7 @@ so other FreeDV stations can identify you, and decodes the far end's, showing it
 as the DX call and reporting it. This uses the same over-the-air format as
 FreeDV GUI, so the two interoperate.
 
-**Checking it works without going on air:** `sdroxide --freedv-reporter-probe 20`
+**Checking it works without going on air:** `sdrcrow --freedv-reporter-probe 20`
 connects read-only for twenty seconds and prints the stations and events it saw.
 It uses the server's view role, so it needs no radio and never makes you visible
 to anyone.
@@ -16987,7 +16987,7 @@ lights **DUPE** on the same band; the check is deliberately over the session's
 own contacts rather than the whole logbook, so a station you worked last month
 does not read as a dupe before the contest has started.
 
-**CABRILLO** writes the session out as a Cabrillo v3 file (`sdroxide.cab`),
+**CABRILLO** writes the session out as a Cabrillo v3 file (`sdrcrow.cab`),
 which is what contests want back. The `CONTEST:` line and `CATEGORY-MODE` are
 chosen from the modes actually logged — an all-CW session exports as `CW`, not
 `MIXED` — and `CREATED-BY` names the program and its version. A contact logged
@@ -17036,7 +17036,7 @@ store-and-forward email network: messages are held by a Common Message Server
 (CMS) and collected when you connect, either over the internet or — eventually,
 see below — over the air.
 
-sdroxide speaks the Winlink client protocol natively: B2F/FBB forwarding, LZHUF
+sdrcrow speaks the Winlink client protocol natively: B2F/FBB forwarding, LZHUF
 compression, and the secure-login challenge. There is no external program to
 install and nothing to configure beyond the account.
 
@@ -17046,7 +17046,7 @@ An account is created the first time a callsign connects to the CMS, and its
 password arrives as a service message; Winlink validates amateur licences
 automatically for many countries.
 
-Everything sdroxide needs is on **Settings → Winlink**, field by field in
+Everything sdrcrow needs is on **Settings → Winlink**, field by field in
 [§6.8](#68-winlink-radio-email-account): the account callsign and password, the
 route (internet or radio), the gateway to call over the air, and the timer. Two
 of them catch people out — the password is **case-sensitive**, and the tab has
@@ -17054,7 +17054,7 @@ its own **APPLY** button that has to be pressed before the account reaches the
 mailbox.
 
 > **A connection refused before it starts.** Winlink's production servers accept
-> only client names registered with them. sdroxide is not registered yet, so the
+> only client names registered with them. sdrcrow is not registered yet, so the
 > **Client name** field on that tab is what gets an operator in for now; see
 > [§6.8](#68-winlink-radio-email-account).
 
@@ -17075,7 +17075,7 @@ Addresses are callsigns, or `SMTP:someone@example.org` to reach ordinary
 internet email. Separate several with commas.
 
 The mailbox lives on the machine with the radio, under
-`~/.config/sdroxide-brown/winlink/`, one file per message. A remote or browser client
+`~/.config/sdrcrow/winlink/`, one file per message. A remote or browser client
 reads it a page at a time over the wire rather than holding a copy, so a
 mailbox with attachments in it does not have to cross a phone link on connect.
 
@@ -17109,7 +17109,7 @@ minutes to give up on its own, and ABORT takes effect in well under a second.
 ### Choosing a gateway
 
 Winlink publishes its gateway list through `api.winlink.org`, which refuses
-every request that does not carry an access key. sdroxide does not have one, so
+every request that does not carry an access key. sdrcrow does not have one, so
 **you keep your own list** — which is what a packet operator does anyway: the
 two or three gateways reachable from one location are learned by trying, and
 they rarely change.
@@ -17149,11 +17149,11 @@ link's settings, not the panel's.
 |---|---|---|
 | 300 baud | HF, sideband | 200 Hz shift AFSK. `PACKET-HF` runs at this speed and no other. |
 | 1200 baud | VHF/UHF, FM | Bell 202. The workhorse, and what most RMS Packet gateways answer on. |
-| 9600 baud | VHF/UHF, FM | G3RUH. **Needs the radio's data port** — a microphone and speaker path destroys it at both ends. That is the radio, not sdroxide. |
+| 9600 baud | VHF/UHF, FM | G3RUH. **Needs the radio's data port** — a microphone and speaker path destroys it at both ends. That is the radio, not sdrcrow. |
 
 The modem is validated against Direwolf at all three speeds, in both
-directions: sdroxide decodes audio `gen_packets` produced, and `atest` decodes
-what sdroxide transmits.
+directions: sdrcrow decodes audio `gen_packets` produced, and `atest` decodes
+what sdrcrow transmits.
 
 ### The packet panel
 
@@ -17184,7 +17184,7 @@ nothing transmits: an unidentified signal is illegal everywhere.
 Type a callsign in the terminal's connect bar and press **CONNECT**. What comes
 back appears in the pane above the input line; what you type goes out a line at
 a time. A node or a BBS answers with its own command prompt, and from there you
-are talking to its software, not to sdroxide — `H` for help and `B` to leave are
+are talking to its software, not to sdrcrow — `H` for help and `B` to leave are
 a good guess almost everywhere.
 
 **Via** is the digipeater path, nearest hop first, separated by commas:
@@ -17253,10 +17253,10 @@ a node that refuses it.
 
 ### Serving the modem to other software
 
-Switch on **KISS server** in the packet setup dialog and sdroxide offers its
+Switch on **KISS server** in the packet setup dialog and sdrcrow offers its
 modem as a KISS TNC on a socket (8001 by default), the same way it already
 serves TCI and rigctld. Pat, an APRS client, or the Linux AX.25 stack can then
-use the radio without knowing sdroxide exists.
+use the radio without knowing sdrcrow exists.
 
 The KISS server and the terminal are two hosts on one radio and neither knows
 about the other: a KISS client can put frames on the air under your callsign
@@ -17308,17 +17308,17 @@ needs.
 
 ### Transmitting outside the amateur bands: `--oob-tx`
 
-sdroxide refuses to key up outside the amateur allocations. That lockout is the
+sdrcrow refuses to key up outside the amateur allocations. That lockout is the
 last thing standing between a mistyped frequency and an out-of-band
 transmission, so it is on by default and there is no button in the interface to
 turn it off.
 
 `--oob-tx` lifts it **for that run only**. It overrides `tx_ham_only` in
 `config.toml` and cannot be saved, so lifting the lockout is a deliberate act
-every single time sdroxide starts:
+every single time sdrcrow starts:
 
 ```sh
-sdroxide --oob-tx
+sdrcrow --oob-tx
 ```
 
 A warning appears in the middle of the window on startup and stays there until
@@ -17329,7 +17329,7 @@ acknowledgement is remembered on that screen: the lockout is still off while the
 engine runs with `--oob-tx`, but the page is not shown again.
 
 The flag can only ever *loosen* the lockout, never tighten it: without it,
-sdroxide behaves exactly as it always has.
+sdrcrow behaves exactly as it always has.
 
 > **This is for licensed out-of-band use** — MARS/CAP, a commercial or
 > experimental licence, a service-monitor or dummy-load bench — where you are
@@ -17347,16 +17347,16 @@ engine.
 
 ## 13. Configuration files
 
-sdroxide stores its settings under the per-user config directory:
+sdrcrow stores its settings under the per-user config directory:
 
 | Platform | Location |
 | --- | --- |
-| Linux | `~/.config/sdroxide-brown/` |
-| macOS | `~/Library/Application Support/org.sdroxide.sdroxide-brown/` |
-| Windows | `%APPDATA%\sdroxide\sdroxide\config-brown\` |
+| Linux | `~/.config/sdrcrow/` |
+| macOS | `~/Library/Application Support/org.sdrcrow.sdrcrow/` |
+| Windows | `%APPDATA%\sdrcrow\sdrcrow\config-brown\` |
 
-> **This build keeps its own directory.** SDR Oxide Brown uses a `…-brown`
-> directory beside upstream sdroxide's, so the two builds never read or write
+> **This build keeps its own directory.** SDRCrow uses a `…-brown`
+> directory beside upstream sdrcrow's, so the two builds never read or write
 > each other's settings — run both and nothing is disturbed, and settings the
 > two do not share (the 11 m and listening ones) cannot be dropped by the other
 > build rewriting a file. **Your existing settings are moved across
@@ -17385,10 +17385,10 @@ machines, two user accounts on one machine, or a laptop being rebuilt, that is
 the whole job.
 
 The files travel exactly as they are on the disk, so a bundle written by a newer
-sdroxide does not lose settings this one has never heard of. An import replaces
+sdrcrow does not lose settings this one has never heard of. An import replaces
 what is here file for file and leaves anything the bundle does not mention
 alone — so a bundle from a one-radio station will not remove a second radio's
-configuration here — and it takes effect **the next time sdroxide starts**,
+configuration here — and it takes effect **the next time sdrcrow starts**,
 because the settings already in memory would otherwise be written straight back
 over it.
 
@@ -17437,8 +17437,8 @@ and not the station's.
 | `satellites.json` | JSON | Satellite additions for the 3D tracker: subscribed element-set listings, element sets pasted in by hand, and frequency entries that override the built-in table. Belongs to the engine, like `net.json`: the listings are fetched and cached where the radio is, so remote and browser clients track the same satellites. |
 | `ptt_inputs.json` | JSON | The desk microphone and the pedal that key the transmitter ([§6.4.4](#644-desk-microphone-and-pedal-external-ptt)): for each of the two, serial port and lines, USB HID device and bit, or MIDI port and control, polarity, debounce and hold or toggle. Belongs to the engine — the devices are plugged into the station's computer. |
 | `relay.json` | JSON | The station's external transmit/receive switch ([§6.11](#611-tr-switch-protecting-the-receiver-on-transmit)): which relay board or contact closure, the contact table, the sequencer's lead and hold times, what to do if it stops answering, and the transmit sense input. Belongs to the engine — the relay is bolted to the antenna — so remote and browser clients set up the real one. |
-| `broadcast_stations.json` | JSON | *Your own* broadcast stations and corrections, merged over the downloaded schedule ([§10.6](#106-broadcast-stations-on-longwave-and-shortwave)). Never written by sdroxide, and absent until you create it. |
-| `broadcast/` | CSV | The broadcasting season's schedule as downloaded from eibispace.de, one file per season. Managed by sdroxide: refetched when the season changes, and safe to delete. |
+| `broadcast_stations.json` | JSON | *Your own* broadcast stations and corrections, merged over the downloaded schedule ([§10.6](#106-broadcast-stations-on-longwave-and-shortwave)). Never written by sdrcrow, and absent until you create it. |
+| `broadcast/` | CSV | The broadcasting season's schedule as downloaded from eibispace.de, one file per season. Managed by sdrcrow: refetched when the season changes, and safe to delete. |
 | `sstv_messages.json` | JSON | The overlay message stored for each of the five SSTV transmit slots. |
 | `filter_presets.json` | JSON | Your own receive filter presets: for each one, the mode, which built-in chip it replaces, its label and its two edges in Hz. |
 | `voice_names.json` | JSON | The label given to each of the ten voice-keyer slots. |
@@ -17446,7 +17446,7 @@ and not the station's.
 | `speech_voices/` | dir | Extra voices for the spoken announcements: a Piper `.onnx` model and its `.onnx.json` config, side by side. Absent until you create it — the shipped voice lives with the program, not here. Note this is *not* `voice/`, which is the voice keyer. |
 | `sstv_tx/` | dir | The five SSTV transmit-image slots (`slot0.png`…`slot4.png`). |
 | `sstv_rx/` | dir | Received SSTV and RIFP pictures, kept for the gallery. |
-| `wefax_rx/` | dir | Weather-fax charts received by an earlier version. Charts now go to `~/Pictures/sdroxide/wefax/`, but this is still read so an existing collection stays in the gallery. |
+| `wefax_rx/` | dir | Weather-fax charts received by an earlier version. Charts now go to `~/Pictures/sdrcrow/wefax/`, but this is still read so an existing collection stays in the gallery. |
 | `solar/` | dir | Cached solar imagery, space-weather JSON and subscribed element-set listings for the 3D view, with an index of HTTP validators so refreshes stay cheap. Safe to delete; it is re-fetched on demand. |
 | `radios.json` | JSON | The roster of configured radios ([§2.17](#217-running-more-than-one-radio)): each radio's id, the name you gave it (empty = named after its interface) and whether it is switched on (`enabled`, absent = on). Absent until you add a second radio. Written by the GUI, and — on a machine running `--server` — by a signed-in remote client adding or closing a radio ([§8.1](#81-start-the-server)). |
 | `radio-<N>/` | dir | An additional radio's own copies of the files that describe *a radio*: `radio.json`, `session.json`, `scanner.json`, `tciserver.json`, `rigctld.json` and `wsjtx.json`. The first radio keeps those files at the root, exactly where a single-radio installation has always had them, so adding and removing other radios never touches it. Kept on disk when the radio is closed. |
@@ -17515,7 +17515,7 @@ tab shows before you touch it. `"pluto"`, for example, takes `address`,
 board — like `"tci"`'s `rx` and `"hpsdr"`'s `ddc`, it counts from 0 where the
 dialog counts from 1).
 
-To see the whole file with every default filled in, start sdroxide once and read
+To see the whole file with every default filled in, start sdrcrow once and read
 what it wrote: it saves a complete `radio.json` on exit, and that file is the
 authoritative list of keys for the version you are running.
 
@@ -17535,14 +17535,14 @@ link:
 ```
 
 ```ini
-# /etc/systemd/system/sdroxide.service
+# /etc/systemd/system/sdrcrow.service
 [Service]
-ExecStart=/opt/sdroxide/sdroxide --server --port 4950
+ExecStart=/opt/sdrcrow/sdrcrow --server --port 4950
 ```
 
 No `--device`, `--freq` or `--rate` is needed once the file is in place;
 `--device` configures SoapySDR only, and `--rate` reaches the SoapySDR and
-PlutoSDR interfaces but not the rest — where it does not apply, sdroxide says so
+PlutoSDR interfaces but not the rest — where it does not apply, sdrcrow says so
 in the log rather than ignoring it silently.
 
 One trap worth knowing if you clone a working install: `session.json` remembers
@@ -17553,9 +17553,9 @@ remembered frequency is the first thing to check.
 
 Two things are kept outside the config directory, because they are things you
 will want to open in an ordinary file manager rather than program state:
-audio recordings go to `<Music>/sdroxide/` ([2.21](#221-recording-the-audio-and-the-spectrum)),
+audio recordings go to `<Music>/sdrcrow/` ([2.21](#221-recording-the-audio-and-the-spectrum)),
 and received weather-fax charts to
-`<Pictures>/sdroxide/wefax/`. Where the platform exposes no such folder, both
+`<Pictures>/sdrcrow/wefax/`. Where the platform exposes no such folder, both
 fall back to the config directory. The recordings folder can be pointed anywhere
 else from **Settings → General → Recordings**
 ([2.21](#221-recording-the-audio-and-the-spectrum)).
@@ -17569,7 +17569,7 @@ The radio's capture device could not be opened. Common causes:
 
 - The device is being held by the system audio server (PipeWire/PulseAudio). On
   Linux, for a dedicated radio sound card, disable that card in WirePlumber so
-  sdroxide can open it exclusively:
+  sdrcrow can open it exclusively:
 
   ```
   # ~/.config/wireplumber/wireplumber.conf.d/51-radio.conf
@@ -17583,7 +17583,7 @@ The radio's capture device could not be opened. Common causes:
 
   Then run `systemctl --user restart wireplumber`. (Find the exact
   `device.name` with `wpctl status` or `pw-dump`.)
-- The device is in use by another program, or was unplugged. sdroxide shows a
+- The device is in use by another program, or was unplugged. sdrcrow shows a
   warning banner naming the device; use **Dismiss** to hide it after fixing the
   device.
 
@@ -17596,7 +17596,7 @@ speaker decodes them, and the log shows no warning. Run `timedatectl` on that
 machine; it must say `System clock synchronized: yes`. If it says `no`, or
 `NTP service: n/a` (a minimal server install often has no time service), run
 `apt install systemd-timesyncd`, then `timedatectl set-ntp true`, and restart
-sdroxide. A system health script that checks the station should check this
+sdrcrow. A system health script that checks the station should check this
 too: it is the one fault that leaves every other line green.
 
 **"A buffer underrun or overrun occurred", and FT8/FT4 will not decode.**
@@ -17619,7 +17619,7 @@ USB microphone had to do with FT8 (issue #367).
 
 and after the first one they are counted and summarised rather than repeated,
 so a stream that does this every few seconds no longer buries the rest of the
-log. The host is telling sdroxide that the captured audio is not continuous:
+log. The host is telling sdrcrow that the captured audio is not continuous:
 what arrives is spliced end to end, with a hole taken out of the middle.
 
 For listening, that is a click. For the timed modes it is fatal, and silently
@@ -17638,7 +17638,7 @@ seconds, and reporting that as a fault at every start had two people looking for
 a broken sound card that was never broken (issues #363, #367). So is the period
 the **audio itself started in**, which is not always the same one — the device
 may still be opening when the slot clock begins. Counting starts with the first
-period sdroxide has heard all of.
+period sdrcrow has heard all of.
 
 A period that arrives **completely empty** is a different message, because it is
 a different fault — no audio is arriving at all, rather than audio arriving with
@@ -17657,7 +17657,7 @@ about a sound card that was never losing anything (issue #393).
 
 A **virtual audio cable** — VB-Audio, VAC, Flex DAX — is the usual source, and
 it is not a fault in the cable so much as a consequence of what one is: there is
-no crystal at either end, so the program feeding it and sdroxide reading it
+no crystal at either end, so the program feeding it and sdrcrow reading it
 drift apart until the driver drops or repeats a buffer to catch up. Things that
 help, roughly in order:
 
@@ -17667,7 +17667,7 @@ help, roughly in order:
   most common cause of a steady drip of glitches.
 - On VB-Audio's Control Panel, raise the cable's internal buffer (`Max Latency`)
   a step or two.
-- Give sdroxide and the feeding program a moment of CPU: a machine that is busy
+- Give sdrcrow and the feeding program a moment of CPU: a machine that is busy
   enough to stall either one for a few tens of milliseconds produces exactly
   this.
 - Where the radio offers a real sound device as well as a virtual one, use it.
@@ -17677,7 +17677,7 @@ up with it, which is the `capture frames dropped` warning's territory rather
 than this one — see [§6.2](#62-radio-choosing-and-configuring-the-rig).
 
 **"No radio" at startup, or the radio disappears mid-session.**
-sdroxide shows the reason it could not open the interface and keeps trying it in
+sdrcrow shows the reason it could not open the interface and keeps trying it in
 the background — every second at first, then more slowly — so a rig that is
 merely late (ExpertSDR3 not up yet, an SDR still booting) attaches on its own
 within a few seconds of appearing. The same applies when a network rig hangs up:
@@ -17685,7 +17685,7 @@ it reconnects once the radio is back. You only need **Apply / reconnect** to
 switch to a *different* interface, or to apply a settings change.
 
 **The dial jumps back, with a banner saying the frequency is out of range.**
-The receiver cannot tune there. sdroxide checks the range the front end reports
+The receiver cannot tune there. sdrcrow checks the range the front end reports
 before it asks the hardware for anything, and returns the dial to the last
 frequency that worked, because a driver asked for the impossible does not always
 fail cleanly — a LimeSDR asked for a frequency below its range stops receiving
@@ -17737,11 +17737,11 @@ answer** to *Transmit anyway, warn* — but read
 [6.11.4](#6114-wire-it-so-that-a-dead-relay-is-the-safe-one) first.
 
 **The SDR still gets blasted when I key the rig at the microphone.**
-Expected, and the one thing this cannot fix from software: sdroxide learns of an
+Expected, and the one thing this cannot fix from software: sdrcrow learns of an
 over you start *at the radio* by asking over CAT, a few hundred milliseconds in.
 Wire the rig's SEND line into the transmit sense input
 ([6.11.3](#6113-the-transmit-sense-input)) to cut that to milliseconds, key from
-sdroxide instead of the microphone where you can, and use an RF-sensed hardware
+sdrcrow instead of the microphone where you can, and use an RF-sensed hardware
 T/R switch for a front end genuinely worth protecting.
 See [6.11.5](#6115-what-this-cannot-do).
 
@@ -17755,7 +17755,7 @@ Turning the guard off clears a standing trip as well, which is the answer while
 you are tuning a manual ATU.
 
 **The CAT radio does not change mode.**
-On the **Radio** tab, set **Mode control** to **CAT**. For the modes sdroxide
+On the **Radio** tab, set **Mode control** to **CAT**. For the modes sdrcrow
 modulates through the rig's sound card — FT8, FT4, PSK, RTTY, SSTV and the rest
 — set **Digimode mode** to **USB** or **DIGI** as your rig expects; that setting
 governs them instead of **Mode control**. Check the serial port, baud, and (for
@@ -17774,12 +17774,12 @@ the over from its data input. A rig with no DATA position wants `USB` here
 instead, plus its SSB modulation source set to the USB input at the radio —
 `MENU → SET → Connectors → MOD Input` on an IC-7300.
 
-**The CAT radio follows my dial but ignores frequency changes from sdroxide.**
+**The CAT radio follows my dial but ignores frequency changes from sdrcrow.**
 Take the radio out of memory mode: most rigs answer a frequency *read* from a
 memory channel but refuse to be tuned into one, so the app follows the radio
 while the radio ignores the app. (On Yaesu this used to also happen because the
 frequency field is eight digits wide on the FTDX1200/3000/5000 generation and
-nine on the FT-891/991A and FTDX10/101 — sdroxide now reads the width off the
+nine on the FT-891/991A and FTDX10/101 — sdrcrow now reads the width off the
 rig's own reply, so both work without a setting.) On a Kenwood, check that
 **CAT family** is `Kenwood` and not `Yaesu`: the frequency field is eleven
 digits here, and a Yaesu-width one is a syntax error the rig answers with `?;`
@@ -17794,7 +17794,7 @@ rig off to stop it in the meantime.
 **The Kenwood keys but no audio goes out.**
 On a TS-590S/SG, TS-890 or TS-990, set **Send command** to `TS-590 style
 (TX1;)`. The plain send selects the microphone input and mutes the ACC2/USB
-audio sdroxide transmits.
+audio sdrcrow transmits.
 
 **The Kenwood transmits on the wrong band.**
 On a TS-2000, set **Send command** back to `TS-2000 style (TX;)`. `TX1;` is
@@ -17804,7 +17804,7 @@ DATA SEND on a TS-590 but *transmit on the sub-band* on a TS-2000.
 Something sent it a carriage return, which a QMX takes as an instruction to
 leave CAT and become a terminal for the rest of the session — a terminal
 emulator left open on the same port does it on the first Enter. Close whatever
-else is on the port, then power the radio off and on. sdroxide never sends one.
+else is on the port, then power the radio off and on. sdrcrow never sends one.
 
 **The QMX answers nothing at all.**
 Try its other ports. A QMX offers up to three virtual COM ports over USB and
@@ -17818,26 +17818,26 @@ that changes nothing, because the radio measures the *frequency* of what you sen
 it and synthesises the carrier itself. Set the power at the radio.
 
 **The QMX will not transmit, and the log says its SWR protection has tripped.**
-It has latched, and only the radio can clear it — sdroxide deliberately does not,
+It has latched, and only the radio can clear it — sdrcrow deliberately does not,
 because clearing a protection trip is a decision about an antenna. Check the
 antenna, then reset it at the radio.
 
 **The QMX's panadapter is 12 kHz off, or it is nothing but noise.**
 Two different faults. Everything sitting 12 kHz from where it belongs is the
-**I/Q centre offset**: it should be `-12000`, which sdroxide fills in when you
+**I/Q centre offset**: it should be `-12000`, which sdrcrow fills in when you
 pick the `QRP Labs` family with **Sound format** on `IQ` — a config carried over
 from before that will still have `0`. (In CW, expect a further ~700 Hz: the radio
 moves its I.F. by the pitch, and one figure cannot follow that.) A panadapter
 that is noise from edge to edge with the format on `Demod audio` is the other
 way round — the radio is still in its own I/Q mode from something else, and
-sdroxide switches it back off at connect, so reconnect.
+sdrcrow switches it back off at connect, so reconnect.
 
 **The radio transmits at a power the Drive slider does not show — often much
 less — and moving the slider changes nothing.**
-Every one of these radios stores its output power per mode, and sdroxide
+Every one of these radios stores its output power per mode, and sdrcrow
 commands the mode at key-down. So the level you set while the rig sat in one
 mode was stored in *that* mode's register, and the over went out on another
-one's. sdroxide now writes the Drive level behind every mode command, which puts
+one's. sdrcrow now writes the Drive level behind every mode command, which puts
 it in the register the over transmits on; if you are on a build older than that,
 set the power at the radio in the mode it actually transmits in. The tell is a
 tune: the operating level is restored at unkey, so the rig's own power display
@@ -17849,11 +17849,11 @@ but a mode of its own here (`MD6`), so the Kenwood profile leaves a K3 in USB
 and then earns a rejection for the flag — with nothing to show that anything was
 refused. Set the family to `Elecraft`.
 
-**The Elecraft is in DATA but nothing decodes, and sdroxide shows no mode.**
+**The Elecraft is in DATA but nothing decodes, and sdrcrow shows no mode.**
 The rig is in the wrong DATA *sub-mode*. `MD6` restores whichever of DATA A,
 AFSK A, FSK D and PSK D that band was last left in, and only DATA A is the
 sound-card path; the other three hand the over to the K3's own modems. Set
-**Mode control** to `CAT` and pick the mode in sdroxide, which sends `DT0;`
+**Mode control** to `CAT` and pick the mode in sdrcrow, which sends `DT0;`
 behind the mode and pins it — or press **DATA MD** at the radio until it reads
 `DATA A`.
 
@@ -17868,7 +17868,7 @@ Check that a daemon is actually listening — `rigctl -m 2 -r localhost:4532 f`
 asks the one on this machine for its frequency — and that the address matches.
 The log line `CAT open failed: Connection refused` means nothing is listening
 there; `CAT link open` means the socket came up and any remaining fault is
-between the daemon and the radio, not between sdroxide and the daemon. Note
+between the daemon and the radio, not between sdrcrow and the daemon. Note
 also that `PTT method` `DTR` and `RTS` key nothing over a socket: a network link
 has no control lines. Use `CAT`, which asks the daemon to key the radio.
 
@@ -17882,19 +17882,19 @@ Check **CW keying** on the Radio tab — see
 [6.2.2](#622-cat-radios-serial-control--usb-audio). A rig in CW
 ignores audio sent to its sound card, so it can only be keyed from text: with
 **Rig keyer (CAT)**, on Yaesu check that CW memory 1 is free to be overwritten;
-on a Yaesu FTX-1, sdroxide plays that memory with `KY01`, the form its CAT
+on a Yaesu FTX-1, sdrcrow plays that memory with `KY01`, the form its CAT
 manual gives; through **Hamlib rigctld**, the text goes to Hamlib's `send_morse`,
 so it is Hamlib's backend for your rig that keys it (issue #412);
-on Kenwood, that break-in is on (sdroxide only asserts it when the rig has
+on Kenwood, that break-in is on (sdrcrow only asserts it when the rig has
 reported CW, because the same command is the VOX switch in every other mode);
-on Icom, that the radio takes `16 47` — sdroxide turns semi break-in on with
+on Icom, that the radio takes `16 47` — sdrcrow turns semi break-in on with
 every message, and a model old enough to answer NG to that needs break-in set at
 the radio, or `[TRANSMIT]` held on, instead;
 on Elecraft, that the rig is not sitting in a limited-access state such as BSET
 or VFO REV, where it answers `?;` and does nothing; on any rig, that
 the radio is actually in CW (**Mode control** = `CAT`) and that the **Drive**
 slider — which *is* the rig's output power on a CAT rig, in CW as in every other
-mode — is not down at the bottom. On a radio whose keyer sdroxide cannot drive
+mode — is not down at the bottom. On a radio whose keyer sdrcrow cannot drive
 at all — a Xiegu G90 keys up with no power out, and the ELAD has no text
 keying — choose **Sound card (MCW)** instead: the keyed tone goes out
 as audio and the rig is kept on the **Digimode mode** sideband rather than
@@ -17922,16 +17922,16 @@ press **Apply / reconnect** (Radio tab, or under the CAT radio-audio settings).
 Audio output/input device changes apply immediately. If a change still seems
 stuck, press Apply / reconnect again.
 
-**The display flickers, or sdroxide uses more CPU on a Raspberry Pi than it
+**The display flickers, or sdrcrow uses more CPU on a Raspberry Pi than it
 should.**
 Both are the same setting seen from either side. Mesa's Vulkan driver for the
 Pi's V3D GPU (V3DV, on the Pi 4, 5, 400 and 500) makes the picture flicker —
-unusably so on some compositors, and not only under sdroxide; other wgpu and
-Vulkan applications flicker on the same driver. sdroxide looks for that adapter
+unusably so on some compositors, and not only under sdrcrow; other wgpu and
+Vulkan applications flicker on the same driver. sdrcrow looks for that adapter
 at startup and renders through OpenGL ES instead, saying so in the log:
 
 ```
-sdroxide: the Raspberry Pi's V3D through Mesa's Vulkan driver (V3DV) flickers,
+sdrcrow: the Raspberry Pi's V3D through Mesa's Vulkan driver (V3DV) flickers,
 so this window renders through OpenGL ES instead.
 ```
 
@@ -17941,19 +17941,19 @@ machine. If your desktop turns out not to flicker under Vulkan, take it back
 with
 
 ```
-WGPU_BACKEND=vulkan sdroxide
+WGPU_BACKEND=vulkan sdrcrow
 ```
 
 `WGPU_BACKEND` (`vulkan`, `gl`, `metal`, `dx12`) pins the renderer on any
 machine, and pinning it also turns the check above off — and the Windows one
 below with it — so `WGPU_BACKEND=gl` is how to force the steady path on a GPU
-sdroxide does not know about.
+sdrcrow does not know about.
 
-**On Windows, sdroxide closes the moment it starts, and Event Viewer names
+**On Windows, sdrcrow closes the moment it starts, and Event Viewer names
 `igvk64.dll` with exception code `0xc0000005`.**
 That module is Intel's Vulkan driver, and the exception is an access violation
-inside it — a crash in the graphics driver, before sdroxide has drawn anything.
-Nothing on this side can catch it. From 1.6.2 sdroxide does not load Vulkan on
+inside it — a crash in the graphics driver, before sdrcrow has drawn anything.
+Nothing on this side can catch it. From 1.6.2 sdrcrow does not load Vulkan on
 Windows at all: the window opens on **Direct3D 12**, with OpenGL behind it,
 which between them cover every Windows machine going back further than Vulkan
 does and are what a Windows driver is written against first. If your Vulkan
@@ -17963,7 +17963,7 @@ driver is sound and you would rather use it, say
 WGPU_BACKEND=vulkan
 ```
 
-before starting sdroxide — in PowerShell, `$Env:WGPU_BACKEND = "vulkan"`.
+before starting sdrcrow — in PowerShell, `$Env:WGPU_BACKEND = "vulkan"`.
 
 **TUNE makes full power and FT8 makes full power, but speaking into the
 microphone makes milliwatts.**
@@ -17980,10 +17980,10 @@ General**; on a headset this is usually a separate device from the speaker, and
 "System Default" is whatever the desktop's sound settings point at rather than
 whatever is plugged in.
 
-**sdroxide died with `Failed to create staging buffer for index data`, or
+**sdrcrow died with `Failed to create staging buffer for index data`, or
 another panic naming `wgpu`, after running for a while.**
 The graphics driver refused an allocation and the renderer has no way to carry
-on without one. It is the driver's failure rather than sdroxide's — reported on
+on without one. It is the driver's failure rather than sdrcrow's — reported on
 an Intel HD Graphics 530 under Mesa, an hour into a session, with a wgpu
 validation error a moment before it — and nothing
 in the program can prevent it. What it can do is not walk into it twice: a panic
@@ -17993,34 +17993,34 @@ that came from the graphics driver leaves a note in
 instead and says so:
 
 ```
-sdroxide: the last session ended inside the graphics driver, so this window
+sdrcrow: the last session ended inside the graphics driver, so this window
 renders through OpenGL instead.
 ```
 
 The note stays until you delete it — a driver that has crashed once will crash
 again, and re-learning that costs another lost session. Delete the file to go
 back to the default renderer, or set `WGPU_BACKEND` to pick one yourself, which
-turns the check off in both directions. A panic anywhere else in sdroxide leaves
+turns the check off in both directions. A panic anywhere else in sdrcrow leaves
 no note and changes no renderer.
 
-**A blank window appears for a moment, sdroxide exits, and the console says
+**A blank window appears for a moment, sdrcrow exits, and the console says
 `Failed to wait for GPU to come idle before reconfiguring the Surface`.**
 An old graphics card taking too long over its first frame, on a machine with
 neither a Vulkan nor a Direct3D 12 driver — so OpenGL is all that is left. The
 first frame is where every shader is compiled and every texture allocated, and
 on such a card that can take several seconds; the window's real size, arriving
-while that is still going, used to make sdroxide wait for the card to catch up.
+while that is still going, used to make sdrcrow wait for the card to catch up.
 OpenGL gives that kind of wait 2.147 seconds and not a moment more, after which
 the window counted as broken and the process died — twice over, the second time
 inside its own cleanup, which is where the backtrace came from.
 
-sdroxide no longer asks to be kept waiting by an OpenGL driver, so a slow card
+sdrcrow no longer asks to be kept waiting by an OpenGL driver, so a slow card
 is now merely slow. The wait bought nothing here in any case — nothing in
-sdroxide reads back from the GPU; every pass ends on the screen. To hand the
+sdrcrow reads back from the GPU; every pass ends on the screen. To hand the
 timing back to the driver, for a bug report say:
 
 ```
-WGPU_GL_FENCE_BEHAVIOR=normal sdroxide
+WGPU_GL_FENCE_BEHAVIOR=normal sdrcrow
 ```
 
 If no window appears at all on such a machine, `WGPU_BACKEND=dx12` on Windows
@@ -18052,15 +18052,15 @@ the full detail.
   or nothing.
 - **Transmit meter:** SWR and ALC only. The G90 answers the power-output meter
   read with a number that is not on Icom's scale — full power at 10 % drive —
-  so sdroxide does not ask for it (issue #430).
+  so sdrcrow does not ask for it (issue #430).
 - **CW:** set **CW keying** to `Sound card (MCW)`. The `Rig keyer (CAT)` route
-  keys the G90 with **no power out** — sdroxide cannot drive its keyer. With
-  MCW, sdroxide keeps the rig on the Digimode-mode sideband (with the recipe
+  keys the G90 with **no power out** — sdrcrow cannot drive its keyer. With
+  MCW, sdrcrow keeps the rig on the Digimode-mode sideband (with the recipe
   above: leaves it in U-D), the keyed tone goes out at dial + pitch, and a
   clicked station is answered on its own frequency.
 - **Listening with no control cable:** the G90's I/Q output works on its own —
   pick **Sound format** `IQ (stereo)` and leave the CAT settings alone. With
-  nothing answering on the control port sdroxide tunes inside the span the
+  nothing answering on the control port sdrcrow tunes inside the span the
   rig is sending rather than trying to move its dial; set the band on the
   radio and type its dial frequency in once to line the labels up. See
   [6.2.2](#622-cat-radios-serial-control--usb-audio).
@@ -18087,13 +18087,13 @@ All in [§6.2.2](#622-cat-radios-serial-control--usb-audio):
   listed but selects its data input at the radio.
 - **PTT method** `CAT`. `DTR`/`RTS` only key if the radio's **USB SEND**
   setting is assigned to that line, and an IC-7300 ships with it off.
-- **CI-V Transceive** on in the radio's menu is welcome: sdroxide notices the
+- **CI-V Transceive** on in the radio's menu is welcome: sdrcrow notices the
   broadcasts and stands its dial poll down on its own.
 - A panadapter no wider than one station is the rig's demodulated audio, which
   is all **Demod audio** can ever show. Turn on **Show the radio's spectrum
   scope** to draw the radio's own sweep instead — it needs **CI-V USB Baud
   Rate** `115200` and **CI-V USB Port** `Unlink from [REMOTE]` on the radio,
-  and the matching baud in sdroxide. See
+  and the matching baud in sdrcrow. See
   [§6.2.2](#622-cat-radios-serial-control--usb-audio).
 - Received audio breaking up is usually the **Poll rate**, not the DSP: a
   modern Icom is a USB hub with the CI-V bridge and the audio codec behind it,
@@ -18102,7 +18102,7 @@ All in [§6.2.2](#622-cat-radios-serial-control--usb-audio):
   with it on, the scope is the first thing to try switching off.
 - **CW:** an Icom sends a message given to it by a computer only while
   `[TRANSMIT]` is on, an external TX switch is closed, or **break-in** is on.
-  sdroxide turns semi break-in on (`16 47`) with every message, since the first
+  sdrcrow turns semi break-in on (`16 47`) with every message, since the first
   two are things you cannot reach from another room — but it never turns a full
   break-in *down*: the setting is read once when the link opens, so a rig you
   run in QSK stays in QSK. The radio is left in break-in when the message is
@@ -18116,8 +18116,8 @@ All in [§6.2.10](#6210-icom-lan-network-radios):
 
 - Three radio-side settings under **MENU » SET** first: **Network Control**
   = ON, a **Network User1/User2** name and password (the same pair goes in
-  sdroxide), and **Connectors > MOD Input**: `DATA OFF MOD` and `DATA MOD` =
-  `LAN` (`WLAN` on an IC-705). sdroxide writes the third one for you on every
+  sdrcrow), and **Connectors > MOD Input**: `DATA OFF MOD` and `DATA MOD` =
+  `LAN` (`WLAN` on an IC-705). sdrcrow writes the third one for you on every
   transceiver named above; on a model whose menu numbering it does not know it
   says so and leaves the menu alone. What it writes there it puts back when the
   session ends, so a rig used standalone afterwards still hears its own
@@ -18136,12 +18136,12 @@ All in [§6.2.10](#6210-icom-lan-network-radios):
 ### 15.5 Icom IC-R8600
 
 - Connects over the same [Icom LAN](#6210-icom-lan-network-radios) interface.
-  It is a receiver: sdroxide offers **no PTT, drive, tune or SWR controls at
+  It is a receiver: sdrcrow offers **no PTT, drive, tune or SWR controls at
   all** — regardless of what its capability block claims, because at least
   one advertises a transmit stream despite having no transmitter — and the
   MOD-input menu step neither runs nor warns.
 - The **12 kHz IF** still works: `Output Select` is a menu item this receiver
-  does have, and sdroxide writes it the same way it does on a transceiver.
+  does have, and sdrcrow writes it the same way it does on a transceiver.
 
 ### 15.6 Kenwood (TS-480, TS-590, TS-890, TS-990, TS-2000)
 
@@ -18154,7 +18154,7 @@ All in [§6.2.2](#622-cat-radios-serial-control--usb-audio) and
   TS-590S/SG, TS-890 or TS-990 — wrongly left on TS-2000 style they key and
   transmit *silence* — and `TS-2000 style (TX;)` for a TS-480, TS-570, TS-870
   or TS-2000, which transmits on the **sub-band** under `TX1;`.
-- Take the rig off VFO B and out of memory mode: sdroxide selects and tunes
+- Take the rig off VFO B and out of memory mode: sdrcrow selects and tunes
   **VFO A**, and a rig parked elsewhere answers every read and ignores every
   retune.
 - S-meter and SWR scales are carried for the TS-480, TS-590S/SG, TS-890S,
@@ -18172,7 +18172,7 @@ All in [§6.2.2](#622-cat-radios-serial-control--usb-audio) and
 All in [§6.2.2](#622-cat-radios-serial-control--usb-audio):
 
 - Use the **Enhanced** USB serial port for CAT, and **PTT method** `CAT` —
-  the Standard port carries the RTS/DTR key lines and sdroxide does not use
+  the Standard port carries the RTS/DTR key lines and sdrcrow does not use
   it.
 - **CW memory 1 is scratch space:** sending CW from the panel overwrites
   whatever was stored in it (Yaesu has no streaming keying command). The
@@ -18197,7 +18197,7 @@ All in [§6.2.2](#622-cat-radios-serial-control--usb-audio) and
 - `MENU:RX SHFT` at `8.0` moves the I.F. 8 kHz off the dial: set **I/Q centre
   offset** to `8000` to match (`-8000` if signals land at twice the offset).
   Never put it in the Converter field — that retunes the radio.
-- Only **DATA A** is the sound-card path; sdroxide pins it with `DT0;` when it
+- Only **DATA A** is the sound-card path; sdrcrow pins it with `DT0;` when it
   commands DATA, and follows the rig into DATA only when the rig reports
   DATA A. A rig stuck in AFSK A / FSK D / PSK D decodes nothing.
 - The Drive slider spans what `OM;` finds: 110 W with a KPA3/KXPA100
@@ -18218,12 +18218,12 @@ All in [§6.2.16](#6216-elad-fdm-duo--fdm-s-usb):
 - **An FDM-S1 or FDM-S2 that opens perfectly and shows nothing** has an
   unloaded FPGA. Everything reports "ok" because the USB bridge runs from an
   EEPROM; the down-converter behind it does not exist until an image is loaded.
-  Put ELAD's `elad-firmware` in `/usr/local/bin` and sdroxide loads it at every
+  Put ELAD's `elad-firmware` in `/usr/local/bin` and sdrcrow loads it at every
   open — which is also how the sample rate is chosen on those two models,
   because each rate is a different image.
 - **On an FDM-DUO the sample rate cannot be commanded.** The radio sits at
   whatever it powered up in (192 kHz on a fresh one) or whatever FDM-SW2 last
-  left it in; set sdroxide to match, and let its measured-throughput notice name
+  left it in; set sdrcrow to match, and let its measured-throughput notice name
   the rate if unsure. 6144 kHz halves the sample width — a wrong guess there is
   noise.
 - **Baud** matches menu 70 `CAT BAUD` (ships at 38400); **Transmit input**
@@ -18251,9 +18251,9 @@ All in [§6.2.2](#622-cat-radios-serial-control--usb-audio):
   try the next.
 - ⚠️ **Never open a terminal program on the CAT port.** A QMX takes a carriage
   return as an instruction to leave CAT and become a terminal for the rest of the
-  session. sdroxide never sends one; a terminal emulator sends one on the first
+  session. sdrcrow never sends one; a terminal emulator sends one on the first
   Enter.
-- **I/Q output:** set **Sound format** to `IQ` and sdroxide switches the radio's
+- **I/Q output:** set **Sound format** to `IQ` and sdrcrow switches the radio's
   own I/Q mode on for you (`Q9`) and fills in the two numbers that go with it —
   **I/Q centre offset** `-12000` and **I/Q sample rate** 48 kHz. The offset is
   the radio's 12 kHz I.F.: its synthesiser sits 12 kHz *below* the dial, so the
@@ -18275,7 +18275,7 @@ All in [§6.2.2](#622-cat-radios-serial-control--usb-audio):
   ask for 0 WPM: on a QMX that is Straight Key mode, so the panel's bottom end is
   held at 5.
 - **SWR protection** (firmware 1.04.004 and later) is read (`SR`). Once it has
-  tripped the radio will not transmit until it is reset at the radio — sdroxide
+  tripped the radio will not transmit until it is reset at the radio — sdrcrow
   says so in the log and does not reset it for you.
 - The receive filter is the radio's: it reports the width its mode implies
   (3.2 kHz in Digi, 300 Hz in CW) and offers nothing to change it with.
@@ -18294,7 +18294,7 @@ All in [§6.2.4](#624-tci-network-expertsdr3-and-thetis):
   the I/Q rate to whichever radio connects first.
 - A Drive level set in ExpertSDR3 or at the radio is adopted at connect, not
   overwritten.
-- Running sdroxide's own [TCI server](#682-built-in-tci-server) on the same
+- Running sdrcrow's own [TCI server](#682-built-in-tci-server) on the same
   machine: port 50001 is likely already taken by ExpertSDR3 or Thetis — pick
   another (50002).
 
@@ -18325,16 +18325,16 @@ All in [§6.2.3](#623-hpsdr-network-radios):
 
 All in [§6.2.6](#626-smartsdr-flexradio-network-radios):
 
-- sdroxide registers as a **GUI client** and takes a DAX IQ stream — a radio
+- sdrcrow registers as a **GUI client** and takes a DAX IQ stream — a radio
   already claimed by another GUI client shows greyed out unless multiFLEX is
   enabled on it. Behind a router or VPN the broadcast never arrives: enter
   the address by hand.
 - **192 kHz is the radio's DAX IQ maximum**, so that is the widest span.
 - The radio remembers a client by its **Station name** — renaming makes it
-  treat sdroxide as a brand-new client.
-- Two sdroxide installations that both kept the default station name arrive at
+  treat sdrcrow as a brand-new client.
+- Two sdrcrow installations that both kept the default station name arrive at
   the radio holding the same identity, and a FLEX settles that by disconnecting
-  the first one. sdroxide detects it and takes a one-session identity instead,
+  the first one. sdrcrow detects it and takes a one-session identity instead,
   which works but loses the radio's slice restore. Give each a **GUI client ID**
   of its own to keep it.
 - **A connection that tests fine but shows no spectrum is a UDP problem**, not
@@ -18373,7 +18373,7 @@ All in [§6.2.6](#626-smartsdr-flexradio-network-radios):
 All in [§6.2.8](#628-sdrplay-rsp-usb):
 
 - Needs the **vendor API v3.x** and its background service
-  (`sudo systemctl enable --now sdrplay` on Linux); `sdroxide --probe` names
+  (`sudo systemctl enable --now sdrplay` on Linux); `sdrcrow --probe` names
   the missing piece.
 - The controls are the RSP's own units: **IF gain reduction** runs backwards
   (20 dB is maximum gain, 59 minimum — or 0 with **Extended IF range** on,
@@ -18382,7 +18382,7 @@ All in [§6.2.8](#628-sdrplay-rsp-usb):
   overloads the ADC. How many LNA states there are belongs to the *band*, so
   the slider's range moves with the dial.
 - **The S-meter is referred to the antenna.** Alone among the front ends here,
-  an RSP reports what its own gain currently is, and sdroxide takes that off
+  an RSP reports what its own gain currently is, and sdrcrow takes that off
   the measurement — so the reading is a fact about the aerial rather than
   about the gain, and it holds still while the hardware AGC (on by default)
   moves the gain underneath it. Two consequences: the numbers are tens of dB
@@ -18424,7 +18424,7 @@ substitutes for another.
 - **HydraSDR RFOne:** the same real-ADC arrangement and the same two gain
   curves — it is a fork of the R2's firmware — but **not interchangeable with
   it**: the RFOne takes an eight-byte tuning command where the Airspy takes
-  four. Pick the wrong interface and sdroxide names the right one rather than
+  four. Pick the wrong interface and sdrcrow names the right one rather than
   tuning somewhere you did not ask for. Three RF sockets (**ANT**, with the bias
   tee, plus **CABLE1** and **CABLE2** without), and seven sample rates of which
   the receiver only reports three — the other four are in its firmware's
@@ -18442,7 +18442,7 @@ All in [§6.2.12](#6212-hackrf-one--pro-usb):
   band, or a dummy load until you have measured harmonics and carrier
   leakage. Leave **Drive** high and set level with **TX VGA**; the carrier
   sits on your signal by design.
-- The 14 dB RF amp is **one switch for both directions**; sdroxide
+- The 14 dB RF amp is **one switch for both directions**; sdrcrow
   reprograms it on every direction change. Via SoapySDR this cannot be
   expressed — there the receive amp dies after the first over.
 - Leave **Baseband filter** on `Automatic` — a hand-narrowed filter silently
@@ -18529,7 +18529,7 @@ All in [§6.2.17](#6217-limesdr-family--limerfe-limesuite):
   and an over waits for the relay either way. On HF, **J5 is the only path to
   the amplifier and is one jack for both directions**; leave the connector
   setting on `Automatic`. Turn the fan on for sustained transmitting. Nothing
-  sdroxide does keys an external amplifier.
+  sdrcrow does keys an external amplifier.
 - **A carrier parked in the middle of the span, or a mirror image of every
   signal**, is the chip's own DC-offset and image calibration. Those numbers are
   measured at one LO frequency and are wrong elsewhere, so leave **Calibrate
@@ -18566,7 +18566,7 @@ All in [§6.2.17](#6217-limesdr-family--limerfe-limesuite):
   FX3 are the same parts. What a Mk1 has not got is the Mk2's front end — no
   PE4312 attenuator, no AD8370 VGA, no VHF tuner — so the bias tee, dither, ADC
   range and both gain sliders do nothing on one, and there is no VHF to reach.
-  sdroxide says so once, by name, when the receiver opens; the gain in front of
+  sdrcrow says so once, by name, when the receiver opens; the gain in front of
   the converter is whatever the board itself sets. No SoapySDR module is needed
   or wanted, on Windows or anywhere else (issue #342).
 - The **ADC clock** decides how much spectrum is digitised (half the clock)
@@ -18595,7 +18595,7 @@ All in [§6.2.17](#6217-limesdr-family--limerfe-limesuite):
 ### 15.21 Public SDRs on the internet (KiwiSDR / Web-888, SpyServer)
 
 About eleven hundred receivers are published for anyone to listen on, and
-sdroxide can open one as an ordinary radio — same panadapter, same
+sdrcrow can open one as an ordinary radio — same panadapter, same
 demodulators, same digital modes, same logbook. Two networks are covered, and
 a third is listed but not yet reachable.
 
@@ -18610,7 +18610,7 @@ listed here so you can see what is on the air and where, but **none of them can
 be opened yet**, and every row says why in its own words. PhantomSDR-Plus comes
 closest: recent builds answer the KiwiSDR protocol alongside their own, they do
 retune, and what they send back is *demodulated audio* rather than the I/Q that
-sdroxide's KiwiSDR interface decodes — so the interface that looks like it
+sdrcrow's KiwiSDR interface decodes — so the interface that looks like it
 should fit does not. The others each speak a protocol of their own. Turn the
 **sdr-list.xyz** button off at the top of the list if you would rather not see
 them.
@@ -18668,15 +18668,15 @@ once, and somebody pays for its antenna, its power and its uplink.
 - A receiver that is **full** is shown greyed with the reason rather than
   hidden, so you can see there is one where you wanted one and come back.
 - A KiwiSDR whose operator has **not opened any channels to non-browser apps**
-  is greyed too. sdroxide is a non-browser app, so such a receiver will refuse
+  is greyed too. sdrcrow is a non-browser app, so such a receiver will refuse
   it however many channels are free — this is the one refusal you cannot see
   coming from the outside, which is why it is called out.
-- sdroxide **identifies itself**, as the network expects: your station
-  callsign, or plain `sdroxide` where none is set. Settings → Radio can
+- sdrcrow **identifies itself**, as the network expects: your station
+  callsign, or plain `sdrcrow` where none is set. Settings → Radio can
   override it.
 - When a receiver ends the session itself — its inactivity timeout, its
   24-hour per-address limit, a wrong password, or its operator pressing the
-  kick button — sdroxide reports what it said and **stops**. It does not
+  kick button — sdrcrow reports what it said and **stops**. It does not
   reconnect. A dropped network link still reconnects normally.
 - Closing the radio frees the channel at once rather than at the receiver's
   own timeout.
@@ -18686,7 +18686,7 @@ once, and somebody pays for its antenna, its power and its uplink.
 A KiwiSDR has no wideband I/Q and never has. It has eight (or four) *user
 channels*, each about 12 kHz wide, which it normally demodulates for you — and
 one of its modes hands the channel over as complex baseband instead. That is
-what sdroxide opens.
+what sdrcrow opens.
 
 So the panadapter is about 12 kHz, and honest about it. Alongside it, on a
 second connection, the receiver sends the waterfall its own web page draws:
@@ -18695,7 +18695,7 @@ panadapter. Tuning across that strip retunes the receiver. It is the same
 shape as the SpyServer VFO+FFT interface, and for the same reason — it is what
 a receiver at the far end of a network link can actually deliver.
 
-That is enough for everything sdroxide decodes: SSB, AM and the synchronous
+That is enough for everything sdrcrow decodes: SSB, AM and the synchronous
 detectors, CW, RTTY, NAVTEX, WSPR, FT8 and FT4, and the rest. It is not enough
 for anything wider than the window, and there is no way to ask for more.
 
@@ -18711,7 +18711,7 @@ zooming back in returns the I/Q's own resolution.
 #### Gain and the S-meter
 
 Unusually for a receiver here, the **AGC is left on at the far end** by
-default. It sits ahead of the I/Q, so it acts before anything sdroxide does —
+default. It sits ahead of the I/Q, so it acts before anything sdrcrow does —
 but the alternative measured worse: on a live receiver the manual gain was not
 monotonic across its range and its top end clipped the I/Q at full scale,
 while the AGC held about −24 dBFS with 7 dB of headroom.
@@ -18719,7 +18719,7 @@ while the AGC held about −24 dBFS with 7 dB of headroom.
 The consequence is that the sample amplitude is not a signal level, so the
 S-meter is read from the figure the receiver puts in every audio frame
 instead. That reading is already in dBm on its own operator's calibration —
-which is worth rather more than sdroxide's own uncalibrated scale, and comes
+which is worth rather more than sdrcrow's own uncalibrated scale, and comes
 with one caveat: it is for the receiver's ±6 kHz channel, not for whatever
 filter you have in front of the demodulator. A narrow CW filter here still
 reads the wideband level.
@@ -18748,14 +18748,14 @@ with a KiwiSDR, the main panadapter can be zoomed out to cover the whole of it
 #### Where your reports come from
 
 Everything you hear through one of these receivers was heard **at its antenna,
-not at yours**. So taking one also moves the locator sdroxide reports from:
+not at yours**. So taking one also moves the locator sdrcrow reports from:
 PSK Reporter, WSPRnet and FreeDV Reporter are all told the *receiver's* square,
 and the ADS-B lane places aircraft against it too. Without that, an online
 receiver in Australia opened from a European shack turns every local 2 m signal
 it hears into an intercontinental opening in somebody else's database.
 
 The directories publish a position for most receivers — a KiwiSDR states a
-locator outright, a SpyServer states latitude and longitude — and sdroxide takes
+locator outright, a SpyServer states latitude and longitude — and sdrcrow takes
 it from there when you pick one. The confirmation says which square it will
 report from.
 
@@ -18788,7 +18788,7 @@ right.
 ### 15.22 USB audio radio (sound card)
 
 A radio with **no control port at all** — a handheld, a walkie, a toy, a USB
-dongle rig. It reaches sdroxide through the computer's ordinary sound cards,
+dongle rig. It reaches sdrcrow through the computer's ordinary sound cards,
 so it is the one radio that needs a cable to the PC even though nothing on it
 says why: receive comes into a sound card's **line or mic input** (the
 radio's headphone socket), transmit leaves through another into the **radio's
@@ -18815,7 +18815,7 @@ audio into the radio's microphone, keyed by VOX. **Apply / reconnect** reopens
 the radio with the chosen cards without a restart.
 
 Two things follow from the way it works. **The band plan and transmit lockout
-still apply** — sdroxide knows where the dial *is* because you tuned it here,
+still apply** — sdrcrow knows where the dial *is* because you tuned it here,
 even though nothing told the radio — so the usual ham-band / 11 m / broadcast
 rules hold ([6.1](#61-general-station-audio-and-remote-access)). And because
 the only "measurements" come from the audio stream itself, an audio radio has
@@ -18833,7 +18833,7 @@ describes — through the sound cards — with one difference: the **PTT is
 commanded over a USB-to-serial line**, not left to the radio's VOX. That needs
 a small, galvanically isolated interface between the PC and the radio.
 
-**This is experimental.** sdroxide drives it through the T/R switch's *Serial
+**This is experimental.** sdrcrow drives it through the T/R switch's *Serial
 RTS/DTR line* rather than a dedicated PTT field; the "keeps receiving if the
 program dies" behaviour is whatever the serial driver does with RTS when the
 port closes; and it has not been tested against real hardware here. Build it and
@@ -18842,7 +18842,7 @@ use it **at your own risk.**
 #### The interface
 
 The interface provides galvanic isolation for both audio and PTT control
-between a PC (running sdroxide, JS8Call, WSJT-X, …) and the Luiton LT-310SDR
+between a PC (running sdrcrow, JS8Call, WSJT-X, …) and the Luiton LT-310SDR
 transceiver.
 
 **Components**
@@ -18873,7 +18873,7 @@ transformer; its secondary goes straight across **PC line-in / mic-in** (tip &
 sleeve). Isolated reception for the decoders, and ground-loop mains hum is
 stripped.
 
-#### Configuring sdroxide
+#### Configuring sdrcrow
 
 1. **Settings → Radio → USB audio radio (sound card)** ([15.22](#1522-usb-audio-radio-sound-card)).
    Set **Receive** to the card the radio's EXT SPKR arrives on, and **Transmit**
@@ -18884,7 +18884,7 @@ stripped.
    antenna" — this is a PTT closure, not an antenna relay; **Aux** fits, or
    leave the other contacts at **Not used**. Key-down asserts RTS and key-up
    drops it, which is exactly the PTT the interface wants.
-3. Tune on the radio's own dial. On this backend sdroxide's dial is a label, so
+3. Tune on the radio's own dial. On this backend sdrcrow's dial is a label, so
    the band plan and the transmit lockout follow what you type here, not the
    radio ([15.22](#1522-usb-audio-radio-sound-card)).
 
@@ -18892,7 +18892,7 @@ The PTT being the T/R switch's serial line leaves the switch's other channels
 free for an antenna relay or an amplifier key line, since each link can carry
 more than one contact.
 
-**Failsafe caveat.** sdroxide drops RTS on key-up and closes the port when it
+**Failsafe caveat.** sdrcrow drops RTS on key-up and closes the port when it
 exits. Whether the radio returns to receive if the program *crashes* depends on
 the serial driver lowering RTS when the port closes — many FTDI drivers do, some
 do not. If a stuck transmitter must be impossible, wire the optocoupler so a
@@ -19079,6 +19079,6 @@ the quick-starts:
 - **[Français](pi-zero-2w-swl.fr.md)** ([PDF](pi-zero-2w-swl.fr.pdf))
 - **[Italiano](pi-zero-2w-swl.it.md)** ([PDF](pi-zero-2w-swl.it.pdf))
 
-> For a graphical sdroxide on the Pi itself, or for the wideband decoders, step
+> For a graphical sdrcrow on the Pi itself, or for the wideband decoders, step
 > up to a **Pi 4 (2 GB+)** or **Pi 5** — see the README's Raspberry Pi note about
 > Mesa's V3DV Vulkan driver and the OpenGL fallback.

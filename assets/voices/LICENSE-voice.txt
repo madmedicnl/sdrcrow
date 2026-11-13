@@ -1,4 +1,4 @@
-sdroxide bundles one Piper TTS voice for its spoken-announcement feature.
+sdrcrow bundles one Piper TTS voice for its spoken-announcement feature.
 
   File:    en_US-hfc_female-medium.onnx (+ .onnx.json)
   Voice:   hfc_female (medium), en_US
@@ -10,13 +10,13 @@ sdroxide bundles one Piper TTS voice for its spoken-announcement feature.
            https://creativecommons.org/licenses/by-nc-sa/4.0/
 
 This voice model is a separate data file. It is not linked into, compiled
-into, or derived from the sdroxide program; sdroxide merely reads it at
+into, or derived from the sdrcrow program; sdrcrow merely reads it at
 run time. The two are aggregated on a distribution medium, and each keeps
 its own licence.
 
 NOTE: the NonCommercial term of CC BY-NC-SA 4.0 restricts redistribution
 of this file. A distribution that includes it is not free software by the
-Debian/FSF definition, even though the sdroxide program itself is
+Debian/FSF definition, even though the sdrcrow program itself is
 GPL-3.0-or-later.
 
 The full text of the licence follows.

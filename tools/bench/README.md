@@ -4,7 +4,7 @@ One command moves a transmission from fldigi, through the rig and the RSP1, into
 the decoder the program ships, and says whether the text came back.
 
 ```sh
-cd ~/sdroxide/tools/bench
+cd ~/sdrcrow/tools/bench
 ./bench.py --mode OLIVIA-16/500 --tones 16 --bw 500 --reverse 1 \
            --text "TEST TEST THE EAGLE HAS LANDED 12345"
 ```
@@ -31,7 +31,7 @@ all four are decided here instead of by hand:
   saves its configuration on exit.
 - **The rig on VOX**, with its sound card's `PCM` level not at zero —
   `amixer -c 1 sget PCM`. That one has cost an evening by itself.
-- **The RSP1 free: sdroxide must be closed**, because it holds the device.
+- **The RSP1 free: sdrcrow must be closed**, because it holds the device.
 - `tools/rsp1-capture/target/release/rspcap` built, and
   `target/release/examples/decode_file` (`cargo build --release -p
   sdrcrow-olivia --example decode_file`).
@@ -56,7 +56,7 @@ the antenna is a **stub**, not a whip.
 ## Not yet written: the other direction
 
 The same harness can prove our **transmit** side, which is still open: have
-sdroxide send, and read `text.get_rx()` back from fldigi. That is the test that
+sdrcrow send, and read `text.get_rx()` back from fldigi. That is the test that
 settles whether another program can copy what we send — today it cannot, and the
 `our_transmitter_is_not_yet_readable` test records it.
 

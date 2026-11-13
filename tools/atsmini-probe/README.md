@@ -2,7 +2,7 @@
 
 Scratch tools for the ATS Mini (ESP32-S3 + Si4732) "ad hoc" remote protocol,
 used while building the `Backend::AtsMini` receive source. Pure Python 3, no
-dependencies. They are not part of the sdroxide build.
+dependencies. They are not part of the sdrcrow build.
 
 The radio must have **Settings → TCP Port → Ad hoc** on, and Wi-Fi in
 `Connect`, `AP+Connect` or `AP Only`. mDNS `atsmini.local` usually works; if it
