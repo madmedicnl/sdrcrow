@@ -9711,3 +9711,28 @@ ptt-pressed = 押下中
 ptt-released = 解放
 
 cw-neural-heavy-small-machine = 小型のマシンでは負荷が大きくなります。コアが4つ以下（Raspberry Pi など）の場合は、軽いタイミングデコーダーをお勧めします。
+
+app-config-offer-title = 設定を SDRCrow に引き継ぐ
+
+app-config-offer-body = このコンピューターに別のプログラムの設定があります。コピーすると、SDRCrow は局・ログ・テーマを引き継いで起動します。
+
+app-config-offer-files = { $n } 項目
+
+app-config-fresh = 新規に始める — 何もコピーしない
+
+app-config-offer-hint = もう一方のプログラムはそのまま残ります。移動も上書きもしません。一度だけ尋ねます。既定に戻すと再び尋ねます。
+
+app-config-copied-title = 設定をコピーしました
+
+app-config-copied = { $source } から { $files } 個のファイルをコピーしました。SDRCrow は起動時に読むため、再起動が必要です。
+
+
+app-config-later = 後で
+
+app-config-restart = SDRCrow を再起動
+
+app-config-close = 閉じる
+
+app-config-failed-title = 設定をコピーできませんでした
+
+app-config-failed = 何もコピーされませんでした: { $why }。もう一方のプログラムはそのままです。

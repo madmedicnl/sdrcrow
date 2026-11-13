@@ -9701,3 +9701,28 @@ ptt-pressed = 已按下
 ptt-released = 已松开
 
 cw-neural-heavy-small-machine = 在小型设备上负载较重：四核或更少（例如树莓派）时，时序解码器是轻量之选。
+
+app-config-offer-title = 将你的设置迁移到 SDRCrow
+
+app-config-offer-body = 在这台电脑上找到了另一个程序的设置。复制一份，SDRCrow 就会带着你的电台、日志和主题打开。
+
+app-config-offer-files = { $n } 项
+
+app-config-fresh = 从头开始 — 不复制任何内容
+
+app-config-offer-hint = 另一个程序保持原样：不移动、也不覆盖这里的任何内容。只询问一次；恢复默认设置后会再次询问。
+
+app-config-copied-title = 设置已复制
+
+app-config-copied = 已从 { $source } 复制 { $files } 个文件。SDRCrow 在启动时读取它们，因此需要重新启动。
+
+
+app-config-later = 稍后
+
+app-config-restart = 重新启动 SDRCrow
+
+app-config-close = 关闭
+
+app-config-failed-title = 无法复制设置
+
+app-config-failed = 未复制任何内容：{ $why }。另一个程序未受影响，此安装保持不变。

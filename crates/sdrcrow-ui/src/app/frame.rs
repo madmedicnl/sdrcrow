@@ -433,6 +433,31 @@ const TOOL_WINDOW_EPOCH: &str = "b3";
 /// The DETACH/DOCK chip a tool window wears at the top-right of its body. On the
 /// browser it is absent — there is no second window to move to.
 #[cfg(not(target_arch = "wasm32"))]
+/// **Start this program again, with the arguments it was started with.**
+///
+/// Spawned a moment after this process asks to close, so the old one has let go
+/// of the receiver, the sound card and the TCI port before the new one asks for
+/// them — and given the same `argv`, so a window started with `--serve` comes
+/// back as a server.
+///
+/// The browser has nothing to restart: its session lives on the server, and the
+/// import offer never reaches it (no config directory there).
+fn restart_in_place(ctx: &egui::Context) {
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        if let Ok(exe) = std::env::current_exe() {
+            let args: Vec<String> = std::env::args().skip(1).collect();
+            std::thread::spawn(move || {
+                std::thread::sleep(std::time::Duration::from_millis(1500));
+                let _ = std::process::Command::new(exe).args(args).spawn();
+            });
+        }
+    }
+    #[cfg(target_arch = "wasm32")]
+    let _ = ctx;
+    ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+}
+
 fn tool_window_chip(ui: &mut egui::Ui, undocked: bool) -> bool {
     {
         // A glyph, not a word. The operator's note: *"the huge buttons for
@@ -2414,8 +2439,15 @@ impl eframe::App for SdroxideApp {
         // The opening picture, last of all so it covers whatever has been laid
         // out underneath. Only the first radio of a split view owns it: the
         // radios are still connecting while it is up, which is the whole point.
-        if cfg!(not(test)) && self.radio_id == 0 {
-            self.splash.show(&ctx);
+        let splash_up = if cfg!(not(test)) && self.radio_id == 0 {
+            self.splash.show(&ctx)
+        } else {
+            false
+        };
+        // Asked once the emblem has gone: a question behind a logo is a
+        // question nobody sees.
+        if !splash_up && self.radio_id == 0 {
+            self.config_offer_ui(&ctx);
         }
     }
 
@@ -5412,6 +5444,125 @@ impl SdroxideApp {
     /// the server held them, and every session dropped them with nothing
     /// said anywhere. One question, with the same warning the settings row
     /// gives, and the answer is persisted so it is not asked twice.
+    /// **Bring your settings to SDRCrow** — asked once, on a first start.
+    ///
+    /// Two programs write their settings beside this one: the Brown build it
+    /// grew out of and upstream before that. A fresh installation has nothing,
+    /// and an operator who has been using either of them has a logbook, a list
+    /// of memories and a theme worth keeping. So the dialog offers what it
+    /// found, by name and by where it lives, and does nothing until asked.
+    ///
+    /// **Copy, never move**: the other program is left exactly as it was, its
+    /// files are not overwritten if this directory has any, and the answer —
+    /// whichever it is — is remembered in the settings, so this is asked once.
+    /// A reset to defaults clears that flag with everything else, and the
+    /// question comes back.
+    ///
+    /// The copied files are read at start-up, so after a copy the program has
+    /// to start again; the dialog says so and offers the quit rather than
+    /// pretending the settings are in force.
+    pub(in crate::app) fn config_offer_ui(&mut self, ctx: &egui::Context) {
+        if let Some((files, source)) = self.config_copied.clone() {
+            let failed = files == 0;
+            egui::Modal::new(egui::Id::new("config-copied")).show(ctx, |ui| {
+                ui.set_max_width(460.0);
+                ui.heading(if failed {
+                    tr!("app-config-failed-title")
+                } else {
+                    tr!("app-config-copied-title")
+                });
+                ui.add_space(6.0);
+                ui.label(if failed {
+                    tr!("app-config-failed", why = source)
+                } else {
+                    tr!("app-config-copied", files = files, source = source)
+                });
+                ui.add_space(10.0);
+                ui.horizontal(|ui| {
+                    if failed {
+                        // Nothing was written, so there is nothing to restart for.
+                        if ui.button(tr!("app-config-close")).clicked() {
+                            self.config_copied = None;
+                        }
+                        return;
+                    }
+                    // **Restart, not quit and start again by hand.** The copied
+                    // files are read once, at start-up, so a restart is the only
+                    // honest way to put them in force — and an operator who has
+                    // just asked for their logbook back should not have to go and
+                    // find the launcher for it.
+                    if ui
+                        .button(RichText::new(tr!("app-config-restart")).strong())
+                        .clicked()
+                    {
+                        restart_in_place(&ctx);
+                    }
+                    if ui.button(tr!("app-config-later")).clicked() {
+                        self.config_copied = None;
+                    }
+                });
+            });
+            return;
+        }
+        if self.config_offer.is_empty() {
+            return;
+        }
+        let mut chosen: Option<usize> = None;
+        let mut fresh = false;
+        egui::Modal::new(egui::Id::new("config-offer")).show(ctx, |ui| {
+            ui.set_max_width(520.0);
+            ui.heading(tr!("app-config-offer-title"));
+            ui.add_space(6.0);
+            ui.label(tr!("app-config-offer-body"));
+            ui.add_space(10.0);
+            for (i, candidate) in self.config_offer.iter().enumerate() {
+                if ui
+                    .button(RichText::new(candidate.label).strong())
+                    .on_hover_text(candidate.dir.display().to_string())
+                    .clicked()
+                {
+                    chosen = Some(i);
+                }
+                ui.label(
+                    RichText::new(format!(
+                        "{} — {}",
+                        candidate.dir.display(),
+                        tr!("app-config-offer-files", n = candidate.files())
+                    ))
+                    .small()
+                    .weak(),
+                );
+                ui.add_space(6.0);
+            }
+            ui.add_space(4.0);
+            ui.horizontal(|ui| {
+                if ui.button(tr!("app-config-fresh")).clicked() {
+                    fresh = true;
+                }
+            });
+            ui.add_space(6.0);
+            ui.label(RichText::new(tr!("app-config-offer-hint")).small().weak());
+        });
+        if let Some(i) = chosen {
+            let candidate = self.config_offer[i].clone();
+            match sdrcrow_config::import_config_from(&candidate.dir) {
+                Ok(files) => {
+                    self.config_copied = Some((files, candidate.label.to_string()));
+                }
+                Err(e) => {
+                    self.config_copied = Some((0, format!("{} ({e})", candidate.label)));
+                }
+            }
+            self.config_offer.clear();
+            self.ui_settings.config_import_asked = true;
+            crate::app::persist::persist_ui_settings(&self.ui_settings);
+        } else if fresh {
+            self.config_offer.clear();
+            self.ui_settings.config_import_asked = true;
+            crate::app::persist::persist_ui_settings(&self.ui_settings);
+        }
+    }
+
     pub(in crate::app) fn bindings_offer_ui(&mut self, ctx: &egui::Context) {
         let Some(offer) = self.bindings_pending.clone() else { return };
         let mut adopt = false;

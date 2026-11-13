@@ -9792,3 +9792,28 @@ ptt-pressed = PRESSED
 ptt-released = released
 
 cw-neural-heavy-small-machine = Heavy on a small machine: on four cores or fewer (a Raspberry Pi, say) the timing decoder is the light choice.
+
+app-config-offer-title = Bring your settings to SDRCrow
+
+app-config-offer-body = Settings from another program were found on this computer. Copy one and SDRCrow opens with your stations, logbook and themes.
+
+app-config-offer-files = { $n } items
+
+app-config-fresh = Start fresh — do not copy anything
+
+app-config-offer-hint = The other program is left exactly as it is: nothing is moved, and nothing here is overwritten. Asked once; a reset to defaults brings the question back.
+
+app-config-copied-title = Settings copied
+
+app-config-copied = { $files } files copied from { $source }. SDRCrow reads them at start-up, so it has to start again.
+
+
+app-config-later = Later
+
+app-config-restart = Restart SDRCrow
+
+app-config-close = Close
+
+app-config-failed-title = The settings could not be copied
+
+app-config-failed = Nothing was copied: { $why }. The other program is untouched and this installation is unchanged.

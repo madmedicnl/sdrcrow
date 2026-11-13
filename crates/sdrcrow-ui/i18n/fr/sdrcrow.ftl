@@ -9766,3 +9766,28 @@ ptt-pressed = APPUYÉ
 ptt-released = relâché
 
 cw-neural-heavy-small-machine = Lourd sur une petite machine : à quatre cœurs ou moins (un Raspberry Pi, par exemple), le décodeur temporel est le choix léger.
+
+app-config-offer-title = Reprendre vos réglages dans SDRCrow
+
+app-config-offer-body = Des réglages d'un autre programme ont été trouvés sur cet ordinateur. Copiez-les et SDRCrow s'ouvrira avec vos stations, votre journal et vos thèmes.
+
+app-config-offer-files = { $n } éléments
+
+app-config-fresh = Partir de zéro — ne rien copier
+
+app-config-offer-hint = L'autre programme reste tel quel : rien n'est déplacé et rien n'est écrasé ici. Demandé une seule fois ; une réinitialisation par défaut fait revenir la question.
+
+app-config-copied-title = Réglages copiés
+
+app-config-copied = { $files } fichiers copiés depuis { $source }. SDRCrow les lit au démarrage : il faut le relancer.
+
+
+app-config-later = Plus tard
+
+app-config-restart = Redémarrer SDRCrow
+
+app-config-close = Fermer
+
+app-config-failed-title = Les réglages n'ont pas pu être copiés
+
+app-config-failed = Rien n'a été copié : { $why }. L'autre programme est intact et cette installation est inchangée.

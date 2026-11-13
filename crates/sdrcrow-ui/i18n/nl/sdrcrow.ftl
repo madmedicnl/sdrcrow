@@ -9763,3 +9763,28 @@ ptt-pressed = INGEDRUKT
 ptt-released = losgelaten
 
 cw-neural-heavy-small-machine = Zwaar voor een kleine computer: bij vier kernen of minder (bijvoorbeeld een Raspberry Pi) is de timingdecoder de lichte keuze.
+
+app-config-offer-title = Neem je instellingen mee naar SDRCrow
+
+app-config-offer-body = Er staan instellingen van een ander programma op deze computer. Kopieer ze en SDRCrow opent met jouw stations, logboek en thema's.
+
+app-config-offer-files = { $n } items
+
+app-config-fresh = Begin leeg — niets kopiëren
+
+app-config-offer-hint = Het andere programma blijft precies zoals het is: niets wordt verplaatst en hier wordt niets overschreven. Eén keer gevraagd; alles naar default zetten brengt de vraag terug.
+
+app-config-copied-title = Instellingen gekopieerd
+
+app-config-copied = { $files } bestanden gekopieerd uit { $source }. SDRCrow leest ze bij het opstarten, dus het moet opnieuw starten.
+
+
+app-config-later = Later
+
+app-config-restart = SDRCrow herstarten
+
+app-config-close = Sluiten
+
+app-config-failed-title = De instellingen konden niet worden gekopieerd
+
+app-config-failed = Er is niets gekopieerd: { $why }. Het andere programma is onaangeroerd en deze installatie is ongewijzigd.

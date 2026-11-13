@@ -9755,3 +9755,28 @@ ptt-pressed = GEDRÜCKT
 ptt-released = losgelassen
 
 cw-neural-heavy-small-machine = Rechenintensiv auf kleinen Rechnern: bei vier Kernen oder weniger (z. B. ein Raspberry Pi) ist der Takt-Decoder die leichte Wahl.
+
+app-config-offer-title = Deine Einstellungen nach SDRCrow holen
+
+app-config-offer-body = Auf diesem Rechner liegen Einstellungen eines anderen Programms. Kopiere sie, und SDRCrow startet mit deinen Stationen, deinem Logbuch und deinen Themen.
+
+app-config-offer-files = { $n } Einträge
+
+app-config-fresh = Neu anfangen — nichts kopieren
+
+app-config-offer-hint = Das andere Programm bleibt unverändert: nichts wird verschoben, hier nichts überschrieben. Einmal gefragt; ein Zurücksetzen auf Standard bringt die Frage zurück.
+
+app-config-copied-title = Einstellungen kopiert
+
+app-config-copied = { $files } Dateien aus { $source } kopiert. SDRCrow liest sie beim Start, also muss es neu starten.
+
+
+app-config-later = Später
+
+app-config-restart = SDRCrow neu starten
+
+app-config-close = Schließen
+
+app-config-failed-title = Die Einstellungen konnten nicht kopiert werden
+
+app-config-failed = Es wurde nichts kopiert: { $why }. Das andere Programm ist unberührt, diese Installation unverändert.

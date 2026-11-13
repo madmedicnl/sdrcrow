@@ -1056,6 +1056,17 @@ impl Default for ProgramsFilters {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct UiSettings {
+    /// **The first-start offer to bring settings over** has been answered.
+    ///
+    /// On a fresh installation SDRCrow looks for the configurations of the
+    /// programs it descends from — the Brown build and upstream before it — and
+    /// offers to copy one in, once. Whatever the operator answers is remembered
+    /// here, so the question is asked exactly once; a settings reset clears the
+    /// flag with everything else, and the offer comes back.
+    ///
+    /// Config-only: it describes this installation's first start, not a screen.
+    #[serde(default)]
+    pub config_import_asked: bool,
     /// **A theme read from a file**, by name, from `themes/*.toml` in the
     /// config directory — `None` for one of the built-ins.
     ///
@@ -1962,6 +1973,7 @@ impl UiSettings {
 impl Default for UiSettings {
     fn default() -> Self {
         UiSettings {
+            config_import_asked: false,
             theme_file: None,
             band_dock_open: Default::default(),
             public_sdr_favourites: Vec::new(),

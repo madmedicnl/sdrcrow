@@ -9763,3 +9763,28 @@ ptt-pressed = BASILI
 ptt-released = bırakıldı
 
 cw-neural-heavy-small-machine = Küçük bir makinede ağırdır: dört çekirdek veya daha azında (örneğin bir Raspberry Pi) zamanlama çözücü hafif seçimdir.
+
+app-config-offer-title = Ayarlarınızı SDRCrow'a taşıyın
+
+app-config-offer-body = Bu bilgisayarda başka bir programın ayarları bulundu. Birini kopyalayın, SDRCrow istasyonlarınız, kayıt defteriniz ve temalarınızla açılsın.
+
+app-config-offer-files = { $n } öğe
+
+app-config-fresh = Sıfırdan başla — hiçbir şey kopyalanmasın
+
+app-config-offer-hint = Diğer program olduğu gibi kalır: hiçbir şey taşınmaz, burada hiçbir şeyin üzerine yazılmaz. Bir kez sorulur; varsayılana döndürmek soruyu geri getirir.
+
+app-config-copied-title = Ayarlar kopyalandı
+
+app-config-copied = { $source } kaynağından { $files } dosya kopyalandı. SDRCrow bunları başlangıçta okur, bu yüzden yeniden başlatılmalı.
+
+
+app-config-later = Daha sonra
+
+app-config-restart = SDRCrow'u yeniden başlat
+
+app-config-close = Kapat
+
+app-config-failed-title = Ayarlar kopyalanamadı
+
+app-config-failed = Hiçbir şey kopyalanmadı: { $why }. Diğer program etkilenmedi, bu kurulum değişmedi.

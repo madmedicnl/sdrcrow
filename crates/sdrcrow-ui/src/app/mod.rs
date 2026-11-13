@@ -506,6 +506,12 @@ pub struct SdroxideApp {
     /// The opening picture, shown over the window while the radios come up.
     /// Only the first radio of a split view carries it, so it appears once.
     splash: crate::splash::Splash,
+    /// **A configuration found beside this one**, offered once on a first
+    /// start: the Brown build's, upstream's, or both. Empty once answered.
+    config_offer: Vec<sdrcrow_config::ImportCandidate>,
+    /// What the copy did, once it has: the file count and the source, so the
+    /// offer can say what happened rather than vanishing.
+    config_copied: Option<(usize, String)>,
     /// **A look that came with a stored profile**, as the server sent it: the
     /// theme file's name and its text. The text is the only way a browser —
     /// which has no `themes/` directory — can wear a theme from a file, and it
@@ -2339,6 +2345,14 @@ impl SdroxideApp {
             applied_look: (ui_settings.theme, ui_settings.button_style, ui_settings.window_style),
             applied_theme_file: ui_settings.theme_file.clone(),
             splash: crate::splash::Splash::new(),
+            // Looked for once, here: the answer is remembered in settings, and
+            // a test build must not offer to copy the operator's real files.
+            config_offer: if cfg!(not(test)) && !ui_settings.config_import_asked {
+                sdrcrow_config::import_candidates()
+            } else {
+                Vec::new()
+            },
+            config_copied: None,
             wire_theme: None,
             applied_theme_text: None,
             look_pending: false,

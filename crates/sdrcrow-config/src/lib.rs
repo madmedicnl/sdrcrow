@@ -5118,6 +5118,60 @@ mod tests {
         assert!(!old.ui.decode_cq_only, "a config from before these must not filter the list");
     }
 
+    /// **A configuration is offered only when there is one.** A directory the
+    /// program made and never wrote to holds nothing worth copying, and copying
+    /// this program's own directory onto itself is not an offer.
+    #[test]
+    fn a_candidate_needs_settings_to_be_a_candidate() {
+        let base = std::env::temp_dir().join(format!("sdrcrow-cand-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&base);
+        let empty = base.join("empty");
+        let full = base.join("full");
+        fs::create_dir_all(&empty).unwrap();
+        fs::create_dir_all(&full).unwrap();
+        fs::write(full.join("config.toml"), "sample_rate = 1.0\n").unwrap();
+
+        let bare = ImportCandidate { label: "SDR Oxide Brown", dir: empty.clone() };
+        let real = ImportCandidate { label: "SDR Oxide Brown", dir: full.clone() };
+        assert!(!bare.has_settings(), "an empty directory is not a configuration");
+        assert!(real.has_settings());
+        assert_eq!(real.files(), 1);
+        let _ = fs::remove_dir_all(&base);
+    }
+
+    /// **Copy, never move**, and never over what is already here: the other
+    /// program keeps everything, and this directory keeps what it wrote.
+    #[test]
+    fn importing_copies_without_moving_or_overwriting() {
+        let base = std::env::temp_dir().join(format!("sdrcrow-import-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&base);
+        let src = base.join("brown");
+        let dst = base.join("sdrcrow");
+        fs::create_dir_all(src.join("radio-1")).unwrap();
+        fs::create_dir_all(&dst).unwrap();
+        fs::write(src.join("config.toml"), "sample_rate = 1000.0\n").unwrap();
+        fs::write(src.join("radio-1/radio.json"), "{}\n").unwrap();
+        // a file this program already wrote must survive the copy
+        fs::write(dst.join("config.toml"), "sample_rate = 2000.0\n").unwrap();
+
+        // SAFETY: no other test in this binary reads the variable concurrently.
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dst) };
+        let copied = import_config_from(&src).expect("the copy runs");
+
+        assert_eq!(copied, 1, "only the file that was not here yet");
+        assert_eq!(
+            fs::read_to_string(dst.join("config.toml")).unwrap(),
+            "sample_rate = 2000.0\n",
+            "what this program wrote is not overwritten"
+        );
+        assert!(dst.join("radio-1/radio.json").exists(), "subdirectories come too");
+        assert!(src.join("config.toml").exists(), "the source must be left alone");
+        assert!(src.join("radio-1/radio.json").exists());
+        // SAFETY: same test, same reason as the set above.
+        unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
+        let _ = fs::remove_dir_all(&base);
+    }
+
     /// One test rather than several, because it redirects the config directory
     /// through the environment — process-global state that must not race the
     /// other tests in this binary (none of which touch `config_dir`).
