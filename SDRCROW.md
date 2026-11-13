@@ -23,6 +23,21 @@ no logbook, no themes. Copying a Brown installation over is a plain
 `cp -a ~/.config/sdroxide-brown/. ~/.config/sdrcrow/` and is a decision, not
 a default — SDRCrow never reads the other directory by itself.
 
+## Bringing settings over
+
+A first start offers the configurations it finds on the machine — the Brown
+build's (`~/.config/sdroxide-brown`) and upstream's (`~/.config/sdroxide`), by
+name, path and size — and copies the one chosen into `~/.config/sdrcrow`.
+
+- **Copy, never move**: the other program is untouched and this directory is
+  never overwritten.
+- **Asked once**: the answer is `UiSettings::config_import_asked`, so a reset to
+  defaults (which rewrites the settings) brings the question back.
+- **Restart, not quit**: the copied files are read at start-up, so the dialog's
+  button starts this program again with the arguments it had, a moment after
+  the old one closes — the receiver, the sound card and the TCI port are let go
+  before the new instance asks for them.
+
 ## What is its own
 
 | Thing | Now |
