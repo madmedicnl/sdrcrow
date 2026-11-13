@@ -299,8 +299,8 @@ priority = "optional"
 license-file = ["LICENSE", "0"]
 features = ["embed-web"]
 assets = [
-    ["target/release/sdroxide", "usr/bin/", "755"],
-    ["packaging/linux/sdroxide.desktop", "usr/share/applications/", "644"],
+    ["target/release/sdrcrow", "usr/bin/", "755"],
+    ["packaging/linux/sdrcrow.desktop", "usr/share/applications/", "644"],
     ["packaging/linux/60-sdrcrow-rtlsdr.rules", "usr/lib/udev/rules.d/", "644"],
     ["packaging/linux/60-sdrcrow-rx888.rules", "usr/lib/udev/rules.d/", "644"],
     ["packaging/linux/60-sdrcrow-airspyhf.rules", "usr/lib/udev/rules.d/", "644"],
@@ -310,35 +310,34 @@ assets = [
     ["packaging/linux/60-sdrcrow-elad.rules", "usr/lib/udev/rules.d/", "644"],
     ["packaging/linux/60-sdrcrow-limerfe.rules", "usr/lib/udev/rules.d/", "644"],
     ["packaging/linux/60-sdrcrow-relay.rules", "usr/lib/udev/rules.d/", "644"],
-    ["packaging/icons/sdroxide-brown.svg", "usr/share/icons/hicolor/scalable/apps/sdroxide-brown.svg", "644"],
-    ["packaging/icons/sdroxide-brown-16.png", "usr/share/icons/hicolor/16x16/apps/sdroxide-brown.png", "644"],
-    ["packaging/icons/sdroxide-brown-24.png", "usr/share/icons/hicolor/24x24/apps/sdroxide-brown.png", "644"],
-    ["packaging/icons/sdroxide-brown-32.png", "usr/share/icons/hicolor/32x32/apps/sdroxide-brown.png", "644"],
-    ["packaging/icons/sdroxide-brown-48.png", "usr/share/icons/hicolor/48x48/apps/sdroxide-brown.png", "644"],
-    ["packaging/icons/sdroxide-brown-64.png", "usr/share/icons/hicolor/64x64/apps/sdroxide-brown.png", "644"],
-    ["packaging/icons/sdroxide-brown-128.png", "usr/share/icons/hicolor/128x128/apps/sdroxide-brown.png", "644"],
-    ["packaging/icons/sdroxide-brown-256.png", "usr/share/icons/hicolor/256x256/apps/sdroxide-brown.png", "644"],
-    ["packaging/icons/sdroxide-brown-512.png", "usr/share/icons/hicolor/512x512/apps/sdroxide-brown.png", "644"],
-    ["README.md", "usr/share/doc/sdroxide/README.md", "644"],
+    ["packaging/icons/sdrcrow-16.png", "usr/share/icons/hicolor/16x16/apps/sdrcrow.png", "644"],
+    ["packaging/icons/sdrcrow-24.png", "usr/share/icons/hicolor/24x24/apps/sdrcrow.png", "644"],
+    ["packaging/icons/sdrcrow-32.png", "usr/share/icons/hicolor/32x32/apps/sdrcrow.png", "644"],
+    ["packaging/icons/sdrcrow-48.png", "usr/share/icons/hicolor/48x48/apps/sdrcrow.png", "644"],
+    ["packaging/icons/sdrcrow-64.png", "usr/share/icons/hicolor/64x64/apps/sdrcrow.png", "644"],
+    ["packaging/icons/sdrcrow-128.png", "usr/share/icons/hicolor/128x128/apps/sdrcrow.png", "644"],
+    ["packaging/icons/sdrcrow-256.png", "usr/share/icons/hicolor/256x256/apps/sdrcrow.png", "644"],
+    ["packaging/icons/sdrcrow-512.png", "usr/share/icons/hicolor/512x512/apps/sdrcrow.png", "644"],
+    ["README.md", "usr/share/doc/sdrcrow/README.md", "644"],
     # The speech voice, for the spoken-announcement feature. A separate data
     # file rather than something linked into the binary: it is CC BY-NC-SA,
     # which is not a licence a GPL program may absorb, and keeping it an
     # aggregated asset that the program merely reads is what keeps the two
     # apart. Its notice ships alongside, like the RX-888 firmware's below.
-    ["assets/voices/en_US-hfc_female-medium.onnx", "usr/share/sdroxide/voices/", "644"],
-    ["assets/voices/en_US-hfc_female-medium.onnx.json", "usr/share/sdroxide/voices/", "644"],
-    ["assets/voices/en_US-hfc_female-medium.MODEL_CARD", "usr/share/sdroxide/voices/", "644"],
-    ["assets/voices/LICENSE-voice.txt", "usr/share/doc/sdroxide/LICENSE-voice.txt", "644"],
+    ["assets/voices/en_US-hfc_female-medium.onnx", "usr/share/sdrcrow/voices/", "644"],
+    ["assets/voices/en_US-hfc_female-medium.onnx.json", "usr/share/sdrcrow/voices/", "644"],
+    ["assets/voices/en_US-hfc_female-medium.MODEL_CARD", "usr/share/sdrcrow/voices/", "644"],
+    ["assets/voices/LICENSE-voice.txt", "usr/share/doc/sdrcrow/LICENSE-voice.txt", "644"],
     # CMUdict (BSD-2-Clause) is embedded in the binary for grapheme-to-phoneme.
-    ["crates/sdrcrow-speech/assets/LICENSE-cmudict.txt", "usr/share/doc/sdroxide/LICENSE-cmudict.txt", "644"],
+    ["crates/sdrcrow-speech/assets/LICENSE-cmudict.txt", "usr/share/doc/sdrcrow/LICENSE-cmudict.txt", "644"],
     # The binary embeds the RX-888's FX3 firmware image, which is MIT licensed
     # rather than GPL like the rest: its notice has to ship with the package.
-    ["crates/sdrcrow-rx888/firmware/LICENSE.txt", "usr/share/doc/sdroxide/LICENSE-rx888-firmware.txt", "644"],
+    ["crates/sdrcrow-rx888/firmware/LICENSE.txt", "usr/share/doc/sdrcrow/LICENSE-rx888-firmware.txt", "644"],
     # The DeepCW model, embedded for the CW decoder. AGPL-3.0-only, which is
     # stronger than this package's GPL and carries a network clause, so its
     # notice ships too — and unlike the ones above it constrains the package
     # rather than merely crediting a part of it.
-    ["crates/sdrcrow-deepcw/LICENSE", "usr/share/doc/sdroxide/LICENSE-deepcw.txt", "644"],
+    ["crates/sdrcrow-deepcw/LICENSE", "usr/share/doc/sdrcrow/LICENSE-deepcw.txt", "644"],
 ]
 
 # SoapySDR .deb: links libSoapySDR, so recommend the driver modules (apt

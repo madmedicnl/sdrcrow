@@ -19,7 +19,7 @@
 use std::sync::mpsc::{Receiver, TryRecvError};
 
 /// Where a build with an update available sends the operator to download it.
-pub const RELEASES_PAGE: &str = "https://github.com/madmedicnl/sdroxide-brown/releases/latest";
+pub const RELEASES_PAGE: &str = "https://github.com/madmedicnl/sdrcrow/releases/latest";
 
 /// The result of the startup check. `latest` is the newer release's tag once one
 /// has been found, and stays `None` otherwise — nothing to show is the common

@@ -503,6 +503,9 @@ pub struct SdroxideApp {
         (sdrcrow_types::UiTheme, sdrcrow_types::ChromeStyle, sdrcrow_types::ChromeStyle),
     /// The file theme last put in force, so a change is noticed exactly once.
     applied_theme_file: Option<String>,
+    /// The opening picture, shown over the window while the radios come up.
+    /// Only the first radio of a split view carries it, so it appears once.
+    splash: crate::splash::Splash,
     /// **A look that came with a stored profile**, as the server sent it: the
     /// theme file's name and its text. The text is the only way a browser —
     /// which has no `themes/` directory — can wear a theme from a file, and it
@@ -2335,6 +2338,7 @@ impl SdroxideApp {
             swl_start: ui_settings.start_swl || ui_settings.swl || sdrcrow_types::force_swl(),
             applied_look: (ui_settings.theme, ui_settings.button_style, ui_settings.window_style),
             applied_theme_file: ui_settings.theme_file.clone(),
+            splash: crate::splash::Splash::new(),
             wire_theme: None,
             applied_theme_text: None,
             look_pending: false,

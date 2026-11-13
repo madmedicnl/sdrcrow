@@ -22,6 +22,7 @@ mod adsb_map;
 mod airdata;
 mod ais_map;
 mod app;
+mod splash;
 mod aprs_icons;
 mod aprs_map;
 /// The world the flat maps are drawn from — the globe's own land raster,

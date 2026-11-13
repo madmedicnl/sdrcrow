@@ -3604,7 +3604,11 @@ pub fn broadcast_schedule_status() -> (String, bool) {
 /// a pre-release, so the nightly tag (a pre-release) can never be offered as an
 /// update. Blocking, so the caller puts it on a worker thread.
 pub const RELEASES_LATEST_URL: &str =
-    "https://api.github.com/repos/madmedicnl/sdroxide-brown/releases/latest";
+    // SDRCrow's own releases, and nothing else: pointing this at another
+    // project's releases would offer the operator a download that replaces this
+    // program with a different one. A repository with no releases yet answers
+    // 404, which the check already treats as "nothing to say".
+    "https://api.github.com/repos/madmedicnl/sdrcrow/releases/latest";
 
 /// The tag of the latest full release, e.g. `v2.0.3_brown`, or an error.
 pub fn latest_release_tag() -> Result<String, String> {

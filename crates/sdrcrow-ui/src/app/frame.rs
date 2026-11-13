@@ -2411,6 +2411,12 @@ impl eframe::App for SdroxideApp {
         // Ctrl+C copies the tooltip on screen — after everything has drawn, so
         // this frame's tooltip is there to be read.
         crate::tooltip_copy::tick(&ctx);
+        // The opening picture, last of all so it covers whatever has been laid
+        // out underneath. Only the first radio of a split view owns it: the
+        // radios are still connecting while it is up, which is the whole point.
+        if cfg!(not(test)) && self.radio_id == 0 {
+            self.splash.show(&ctx);
+        }
     }
 
     fn save(&mut self, storage: &mut dyn eframe::Storage) {

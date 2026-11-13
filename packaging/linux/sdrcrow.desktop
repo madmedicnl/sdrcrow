@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=SDRCrow
+GenericName=Software Defined Radio
+Comment=Software-defined-radio receiver and transceiver
+Exec=sdrcrow %f
+Icon=sdrcrow
+Terminal=false
+Categories=AudioVideo;Audio;HamRadio;
+Keywords=SDR;radio;receiver;transceiver;ham;
+StartupWMClass=sdrcrow
