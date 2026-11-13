@@ -241,7 +241,7 @@ pub fn spots_to_kml(spots: &[Spot]) -> String {
     out.push_str(
         "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n\
          <Document>\n\
-         <name>sdroxide spots</name>\n\
+         <name>sdrcrow spots</name>\n\
          <description>Stations heard or announced on the network feeds.</description>\n",
     );
 

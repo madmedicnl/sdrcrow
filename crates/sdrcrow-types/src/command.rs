@@ -618,7 +618,7 @@ pub enum Command {
     /// Re-read `rtl433_flex.conf` and restart the rtl_433 decoders on it.
     /// Appended for the usual reason: postcard numbers variants by position.
     ///
-    /// The operator's decoder file is edited outside sdroxide, so nothing else
+    /// The operator's decoder file is edited outside sdrcrow, so nothing else
     /// notices it changed — the same reason [`Command::ReloadBandPlan`] exists.
     /// The device table survives: adding a decoder should not cost somebody the
     /// sensors already on screen. Whatever the file had to say comes back as a
@@ -799,7 +799,7 @@ pub enum Command {
     /// scale — `0` open, `1` closed (issue #192).
     ///
     /// Not [`Command::SetSquelch`], and the difference is which receiver is
-    /// being quietened. That one is sdroxide's gate on a passband sdroxide
+    /// being quietened. That one is sdrcrow's gate on a passband sdrcrow
     /// demodulated, in dBFS. This is a level in the rig, and on a transceiver
     /// that hands us audio it has already gated it is the only one that can
     /// open: what reaches the sound card is what the radio let through.
@@ -884,7 +884,7 @@ pub enum Command {
     /// Switch the *radio* off (`false`), or back on again (`true`) — its own
     /// power switch, over the control link (issue #239).
     ///
-    /// Not sdroxide's power switch: the tab strip's one closes the interface
+    /// Not sdrcrow's power switch: the tab strip's one closes the interface
     /// and leaves the radio running, and this one leaves the interface open and
     /// switches the radio off — which is exactly what an operator away from the
     /// shack wants, because the link has to survive for the switch back on to
@@ -901,7 +901,7 @@ pub enum Command {
     /// (`true`), or out of it (`false`) — an IC-7300MK2's RX ANT IN/OUT, an
     /// IC-7610's RX ANT (issue #229). The transmit aerial is not touched.
     ///
-    /// The one time sdroxide writes that setting: everywhere else it is read
+    /// The one time sdrcrow writes that setting: everywhere else it is read
     /// from the radio and adopted, because the radio recalls it per band and
     /// switching a receive aerial nobody asked about takes it out of use with
     /// nothing on screen to say so.

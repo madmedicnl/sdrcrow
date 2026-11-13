@@ -26,7 +26,7 @@ use tracing::{debug, info, warn};
 pub use message::MidiControl;
 
 /// Client name this app registers under, as other MIDI software will see it.
-const CLIENT: &str = "sdroxide";
+const CLIENT: &str = "sdrcrow";
 /// How often the worker re-scans for the configured port.
 const RESCAN: Duration = Duration::from_secs(1);
 /// Worker tick. Inbound messages do not wait on this — they go straight from

@@ -36,7 +36,7 @@
 //! # The one thing software cannot do
 //!
 //! When a *separate* transceiver keys itself — its own microphone button, foot
-//! switch, VOX or keyer — sdroxide does not know until it next asks over CAT,
+//! switch, VOX or keyer — sdrcrow does not know until it next asks over CAT,
 //! which is typically 300–600 ms into the over. The relay throws then, and not
 //! before. See [`SenseConfig`] for the wire that fixes it, and the manual for
 //! why a genuinely valuable front end wants an RF-sensed hardware switch
@@ -325,7 +325,7 @@ impl RelayChannel {
 
 /// Which line to watch for a transmitter keying itself.
 ///
-/// The problem it solves: sdroxide learns about an over the operator started at
+/// The problem it solves: sdrcrow learns about an over the operator started at
 /// the radio by *asking over CAT*, and that question rides the meter poll, so
 /// the answer lands a few hundred milliseconds in. A relay that throws then has
 /// already let the first part of the over into the receiver.

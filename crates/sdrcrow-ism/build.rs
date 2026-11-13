@@ -68,7 +68,7 @@ fn main() {
         // We hand rtl_433 samples ourselves, so none of its own inputs are
         // wanted. ENABLE_RTLSDR in particular defaults to ON *and is fatal* when
         // librtlsdr is absent, which would make the whole build depend on a
-        // library sdroxide deliberately does not use.
+        // library sdrcrow deliberately does not use.
         .define("ENABLE_RTLSDR", "OFF")
         .define("ENABLE_SOAPYSDR", "OFF")
         .define("ENABLE_OPENSSL", "OFF")

@@ -1,6 +1,6 @@
 //! What a `memories.json` the operator cannot afford to lose has to survive.
 //!
-//! One test per file on purpose: `SDROXIDE_CONFIG_DIR` is process-global, and
+//! One test per file on purpose: `SDRCROW_CONFIG_DIR` is process-global, and
 //! setting it from a `#[test]` that shares a binary with others would race them.
 //!
 //! Issue #269: an operator upgraded, found every stored channel gone and the
@@ -34,7 +34,7 @@ fn a_memory_list_is_never_lost_wholesale() {
     let _ = fs::remove_dir_all(&root);
     fs::create_dir_all(&root).expect("scratch dir");
     // SAFETY: this is the only test in this binary; nothing races the setter.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
     let path = root.join("memories.json");
 
     // A first run: no file, no list, nothing to report.
@@ -86,7 +86,7 @@ fn a_memory_list_is_never_lost_wholesale() {
     //
     // The other half of #269, and the one that destroyed data: a read that
     // failed for any reason other than "no such file" used to be treated
-    // exactly like a first run. sdroxide came up with an empty list, said
+    // exactly like a first run. sdrcrow came up with an empty list, said
     // nothing, and the next memory the operator stored wrote that empty list
     // back over everything they had. A directory in the file's place is the
     // portable way to make a read fail — it is what a locked file, a
@@ -122,6 +122,6 @@ fn a_memory_list_is_never_lost_wholesale() {
     sdrcrow_config::save_memories(&mine).expect("a file that has been read may be written");
     assert_eq!(sdrcrow_config::load_memories(), mine);
 
-    unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+    unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
     let _ = fs::remove_dir_all(&root);
 }

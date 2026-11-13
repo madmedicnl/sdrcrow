@@ -1,5 +1,5 @@
-/* Sound in/out shims that hand Dream its samples from sdroxide's ring buffers
-   instead of a sound card. Selected by `sound.h`'s USE_SDROXIDE_SOUND branch. */
+/* Sound in/out shims that hand Dream its samples from sdrcrow's ring buffers
+   instead of a sound card. Selected by `sound.h`'s USE_SDRCROW_SOUND branch. */
 #ifndef SDRX_SOUND_H
 #define SDRX_SOUND_H
 
@@ -138,13 +138,13 @@ public:
     virtual void Enumerate(std::vector<std::string>& choices,
                            std::vector<std::string>& desc, std::string& def) {
         choices.push_back(SDRX_DEVICE);
-        desc.push_back("sdroxide");
+        desc.push_back("sdrcrow");
         def = SDRX_DEVICE;
     }
     virtual std::string GetDev() { return SDRX_DEVICE; }
     virtual void SetDev(std::string) {}
     virtual void Close() {}
-    virtual std::string GetVersion() { return "sdroxide"; }
+    virtual std::string GetVersion() { return "sdrcrow"; }
 
     static const char* SDRX_DEVICE;
 
@@ -171,13 +171,13 @@ public:
     virtual void Enumerate(std::vector<std::string>& choices,
                            std::vector<std::string>& desc, std::string& def) {
         choices.push_back(CSoundInSdrx::SDRX_DEVICE);
-        desc.push_back("sdroxide");
+        desc.push_back("sdrcrow");
         def = CSoundInSdrx::SDRX_DEVICE;
     }
     virtual std::string GetDev() { return CSoundInSdrx::SDRX_DEVICE; }
     virtual void SetDev(std::string) {}
     virtual void Close() {}
-    virtual std::string GetVersion() { return "sdroxide"; }
+    virtual std::string GetVersion() { return "sdrcrow"; }
 
 private:
     CSdrxRing* ring;

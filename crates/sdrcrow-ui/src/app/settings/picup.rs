@@ -28,7 +28,7 @@ fn result_line(ui: &mut egui::Ui, st: &PictureUploadStatus) {
     ui.label(RichText::new(format!("{mark} {when}  {}", st.message)).size(11.0).color(colour));
 }
 
-impl crate::app::SdroxideApp {
+impl crate::app::SdrcrowApp {
     /// The section itself. `edit` is the dialog's copy; `apply` asks for it to
     /// be sent.
     pub(in crate::app) fn picup_section(

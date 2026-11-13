@@ -185,7 +185,7 @@ fn main() {
     // to appear *before* the archive that defines them: `libsdrcrow_drm_shim.a`
     // behind `libsdrcrow_dream.a` leaves every `CDRMReceiver`/`CParameter`
     // reference in the shim unresolved when nothing else pulls Dream in (the
-    // test binaries; the full `sdroxide` binary links because other objects
+    // test binaries; the full `sdrcrow` binary links because other objects
     // reference the same archives). (2) The system libraries last of all —
     // the Dream and shim objects reference libstdc++/winpthread/ws2_32 (and
     // on unix libm/libdl), so printing those inside `build_shim` put the
@@ -234,26 +234,26 @@ fn common_defines(build: &mut cc::Build) {
     if target_is_windows() {
         build.define("WIN32", None);
     }
-    build.define("USE_SDROXIDE_SOUND", None);
+    build.define("USE_SDRCROW_SOUND", None);
     build.define("USE_FAAD2_LIBRARY", None);
-    build.define("SDROXIDE_NO_AAC_ENCODER", None);
+    build.define("SDRCROW_NO_AAC_ENCODER", None);
     // xHE-AAC, the codec most surviving DRM30 broadcasters moved to. Dream's
     // FDK-AAC codec is compiled in and `HAVE_USAC` turns on its USAC branches,
     // but the library itself is *not* linked: the Fraunhofer licence carries
-    // restrictions GPL-3.0-or-later cannot absorb, so `SDROXIDE_FDK_DLOPEN`
+    // restrictions GPL-3.0-or-later cannot absorb, so `SDRCROW_FDK_DLOPEN`
     // makes `fdk_aac_dll.h` look it up at run time instead. Without it
     // installed, `FdkAacCodec::CanDecode` returns false and an xHE-AAC service
     // falls back to the null codec, which is where this build stood before.
     build.define("HAVE_LIBFDK_AAC", None);
     build.define("HAVE_USAC", None);
-    build.define("SDROXIDE_FDK_DLOPEN", None);
+    build.define("SDRCROW_FDK_DLOPEN", None);
     // The EPG decoder is the one place in the receiver that writes to disk, and
     // it names the file from the broadcast. Nothing here reads those files back.
-    build.define("SDROXIDE_NO_DATA_FILES", None);
+    build.define("SDRCROW_NO_DATA_FILES", None);
     // Dream announces every codec library it probes for on stderr; the
     // host has its own logging and a GUI has no terminal to print to.
-    build.define("SDROXIDE_QUIET", None);
-    build.define("EXECUTABLE_NAME", "sdroxide");
+    build.define("SDRCROW_QUIET", None);
+    build.define("EXECUTABLE_NAME", "sdrcrow");
 }
 
 fn build_dream(manifest: &Path, dream: &Path, faad2_include: &Path) {

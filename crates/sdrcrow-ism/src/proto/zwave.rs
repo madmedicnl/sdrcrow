@@ -20,7 +20,7 @@
 //! it. So a report here always says *which node spoke to which*, and says what
 //! the message was only when the command class above it is not one of the
 //! encrypted ones. That is the same bargain as an encrypted meter: the inventory
-//! is available, the contents are not, and sdroxide holds no keys.
+//! is available, the contents are not, and sdrcrow holds no keys.
 //!
 //! # Frame
 //!

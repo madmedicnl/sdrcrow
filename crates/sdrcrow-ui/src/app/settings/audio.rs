@@ -23,7 +23,7 @@
 use eframe::egui::{self, ComboBox, RichText};
 
 use super::general::{device_field, settings_rx_audio_gain};
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::i18n::{Tr as _, tr};
 use crate::chrome::StyledCombo as _;
 use crate::theme::gray;
@@ -148,7 +148,7 @@ fn note(ui: &mut egui::Ui, text: &str) {
     super::note_small(ui, text);
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Settings → Audio.
     pub(in crate::app) fn settings_audio_tab(
         &self,

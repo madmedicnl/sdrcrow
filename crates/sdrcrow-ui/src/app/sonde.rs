@@ -11,7 +11,7 @@ use crate::i18n::tr;
 use eframe::egui::{self, RichText};
 use sdrcrow_types::{Command, SONDE_BAND_HZ, SondeSettings, SondeTrack};
 
-use crate::app::{SdroxideApp, sonde_card};
+use crate::app::{SdrcrowApp, sonde_card};
 use crate::sonde_map::{self, Phase};
 
 /// The types the picker offers (the decoders' own names: not translated).
@@ -226,7 +226,7 @@ fn draw_card(
     act
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn aircraft_sonde_pane(
         &mut self,
         ui: &mut egui::Ui,

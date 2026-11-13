@@ -26,7 +26,7 @@ use std::collections::HashSet;
 use crate::theme;
 use crate::widgets::worldmap::{MapView, alpha, draw_base, interact, wrap180};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 
 /// Below this size the map is not worth drawing and the grid unreadable.
 pub const MIN_HEIGHT: f32 = 200.0;
@@ -267,7 +267,7 @@ fn cell_rect(
     Rect::from_center_size(c, vec2(w.max(1.0), h.max(1.0)))
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// The worked squares on the map, cached by log length.
     ///
     /// Computed with **no band filter**, unlike `ensure_awards`. The AWARDS

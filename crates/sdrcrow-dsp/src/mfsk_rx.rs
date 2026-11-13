@@ -474,7 +474,7 @@ pub struct MfskRx {
     pair: [u8; 2],
     symcounter: bool,
     /// `+1` or `-1` on the soft symbols: two conventions were plausible and only
-    /// the air decides. Set by `SDROXIDE_MFSK_SIGN=-1` while that is settled.
+    /// the air decides. Set by `SDRCROW_MFSK_SIGN=-1` while that is settled.
     soft_sign: f32,
     /// Mirror the tone order. An MFSK signal received on the wrong sideband is a
     /// tone set upside down about its centre, and nothing decodes until that is
@@ -519,12 +519,12 @@ impl MfskRx {
             varicode: MfskVaricodeRx::new(),
             pair: [0; 2],
             symcounter: false,
-            soft_sign: if std::env::var("SDROXIDE_MFSK_SIGN").as_deref() == Ok("-1") {
+            soft_sign: if std::env::var("SDRCROW_MFSK_SIGN").as_deref() == Ok("-1") {
                 -1.0
             } else {
                 1.0
             },
-            mirror: std::env::var("SDROXIDE_MFSK_MIRROR").is_ok(),
+            mirror: std::env::var("SDRCROW_MFSK_MIRROR").is_ok(),
             text: String::new(),
             metric: 0.0,
             locked: false,
@@ -1544,8 +1544,8 @@ mod tests {
     #[test]
     #[ignore]
     fn the_capture_and_our_modulator_agree_on_the_tones() {
-        // The USB sweep sample, in the repository; SDROXIDE_MFSK_SAMPLE overrides.
-        let path = std::env::var("SDROXIDE_MFSK_SAMPLE").unwrap_or_else(|_| {
+        // The USB sweep sample, in the repository; SDRCROW_MFSK_SAMPLE overrides.
+        let path = std::env::var("SDRCROW_MFSK_SAMPLE").unwrap_or_else(|_| {
             concat!(env!("CARGO_MANIFEST_DIR"), "/../../samples/fldigi/MFSK16.wav").to_string()
         });
         if !std::path::Path::new(&path).exists() {
@@ -1554,7 +1554,7 @@ mod tests {
         }
         let variant = MfskVariant::named("MFSK16").unwrap();
         let num = |k: &str, d: f64| std::env::var(k).ok().and_then(|v| v.parse().ok()).unwrap_or(d);
-        let hz = num("SDROXIDE_MFSK_HZ", 1730.0);
+        let hz = num("SDRCROW_MFSK_HZ", 1730.0);
 
         let mut reader = hound::WavReader::open(&path).expect("open the sample WAV");
         let spec = reader.spec();
@@ -1622,7 +1622,7 @@ mod tests {
         assert!(rx.text().contains("TEST"), "loopback did not read the text: {:?}", rx.text());
     }
 
-    /// Point `SDROXIDE_MFSK_SAMPLE` at a mono 8 kHz WAV of an MFSK
+    /// Point `SDRCROW_MFSK_SAMPLE` at a mono 8 kHz WAV of an MFSK
     /// transmission; `_VARIANT`, `_HZ` and `_TEXT` describe it.
     ///
     /// `~/Downloads/sounds/our-captures/mfsk16_cb_eagle.wav` is the MFSK16
@@ -1630,8 +1630,8 @@ mod tests {
     #[test]
     #[ignore]
     fn an_off_air_capture_decodes() {
-        // The corpus sample is the default; `SDROXIDE_MFSK_SAMPLE` overrides it.
-        let path = std::env::var("SDROXIDE_MFSK_SAMPLE").unwrap_or_else(|_| {
+        // The corpus sample is the default; `SDRCROW_MFSK_SAMPLE` overrides it.
+        let path = std::env::var("SDRCROW_MFSK_SAMPLE").unwrap_or_else(|_| {
             concat!(env!("CARGO_MANIFEST_DIR"), "/../../samples/fldigi/MFSK16.wav").to_string()
         });
         if !std::path::Path::new(&path).exists() {
@@ -1647,20 +1647,20 @@ mod tests {
             }
         };
         let num = |k: &str, d: f64| std::env::var(k).ok().and_then(|v| v.parse().ok()).unwrap_or(d);
-        let name = std::env::var("SDROXIDE_MFSK_VARIANT").unwrap_or_else(|_| "MFSK16".into());
+        let name = std::env::var("SDRCROW_MFSK_VARIANT").unwrap_or_else(|_| "MFSK16".into());
         let variant = MfskVariant::named(&name).expect("a variant name");
         // The centre is the *middle of the measured tones*, not the file name: on
         // the corpus sample the tones run 1635…1869, so 1752 (the manifest says
         // 1800, which is 3 tone spacings out and the realignment cannot reach it).
-        let hz = num("SDROXIDE_MFSK_HZ", 1752.0);
-        let skip: f64 = num("SDROXIDE_MFSK_SKIP", 0.0);
+        let hz = num("SDRCROW_MFSK_HZ", 1752.0);
+        let skip: f64 = num("SDRCROW_MFSK_SKIP", 0.0);
         let start = (skip * spec.sample_rate as f64) as usize;
         let audio = &audio[start.min(audio.len())..];
         let pad = vec![0.0f32; spec.sample_rate as usize];
-        let pinned = std::env::var("SDROXIDE_MFSK_MIRROR").is_ok();
+        let pinned = std::env::var("SDRCROW_MFSK_MIRROR").is_ok();
         // The corpus sample carries this text verbatim (samples/README.md); an
         // override is for a fixture that does not.
-        let want = std::env::var("SDROXIDE_MFSK_TEXT")
+        let want = std::env::var("SDRCROW_MFSK_TEXT")
             .unwrap_or_else(|_| "EAGLE LANDED SDRBROWN 12345".into());
         let score = |t: &str| want.split_whitespace().filter(|w| t.contains(w)).count();
 

@@ -50,7 +50,7 @@ fn main() {
             println!(
                 "\nThings worth checking, in order:\n  \
                  - that this is the LimeRFE's own micro-USB port, not the LimeSDR's\n  \
-                 - that LimeSuiteGUI, SDRangel or another copy of sdroxide does not have it open\n  \
+                 - that LimeSuiteGUI, SDRangel or another copy of sdrcrow does not have it open\n  \
                  - that you can read the port at all: `sudo chmod a+rw {path}` as a one-off test,\n    \
                    or install the udev rule (see the README) for a permanent fix"
             );

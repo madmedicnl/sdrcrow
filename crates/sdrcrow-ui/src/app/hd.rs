@@ -16,7 +16,7 @@ use crate::i18n::tr;
 use eframe::egui::{self, Color32, RichText};
 use sdrcrow_types::{Command, HdRadioStatus, Mode};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 
 /// How many status snapshots the quality history keeps. The engine sends four
 /// a second, so this is about a minute — long enough to watch a fade come and
@@ -28,7 +28,7 @@ fn dim_ink() -> Color32 {
     crate::theme::gray(110)
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn on_hd(&mut self, data: HdRadioStatus) {
         // Only while locked: the figures mean nothing otherwise, and plotting
         // the zeros a dropout leaves would draw a cliff that says "the signal

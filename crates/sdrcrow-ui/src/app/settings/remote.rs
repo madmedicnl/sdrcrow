@@ -1,5 +1,5 @@
 //! The connect-to-a-server section on the General tab: connect this screen to
-//! an sdroxide server somewhere else.
+//! an sdrcrow server somewhere else.
 //!
 //! The same thing `--connect` does on the command line, without the command
 //! line — and, because a station reached this way arrives as a radio tab of its

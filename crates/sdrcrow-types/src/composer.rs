@@ -368,9 +368,9 @@ mod tests {
     /// callsign the operator has not set, and it must keep the caption.
     #[test]
     fn a_seed_carries_the_banner_and_the_caption_without_inventing_either() {
-        let c = Composer::seeded("", "SDRoxide v2", "CQ CQ", Face::Mono, 24, None, 256);
+        let c = Composer::seeded("", "SDRCrow v2", "CQ CQ", Face::Mono, 24, None, 256);
         assert_eq!(c.layers.len(), 2, "the empty left template is not a line");
-        assert_eq!(c.layers[0].text, "SDRoxide v2");
+        assert_eq!(c.layers[0].text, "SDRCrow v2");
         assert_eq!(c.layers[1].text, "CQ CQ");
         assert!(c.is_active());
 

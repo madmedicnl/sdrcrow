@@ -16,13 +16,13 @@ use crate::i18n::{Tr, tr};
 use eframe::egui::{self, Color32, RichText};
 use sdrcrow_types::{Command, CwEngine, KeyChord};
 
-use crate::app::{SdroxideApp, tx_gated};
+use crate::app::{SdrcrowApp, tx_gated};
 use crate::theme::ThemedScroll;
 
 /// Speeds the WPM chip offers. The range an operator actually sets a keyer to.
 const WPM_STEPS: &[f32] = &[10.0, 13.0, 15.0, 18.0, 20.0, 22.0, 25.0, 28.0, 30.0, 35.0, 40.0];
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn cw_panel(
         &mut self,
         ui: &mut egui::Ui,

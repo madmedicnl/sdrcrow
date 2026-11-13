@@ -153,7 +153,7 @@ async fn a_client_adds_renames_switches_and_closes_the_stations_radios() {
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).expect("scratch config dir");
     // SAFETY: set before anything reads it, and this binary holds one test.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     // The added radio's engine thread, kept so the test can watch it stop when
     // the radio is closed.

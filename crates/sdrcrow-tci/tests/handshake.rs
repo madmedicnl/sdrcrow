@@ -1,6 +1,6 @@
 //! Connecting to a rig that is slow to answer the WebSocket upgrade.
 //!
-//! Treating a slow answer as a failure is what made a freshly started sdroxide
+//! Treating a slow answer as a failure is what made a freshly started sdrcrow
 //! fail to attach to an ExpertSDR3 that was running all along, leaving the
 //! operator to open Settings → Radio and press "Apply / reconnect" by hand. Two
 //! things keep that from happening: tungstenite reports a read that timed out
@@ -11,7 +11,7 @@
 //! `WSAETIMEDOUT` and tungstenite cannot tell it from a real I/O failure.
 //!
 //! Ports are in the 50081.. range (not the default 50001, which a local
-//! ExpertSDR3 or another sdroxide would hold); a test whose port is unavailable
+//! ExpertSDR3 or another sdrcrow would hold); a test whose port is unavailable
 //! skips rather than fails.
 
 use std::io::ErrorKind;

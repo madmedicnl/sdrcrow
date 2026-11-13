@@ -291,7 +291,7 @@ fn a_mode_change_reaches_the_radio_and_comes_back() {
     h.set_mode(Mode::Cw);
     assert!(sim.wait_for(PATIENCE, |s| s.saw_command("slice set 0 mode=CW")));
 
-    // Every sdroxide digital mode asks the radio only for a sideband — the
+    // Every sdrcrow digital mode asks the radio only for a sideband — the
     // decoding happens here, from the IQ.
     h.set_mode(Mode::Ft8);
     assert!(sim.wait_for(PATIENCE, |s| s.saw_command("slice set 0 mode=DIGU")));
@@ -302,7 +302,7 @@ fn connecting_adopts_the_radios_current_frequency() {
     let sim = sim();
     let h = connect(&sim, 48_000.0);
 
-    // Opening sdroxide must not yank a running station off frequency to
+    // Opening sdrcrow must not yank a running station off frequency to
     // whatever was last in its own config; the radio is authoritative about
     // where it is tuned.
     let deadline = std::time::Instant::now() + PATIENCE;
@@ -393,8 +393,8 @@ fn dropping_the_handle_releases_the_radios_streams() {
 
 #[test]
 fn a_client_id_somebody_else_holds_is_not_stolen() {
-    // The default station name is "sdroxide" on every installation, so the id
-    // derived from it is the same everywhere. Two sdroxide sessions therefore
+    // The default station name is "sdrcrow" on every installation, so the id
+    // derived from it is the same everywhere. Two sdrcrow sessions therefore
     // arrive at a radio holding the same identity — and a radio resolves that by
     // evicting the incumbent, who reconnects and evicts the newcomer, forever.
     let held = sdrcrow_smartsdr::gui_client_id("test");

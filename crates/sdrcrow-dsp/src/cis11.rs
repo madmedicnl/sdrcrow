@@ -750,7 +750,7 @@ mod tests {
         }
     }
 
-    /// **The off-air gate.** Point `SDROXIDE_CIS11_SAMPLE` at a 16-bit mono WAV
+    /// **The off-air gate.** Point `SDRCROW_CIS11_SAMPLE` at a 16-bit mono WAV
     /// of a CIS-11 transmission (any rate) and the receiver must find the tones
     /// and read characters with valid parity. The idle recording is the oracle:
     /// it is one character repeated, so a correct framing gives a constant
@@ -758,7 +758,7 @@ mod tests {
     #[test]
     #[ignore]
     fn an_off_air_recording_decodes() {
-        let Ok(path) = std::env::var("SDROXIDE_CIS11_SAMPLE") else {
+        let Ok(path) = std::env::var("SDRCROW_CIS11_SAMPLE") else {
             return;
         };
         let mut reader = hound::WavReader::open(&path).expect("open the wav");

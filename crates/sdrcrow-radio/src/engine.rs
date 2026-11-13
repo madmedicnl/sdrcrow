@@ -117,10 +117,10 @@ fn zoom_lane_fft(display_bins: usize) -> usize {
 /// of them on a wide panel; this is a *measurement* unit, and past a certain
 /// density another one buys nothing an eye can use while costing a doubling of
 /// the time each row of the waterfall smears over. A thousand of them across
-/// the window is finer than any signal sdroxide draws is worth resolving, and
+/// the window is finer than any signal sdrcrow draws is worth resolving, and
 /// on the FT8 sub-band it lands on exactly the transform WSJT-X's own waterfall
 /// uses — 2.9 Hz bins over a third of a second — which is the picture operators
-/// are comparing sdroxide's against.
+/// are comparing sdrcrow's against.
 const RESOLVED_PER_VIEW: f64 = 1024.0;
 
 /// The analysis window, in samples, for a lane running at `rate_hz` whose
@@ -2555,7 +2555,7 @@ impl TciTxPace {
             self.asked = self.supplied;
         }
         // A client that streams on its own clock and ignores chronos (as
-        // sdroxide's own does against a rig that never sends one) fills the
+        // sdrcrow's own does against a rig that never sends one) fills the
         // queue without being asked; there is nothing to request while that
         // much of its audio is already in hand. Twice the lead rather than the
         // lead itself, because a chrono-honouring client's queue *stands* at
@@ -2832,7 +2832,7 @@ fn recording_filename_for(
         n => format!("_radio{n}"),
     };
     let ext = format.extension();
-    format!("sdroxide{radio}_{y:04}-{mo:02}-{d:02}_{h:02}-{mi:02}-{s:02}Z_{mhz:.6}MHz_{mode}.{ext}")
+    format!("sdrcrow{radio}_{y:04}-{mo:02}-{d:02}_{h:02}-{mi:02}-{s:02}Z_{mhz:.6}MHz_{mode}.{ext}")
 }
 
 #[cfg(test)]
@@ -3395,7 +3395,7 @@ struct Engine {
     /// sweep — lanes where a block *is* the update).
     row_sample_clock: bool,
     /// Rows clocked since this engine started. Diagnostic; see the
-    /// `sdroxide::panadapter` log.
+    /// `sdrcrow::panadapter` log.
     rows_clocked: u64,
     /// Of those, the ones that reached a published frame. Diagnostic: the two
     /// part company when a row is built on one picture and the frame that would
@@ -6379,7 +6379,7 @@ fn engine_thread(
             let ffts = engine.analyzer.transforms();
             let ffts_delta = ffts.saturating_sub(lane_ffts);
             debug!(
-                target: "sdroxide::panadapter",
+                target: "sdrcrow::panadapter",
                 samples_per_s = lane_samples as f64 / secs,
                 fft_per_s = ffts_delta as f64 / secs,
                 frames_per_s = lane_frames as f64 / secs,
@@ -6480,7 +6480,7 @@ fn engine_thread(
                 // The rig's own ALC where it reports one, our modulator's peak
                 // otherwise. They are different measurements and the rig's is
                 // the one that answers the operator's question: `alc_peak` is
-                // what SDRoxide SENDS, and ALC is what the rig does about it.
+                // what SDRCrow SENDS, and ALC is what the rig does about it.
                 // On a CAT rig driving an external radio our figure says
                 // nothing useful about whether the audio is too hot for it —
                 // which is why the rig's reading, when it has not answered,
@@ -6513,9 +6513,9 @@ fn engine_thread(
                 // ⛔ `tx_active`, not "on the air". The guard's whole action is
                 // to unkey, and the only over it can unkey is one this engine
                 // is driving: an operator holding the radio's microphone would
-                // simply keep transmitting while sdroxide sent an unkey the rig
+                // simply keep transmitting while sdrcrow sent an unkey the rig
                 // ignores — or, worse on a rig whose key-down doubles as an
-                // audio-source switch, would be cut off mid-word by sdroxide
+                // audio-source switch, would be cut off mid-word by sdrcrow
                 // "helping". The radio has its own protection for its own over.
                 if engine.tx_active
                     && engine.swr_guard
@@ -7485,7 +7485,7 @@ impl Engine {
             }
         }
         // Feed TCI clients: the same clean tap the digital decoders use (so
-        // muting or turning down sdroxide can't silence somebody's decoder),
+        // muting or turning down sdrcrow can't silence somebody's decoder),
         // resampled to the 48 kHz TCI mandates.
         if let (Some(srv), Some(main)) = (self.tci_srv.as_ref(), self.main.as_ref()) {
             if main.tap_enabled && srv.wants_audio() {
@@ -8122,7 +8122,7 @@ impl Engine {
                 self.want_antenna.0 = Some(name.to_string());
             }
             // The receiving antenna, adopted unconditionally: there is no
-            // preference here to outrank it. sdroxide never asserts this one —
+            // preference here to outrank it. sdrcrow never asserts this one —
             // the radio holds it per band and switching a receive aerial nobody
             // asked about takes it out of use with nothing on screen to say
             // so — so a report is always the truth arriving, never the answer
@@ -9464,10 +9464,10 @@ impl Engine {
     /// How far above our dial a transceiver's own VFO has to sit.
     ///
     /// Zero everywhere but one case, and that case is CW on a radio handing us
-    /// raw I/Q around its own VFO. sdroxide's CW dial is a zero-beat — the tone
+    /// raw I/Q around its own VFO. sdrcrow's CW dial is a zero-beat — the tone
     /// being copied sits a sidetone pitch above it, which is what
     /// [`Mode::on_air_hz`] answers and where the keyer puts the carrier when
-    /// sdroxide makes it. A transceiver put in CW makes its own instead, on its
+    /// sdrcrow makes it. A transceiver put in CW makes its own instead, on its
     /// VFO, whether the key is a paddle in its socket or text handed to its
     /// keyer — so a VFO left on our dial transmits a whole sidetone below the
     /// station being answered, and the station never hears the call. That is
@@ -9573,7 +9573,7 @@ impl Engine {
     /// True for a demod-audio rig, where there is nothing else; and for a radio
     /// listening to its transceiver while an attached receiver paints the
     /// picture, where there *is* a demodulator here but it is not the one being
-    /// heard. False where sdroxide demodulates what is heard, however the
+    /// heard. False where sdrcrow demodulates what is heard, however the
     /// transmitter is driven — the rig's receive settings are then its own
     /// business, and its transmit mode is asserted at key-down instead.
     fn filters_at_the_rig(&self) -> bool {
@@ -11216,7 +11216,7 @@ impl Engine {
                 }
             }
             // The radio's own power switch. Nothing else here changes: what
-            // sdroxide believes about a radio that has just been switched off is
+            // sdrcrow believes about a radio that has just been switched off is
             // the link's business to notice, and the reconnect that follows is
             // what puts a radio switched back on into a known state.
             // The rig's own power setting, one of its numbered steps — the
@@ -11235,7 +11235,7 @@ impl Engine {
                 }
             }
             // The radio's separate receiving antenna, in or out of circuit —
-            // the one time sdroxide writes it. Not recorded in
+            // the one time sdrcrow writes it. Not recorded in
             // [`Engine::band_antenna`] and not stored in a memory channel: the
             // radio recalls it per band itself, and a preference held here
             // would fight that on every band change.
@@ -15841,7 +15841,7 @@ impl Engine {
 
     fn start_tci_server(&mut self) {
         self.tci_srv_err = None;
-        // The most likely first-run failure by far: sdroxide is itself a TCI
+        // The most likely first-run failure by far: sdrcrow is itself a TCI
         // client of a rig on this machine, and that rig already owns the port.
         // Diagnose it rather than leaving the operator with "address in use".
         if let Some(conflict) = self.tci_backend_conflict() {
@@ -15884,7 +15884,7 @@ impl Engine {
         let local = |h: &str| matches!(h, "127.0.0.1" | "localhost" | "::1" | "0.0.0.0" | "");
         if port == self.tci_cfg.port && local(&host) && local(&self.tci_cfg.bind) {
             return Some(format!(
-                "port {port} is the TCI radio sdroxide is connected to — pick another port"
+                "port {port} is the TCI radio sdrcrow is connected to — pick another port"
             ));
         }
         None
@@ -18897,7 +18897,7 @@ impl Engine {
     /// The socket is *asserted*, not compared: on a band change the radio may
     /// already have moved it under us. An Icom's band stacking register carries
     /// a socket of its own, so crossing into 40 m puts the rig on whatever was
-    /// last used there — and if that happens to match what sdroxide last read,
+    /// last used there — and if that happens to match what sdrcrow last read,
     /// a comparison against the cached socket sends nothing and the wrong
     /// aerial stays connected. That is why 30 m → 40 m left an IC-7610 on ANT1
     /// while 20 m → 40 m switched it correctly: the same preference, and only
@@ -18970,7 +18970,7 @@ impl Engine {
     /// One thing this cannot do is notice the operator reaching for the RX ANT
     /// button on the radio itself without changing band: the setting is not
     /// polled, so the chip is stale until the next band change. That is a
-    /// display error and never a relay movement — sdroxide writes the byte only
+    /// display error and never a relay movement — sdrcrow writes the byte only
     /// on a click, and every write carries the value last read back.
     fn refresh_rx_antenna(&mut self) {
         let now = self.source.rx_antenna();
@@ -19437,7 +19437,7 @@ impl Engine {
     /// filed a channel and the list in front of them shows the change, so a
     /// refused save is a lie they only find out about at the next start. The
     /// commonest refusal is the deliberate one — the file could not be read at
-    /// startup, so sdroxide will not write the empty list it had to run on over
+    /// startup, so sdrcrow will not write the empty list it had to run on over
     /// it (issue #269) — and that is precisely the case they have to be told
     /// about, because the channels are still there and this screen says they
     /// are not.
@@ -21036,7 +21036,7 @@ impl Engine {
     /// listening to the station's own transmitter for the length of the over:
     /// an RTL-SDR watching the antenna a KX3 is transmitting into (issue #244),
     /// or a dongle on the rig's I.F. output. "Mute on transmit" was already
-    /// answered for overs sdroxide keys; an over the operator keys with the
+    /// answered for overs sdrcrow keys; an over the operator keys with the
     /// microphone in their hand is the one they are most likely to be holding
     /// a headphone to their ear through.
     ///
@@ -21048,7 +21048,7 @@ impl Engine {
     /// The picture is deliberately left running. A receiver that is still
     /// receiving has something to show, and an operator on the microphone
     /// watching their own signal go out is a reason to have paired one at all;
-    /// **Blank on transmit** answers for the overs sdroxide keys, where there
+    /// **Blank on transmit** answers for the overs sdrcrow keys, where there
     /// is nothing coming in to draw.
     ///
     /// The recording tap goes quiet with the speaker, as it does on our own
@@ -21133,7 +21133,7 @@ impl Engine {
             }
             // The radio is already transmitting under its own control —
             // somebody has their hand on its microphone. Keying here would put
-            // sdroxide's audio into an over that is not its to drive, and on a
+            // sdrcrow's audio into an over that is not its to drive, and on a
             // rig whose key-down doubles as an audio-source switch it would cut
             // the operator off mid-word. Placed with the other pure state
             // checks, before anything acquires or tears down.
@@ -22162,7 +22162,7 @@ impl Engine {
             // this over will have consumed plus a fixed lead, less what has
             // already been asked for. A client that honours chronos then tracks
             // real time whatever cadence it answers on; one that self-paces (as
-            // sdroxide's own client does when a rig never chronos) fills the
+            // sdrcrow's own client does when a rig never chronos) fills the
             // queue past the lead and is not asked at all. See `TciTxPace`.
             let asked = self.tci_pace.request(self.mic_fifo.len(), got, playing);
             if let Some(frames) = asked {
@@ -22173,7 +22173,7 @@ impl Engine {
             // issue #202, where the numbers behind two different failures
             // (a chopped over and a silent one) look identical from outside.
             trace!(
-                target: "sdroxide::tcitx",
+                target: "sdrcrow::tcitx",
                 got,
                 queued = self.mic_fifo.len(),
                 asked = asked.unwrap_or(0),
@@ -22714,7 +22714,7 @@ impl Engine {
     /// LO whatever else happens. A transceiver on a sound card does not: its
     /// dial is ours to command only for as long as something answers on the
     /// control port, and a radio switched on (or a cable plugged in) after
-    /// sdroxide started hands one back mid-session. `follow_dial` above is the
+    /// sdrcrow started hands one back mid-session. `follow_dial` above is the
     /// whole reason it matters — a stale "yes" leaves every panadapter gesture
     /// commanding a dial nothing is listening to, and the operator watching the
     /// span relabel itself around spectrum the radio is not sending.

@@ -241,7 +241,7 @@ fn og_image(html: &str) -> Option<String> {
 
 fn qrz_login(creds: &Credentials) -> Result<String, String> {
     let url = format!(
-        "https://xmldata.qrz.com/xml/current/?username={};password={};agent=sdroxide",
+        "https://xmldata.qrz.com/xml/current/?username={};password={};agent=sdrcrow",
         urlencode(creds.user.trim()),
         urlencode(creds.password.trim())
     );
@@ -410,7 +410,7 @@ fn hamqth_lookup(creds: &Credentials, call: &str) -> Result<CallsignInfo, String
                 k
             }
         };
-        let url = format!("https://www.hamqth.com/xml.php?id={key}&callsign={call}&prg=sdroxide");
+        let url = format!("https://www.hamqth.com/xml.php?id={key}&callsign={call}&prg=sdrcrow");
         let body = http::get(&url)?;
         let doc = roxmltree::Document::parse(&body).map_err(|e| e.to_string())?;
         if let Some(err) = tag_text(&doc, "error") {

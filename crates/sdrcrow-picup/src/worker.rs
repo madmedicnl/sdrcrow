@@ -255,7 +255,7 @@ fn test(cfg: &PictureUploadConfig) -> Result<(String, Option<String>), Failure> 
             if !dir.is_empty() {
                 s.cwd(dir)?;
             }
-            s.put(TEST_FILE, b"sdroxide picture upload test\n")?;
+            s.put(TEST_FILE, b"sdrcrow picture upload test\n")?;
             s.delete(TEST_FILE)?;
             s.cwd(&home)
         })();

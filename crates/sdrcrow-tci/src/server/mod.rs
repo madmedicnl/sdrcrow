@@ -1,4 +1,4 @@
-//! The TCI **server**: sdroxide acting as a TCI rig so third-party clients
+//! The TCI **server**: sdrcrow acting as a TCI rig so third-party clients
 //! (WSJT-X's TCI rig type, JTDX, MSHV, skimmer tools) can drive it.
 //!
 //! Shape mirrors `SkimmerController`: the DSP engine owns a
@@ -7,11 +7,11 @@
 //! engine), and drains [`ServerRequest`]s non-blocking each tick. All socket
 //! work happens on a hub thread plus one thread per client.
 //!
-//! **Model.** sdroxide has a single tunable VFO pair, so the server advertises
+//! **Model.** sdrcrow has a single tunable VFO pair, so the server advertises
 //! one transceiver (`trx_count:1`) with two channels (`channels_count:2`,
 //! A and B). Streams — wideband IQ, RX audio, TX audio — exist on receiver 0
 //! only. `dds:` is our hardware centre frequency and `if:` the VFO's offset
-//! from it, matching how sdroxide's own TCI client drives a rig.
+//! from it, matching how sdrcrow's own TCI client drives a rig.
 //!
 //! **Multiple clients** all see the same radio: last writer wins, and every
 //! client receives the resulting status broadcast (including the one that
@@ -56,7 +56,7 @@ const TX_RING: usize = AUDIO_RATE_HZ as usize;
 /// Something a client asked for that only the engine can carry out.
 // `Command` is large, but boxing it here would buy an allocation per client
 // command and force the engine to unbox before `apply` — these arrive a few
-// times a second at most, and every other channel in sdroxide carries
+// times a second at most, and every other channel in sdrcrow carries
 // `Command` by value.
 #[allow(clippy::large_enum_variant)]
 #[derive(Debug, Clone, PartialEq)]

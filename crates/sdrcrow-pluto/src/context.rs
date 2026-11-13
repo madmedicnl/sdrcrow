@@ -246,7 +246,7 @@ impl Context {
     }
 
     /// Like [`Self::device`], but the error names what is actually present —
-    /// which is what tells an operator they have pointed sdroxide at an IIO
+    /// which is what tells an operator they have pointed sdrcrow at an IIO
     /// device that is not a Pluto.
     pub fn require(&self, name: &'static str, addr: &str) -> Result<&Device> {
         self.device(name).ok_or_else(|| Error::NotAPluto {

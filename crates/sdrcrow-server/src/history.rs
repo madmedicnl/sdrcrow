@@ -27,7 +27,7 @@ use sdrcrow_types::{AdsbStatus, RadioEvent, Vdl2AddrKind, Vdl2Payload, Vdl2Statu
 use crate::Station;
 
 /// The variable that switches it on.
-pub const ENV_SWITCH: &str = "SDROXIDE_AIRCRAFT_HISTORY";
+pub const ENV_SWITCH: &str = "SDRCROW_AIRCRAFT_HISTORY";
 
 /// The file, in the config directory.
 pub(crate) const FILE: &str = "aircraft-history.json";

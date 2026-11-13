@@ -1,7 +1,7 @@
 //! `atchat-monitor` — a passive listener on the virtual channel, for RF-less
 //! testing.
 //!
-//! Not part of sdroxide itself. It connects to `atchat-channel` (or
+//! Not part of sdrcrow itself. It connects to `atchat-channel` (or
 //! `channel_server.py`), never transmits, demodulates every burst delivered on
 //! the channel and prints the frame it decoded — the text-log half of
 //! `monitor.py`, without the scope / spectrum / waterfall the standalone GUI

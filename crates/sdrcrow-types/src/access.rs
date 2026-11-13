@@ -69,7 +69,7 @@ fn ct_eq(a: &[u8], b: &[u8]) -> bool {
     diff == 0
 }
 
-/// The other end of the same wire: which sdroxide server *this* screen dials.
+/// The other end of the same wire: which sdrcrow server *this* screen dials.
 ///
 /// [`RemoteAccess`] above is what a station demands of its visitors;
 /// this is where a visitor goes. It belongs to the machine the operator is
@@ -84,7 +84,7 @@ fn ct_eq(a: &[u8], b: &[u8]) -> bool {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct RemoteServer {
-    /// Host name or address of the machine running `sdroxide --server`. Empty
+    /// Host name or address of the machine running `sdrcrow --server`. Empty
     /// until the operator has entered one.
     pub host: String,
     /// The port that server listens on — `server_port` in *its* `config.toml`.
@@ -92,7 +92,7 @@ pub struct RemoteServer {
     /// Dial `wss://` rather than `ws://`: the server is behind something that
     /// terminates TLS for it.
     ///
-    /// sdroxide's own server speaks plain WebSocket and nothing else, so this
+    /// sdrcrow's own server speaks plain WebSocket and nothing else, so this
     /// is never about the server itself — it is about the reverse proxy in
     /// front of it, which is how a station ends up answering on port 443. A
     /// browser client never needs the setting because the page it was served
@@ -107,7 +107,7 @@ pub struct RemoteServer {
 
 impl Default for RemoteServer {
     fn default() -> Self {
-        // The port every sdroxide server binds unless it was told otherwise, so
+        // The port every sdrcrow server binds unless it was told otherwise, so
         // the operator only has to type the half that is actually theirs.
         RemoteServer { host: String::new(), port: 4950, tls: false }
     }

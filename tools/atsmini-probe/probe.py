@@ -7,7 +7,7 @@ Connect / AP+Connect / AP Only). Default endpoint atsmini.local:60000.
 Protocol is single ASCII characters. Multi-char commands (`F<Hz>`, `#...`)
 need a trailing CR. `t` toggles a 500 ms telemetry CSV on the same socket.
 
-This is scratch, not part of the sdroxide tree. No third-party deps.
+This is scratch, not part of the sdrcrow tree. No third-party deps.
 
     probe.py status                 # connect, `t`, print one telemetry line
     probe.py listen [SECS]          # stream parsed telemetry

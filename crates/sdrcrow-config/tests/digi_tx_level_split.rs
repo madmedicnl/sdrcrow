@@ -1,6 +1,6 @@
 //! What happens to a `digi.json` written before the transmit-audio level split.
 //!
-//! One test per file on purpose: `SDROXIDE_CONFIG_DIR` is process-global, and
+//! One test per file on purpose: `SDRCROW_CONFIG_DIR` is process-global, and
 //! setting it from a `#[test]` that shares a binary with others would race them.
 
 /// The one level that became two carries into **both**, so no station's signal
@@ -21,7 +21,7 @@ fn an_old_single_level_carries_into_both_of_the_new_ones() {
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).expect("scratch dir");
     // SAFETY: this is the only test in this binary; nothing races the setter.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     // A first run has no file at all: both levels wide open, as every digital
     // mode was before either of them existed.
@@ -58,5 +58,5 @@ fn an_old_single_level_carries_into_both_of_the_new_ones() {
     assert_eq!(plain.tx_audio_level_ssb, 1.0);
 
     // SAFETY: as above.
-    unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+    unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
 }

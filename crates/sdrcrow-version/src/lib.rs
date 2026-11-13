@@ -5,7 +5,7 @@
 //! - the **release** a tag names — `2.2.3.5` for `v2.2.3.5_brown`. This fork
 //!   keeps `CARGO_PKG_VERSION` at its plain semver (`2.2.0`) and cuts
 //!   fourth-point releases off it, so the crate version is not what an operator
-//!   installed; the tag's own version rides in `SDROXIDE_RELEASE` and is what a
+//!   installed; the tag's own version rides in `SDRCROW_RELEASE` and is what a
 //!   release reports (issue #354);
 //! - the crate version plus, on a build CI did not cut from a tag, what kind of
 //!   build it is and the commit it came from —
@@ -38,14 +38,9 @@ pub const VERSION: &str = env!("SDRCROW_VERSION");
 
 /// What this build calls itself on screen: **SDRCrow**.
 ///
-/// It began as "SDR Oxide CB/SWL", after what this fork adds. That worked as a
-/// way to tell two installed builds apart, but several operators run it as an
-/// ordinary amateur station and did not want "CB/SWL" in a screenshot or a
-/// screen share — it reads as a different program than the one they are using.
-/// The name is now **Brown**, the same idea as SDR++ Brown: a variant name that
-/// says "this build, not upstream" without saying what is in it. One string, so
-/// the window title, the General tab's header and `--version` all name it the
-/// same way and cannot drift apart.
+/// One string, so the window title, the General tab's header and `--version`
+/// all name it the same way and cannot drift apart. What the fork it grew out
+/// of called itself, and why, is in `SDRCROW.md`.
 pub const FLAVOR: &str = "SDRCrow";
 
 /// The **release** suffix the tags carry: `v1.9.2_brown`. The crate version
@@ -95,8 +90,8 @@ mod tests {
     /// printed before the stamp existed, because a release is built that way.
     #[test]
     fn unstamped_build_is_the_plain_crate_version() {
-        if option_env!("SDROXIDE_BUILD").unwrap_or("").is_empty()
-            && option_env!("SDROXIDE_RELEASE").unwrap_or("").is_empty()
+        if option_env!("SDRCROW_BUILD").unwrap_or("").is_empty()
+            && option_env!("SDRCROW_RELEASE").unwrap_or("").is_empty()
         {
             assert_eq!(super::VERSION, env!("CARGO_PKG_VERSION"));
         }
@@ -110,8 +105,8 @@ mod tests {
     /// version of `2.2.0` and the tag is the truth (issue #354).
     #[test]
     fn stamped_build_keeps_the_crate_version_as_its_prefix() {
-        if !option_env!("SDROXIDE_RELEASE").unwrap_or("").is_empty() {
-            assert_eq!(super::VERSION, option_env!("SDROXIDE_RELEASE").unwrap());
+        if !option_env!("SDRCROW_RELEASE").unwrap_or("").is_empty() {
+            assert_eq!(super::VERSION, option_env!("SDRCROW_RELEASE").unwrap());
             return;
         }
         assert!(super::VERSION.starts_with(env!("CARGO_PKG_VERSION")));

@@ -41,7 +41,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 MANUAL = REPO / "docs" / "USER_MANUAL.md"
 # Where the images live on main, so a wiki page shows the repo's current copy.
-RAW_IMAGE_BASE = "https://raw.githubusercontent.com/madmedicnl/sdroxide-brown/main/docs/images/"
+RAW_IMAGE_BASE = "https://raw.githubusercontent.com/madmedicnl/sdrcrow-brown/main/docs/images/"
 
 HEADING = re.compile(r"^(#{2,4})\s+(.*?)\s*$")
 # An internal link, whole: `[text](#anchor)`. The text is kept; only the target
@@ -204,7 +204,7 @@ def build_index(sections: list[Section]) -> dict[str, str]:
 def build_home(sections: list[Section]) -> str:
     """The Home page: the manual's table of contents, as wiki links."""
     lines = [
-        "# SDR Oxide Brown — User Manual",
+        "# SDRCrow — User Manual",
         "",
         "The manual, one page per section. The single source is "
         "[`docs/USER_MANUAL.md`](https://github.com/madmedicnl/sdroxide-brown/blob/main/docs/USER_MANUAL.md); "

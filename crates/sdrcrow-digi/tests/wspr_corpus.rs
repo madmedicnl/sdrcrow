@@ -12,7 +12,7 @@
 //! absent rather than failing. Point it at one with:
 //!
 //! ```text
-//! SDROXIDE_WSPR_WAV=/path/to/150426_0918.wav cargo test -p sdrcrow-digi --release
+//! SDRCROW_WSPR_WAV=/path/to/150426_0918.wav cargo test -p sdrcrow-digi --release
 //! ```
 //!
 //! or drop the file in a WSJT-X checkout beside this repository.
@@ -33,7 +33,7 @@ const GOLDEN: &[&str] = &["ND6P", "W5BIT", "WD4LHT", "NM7J", "KI7CI", "DJ6OL", "
 const MIN_RECALL: usize = 5;
 
 fn sample_path() -> Option<PathBuf> {
-    if let Ok(p) = std::env::var("SDROXIDE_WSPR_WAV") {
+    if let Ok(p) = std::env::var("SDRCROW_WSPR_WAV") {
         let p = PathBuf::from(p);
         return p.is_file().then_some(p);
     }
@@ -67,7 +67,7 @@ fn read_wav(path: &Path) -> (Vec<f32>, u32) {
 fn the_reference_recording_yields_the_beacons_wsprd_finds() {
     let Some(path) = sample_path() else {
         eprintln!(
-            "skipping: no WSPR reference recording. Set SDROXIDE_WSPR_WAV to \
+            "skipping: no WSPR reference recording. Set SDRCROW_WSPR_WAV to \
              WSJT-X's samples/WSPR/150426_0918.wav to run this."
         );
         return;

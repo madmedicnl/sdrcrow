@@ -14,11 +14,11 @@ use crate::time::{now_unix, now_unix_f64};
 use crate::waterfall_gpu;
 use crate::widgets::spectrum_view;
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 
 /// What this machine will actually draw, so the SPEC popup's detail row can
 /// show the operator what `Auto` decided and grey what the renderer cannot
-/// hold. Built by [`SdroxideApp::detail_report`].
+/// hold. Built by [`SdrcrowApp::detail_report`].
 ///
 /// Worked out here rather than in `sdrcrow-types`, where
 /// [`sdrcrow_types::UiSettings`] lives: that crate must never learn about
@@ -165,7 +165,7 @@ fn pick_levels(bins: &[u8], db_floor: f32, db_ceil: f32) -> Option<(f32, f32)> {
     Some((floor, ceil))
 }
 
-/// Auto-fit bookkeeping (see [`SdroxideApp::auto_fit_tick`]).
+/// Auto-fit bookkeeping (see [`SdrcrowApp::auto_fit_tick`]).
 #[derive(Default)]
 pub(in crate::app) struct AutoFit {
     /// Rolling average of the levels a fit would pick, and when it was last
@@ -267,7 +267,7 @@ fn slack_viewport(center_hz: f64, full_span: f64, (view_lo, view_hi): (f64, f64)
     (lo, lo + slack)
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// The full-band window this front end publishes beside its I/Q, `(centre,
     /// span)` — what the main panadapter may be zoomed out into.
     ///
@@ -1149,7 +1149,7 @@ impl SdroxideApp {
         let (out_center, out_span) = self.zoom_out_window();
         if self.caps.is_some() && out_span > 0.0 && self.view.span() > out_span {
             tracing::debug!(
-                target: "sdroxide::panadapter",
+                target: "sdrcrow::panadapter",
                 view_span = self.view.span(),
                 out_span,
                 sample_rate = self.state.sample_rate,

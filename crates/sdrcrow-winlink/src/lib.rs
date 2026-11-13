@@ -1,4 +1,4 @@
-//! Winlink radio email for sdroxide.
+//! Winlink radio email for sdrcrow.
 //!
 //! NATIVE ONLY — this crate does blocking network I/O on its own threads and
 //! must never be a dependency of any wasm-targeted crate. The GUI keeps its

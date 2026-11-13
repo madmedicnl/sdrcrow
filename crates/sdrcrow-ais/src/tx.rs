@@ -1,6 +1,6 @@
 //! A GMSK transmitter, for tests and for the engine's own integration test.
 //!
-//! sdroxide does not transmit AIS and will not: the service is
+//! sdrcrow does not transmit AIS and will not: the service is
 //! safety-of-life, and an amateur putting false vessel traffic on it would be
 //! doing something with consequences a licence does not cover. What this module
 //! is for is proving the receiver — an AIS decoder written from a standard

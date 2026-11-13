@@ -267,7 +267,7 @@ fn mode_chip_lit(chip: Mode, shown: Mode, cards_view: bool) -> bool {
     !cards_view && chip == shown
 }
 
-impl super::SdroxideApp {
+impl super::SdrcrowApp {
     pub(in crate::app) fn aircraft_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         if !self.show_aircraft {
             self.aircraft_was_open = false;
@@ -1240,9 +1240,9 @@ mod tests {
             std::env::temp_dir().join(format!("sdrcrow-online-switch-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let ctx = egui::Context::default();
-        let mut app = super::super::SdroxideApp::new_tab(
+        let mut app = super::super::SdrcrowApp::new_tab(
             &ctx,
             None,
             None,

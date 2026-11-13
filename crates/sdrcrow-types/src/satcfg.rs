@@ -310,7 +310,7 @@ impl OrbitRings {
         match self {
             OrbitRings::None => "No orbit rings or labels from this listing at all",
             OrbitRings::Curated => {
-                "Rings and labels only for the satellites in sdroxide's own curated list — ten \
+                "Rings and labels only for the satellites in sdrcrow's own curated list — ten \
                  amateur ones, so this does nothing for a listing without any of them"
             }
             OrbitRings::All => {

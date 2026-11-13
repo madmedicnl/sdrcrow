@@ -5,7 +5,7 @@
 //! cargo run --release -p sdrcrow-ais --example ais_replay -- /tmp/sea.iq 240000 162000000
 //! ```
 //!
-//! The file is interleaved little-endian `f32`, the format `sdroxide --file`
+//! The file is interleaved little-endian `f32`, the format `sdrcrow --file`
 //! reads and `--record-iq` writes. `rate` and `center` are the recording's, in
 //! hertz.
 //!

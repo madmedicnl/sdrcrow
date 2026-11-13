@@ -2,7 +2,7 @@
 //!
 //! The window closure borrows `&self`, so it cannot reach `&mut self.ctrl`;
 //! every edit is written into a [`SettingsIo`] and applied by
-//! [`SdroxideApp::settings_window`] after the closure returns. That is also
+//! [`SdrcrowApp::settings_window`] after the closure returns. That is also
 //! where the blocking operations live — an HPSDR scan, a TCI connection test —
 //! so neither runs inside a layout pass.
 //!
@@ -12,7 +12,7 @@
 //! be this machine, so there is nothing here to read them from and applying an
 //! unseeded copy would write defaults over the real thing.
 //!
-//! [`SdroxideApp::settings_body`] draws the tab strip and dispatches to one
+//! [`SdrcrowApp::settings_body`] draws the tab strip and dispatches to one
 //! submodule per tab.
 
 pub(in crate::app) mod controls;
@@ -59,13 +59,13 @@ use self::servers::{
 };
 use self::tle::settings_tle_tab;
 use self::ui_tab::settings_ui_tab;
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::app::persist::{persist_alerts_settings, persist_speech_settings, persist_ui_settings};
 use crate::chrome::StyledCombo;
 use crate::theme::ThemedScroll as _;
 
 /// Settings dialog tabs: General (station identity + audio devices, and the
-/// sdroxide server this screen connects *out* to), the radio interface and its
+/// sdrcrow server this screen connects *out* to), the radio interface and its
 /// settings, display/UI preferences and spoken announcements, control inputs
 /// (keyboard/mouse bindings), the network cockpit (spot feeds + uploads), and
 /// the built-in TCI server.
@@ -512,20 +512,20 @@ pub(in crate::app) struct SettingsIo<'a> {
     /// attached to" is only worth making when that is somewhere else.
     local_engine: bool,
     /// Converter offset in Hz, buffered until Apply — see
-    /// `SdroxideApp::converter_edit_hz`.
+    /// `SdrcrowApp::converter_edit_hz`.
     converter_hz: &'a mut Option<f64>,
     /// The RX and TX tuning ranges as typed, buffered until Apply — see
-    /// `SdroxideApp::range_edit`.
+    /// `SdrcrowApp::range_edit`.
     ranges: &'a mut Option<(String, String)>,
     /// Where the antenna is, buffered until Apply — see
-    /// `SdroxideApp::rx_site_edit`.
+    /// `SdrcrowApp::rx_site_edit`.
     rx_site: &'a mut Option<sdrcrow_types::RxSite>,
     audio_pick: &'a mut Option<(bool, Option<String>)>,
     /// Which speaker channel(s) the received audio reaches, buffered until the
     /// window closes (#654).
     routing_pick: &'a mut Option<sdrcrow_types::AudioRouting>,
     /// What a reception report carries, buffered until Apply — see
-    /// `SdroxideApp::swl_report`.
+    /// `SdrcrowApp::swl_report`.
     swl_report: &'a mut sdrcrow_types::SwlReportPrefs,
     /// Where the report-picture row's file picker leaves the path it chose.
     swl_report_pick: &'a std::sync::Arc<std::sync::Mutex<Option<String>>>,
@@ -536,7 +536,7 @@ pub(in crate::app) struct SettingsIo<'a> {
     profile_name: &'a mut String,
     /// Set when a profile was put on: the engine rewrites the digital
     /// identity in place, so the screen's editable copy must be re-seeded —
-    /// see `SdroxideApp::profile_apply_pending`.
+    /// see `SdrcrowApp::profile_apply_pending`.
     digi_reseed: &'a mut bool,
     /// Re-ask the machine for its sound cards. Opens nothing, so it cannot
     /// disturb a running stream — which is the point: the lists are otherwise
@@ -709,7 +709,7 @@ pub(in crate::app) struct SettingsIo<'a> {
     radio_tabs: &'a mut Vec<crate::app::RadioTabRequest>,
     /// The rename field's buffer: (radio id, text as typed). UI-owned until
     /// the edit commits, so the roster's per-frame republish cannot fight the
-    /// keyboard — see `SdroxideApp::radio_name_edit`.
+    /// keyboard — see `SdrcrowApp::radio_name_edit`.
     radio_name_edit: &'a mut Option<(u32, String)>,
     /// Spoken announcements, edited in place and written back after the
     /// window closure like every other buffer here.
@@ -753,7 +753,7 @@ pub(in crate::app) struct SettingsIo<'a> {
     tab: &'a mut SettingsTab,
     /// Which logging service the Uploads tab's own strip is showing. Its own
     /// field rather than state inside the tab's body, because the body is drawn
-    /// from scratch every frame — see `SdroxideApp::settings_upload_tab`.
+    /// from scratch every frame — see `SdrcrowApp::settings_upload_tab`.
     upload_tab: &'a mut sdrcrow_types::UploadTarget,
 }
 
@@ -1575,12 +1575,12 @@ fn free_device_probe(backend: sdrcrow_types::Backend) -> Option<sdrcrow_types::D
     })
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Ask the machine the radio is attached to a question about its devices.
     ///
     /// Answered on the spot where that machine is this one, and otherwise sent
     /// over the session to come back through
-    /// [`SdroxideApp::apply_probe_answer`]. Callers do not care which: they ask
+    /// [`SdrcrowApp::apply_probe_answer`]. Callers do not care which: they ask
     /// and then draw whatever list they have.
     pub(in crate::app) fn ask_device(
         &mut self,
@@ -2291,7 +2291,7 @@ impl SdroxideApp {
         // is what lets it take `&mut self`. Where the radio is on this machine
         // the answer is back before the next frame; where it is elsewhere the
         // question crosses the session and the answer arrives later, into the
-        // same lists — see `SdroxideApp::ask_device`.
+        // same lists — see `SdrcrowApp::ask_device`.
         use sdrcrow_types::{DeviceProbe as P, ProbeTest as T, ReportKind as R};
         if hpsdr_discover {
             // A LAN scan (~1.5 s), on the radio's network — which is the only
@@ -2855,7 +2855,7 @@ impl SdroxideApp {
     fn settings_page(&self, ui: &mut egui::Ui, cmds: &mut Vec<Command>, io: &mut SettingsIo) {
         use sdrcrow_types::Backend;
 
-        // A ruled scale down the page's left edge, when `SDROXIDE_SETTINGS_TRACE`
+        // A ruled scale down the page's left edge, when `SDRCROW_SETTINGS_TRACE`
         // is set — so every y on any page can be read off a screenshot, and two
         // rows at the same y are visible as numbers rather than argued about.
         {
@@ -5007,7 +5007,7 @@ impl SdroxideApp {
 
 /// Settings → Radio → **Panadapter**: borrowing another radio in the roster as
 /// this one's receiver.
-impl SdroxideApp {
+impl SdrcrowApp {
     fn settings_panadapter(&self, ui: &mut egui::Ui, cfg: &mut sdrcrow_types::RadioConfig) {
         use sdrcrow_types::{IfModeClass, PanadapterAudio, PanadapterTap};
 
@@ -5234,7 +5234,7 @@ fn rx_site_label(site: &sdrcrow_types::RxSite) -> String {
 }
 
 struct AddTarget {
-    /// The station key ([`SdroxideApp::station_key`]) whose roster this is;
+    /// The station key ([`SdrcrowApp::station_key`]) whose roster this is;
     /// empty for this computer's own.
     key: String,
 }
@@ -5316,7 +5316,7 @@ fn reordered(ids: &[u32], dragged: u32, before: Option<u32>) -> Vec<u32> {
 /// is where the second one is added. Actions cannot be taken here — the tab
 /// set lives in the multi-radio shell, not in this tab — so they are queued as
 /// [`crate::app::RadioTabRequest`]s and the shell acts on them after the frame.
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Where a new radio could go, in the order the chip offers them: this
     /// computer first where it has hardware of its own to open, then every
     /// station on screen that keeps a roster it will let a client touch, once
@@ -5898,11 +5898,11 @@ mod tests {
 /// writes the real window at three widths — the desktop default, a tablet, and a
 /// phone — and leaves the pictures in `target/settings-probe-*.png` to open.
 ///
-/// `SDROXIDE_PROBE=1 cargo test -p sdrcrow-ui --lib settings_probe_png -- --nocapture`
+/// `SDRCROW_PROBE=1 cargo test -p sdrcrow-ui --lib settings_probe_png -- --nocapture`
 #[cfg(test)]
 mod settings_probe {
     use super::SettingsTab;
-    use crate::app::SdroxideApp;
+    use crate::app::SdrcrowApp;
 
     /// A station with no radio behind it, which is all a layout needs: the
     /// window is drawn from the app's own state and the device lists are the
@@ -5916,21 +5916,21 @@ mod settings_probe {
         }
     }
 
-    fn probe_app() -> (eframe::egui::Context, SdroxideApp) {
+    fn probe_app() -> (eframe::egui::Context, SdrcrowApp) {
         use eframe::egui;
         let dir = std::env::temp_dir().join("sdrcrow-settings-probe");
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let ctx = egui::Context::default();
-        let app = SdroxideApp::new_tab(&ctx, None, None, Box::new(Bare), 0, true);
+        let app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(Bare), 0, true);
         (ctx, app)
     }
 
     /// One width, one page, one picture.
     fn shot(name: &str, size: eframe::egui::Vec2, tab: SettingsTab) {
         use eframe::egui;
-        if std::env::var("SDROXIDE_PROBE").is_err() {
+        if std::env::var("SDRCROW_PROBE").is_err() {
             return;
         }
         let (ctx, mut app) = probe_app();
@@ -5940,7 +5940,7 @@ mod settings_probe {
         // A sound-card radio, so the pickers and the typed field are in the
         // picture. Re-stated every frame: opening the window re-reads the radio
         // configuration from the controller, which here has none.
-        fn cat_radio(app: &SdroxideApp) -> Option<sdrcrow_types::RadioConfig> {
+        fn cat_radio(app: &SdrcrowApp) -> Option<sdrcrow_types::RadioConfig> {
             let mut cfg = app.radio_cfg.clone().unwrap_or_default();
             cfg.backend = sdrcrow_types::Backend::Cat;
             cfg.radio_audio_in = Some("Generic AB13X USB Audio".into());
@@ -6001,7 +6001,7 @@ mod settings_probe {
     #[test]
     fn settings_probe_radio_png() {
         use eframe::egui;
-        if std::env::var("SDROXIDE_PROBE").is_err() {
+        if std::env::var("SDRCROW_PROBE").is_err() {
             return;
         }
         let (ctx, mut app) = probe_app();

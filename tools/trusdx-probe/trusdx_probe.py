@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Phase 0 bench probe for (tr)uSDX + sdroxide route B.
+"""Phase 0 bench probe for (tr)uSDX + sdrcrow route B.
 
 Answers, against the real radio:
   * what ID/FA/MD reply, and which TS-480 reads this firmware actually supports

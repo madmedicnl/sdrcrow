@@ -17,7 +17,7 @@
 //!   a high-SWR trip.
 //! * **Power is nine fixed steps plus MAX, not watts.** `TP` selects 0.3, 0.5,
 //!   1.0, 1.2, 1.5, 2.0, 3.0, 4.0 or 5.0 W, or MAX — a Kenwood-shaped `PC050;`
-//!   is a syntax error. sdroxide sets MAX once at open and then controls the
+//!   is a syntax error. sdrcrow sets MAX once at open and then controls the
 //!   output with the transmit audio level — see [`TX_POWER_MAX_FRAME`].
 //! * **The receive filter is `RF`, indexed per mode.** Three different tables
 //!   behind one command, and the mode digit selects which — see [`filter_index`].
@@ -60,7 +60,7 @@ const FREQ_DIGITS: usize = 11;
 /// (see [`Protocol::power_by_audio`]), within whatever ceiling menu 34 sets.
 ///
 /// Why the sliders never write it: a numbered step written from a slider would
-/// overwrite the operator's choice and leave the rig there after sdroxide
+/// overwrite the operator's choice and leave the rig there after sdrcrow
 /// exits.
 const TX_POWER_MAX_FRAME: &str = "TP09;";
 
@@ -81,7 +81,7 @@ pub fn tx_power_frame(code: u8) -> String {
 /// sends the FDM-DUO.
 ///
 /// At full audio the DUO is far past its own limit. AJ3G measured it on 20 m
-/// on 18 Oct 2026 with a known-good LP-100A digital vector wattmeter, SDRoxide's TUNE carrier into a dummy load,
+/// on 18 Oct 2026 with a known-good LP-100A digital vector wattmeter, SDRCrow's TUNE carrier into a dummy load,
 /// menu 34 at MAX, with the old full-audio scale: 0.94 W at 1%, 2.08 W at 5%,
 /// 3.72 W at 10%, 5.39 W at 15%, 6.85 W at 20%, 7.36 W at 22%, 7.73 W at 23%,
 /// then 8.0 to 8.3 W from 24% to 100%. So it is a straight line, about
@@ -171,7 +171,7 @@ pub fn tx_power_max_frame() -> String {
 /// The FDM-DUO has the pair a transceiver has, and the down-converter window
 /// rides on whichever is selected — measured on hardware: `FR1` moves the I/Q
 /// stream to VFO B's frequency and `FR0` brings it back, while writing `FB`
-/// alone moves nothing. That is what lets sdroxide's own A/B be mirrored onto
+/// alone moves nothing. That is what lets sdrcrow's own A/B be mirrored onto
 /// the radio's rather than parking it on VFO A and driving that one dial.
 pub fn vfo_frame(vfo: Vfo) -> String {
     match vfo {
@@ -219,7 +219,7 @@ pub fn antenna_frame(ant: EladAntenna) -> String {
 /// The frame that asks which socket the rig is receiving on.
 ///
 /// Sent once when the port opens and never polled. The setting lives in the
-/// radio and survives a power cycle, so what it is at the moment sdroxide
+/// radio and survives a power cycle, so what it is at the moment sdrcrow
 /// arrives is a question with an answer worth having — but it is also a
 /// front-panel menu item nobody changes mid-over, and this family's answer
 /// costs the same bus time as a dial poll.
@@ -437,7 +437,7 @@ impl Protocol for Elad {
 
     fn clear_offsets(&self) -> Vec<Vec<u8>> {
         let mut frames = vec![
-            // RIT off, then its offset zeroed — sdroxide carries RIT on the
+            // RIT off, then its offset zeroed — sdrcrow carries RIT on the
             // dial, so anything the rig is still holding would add to ours
             // unseen. `RC` is a SET-only command and takes no parameter.
             b"RT0;".to_vec(),
@@ -453,7 +453,7 @@ impl Protocol for Elad {
         ];
         // Where transmit audio comes from. Asserted rather than assumed because
         // the rig remembers it across power cycles: a DUO left on `TI0` sends
-        // the microphone no matter what sdroxide puts into its sound card, and
+        // the microphone no matter what sdrcrow puts into its sound card, and
         // an operator who wants the microphone would find it silently taken
         // away. Both are visible mistakes only if this is a setting, which is
         // why it is one.
@@ -709,7 +709,7 @@ mod tests {
         assert_eq!(frames(e.set_antenna("RTX")), vec!["AN1;"]);
         assert_eq!(frames(e.set_antenna("RX only")), vec!["AN2;"]);
         assert_eq!(frames(e.read_antenna()), vec!["AN;"]);
-        // Both sockets are offered, and by the names the rest of sdroxide uses.
+        // Both sockets are offered, and by the names the rest of sdrcrow uses.
         assert_eq!(e.antennas(), &["RTX", "RX only"]);
     }
 

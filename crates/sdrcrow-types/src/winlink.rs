@@ -216,7 +216,7 @@ pub struct WinlinkConfig {
     ///
     /// Winlink's production CMS refuses names it does not know, answering
     /// `*** Unknown client types are not allowed on production servers`. Until
-    /// "sdroxide" is registered with the Winlink Development Team this is the
+    /// "sdrcrow" is registered with the Winlink Development Team this is the
     /// knob that lets an operator get in, and it is deliberately visible in
     /// settings rather than silently defaulted to somebody else's client name.
     pub app_name: String,
@@ -259,7 +259,7 @@ impl Default for WinlinkConfig {
             password: String::new(),
             locator: String::new(),
             cms_address: DEFAULT_CMS_ADDRESS.to_string(),
-            app_name: "sdroxide".to_string(),
+            app_name: "sdrcrow".to_string(),
             lane: WinlinkLane::default(),
             gateway: String::new(),
             gateway_via: Vec::new(),

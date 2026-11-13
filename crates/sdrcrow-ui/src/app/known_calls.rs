@@ -75,7 +75,7 @@ impl KnownCallsState {
     }
 }
 
-impl super::SdroxideApp {
+impl super::SdrcrowApp {
     /// Ask the engine which callsigns it can resolve, if the window has just
     /// been opened. Collected as an ordinary command like every other, and
     /// driven from the frame loop rather than the click so the answer arrives

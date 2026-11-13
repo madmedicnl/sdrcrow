@@ -229,7 +229,7 @@ pub fn tune(rx: u32, on: bool) -> String {
 
 // --- Server → client only: the status burst sent on connect, plus telemetry.
 // A client that never receives these (or receives them malformed) typically
-// gives up silently, so they are emitted in full even where sdroxide has no
+// gives up silently, so they are emitted in full even where sdrcrow has no
 // meaningful value to report.
 
 /// `protocol:<name>,<version>;` — the first line of the burst.
@@ -260,7 +260,7 @@ pub fn if_limits(lo_hz: f64, hi_hz: f64) -> String {
 pub fn modulations_list(modes: &[&str]) -> String {
     format!("modulations_list:{};", modes.join(","))
 }
-/// Every mode sdroxide can be put into over TCI, in the order clients expect.
+/// Every mode sdrcrow can be put into over TCI, in the order clients expect.
 pub const MODULATIONS: [&str; 10] =
     ["lsb", "usb", "cw", "am", "sam", "nfm", "wfm", "digu", "digl", "dsb"];
 /// Streams are live.
@@ -406,8 +406,8 @@ mod tests {
 
     #[test]
     fn server_burst_commands() {
-        assert_eq!(protocol_line("sdroxide", "1.9"), "protocol:sdroxide,1.9;");
-        assert_eq!(device("sdroxide"), "device:sdroxide;");
+        assert_eq!(protocol_line("sdrcrow", "1.9"), "protocol:sdrcrow,1.9;");
+        assert_eq!(device("sdrcrow"), "device:sdrcrow;");
         assert_eq!(receive_only(false), "receive_only:false;");
         assert_eq!(trx_count(2), "trx_count:2;");
         assert_eq!(channels_count(2), "channels_count:2;");

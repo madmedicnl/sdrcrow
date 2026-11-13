@@ -145,7 +145,7 @@ impl eframe::App for SolarApp {
         // this is for the console, not for the operator.
         if self.reported.as_ref() != Some(&self.net.link) {
             if let Link::Down(e) = &self.net.link {
-                eprintln!("sdroxide: solar feed link down: {e}");
+                eprintln!("sdrcrow: solar feed link down: {e}");
             }
             self.reported = Some(self.net.link.clone());
         }

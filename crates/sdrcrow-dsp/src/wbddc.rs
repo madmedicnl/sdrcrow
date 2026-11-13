@@ -2,7 +2,7 @@
 //!
 //! Built for a direct-sampling front end like the RX-888, which hands over
 //! 16-bit *real* samples at the full ADC rate — 64.8 Msps covering 0–32.4 MHz —
-//! and has no downconverter of its own. Everything downstream in sdroxide
+//! and has no downconverter of its own. Everything downstream in sdrcrow
 //! expects complex baseband at a rate a normal DSP chain can carry, so the
 //! conversion has to happen here, and it has to be cheap enough to run at
 //! 64.8 million samples a second.

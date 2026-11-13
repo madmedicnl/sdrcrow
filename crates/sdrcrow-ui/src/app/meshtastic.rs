@@ -193,7 +193,7 @@ pub(in crate::app) fn bench_chip(ui: &mut egui::Ui) {
     }
 }
 
-impl super::SdroxideApp {
+impl super::SdrcrowApp {
     /// Apply the bench chip's request, then draw the window. Open or closed is
     /// the `TW_MESHTASTIC` bit of Settings, Detachable, like every tool window.
     pub(in crate::app) fn meshtastic_window(

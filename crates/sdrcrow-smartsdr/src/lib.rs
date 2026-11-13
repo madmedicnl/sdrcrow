@@ -3,8 +3,8 @@
 //! NATIVE ONLY. Plain `std` TCP/UDP sockets; this crate must never be a
 //! dependency of any wasm-targeted crate.
 //!
-//! - [`FlexHandle`] is the **client**: sdroxide operating a FlexRadio. Receive is
-//!   wideband IQ over a DAX IQ stream (sdroxide demodulates); transmit is audio
+//! - [`FlexHandle`] is the **client**: sdrcrow operating a FlexRadio. Receive is
+//!   wideband IQ over a DAX IQ stream (sdrcrow demodulates); transmit is audio
 //!   over a DAX TX stream (the radio modulates it). Control rides the ASCII
 //!   command protocol on TCP 4992.
 //! - [`discovery`] finds radios, which announce themselves on UDP 4992 without

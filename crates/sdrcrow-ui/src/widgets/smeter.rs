@@ -879,7 +879,7 @@ fn reading(meters: Option<&Meters>, view: MeterView, held_rx: Option<f32>) -> Re
     if let (Some(tx), false) = (meters.and_then(|m| m.tx.as_ref()), shown == Shown::Rx) {
         // The rig's ALC, or a dash when it has not reported one. A false "0%"
         // for a rig that simply never answered is the bug in issue #600: the
-        // operator cannot tell a barely-moving transmitter from one sdroxide
+        // operator cannot tell a barely-moving transmitter from one sdrcrow
         // is not reading.
         let alc_text = match tx.alc {
             Some(a) => format!("ALC {:.0}%", a.clamp(0.0, 1.0) * 100.0),

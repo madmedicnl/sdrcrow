@@ -526,8 +526,8 @@ mod tests {
     #[test]
     fn the_request_goes_to_the_station_the_client_is_connected_to() {
         assert_eq!(
-            history_url("wss://shack.example/sdroxide/ws/2", A).as_deref(),
-            Some("https://shack.example/sdroxide/aircraft-history/4840D6")
+            history_url("wss://shack.example/sdrcrow/ws/2", A).as_deref(),
+            Some("https://shack.example/sdrcrow/aircraft-history/4840D6")
         );
         assert_eq!(
             history_url("ws://192.168.1.5:8080/ws", 0x1).as_deref(),

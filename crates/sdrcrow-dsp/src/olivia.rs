@@ -616,7 +616,7 @@ pub struct OliviaRx {
     hop: usize,
     /// Symbol-timing energy per sub-phase (decayed).
     sync: [f32; SUBPHASES],
-    /// `SDROXIDE_OLIVIA_TRACE` — prints the block confidence every eighth
+    /// `SDRCROW_OLIVIA_TRACE` — prints the block confidence every eighth
     /// block, which is what says whether the phase estimate has anything to
     /// work with at all. Read once, because this sits in the symbol loop.
     trace: bool,
@@ -647,7 +647,7 @@ impl OliviaRx {
             next_hop: g.sps,
             hop,
             sync: [0.0; SUBPHASES],
-            trace: std::env::var("SDROXIDE_OLIVIA_TRACE").is_ok(),
+            trace: std::env::var("SDRCROW_OLIVIA_TRACE").is_ok(),
             tphase: 0,
             sbuf: VecDeque::new(),
             sbuf_base: 0,
@@ -920,8 +920,8 @@ mod tests {
     #[test]
     #[ignore]
     fn a_capture_decodes_with_the_reference_front_end() {
-        let Ok(path) = std::env::var("SDROXIDE_OLIVIA_SAMPLE") else {
-            eprintln!("SDROXIDE_OLIVIA_SAMPLE unset; skipping");
+        let Ok(path) = std::env::var("SDRCROW_OLIVIA_SAMPLE") else {
+            eprintln!("SDRCROW_OLIVIA_SAMPLE unset; skipping");
             return;
         };
         let mut r = hound::WavReader::open(&path).expect("open the sample WAV");
@@ -934,9 +934,9 @@ mod tests {
         };
         let rate = spec.sample_rate as f64;
         let num = |k: &str, d: f64| std::env::var(k).ok().and_then(|v| v.parse().ok()).unwrap_or(d);
-        let tones: usize = num("SDROXIDE_OLIVIA_TONES", 16.0) as usize;
-        let bw = num("SDROXIDE_OLIVIA_BW", 500.0);
-        let hz = num("SDROXIDE_OLIVIA_HZ", 1500.0);
+        let tones: usize = num("SDRCROW_OLIVIA_TONES", 16.0) as usize;
+        let bw = num("SDRCROW_OLIVIA_BW", 500.0);
+        let hz = num("SDRCROW_OLIVIA_HZ", 1500.0);
         let g = Geom::new(rate, hz, tones, bw);
         let sps = g.sps;
         let wl = 2 * sps;
@@ -958,7 +958,7 @@ mod tests {
                 raw.push(slice_soft(&mags, g.planes, 1.0));
             }
         }
-        let want: Vec<String> = std::env::var("SDROXIDE_OLIVIA_TEXT")
+        let want: Vec<String> = std::env::var("SDRCROW_OLIVIA_TEXT")
             .map(|t| t.split_whitespace().map(str::to_owned).collect())
             .unwrap_or_default();
         let mut best = String::new();
@@ -1100,7 +1100,7 @@ mod tests {
     /// other, which is exactly what they did while the scrambler was a local
     /// invention and the mode could not read a single Olivia station.
     ///
-    /// Point `SDROXIDE_OLIVIA_SAMPLE` at a mono 8 kHz WAV of an Olivia signal —
+    /// Point `SDRCROW_OLIVIA_SAMPLE` at a mono 8 kHz WAV of an Olivia signal —
     /// 8 kHz is the rate the mode's own generator uses, and 500/16 (16 tones,
     /// 500 Hz bandwidth, so 31.25 Hz spacing) is the common format. The sample
     /// is off-air material and cannot live in the tree, so the test is
@@ -1109,8 +1109,8 @@ mod tests {
     #[test]
     #[ignore]
     fn an_off_air_capture_decodes() {
-        let Ok(path) = std::env::var("SDROXIDE_OLIVIA_SAMPLE") else {
-            eprintln!("SDROXIDE_OLIVIA_SAMPLE unset; skipping");
+        let Ok(path) = std::env::var("SDRCROW_OLIVIA_SAMPLE") else {
+            eprintln!("SDRCROW_OLIVIA_SAMPLE unset; skipping");
             return;
         };
         let mut reader = hound::WavReader::open(&path).expect("open the sample WAV");
@@ -1136,21 +1136,21 @@ mod tests {
         // Geometry and expected words are overridable so that one test serves
         // any capture, not only the Avalon 16/500 network.
         //
-        // `SDROXIDE_OLIVIA_HZ` pins the tone bank's centre and skips the search.
+        // `SDRCROW_OLIVIA_HZ` pins the tone bank's centre and skips the search.
         // That matters: the search is 260 decodes of the whole file, which is
         // minutes, and a fixture whose centre is already known — any signal we
         // recorded ourselves against a known dial — should not pay for one.
         let tones: usize =
-            std::env::var("SDROXIDE_OLIVIA_TONES").ok().and_then(|v| v.parse().ok()).unwrap_or(16);
+            std::env::var("SDRCROW_OLIVIA_TONES").ok().and_then(|v| v.parse().ok()).unwrap_or(16);
         let bw: f64 =
-            std::env::var("SDROXIDE_OLIVIA_BW").ok().and_then(|v| v.parse().ok()).unwrap_or(500.0);
-        let want: Vec<String> = match std::env::var("SDROXIDE_OLIVIA_TEXT") {
+            std::env::var("SDRCROW_OLIVIA_BW").ok().and_then(|v| v.parse().ok()).unwrap_or(500.0);
+        let want: Vec<String> = match std::env::var("SDRCROW_OLIVIA_TEXT") {
             Ok(t) => t.split_whitespace().map(str::to_owned).collect(),
             Err(_) => vec!["SouthWest".to_owned(), "G7LEE".to_owned()],
         };
         let hits = |s: &str| want.iter().map(|w| s.matches(w.as_str()).count()).sum::<usize>();
         let pinned: Option<f64> =
-            std::env::var("SDROXIDE_OLIVIA_HZ").ok().and_then(|v| v.parse().ok());
+            std::env::var("SDRCROW_OLIVIA_HZ").ok().and_then(|v| v.parse().ok());
         let mut best = String::new();
         let mut hz = pinned.unwrap_or(600.0);
         let stop = pinned.unwrap_or(1900.0);
@@ -1186,7 +1186,7 @@ mod tests {
     /// above found the fault, and decoded it 100% in the app — this pins that
     /// result so a future change cannot quietly lose it.
     ///
-    /// Point `SDROXIDE_OLIVIA_1000_32` at the Wikipedia sample (any rate; it is
+    /// Point `SDRCROW_OLIVIA_1000_32` at the Wikipedia sample (any rate; it is
     /// resampled here to the 8 kHz the decoder runs at). The file is a Wikimedia
     /// Commons upload and is not redistributed with the tree, so the test is
     /// `#[ignore]`d and skips when the variable is unset:
@@ -1194,8 +1194,8 @@ mod tests {
     #[test]
     #[ignore]
     fn the_wikipedia_32_1000_sample_decodes() {
-        let Ok(path) = std::env::var("SDROXIDE_OLIVIA_1000_32") else {
-            eprintln!("SDROXIDE_OLIVIA_1000_32 unset; skipping");
+        let Ok(path) = std::env::var("SDRCROW_OLIVIA_1000_32") else {
+            eprintln!("SDRCROW_OLIVIA_1000_32 unset; skipping");
             return;
         };
         let mut reader = hound::WavReader::open(&path).expect("open the sample WAV");

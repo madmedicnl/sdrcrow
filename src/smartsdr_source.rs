@@ -31,7 +31,7 @@ static TRACES: TraceStore = TraceStore::new();
 /// The engine reconnects a dead source on its own ([`IqSource::needs_reopen`]),
 /// and reconnecting under the id we were just evicted over does not recover the
 /// session — it evicts whoever took it, who reconnects and evicts us back. Two
-/// sdroxide windows, or one that overlapped its own reconnect, then trade the
+/// sdrcrow windows, or one that overlapped its own reconnect, then trade the
 /// radio forever at a few seconds a turn.
 ///
 /// So the eviction is remembered for the life of the process and the next
@@ -123,7 +123,7 @@ impl SmartSdrSource {
                  reports the stream as running, so the control link is fine and its \
                  spectrum — which travels by UDP — is being blocked before it reaches \
                  here. Check this computer's firewall first: SmartSDR installs a rule for \
-                 itself and sdroxide has none. Then a VPN, then the Network MTU setting."
+                 itself and sdrcrow has none. Then a VPN, then the Network MTU setting."
             ));
             tracing::warn!(target: "smartsdr", "{}", warning.as_deref().unwrap_or(""));
         } else if (actual - cfg.iq_sample_rate_hz).abs() > 1.0 {

@@ -119,7 +119,7 @@ fn channel_name(hz: f64, kind: WxsatKind) -> String {
         .map_or_else(|| format!("{:.4} MHz", hz / 1e6), |(n, f)| format!("{n}  {:.4} MHz", f / 1e6))
 }
 
-impl super::SdroxideApp {
+impl super::SdrcrowApp {
     pub(in crate::app) fn wxsat_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         if !self.show_wxsat {
             return;

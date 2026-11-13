@@ -49,7 +49,7 @@ name, path and size — and copies the one chosen into `~/.config/sdrcrow`.
 | Log targets | `sdrcrow_radio::…`, `sdrcrow_digi::…` (they follow the crate names) |
 | The build variable | `SDRCROW_VERSION` |
 | The config directory | `~/.config/sdrcrow`, `org.sdrcrow.sdrcrow` on macOS |
-| The environment override | `SDRCROW_CONFIG_DIR`; `SDROXIDE_CONFIG_DIR` still honoured, because the test harness sets it |
+| The environment override | `SDRCROW_CONFIG_DIR`; `SDRCROW_CONFIG_DIR` still honoured, because the test harness sets it |
 | The Wayland/WM app id | `sdrcrow` |
 | The release suffix | none — tags are `vX.Y.Z` |
 | The splash | the emblem, 3 s, dismissed at once by a click or a key |
@@ -65,7 +65,7 @@ there is no shared directory any more.
 
 ## What is still Brown
 
-- **`SDROXIDE_CONFIG_DIR`** as a second accepted variable (test harness).
+- **`SDRCROW_CONFIG_DIR`** as a second accepted variable (test harness).
 - **The documentation**: `README.md`, `AGENTS.md`, `TODO.md`, `CHANGELOG.md`,
   `docs/` and `BUILD-WINDOWS.md` are Brown's text and history. The house rules
   in `AGENTS.md` still describe how this work is done, and are worth keeping

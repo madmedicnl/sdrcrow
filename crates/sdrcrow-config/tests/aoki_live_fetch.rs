@@ -6,7 +6,7 @@
 //! real download yields nothing.
 //!
 //! ```sh
-//! SDROXIDE_CONFIG_DIR=/tmp/aoki-live \
+//! SDRCROW_CONFIG_DIR=/tmp/aoki-live \
 //!   cargo test -p sdrcrow-config --test aoki_live_fetch -- --ignored --nocapture
 //! ```
 #[test]

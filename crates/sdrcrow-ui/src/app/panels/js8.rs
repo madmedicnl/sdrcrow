@@ -14,7 +14,7 @@ use crate::theme::ThemedScroll;
 use crate::time::now_unix;
 
 use crate::app::panels::widgets::{row_cell, row_cell_ui, snr_color, station_card};
-use crate::app::{SdroxideApp, rx_only_hint, tx_gated};
+use crate::app::{SdrcrowApp, rx_only_hint, tx_gated};
 
 /// Roughly how many JS8 frames a message will take.
 ///
@@ -166,7 +166,7 @@ fn js8_reply_for(msg: &sdrcrow_types::Js8Msg, me: &Js8Me) -> Option<String> {
     })
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// FSQ panel: the decoded stream + the directed (FSQCALL) layer — a heard
     /// list, a directed compose row (To: + message), and a contacts book.
     /// `panel_h` is the real bounded height (the frame reports an unbounded

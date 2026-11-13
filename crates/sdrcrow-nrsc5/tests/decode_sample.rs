@@ -9,11 +9,11 @@
 //!
 //! Defaults to ignored: it decompresses ~48 MB and decodes in real-ish time
 //! per sample, so it is not part of the ordinary `cargo test` run. It needs the
-//! capture named by `SDROXIDE_NRSC5_SAMPLE`, the `xz` binary on PATH, and a
-//! `libnrsc5` (`SDROXIDE_NRSC5_LIB` names one outside the usual places):
+//! capture named by `SDRCROW_NRSC5_SAMPLE`, the `xz` binary on PATH, and a
+//! `libnrsc5` (`SDRCROW_NRSC5_LIB` names one outside the usual places):
 //!
 //! ```text
-//! SDROXIDE_NRSC5_SAMPLE=~/src/nrsc5/support/sample.xz \
+//! SDRCROW_NRSC5_SAMPLE=~/src/nrsc5/support/sample.xz \
 //!     cargo test -p sdrcrow-nrsc5 --release -- --ignored --nocapture
 //! ```
 //!
@@ -30,8 +30,8 @@ use sdrcrow_nrsc5::{Event, HdReceiver, Mode};
 
 /// The capture, where there is one and a library to decode it with.
 fn sample() -> Option<PathBuf> {
-    let Some(sample) = std::env::var_os("SDROXIDE_NRSC5_SAMPLE").map(PathBuf::from) else {
-        eprintln!("skipping: set SDROXIDE_NRSC5_SAMPLE to nrsc5's support/sample.xz");
+    let Some(sample) = std::env::var_os("SDRCROW_NRSC5_SAMPLE").map(PathBuf::from) else {
+        eprintln!("skipping: set SDRCROW_NRSC5_SAMPLE to nrsc5's support/sample.xz");
         return None;
     };
     if !sample.exists() {

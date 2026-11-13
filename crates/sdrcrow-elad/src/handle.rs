@@ -107,7 +107,7 @@ fn is_dial_frame(frame: &str) -> bool {
 pub(crate) struct RxStats {
     nominal_hz: f64,
     /// Which ELAD this is, for the one message whose remedy depends on it: a
-    /// sampler's rate is an FPGA image sdroxide loads, and the transceiver's is
+    /// sampler's rate is an FPGA image sdrcrow loads, and the transceiver's is
     /// whatever mode it was left in.
     model: Model,
     /// When the first sample arrived, and the sample count since then.
@@ -230,7 +230,7 @@ impl RxStats {
     ///
     /// What a disagreement means depends on the model. On a sampler the rate is
     /// which FPGA image [`crate::fpga`] loaded, so the two can only differ if
-    /// the load did not happen or did not take. On an FDM-DUO nothing sdroxide
+    /// the load did not happen or did not take. On an FDM-DUO nothing sdrcrow
     /// can send programs the decimation at all, so the configured rate is a
     /// guess at the state the radio was left in.
     ///
@@ -271,7 +271,7 @@ impl RxStats {
             )
         } else {
             format!(
-                "nothing sdroxide can send changes this radio's decimation, so set the \
+                "nothing sdrcrow can send changes this radio's decimation, so set the \
                  sample rate in Settings → Radio to {:.0} kHz to match (or use ELAD's own \
                  software once to put the device in the mode you want).",
                 nearest as f64 / 1000.0,

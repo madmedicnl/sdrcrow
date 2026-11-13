@@ -31,7 +31,7 @@ fn main() {
     if target_is_windows_gnu() {
         // Same as crates/sdrcrow-drm/build.rs: MinGW links libstdc++/winpthread
         // as DLLs by default, which a plain Windows box does not have. Link
-        // them statically so sdroxide.exe starts without MSYS2/PothosSDR.
+        // them statically so sdrcrow.exe starts without MSYS2/PothosSDR.
         build.cpp_link_stdlib(None::<&str>);
     }
     build.compile("s4285ref");

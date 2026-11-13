@@ -7,7 +7,7 @@
 //! windows, one live at a time.
 //!
 //! One at a time because the alternative does not exist in hardware: 433 and 868
-//! MHz are 435 MHz apart, and no front end sdroxide drives hands over a span
+//! MHz are 435 MHz apart, and no front end sdrcrow drives hands over a span
 //! that wide. A band that does not fit the current window is reported as such,
 //! with the frequency to tune to.
 

@@ -12,7 +12,7 @@ use sdrcrow_types::{Command, LookupProvider, QsoRecord, UploadTarget};
 use crate::theme::ThemedScroll;
 use crate::time::now_unix;
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::app::net::configured_upload_targets;
 use crate::app::persist::persist_qso_log;
 use crate::app::util::{date_str, parse_utc, time_str};
@@ -304,7 +304,7 @@ impl LogView {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// The operator's grid square. Prefers the engine's copy but falls back to
     /// the UI's edit buffer: `digi_status` only arrives once the engine sends
     /// its first `DigiStatus`, and never at all in sessions with no digi engine.
@@ -1179,7 +1179,7 @@ mod tests {
                 // widgets, which is the spacing `show_rows` adds for us.
                 row = ui
                     .scope(|ui| {
-                        SdroxideApp::log_qso_row(ui, &r, &[]);
+                        SdrcrowApp::log_qso_row(ui, &r, &[]);
                     })
                     .response
                     .rect
@@ -1188,7 +1188,7 @@ mod tests {
                 // header's child ui.
                 header = ui
                     .horizontal(|ui| {
-                        SdroxideApp::log_day_header(ui, &g, 7);
+                        SdrcrowApp::log_day_header(ui, &g, 7);
                     })
                     .response
                     .rect

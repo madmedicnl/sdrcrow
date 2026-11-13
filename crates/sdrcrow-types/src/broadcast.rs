@@ -510,7 +510,7 @@ pub struct BroadcastStations {
     pub version: u32,
     #[serde(default)]
     pub updated: String,
-    /// Where a generated file came from. Present only on tables sdroxide itself
+    /// Where a generated file came from. Present only on tables sdrcrow itself
     /// produced, which is how a copy of a shipped schedule is told apart from a
     /// list the operator wrote.
     #[serde(default, skip_serializing_if = "String::is_empty")]

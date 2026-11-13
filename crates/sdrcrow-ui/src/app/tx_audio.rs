@@ -29,7 +29,7 @@ use sdrcrow_types::{
     TxVoiceState, TxVoiceTest,
 };
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 
 /// The rate the chain runs at — what the EQ curve is evaluated against.
 const CHAIN_RATE: f64 = 48_000.0;
@@ -194,7 +194,7 @@ impl TxAudioUi {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn tx_audio_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         if !self.tx_audio.open {
             return;
@@ -1608,7 +1608,7 @@ fn export_profile(p: &TxVoiceProfile) {
             let name = format!("{}.txaudio.json", p.name.replace(['/', '\\', ':'], "_"));
             crate::download::save(&name, json.as_bytes());
         }
-        Err(e) => eprintln!("sdroxide: exporting TX audio profile: {e}"),
+        Err(e) => eprintln!("sdrcrow: exporting TX audio profile: {e}"),
     }
 }
 

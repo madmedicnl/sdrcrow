@@ -1,9 +1,9 @@
-//! The **WSJT-X UDP protocol**: sdroxide announcing its FT8/FT4 traffic the way
+//! The **WSJT-X UDP protocol**: sdrcrow announcing its FT8/FT4 traffic the way
 //! WSJT-X does, so the ecosystem built around it works unchanged.
 //!
 //! GridTracker, JTAlert, N1MM+ and Log4OM all listen for the same datagrams —
 //! decodes, station status, and logged QSOs — on UDP port 2237. Speaking that
-//! protocol means none of them needs to know sdroxide exists.
+//! protocol means none of them needs to know sdrcrow exists.
 //!
 //! The wire format is Qt's `QDataStream` (big-endian) behind a four-word header,
 //! as defined by WSJT-X's `NetworkMessage.hpp`. All of it is built by pure
@@ -11,7 +11,7 @@
 //! whatsoever: a field of the wrong width doesn't fail, it just silently stops
 //! a logger from seeing contacts. The tests are the only check there is.
 //!
-//! Output only. sdroxide is driven from its own UI (and from rigctld/TCI for
+//! Output only. sdrcrow is driven from its own UI (and from rigctld/TCI for
 //! outside control), so the inbound half of the protocol — Reply, Halt Tx,
 //! Free Text — is not implemented; nothing is read from the socket.
 //!

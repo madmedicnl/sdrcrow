@@ -29,14 +29,14 @@
 #ifndef _SOUND_H
 #define _SOUND_H
 
-#if defined(WIN32) && !defined(USE_SDROXIDE_SOUND) && !defined(USE_PORTAUDIO) && !defined(USE_JACK) && !defined(QT_MULTIMEDIA_LIB)
+#if defined(WIN32) && !defined(USE_SDRCROW_SOUND) && !defined(USE_PORTAUDIO) && !defined(USE_JACK) && !defined(QT_MULTIMEDIA_LIB)
 /* mmsystem sound interface */
 # include "../windows/Sound.h"
 #else
 
-/* sdroxide: samples come from the host application, not a sound card. The
+/* sdrcrow: samples come from the host application, not a sound card. The
    header is reached through the compiler's include path, not this tree. */
-# ifdef USE_SDROXIDE_SOUND
+# ifdef USE_SDRCROW_SOUND
 #  include <sdrx_sound.h>
 # endif
 
@@ -70,7 +70,7 @@ typedef COpenSLESIn CSoundIn;
 typedef COpenSLESOut CSoundOut;
 # endif
 
-# if !defined(USE_SDROXIDE_SOUND) && (defined(QT_MULTIMEDIA_LIB) || (!defined(USE_OSS) && !defined(USE_ALSA) && !defined(USE_JACK) && !defined(USE_PULSEAUDIO) && !defined(USE_PORTAUDIO) && !defined(USE_OPENSL)))
+# if !defined(USE_SDRCROW_SOUND) && (defined(QT_MULTIMEDIA_LIB) || (!defined(USE_OSS) && !defined(USE_ALSA) && !defined(USE_JACK) && !defined(USE_PULSEAUDIO) && !defined(USE_PORTAUDIO) && !defined(USE_OPENSL)))
 #  include "soundnull.h"
 typedef CSoundInNull CSoundIn;
 typedef CSoundOutNull CSoundOut;

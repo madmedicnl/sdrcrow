@@ -99,7 +99,7 @@ pub struct SndHeader {
 /// Decode an `SND` body in `iq` mode, appending interleaved I/Q to `out`.
 ///
 /// Samples are big-endian `i16` and are scaled to ±1.0. The ten bytes of GPS
-/// timestamp between the header and the samples are skipped: sdroxide times
+/// timestamp between the header and the samples are skipped: sdrcrow times
 /// from its own clock, and the fields are zero on a receiver without a lock
 /// anyway.
 pub fn decode_snd_iq(body: &[u8], out: &mut Vec<f32>) -> Result<SndHeader, String> {
@@ -237,7 +237,7 @@ pub fn set_ident(ident: &str) -> String {
 ///
 /// `freq` is in **kHz**, which is the unit the protocol uses throughout. The
 /// cuts are the full ±6 kHz the channel has: narrowing them would filter the
-/// I/Q before sdroxide's own passband ever saw it.
+/// I/Q before sdrcrow's own passband ever saw it.
 pub fn set_mod_iq(freq_khz: f64) -> String {
     format!("SET mod=iq low_cut=-6000 high_cut=6000 freq={freq_khz:.3}")
 }
@@ -446,6 +446,6 @@ mod tests {
     /// of another parameter.
     #[test]
     fn an_ident_with_a_space_cannot_split_the_command() {
-        assert_eq!(set_ident("OE1ABC (sdroxide)"), "SET ident_user=OE1ABC_(sdroxide)");
+        assert_eq!(set_ident("OE1ABC (sdrcrow)"), "SET ident_user=OE1ABC_(sdrcrow)");
     }
 }

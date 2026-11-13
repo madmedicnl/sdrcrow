@@ -965,7 +965,7 @@ mod tests {
     /// The real thing: an off-air FSK441 recording decodes to the callsign it
     /// carries.
     ///
-    /// Point `SDROXIDE_FSK441_SAMPLE` at a mono 11 025 Hz WAV — convert a
+    /// Point `SDRCROW_FSK441_SAMPLE` at a mono 11 025 Hz WAV — convert a
     /// capture with `ffmpeg -i capture.mp3 -ac 1 -ar 11025 burst.wav`. The
     /// sample is off-air material and cannot live in the tree, so the test is
     /// `#[ignore]`d and skips when the variable is unset. Run it with
@@ -976,8 +976,8 @@ mod tests {
     #[test]
     #[ignore]
     fn an_off_air_burst_decodes() {
-        let Ok(path) = std::env::var("SDROXIDE_FSK441_SAMPLE") else {
-            eprintln!("SDROXIDE_FSK441_SAMPLE unset; skipping");
+        let Ok(path) = std::env::var("SDRCROW_FSK441_SAMPLE") else {
+            eprintln!("SDRCROW_FSK441_SAMPLE unset; skipping");
             return;
         };
         let mut reader = hound::WavReader::open(&path).expect("open the sample WAV");

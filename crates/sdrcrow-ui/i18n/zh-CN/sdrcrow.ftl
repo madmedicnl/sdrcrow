@@ -1,4 +1,4 @@
-# sdroxide — the interface's English text, the reference every translation
+# sdrcrow — the interface's English text, the reference every translation
 # is checked against. See crates/sdrcrow-ui/src/i18n.rs for the rules.
 #
 # Ids are grouped by where they are shown, and named after it:
@@ -361,7 +361,7 @@ settings-frequency = 频率
 settings-clear = 清除
 settings-zero-leaves-dial-alone-which = 填零则不改动表盘，这正是你停留在某一个信道上时所需要的。其他任何值都会在会话开始时调谐电台。
 settings-my-gateways = 我的网关
-settings-winlink-s-published-gateway-list = Winlink 公布的网关列表需要 sdroxide 没有的 API 密钥，因此请保留你自己的列表。从某一地点能够连到的两三个网关是通过尝试得知的，它们很少变动。
+settings-winlink-s-published-gateway-list = Winlink 公布的网关列表需要 sdrcrow 没有的 API 密钥，因此请保留你自己的列表。从某一地点能够连到的两三个网关是通过尝试得知的，它们很少变动。
 settings-use-2 = 使用
 settings-call-one-next-connect = 下次连接时呼叫此网关
 settings-current-dial = 当前表盘
@@ -372,7 +372,7 @@ settings-save-gateway-above-list = 将上面的网关保存到列表中
 settings-internet-gateway = 互联网网关
 settings-cms-address = CMS 地址
 settings-client-name = 客户端名称
-settings-winlink-s-production-servers-only = Winlink 的正式服务器只接受其认可的客户端名称，对未知名称会回复“正式服务器不允许未知客户端类型”。在 sdroxide 向 Winlink 开发团队注册之前，连接需要使用他们认可的名称。
+settings-winlink-s-production-servers-only = Winlink 的正式服务器只接受其认可的客户端名称，对未知名称会回复“正式服务器不允许未知客户端类型”。在 sdrcrow 向 Winlink 开发团队注册之前，连接需要使用他们认可的名称。
 settings-automatic-connection = 自动连接
 settings-connect-timer = 定时连接
 settings-every = 每隔
@@ -429,7 +429,7 @@ settings-mirror-receiver-s-span-about = 以接收机的中心为轴镜像其跨�
 settings-mute-transmit = 发射时静音
 settings-silence-receive-audio-while-radio = 此电台发射时，静音接收音频。默认开启：接收机与发射机共用同一天线，或接在此电台的中频上时，它在通话期间听到的就是你自己的发射机。在电台本身按下的通话——话筒的 PTT、脚踏开关、MOX——同样计入，只要 CAT 连接报告电台已转为发射。
 settings-blank-transmit = 发射时清空显示
-settings-stop-panadapter-waterfall-while-radio = 此电台发射时，停止全景图和瀑布图。默认开启：发射机会把整个跨度都涂满，从而抹掉其背后的频段。关闭后，你可以在通话期间观察频段——或你自己的信号——这在接收机使用独立天线时很有价值。仅适用于由 sdroxide 发射的通话；在电台上按下发射的通话会被完整接收，因此无论此项如何设置，画面都会持续刷新。
+settings-stop-panadapter-waterfall-while-radio = 此电台发射时，停止全景图和瀑布图。默认开启：发射机会把整个跨度都涂满，从而抹掉其背后的频段。关闭后，你可以在通话期间观察频段——或你自己的信号——这在接收机使用独立天线时很有价值。仅适用于由 sdrcrow 发射的通话；在电台上按下发射的通话会被完整接收，因此无论此项如何设置，画面都会持续刷新。
 settings-per-mode-offsets-radio-whose = 按模式设置偏移，适用于中频随模式变化的电台。留空的模式使用上面的偏移。
 settings-computer = 本计算机上
 settings-add-radio-computer = 在本计算机上添加电台
@@ -479,7 +479,7 @@ settings-alerts-each-station-quiet-while-after = 每个电台在一次提醒之�
 
 settings-amp-amplifier = 功放
 settings-amp-waiting-station-s-amplifier-configuration = 正在等待电台站点的功放配置……
-settings-amp-hobbypcb-hardrock-500-hardrock-50 = 通过其 USB 串口连接的 HobbyPCB Hardrock-500 或 Hardrock-50。SDRoxide 在 AMP 窗口中读取其仪表、切换其频段、模式和天线，并操作其调谐器。功放仍像以前一样由电台的 PTT 线路控制。
+settings-amp-hobbypcb-hardrock-500-hardrock-50 = 通过其 USB 串口连接的 HobbyPCB Hardrock-500 或 Hardrock-50。SDRCrow 在 AMP 窗口中读取其仪表、切换其频段、模式和天线，并操作其调谐器。功放仍像以前一样由电台的 PTT 线路控制。
 settings-amp-enable = 启用
 settings-amp-model = 型号
 settings-amp-untested-panel-has-only-been = 未经测试：此面板仅在 Hardrock-500 上测试过。此型号的表头限值由 Hardrock-500 的数值换算而来，可能有误。请留意功放自身的显示。
@@ -555,13 +555,13 @@ settings-controls-none = — 无 —
 
 settings-general-system-default = 系统默认
 settings-general-remote-access = 远程访问
-settings-general-what-remote-client-browser-page = 远程客户端（浏览器页面，或以 --connect 启动的另一个 sdroxide）在此电台站点允许其操作之前，必须提供的凭据。在服务器模式（--server）下生效；下次登录时即会应用更改，无需重启。
+settings-general-what-remote-client-browser-page = 远程客户端（浏览器页面，或以 --connect 启动的另一个 sdrcrow）在此电台站点允许其操作之前，必须提供的凭据。在服务器模式（--server）下生效；下次登录时即会应用更改，无需重启。
 settings-general-username = 用户名
 settings-general-password = 密码
 settings-general-clients-must-give-password-leaving = 客户端必须提供密码。用户名留空也可以。
 settings-general-clients-must-sign = 客户端必须登录。
 settings-general-empty-anyone-who-can-reach = ⚠ 留空：任何能访问服务器端口的人都可以以你的呼号操作此电台。转发端口之前，请先设置密码。
-settings-general-stored-clear-config-toml-like = 以明文保存在 config.toml 中，与 sdroxide 保存的其他密码相同。
+settings-general-stored-clear-config-toml-like = 以明文保存在 config.toml 中，与 sdrcrow 保存的其他密码相同。
 settings-general-receive-audio-gain = 接收音频增益
 settings-general-t-0-db = 0 dB
 settings-general-extra-gain-everything-radio-sends =
@@ -575,9 +575,9 @@ settings-general-settings-are-machine-radio-attached = 设置保存在电台所�
 settings-general-export = 导出……
 settings-general-write-every-setting-station-radios = 将此电台站点的所有设置——电台、模式、服务器、记忆信道、频段计划——写入一个文件，可以带到另一套安装中使用。你的日志和任何已保存的服务器密码仍保留在此。
 settings-general-import = 导入……
-settings-general-replace-station-s-settings-ones = 用从另一套安装导出的文件中的设置，替换此电台站点的设置。之后请重启 sdroxide。
-settings-general-import-overwrites-what-here-file = 导入会按文件逐个覆盖此处的内容，并在 sdroxide 下次启动时生效——否则内存中的现有设置会把它再原样写回。文件中未提及的内容保持不变，因此来自单电台站点的配置包不会删除此处的第二台电台。你的日志永远不在该文件中：如果也要迁移日志，请在日志窗口中以 ADIF 格式导出。
-settings-general-sdrcrow-settings = sdroxide 设置
+settings-general-replace-station-s-settings-ones = 用从另一套安装导出的文件中的设置，替换此电台站点的设置。之后请重启 sdrcrow。
+settings-general-import-overwrites-what-here-file = 导入会按文件逐个覆盖此处的内容，并在 sdrcrow 下次启动时生效——否则内存中的现有设置会把它再原样写回。文件中未提及的内容保持不变，因此来自单电台站点的配置包不会删除此处的第二台电台。你的日志永远不在该文件中：如果也要迁移日志，请在日志窗口中以 ADIF 格式导出。
+settings-general-sdrcrow-settings = sdrcrow 设置
 settings-general-swr-guard = 驻波比保护
 settings-general-stop-transmitting-high-swr = 驻波比过高时停止发射
 settings-general-trip = 触发阈值
@@ -620,7 +620,7 @@ settings-net-persist-re-connect = 保存并（重新）连接
 settings-net-season = 季节
 settings-net-downloading = 正在下载……
 settings-net-using-built-copy = 正在使用内置副本
-settings-net-your-own-stations-corrections-go = 你自己的电台和修正内容写在此文件中。sdroxide 从不写入它，此处的条目会替换同名且同频率的预定条目。
+settings-net-your-own-stations-corrections-go = 你自己的电台和修正内容写在此文件中。sdrcrow 从不写入它，此处的条目会替换同名且同频率的预定条目。
 settings-net-reload = 重新加载
 settings-net-re-read-your-station-file = 编辑后重新读取你的电台文件
 settings-net-broadcast-stations-labelled-waterfall-come = 瀑布图上标注的广播电台来自本版本内置的列表。编辑它们需要使用桌面应用。
@@ -634,11 +634,11 @@ settings-controls-last-midi = 最后一条消息：{ $message }  数值 { $value
 settings-general-exported = 已导出 { $note }——请选择保存位置。
 settings-general-export-failed = 导出失败：{ $error }
 settings-general-import-failed = 导入失败：{ $error }
-settings-general-imported = { $summary }——请重启 sdroxide 以使用它们。
+settings-general-imported = { $summary }——请重启 sdrcrow 以使用它们。
 settings-general-import-skipped = 已跳过 { $path }：{ $why }
 settings-general-swr-tripped = ⚠ 当前已在 { $swr }:1 时触发——发射已被锁定。
 settings-net-call-grid-set-on-general = { $call } / { $grid } ——在“常规”选项卡中设置
-settings-net-reporting-as = 以 { $call } / { $grid } 身份报告——SDRoxide { $version }
+settings-net-reporting-as = 以 { $call } / { $grid } 身份报告——SDRCrow { $version }
 settings-net-schedule-download-failed = ⚠ 下载失败：{ $error }。正在使用内置时刻表。
 settings-net-test-service = 测试 { $service }
 
@@ -700,7 +700,7 @@ settings-profiles-profile-captures-whole-working-setup = 配置文件会记录�
 settings-profiles-save-current-setup = 保存当前设置
 settings-profiles-profile-name = 配置文件名称
 settings-profiles-save = 保存
-settings-profiles-applies-whatever-sdrcrow-attached-dials = 适用于 sdroxide 所连接的任何电台：表盘和 VFO、模式和滤波器、电平、增益、驱动、天线、数字身份以及频段堆栈。
+settings-profiles-applies-whatever-sdrcrow-attached-dials = 适用于 sdrcrow 所连接的任何电台：表盘和 VFO、模式和滤波器、电平、增益、驱动、天线、数字身份以及频段堆栈。
 settings-profiles-no-profiles-saved-yet-name = 尚未保存任何配置文件——请在上面命名一个，然后点击“保存”。
 settings-profiles-saved-profiles = 已保存的配置文件
 settings-profiles-apply = 应用
@@ -753,7 +753,7 @@ settings-relay-if-will-not-answer = 如果它不响应
 settings-relay-switch-exists-protect-receiver-not = 一个用来保护接收机的开关，如果它悄悄停止了保护，就没有存在的价值——因此默认是拒绝。若一根松动的 USB 线缆结束了你的比赛，那属于更糟的结果，则可以选择另一项。
 settings-relay-order-timings-longest-lead-closes = 顺序由时序决定：提前量最长的先闭合，保持时间最长的最后断开。因此天线继电器应设为较长的提前量和较长的保持时间，而功放则各取较短的值——这样天线总是先于功放按键被切换，而功放总是先于天线复位而解除按键。
 settings-relay-transmit-sense-input = 发射检测输入
-settings-relay-when-transceiver-keys-itself-own = 当收发信机自行按下发射时——例如其自带的话筒按钮、脚踏开关、VOX 或键控器——sdroxide 会通过 CAT 询问得知，而该回答要在通话开始后几百毫秒才到达。若将电台的 SEND 线路经光耦接入同一端口的握手输入，则几毫秒内即可察觉。这样一来，表头和发射互锁都会更快。
+settings-relay-when-transceiver-keys-itself-own = 当收发信机自行按下发射时——例如其自带的话筒按钮、脚踏开关、VOX 或键控器——sdrcrow 会通过 CAT 询问得知，而该回答要在通话开始后几百毫秒才到达。若将电台的 SEND 线路经光耦接入同一端口的握手输入，则几毫秒内即可察觉。这样一来，表头和发射互锁都会更快。
 settings-relay-line = 线路
 settings-relay-transmitting = 发射时为
 settings-relay-high-line = 高电平
@@ -762,8 +762,8 @@ settings-relay-belongs-radio = 所属电台
 settings-relay-which-radio-tab-sensed-transceiver = 被检测的收发信机属于哪个电台选项卡。在只有一台电台的站点上，此项为 1，且不影响任何内容。
 settings-relay-needs-serial-port-handshake-lines = 需要串口——握手线路位于其上。
 settings-relay-wiring-only-fail-safe-survives = 只有接线才是能够在本程序失效后仍然有效的故障保护。
-settings-relay-choose-tx-closes-so-de = 选择“发射时闭合”，使得*失电*的触点恰是你所需的状态：当板卡被拔掉、计算机关机或 sdroxide 未运行时。若接线使失电即接地，则继电器失效时接收机会失聪——令人烦恼，但安全。若接线方式相反，继电器失效加上一次发射，前端就会损坏。若其后接的是真正的功放，请选择前一种。
-settings-relay-cannot-protect-first-instant-over = 对于你在电台上开始的通话，它无法保护最初的瞬间。若从 sdroxide 按下发射，触点总是先于射频动作；若接入上面的检测输入，它们则会在几毫秒内跟随。若前端确实值得保护，还应另外使用由射频检测的硬件收发开关——计算机上的任何程序都不能单独解决全部问题。
+settings-relay-choose-tx-closes-so-de = 选择“发射时闭合”，使得*失电*的触点恰是你所需的状态：当板卡被拔掉、计算机关机或 sdrcrow 未运行时。若接线使失电即接地，则继电器失效时接收机会失聪——令人烦恼，但安全。若接线方式相反，继电器失效加上一次发射，前端就会损坏。若其后接的是真正的功放，请选择前一种。
+settings-relay-cannot-protect-first-instant-over = 对于你在电台上开始的通话，它无法保护最初的瞬间。若从 sdrcrow 按下发射，触点总是先于射频动作；若接入上面的检测输入，它们则会在几毫秒内跟随。若前端确实值得保护，还应另外使用由射频检测的硬件收发开关——计算机上的任何程序都不能单独解决全部问题。
 settings-relay-contacts-transmit = 发射时的触点
 settings-relay-not-open = 未断开。
 settings-relay-status-unknown-press-apply = 状态未知——请按“应用”。
@@ -782,15 +782,15 @@ settings-relay-persist-re-open-switch = 保存并（重新）打开开关
 ## Settings window, Remote (src/app/settings/remote.rs)
 
 settings-remote-connect-server = 连接服务器
-settings-remote-drive-sdrcrow-running-somewhere-else = 通过网络操作在别处运行的 sdroxide——机房计算机、远程站点。请在那里以 --server 启动它，并在此输入其地址。电台、解码器和日志仍保留在该机器上；此屏幕获取瀑布图和音频，并使用你在此处的扬声器和话筒。
+settings-remote-drive-sdrcrow-running-somewhere-else = 通过网络操作在别处运行的 sdrcrow——机房计算机、远程站点。请在那里以 --server 启动它，并在此输入其地址。电台、解码器和日志仍保留在该机器上；此屏幕获取瀑布图和音频，并使用你在此处的扬声器和话筒。
 settings-remote-address = 地址
 settings-remote-host-name-ip = 主机名或 IP
-settings-remote-machine-running-sdrcrow-server-host = 运行 sdroxide --server 的机器：可以是主机名、IPv4 或 IPv6 地址，或者在服务器位于反向代理之后时使用完整的 ws://（或 wss://）URL——URL 会按原样使用，忽略下面的端口和开关。
+settings-remote-machine-running-sdrcrow-server-host = 运行 sdrcrow --server 的机器：可以是主机名、IPv4 或 IPv6 地址，或者在服务器位于反向代理之后时使用完整的 ws://（或 wss://）URL——URL 会按原样使用，忽略下面的端口和开关。
 settings-remote-port = 端口
 settings-remote-port-server-listens-server-port = 该服务器监听的端口——即其 config.toml 中的 server_port。除非指定了 --port，否则为 4950。
 settings-remote-secure = 安全
 settings-remote-wss-tls = wss://（TLS）
-settings-remote-tick-where-server-sits-behind = 当服务器位于一个为其终止 HTTPS 的组件之后时勾选此项——例如端口 443 上的反向代理，这是通过公共互联网访问电台的常见方式。sdroxide 自身的服务器使用普通的 ws://，不需要勾选此项。
+settings-remote-tick-where-server-sits-behind = 当服务器位于一个为其终止 HTTPS 的组件之后时勾选此项——例如端口 443 上的反向代理，这是通过公共互联网访问电台的常见方式。sdrcrow 自身的服务器使用普通的 ws://，不需要勾选此项。
 settings-remote-connect = {" "}连接{" "}
 settings-remote-open-station-radio-tab-own = 将此电台站点打开为其自己的电台选项卡
 settings-remote-client-cannot-hold-second-connection = 此客户端无法保持第二个连接。
@@ -801,7 +801,7 @@ settings-remote-client-cannot-hold-second-connection = 此客户端无法保持�
 
 settings-servers-wsjt-x-udp-broadcast = WSJT-X UDP 广播
 settings-servers-waiting-station-s-wsjt-x = 正在等待电台站点的 WSJT-X 广播配置……
-settings-servers-sends-decodes-station-status-logged = 以 WSJT-X 的方式发送解码结果、电台状态和已记录的通联，因此 GridTracker、JTAlert、N1MM+ 和 Log4OM 无需修改即可与 sdroxide 配合使用。仅用于输出——此套接字上的任何内容都无法控制电台。
+settings-servers-sends-decodes-station-status-logged = 以 WSJT-X 的方式发送解码结果、电台状态和已记录的通联，因此 GridTracker、JTAlert、N1MM+ 和 Log4OM 无需修改即可与 sdrcrow 配合使用。仅用于输出——此套接字上的任何内容都无法控制电台。
 settings-servers-enable = 启用
 settings-servers-send = 发送至
 settings-servers-t-127-0-0-1-reaches = 127.0.0.1 可到达本机上的客户端；局域网地址或组播组（224.0.0.1）可到达其他设备
@@ -865,7 +865,7 @@ settings-tle-fetch-track-listing = 获取并跟踪此列表
 settings-tle-remove-subscription = 删除此订阅
 settings-tle-orbits = 轨道
 settings-tle-which-satellites-listing-get-orbit = 此列表中哪些卫星会获得轨道环和标签。整组卫星需要选择“精选”：同时显示九十个轨道环会无法辨认，而一个都不显示则只会留下九十个无名圆点。
-settings-tle-nothing-listing-sdrcrow-s-curated = 此列表中的任何卫星都不在 sdroxide 的精选列表中——该列表只有十颗业余卫星，因此这里的行为将与“无”完全相同。
+settings-tle-nothing-listing-sdrcrow-s-curated = 此列表中的任何卫星都不在 sdrcrow 的精选列表中——该列表只有十颗业余卫星，因此这里的行为将与“无”完全相同。
 settings-tle-all-satellites = 所有卫星
 settings-tle-catalogue-numbers-keep-comma-separated = 要保留的编目号，用逗号分隔。留空则跟踪列表中包含的全部卫星。
 settings-tle-not-fetched-yet = 尚未获取
@@ -1002,22 +1002,22 @@ settings-radio-which-socket-back-radio-using =
 
     Applies immediately, and it is the radio's setting rather than a copy kept here: the socket the radio is on is read back when the session opens.
 
-    The choice is remembered per band. Switch to the beam on 2 m and the wire on 40, and each comes back the next time the dial crosses into that band — and the next time sdroxide starts. A memory channel stored here carries its socket too.
+    The choice is remembered per band. Switch to the beam on 2 m and the wire on 40, and each comes back the next time the dial crosses into that band — and the next time sdrcrow starts. A memory channel stored here carries its socket too.
 settings-radio-receive-antenna = 接收天线
 settings-radio-radio-s-separate-receiving-antenna =
     电台独立的接收天线——背面的 RX ANT——切入或切出接收通路。这是它自己的设置，与电台上 RX ANT 按钮的设置相同。
 
     The aerial on the main socket stays on transmit either way: this is an extra input for receiving, a loop or a beverage, not a choice of socket.
 
-    Unlike the antenna above, this is *not* remembered here. The radio holds it per band itself, so sdroxide reads it back after every band change and shows what the radio says; ticking this box is the only thing that moves it.
+    Unlike the antenna above, this is *not* remembered here. The radio holds it per band itself, so sdrcrow reads it back after every band change and shows what the radio says; ticking this box is the only thing that moves it.
 settings-radio-receive-path = 位于接收通路中
 settings-radio-radio-power = 电台电源
 settings-radio-switch-radio-itself-off-back =
-    通过控制链路，关闭电台本身再重新打开。这是本程序中唯一真正的开关——而非 sdroxide 自己的“连接”开关，后者只关闭 sdroxide 这一端，电台仍在运行。
+    通过控制链路，关闭电台本身再重新打开。这是本程序中唯一真正的开关——而非 sdrcrow 自己的“连接”开关，后者只关闭 sdrcrow 这一端，电台仍在运行。
 
-    For the switch back on to reach anything, the radio's control end has to stay awake while it is off. Over the network that is what Network Control does. Over a serial cable it is the radio's CI-V port, which stays powered from the mains supply on a set that is switched off at the front rather than unplugged; sdroxide sends the wake-up run Icom's own documentation asks for in front of the power-on.
+    For the switch back on to reach anything, the radio's control end has to stay awake while it is off. Over the network that is what Network Control does. Over a serial cable it is the radio's CI-V port, which stays powered from the mains supply on a set that is switched off at the front rather than unplugged; sdrcrow sends the wake-up run Icom's own documentation asks for in front of the power-on.
 
-    Switching off ends the audio and the meters — there is no radio behind them — and sdroxide keeps the control link open so the switch back on has somewhere to go.
+    Switching off ends the audio and the meters — there is no radio behind them — and sdrcrow keeps the control link open so the switch back on has somewhere to go.
 settings-radio-on = 开
 settings-radio-off = 关
 settings-radio-waiting-configuration-machine-radio-attached = 正在等待电台所连接机器的配置。
@@ -1088,24 +1088,24 @@ settings-radio-how-transmit-keyed = 发射是如何被按下的。
 settings-radio-how-transmit-keyed-network-link = 发射是如何被按下的。网络链路没有控制线，因此 DTR 和 RTS 在此都不起作用——请使用 CAT（它要求守护进程按下电台）或 VOX。
 settings-radio-mode-control = 模式控制
 settings-radio-digimode-mode = 数字模式下的模式
-settings-radio-what-put-radio-mode-sdroxide =
-    对于 sdroxide 通过其声卡调制的模式，应将电台设为何种模式。“DIGI”选择电台的 DATA/PKT 位置，该位置从 USB 或 ACC 输入获取发射音频，并且不经过话筒通路的语音处理；“USB”则保持普通的边带，适用于已设为从其数据输入调制 SSB 的电台，或完全没有 DATA 位置的电台。
+settings-radio-what-put-radio-mode-sdrcrow =
+    对于 sdrcrow 通过其声卡调制的模式，应将电台设为何种模式。“DIGI”选择电台的 DATA/PKT 位置，该位置从 USB 或 ACC 输入获取发射音频，并且不经过话筒通路的语音处理；“USB”则保持普通的边带，适用于已设为从其数据输入调制 SSB 的电台，或完全没有 DATA 位置的电台。
 
     It covers every digital mode — FT8, FT4, PSK, RTTY, SSTV and the rest — and CW sent as "Sound card", and it overrides Mode control for them. SSTV is the one whose sideband follows the band, so there it means the DATA position on that sideband: USB-D above 40 m, LSB-D at and below it. SSTV-FM is not part of it — an FM carrier has no sideband to choose.
 settings-radio-cw-keying = CW 键控
 settings-radio-how-cw-panel-s-keyer =
     CW 面板的键控器如何发射。“电台键控器”将电台设为 CW，并把要发送的文字交给其自己的键控器。它使用电台的键控速度（由面板上的 WPM 设定）；在 Yaesu 上，它通过键控器记忆 1 发送，会覆盖其中原有的内容。
 
-    It needs break-in on at the radio, which sdroxide turns on itself with each message on Icom, Yaesu and Kenwood — a rig with break-in off takes the message and transmits nothing. It is left on afterwards, and a full break-in is never turned down to semi.
+    It needs break-in on at the radio, which sdrcrow turns on itself with each message on Icom, Yaesu and Kenwood — a rig with break-in off takes the message and transmits nothing. It is left on afterwards, and a full break-in is never turned down to semi.
 
     "Sound card" sends the keyed sidetone as audio instead (MCW), a tone at dial + pitch — and because a rig in CW would ignore its sound card entirely, selecting CW then follows the Digimode mode setting (USB, DATA, or Radio controlled) instead of switching the rig to CW. Pick "Radio controlled" there for rigs whose data position can't be commanded over CAT (a Xiegu's U-D) and park the rig on it yourself, as for FT8.
 settings-radio-poll-rate = 轮询速率
 settings-radio-how-often-radio-asked-what =
-    多久询问一次电台正在做什么——它的表盘、模式和表头。这是控制链路中从电台返回 sdroxide 的那一半：转动电台自己的 VFO 旋钮或在前面板更改模式，读数、频段和全景图会在一次轮询之内跟随。
+    多久询问一次电台正在做什么——它的表盘、模式和表头。这是控制链路中从电台返回 sdrcrow 的那一半：转动电台自己的 VFO 旋钮或在前面板更改模式，读数、频段和全景图会在一次轮询之内跟随。
 
     It is also the whole of the control traffic this end generates, and on a modern Icom that traffic is not free: the CI-V port and the sound card sit behind one USB hub inside the radio, so frames asked for here are bus time the audio does not get — heard as dropouts that look like a DSP fault and are not one. The default of 2 Hz is half a second behind the knob and quiet enough to stay out of the audio's way. Raise it where the control port is its own device (a separate USB-serial adapter, a network rigctld); lower it if the radio's audio breaks up.
 
-    An Icom with CI-V Transceive switched on in its own menu needs none of this for the dial: it reports the knob the instant it moves, and sdroxide stands the dial poll down as soon as it sees it do so — and picks it back up again if the radio ever moves without saying so.
+    An Icom with CI-V Transceive switched on in its own menu needs none of this for the dial: it reports the knob the instant it moves, and sdrcrow stands the dial poll down as soon as it sees it do so — and picks it back up again if the radio ever moves without saying so.
 
     The rate is the dial's. The mode rides along with only every fourth poll, since it is a setting that changes a few times in an evening rather than one that follows a knob.
 settings-radio-send-command = 发送命令
@@ -1114,7 +1114,7 @@ settings-radio-which-transceiver-generation-keys-rig =
 
     "TS-2000 style (TX;)" — TS-480, TS-570, TS-870, TS-2000: the ordinary send, on the main band.
 
-    "TS-590 style (TX1;)" — TS-590S/SG, TS-890, TS-990: DATA SEND, which keys with the ACC2/USB audio input live. On these rigs the plain send selects the microphone instead and mutes the audio sdroxide transmits.
+    "TS-590 style (TX1;)" — TS-590S/SG, TS-890, TS-990: DATA SEND, which keys with the ACC2/USB audio input live. On these rigs the plain send selects the microphone instead and mutes the audio sdrcrow transmits.
 
     Set wrong, a TS-590 transmits silence — but a TS-2000 transmits on the sub-band, which is another band entirely.
 settings-radio-radio = 电台
@@ -1127,7 +1127,7 @@ settings-radio-transmit-input = 发射输入
 settings-radio-where-radio-takes-transmit-audio =
     电台从何处获取其发射音频——即电台的 TI 命令，它在前面板的菜单 32“TX IN”中。端口打开时设置。
 
-    "USB audio" is what makes this interface work: the FDM-DUO transmits what sdroxide puts into its USB sound card. A radio left on "Microphone" sends the room instead, and nothing on screen says so.
+    "USB audio" is what makes this interface work: the FDM-DUO transmits what sdrcrow puts into its USB sound card. A radio left on "Microphone" sends the room instead, and nothing on screen says so.
 
     "Auto" lets the rig choose — the microphone for a PTT press on the microphone, the USB port for a CAT or RTS key-down.
 
@@ -1158,10 +1158,10 @@ settings-radio-baud-rate-ignored-port-usb = 波特率被忽略——该端口为
 settings-radio-qmx-serves-own-virtual-com =
     QMX 通过 USB 提供它自己的虚拟 COM 端口，因此上面设置的速率对两端都没有影响。它最多提供三个此类端口；如果电台无应答，最可能的原因是选错了端口。
 
-    One thing does matter about the port: a carriage return sent to it switches the radio into terminal mode for the rest of the session. sdroxide never sends one — but a terminal program left open on the same port will, and CAT stops working the moment it does.
+    One thing does matter about the port: a carriage return sent to it switches the radio into terminal mode for the rest of the session. sdrcrow never sends one — but a terminal program left open on the same port will, and CAT stops working the moment it does.
 settings-radio-i-q-mode-switched-radio = I/Q 模式在电台上开启
 settings-radio-radio-s-sound-card-carries =
-    电台的声卡承载的，要么是解调后的音频，要么是其 ADC 所见的原始 I/Q；端口打开时，sdroxide 会按上面“音频格式”的要求设置其中之一（即电台的 Q9 命令，即菜单中的“IQ mode”项）。
+    电台的声卡承载的，要么是解调后的音频，要么是其 ADC 所见的原始 I/Q；端口打开时，sdrcrow 会按上面“音频格式”的要求设置其中之一（即电台的 Q9 命令，即菜单中的“IQ mode”项）。
 
     The centre offset and sample rate above have been set to what a QMX needs: its receiver is a superhet with a 12 kHz I.F., so the synthesiser sits 12 kHz below the dial and everything on the card is 12 kHz above the middle of the span. The card runs at 48 kHz, which makes the panadapter 48 kHz wide.
 
@@ -1172,11 +1172,11 @@ settings-radio-rs-hfiq-5-w-hf = RS-HFIQ（5 瓦 HF 收发信机）
 settings-radio-hobbypcb-s-rs-hfiq-there =
     HobbyPCB 的 RS-HFIQ。此处无需选择：该配置文件即为电台命令集的全部，端口打开时会记录其固件版本。
 
-    The control link carries two things and no more — where to put the oscillator, and whether to transmit. There is no mode, power, filter, squelch or meter command, because the radio has none of them. Everything else is sdroxide's: what comes off the sound card is complex baseband centred on the dial, so the mode, the filter and the modulation all happen on this side.
+    The control link carries two things and no more — where to put the oscillator, and whether to transmit. There is no mode, power, filter, squelch or meter command, because the radio has none of them. Everything else is sdrcrow's: what comes off the sound card is complex baseband centred on the dial, so the mode, the filter and the modulation all happen on this side.
 
     The frequency command covers 3–30 MHz. Ask for anything outside that and the radio refuses it and stays where it is; the log says so.
 
-    CW is keyed as audio through the transmit chain — this radio has no keyer that takes text. (It has an internal CW generator; sdroxide never uses it, on the firmware's own advice.)
+    CW is keyed as audio through the transmit chain — this radio has no keyer that takes text. (It has an internal CW generator; sdrcrow never uses it, on the firmware's own advice.)
 settings-radio-sound-format-baud-ptt-are = 音频格式、波特率和 PTT 由电台决定，而非设置项
 settings-radio-all-three-have-been-filled =
     这三项都已填写，且没有一项是偏好设置：
@@ -1205,7 +1205,7 @@ settings-radio-which-icom-two-things-ci =
 
     The transceiver address below is filled in from it: every model ships with a different one, and a frame sent to the wrong address is simply ignored — a radio that answers nothing, with no error anywhere to say why.
 
-    It also decides whether sdroxide can select DATA mode. On CI-V, USB and USB-DATA are the same mode byte and a separate command tells them apart; without it a digital-mode over goes out through the microphone input, with the rig's speech processing and SSB filter in the path.
+    It also decides whether sdrcrow can select DATA mode. On CI-V, USB and USB-DATA are the same mode byte and a separate command tells them apart; without it a digital-mode over goes out through the microphone input, with the rig's speech processing and SSB filter in the path.
 
     "Other" leaves the address to you and sends no DATA-mode command at all.
 settings-radio-radio-id-hex = 电台 ID（十六进制）
@@ -1253,7 +1253,7 @@ settings-radio-frequency-correction = 频率校正
 settings-radio-crystal-tcxo-error-ppm-applied = 晶体/TCXO 误差，单位为 ppm，同时应用于接收和发射。立即生效。
 settings-radio-ppm = {" "}ppm
 settings-radio-transmit-buffer = 发射缓冲
-settings-radio-how-far-ahead-real-time = 发射音频通过网络被送入板卡时，领先实时多远，之后 sdroxide 才会放慢速度以与之匹配。板卡本身不保存此类缓冲——这仅会扩大 sdroxide 自身的余量。在 WiFi 链路或 VPN 上应提高它：对于直连有线连接而言正确的较低默认值，不足以抵御抖动，发射音频或 PTT 会出现卡顿；数值越高，发射延迟越大。在“应用”后生效，此操作会重新连接板卡。
+settings-radio-how-far-ahead-real-time = 发射音频通过网络被送入板卡时，领先实时多远，之后 sdrcrow 才会放慢速度以与之匹配。板卡本身不保存此类缓冲——这仅会扩大 sdrcrow 自身的余量。在 WiFi 链路或 VPN 上应提高它：对于直连有线连接而言正确的较低默认值，不足以抵御抖动，发射音频或 PTT 会出现卡顿；数值越高，发射延迟越大。在“应用”后生效，此操作会重新连接板卡。
 settings-radio-puresignal = PureSignal
 settings-radio-adaptive-predistortion-linearise-transmitter-sample = 自适应预失真：根据发射机实际输出的一份样本使其线性化，在相同功率下可减少二十余分贝的互调。接收机是反馈通路——板卡在通话期间持续接收——因此定向耦合器和衰减器必须把功放输出的一份样本送入一个发射时不会被收发开关切断的输入。在 Hermes-Lite 2 上，这意味着使用 IO 板的 PureSignal 插孔，并将上面的接收输入设为与之相符；在没有该插孔的板卡上，则使用 ANAN 的 RX 端口，或在通话期间切入耦合器的外部继电器。被读取的是这台接收机——带有第二个 ADC 的板卡无法将 RX2 用作反馈抽头，无论其自身固件如何路由它。若没有耦合任何信号，循环将永远无法锁定，发射机则保持在原本的状态。在“应用 / 重新连接”后生效，并且仅对拥有发射机的电台（DDC1）有效。
 settings-radio-correct-transmitter-receiver-s-own = 利用接收机自身的反馈校正发射机
@@ -1451,7 +1451,7 @@ settings-radio-how-much-band-receiver-s =
     The whole band is the default and is what makes the strip a thing to tune by; the panadapter below it is the ~12 kHz of I/Q. Applies immediately.
 settings-radio-receiver-agc = 接收机 AGC
 settings-radio-receiver-s-agc-which-far =
-    接收机的 AGC，它位于链路另一端，且在 I/Q 之前——因此它先于 sdroxide 所做的任何处理而动作。
+    接收机的 AGC，它位于链路另一端，且在 I/Q 之前——因此它先于 sdrcrow 所做的任何处理而动作。
 
     On by default, unlike every local SDR here, because the measured alternative was worse: on a live receiver the manual gain was not monotonic across its range and its top end clipped the I/Q at full scale, while the AGC held about -24 dBFS with 7 dB of headroom.
 
@@ -1465,7 +1465,7 @@ settings-radio-iq-sample-rate = IQ 采样率
 settings-radio-receiver = 接收机
 settings-radio-rig-two-receivers-sunsdr2dx-can = 带两台接收机的电台（SunSDR2DX）可通过一条连接为两个电台选项卡提供服务——例如在 RX1 上运行此电台，在 RX2 上运行另一台。发射机属于 RX1 的电台。
 settings-radio-stream-delay = 数据流延迟
-settings-radio-how-long-rig-s-iq = 在 sdroxide 将电台的 IQ 移至新的中心频率后，它需要多长时间才能到达。这是电台自身的 DSP 流水线，而非网络——本机上的服务器同样有这一流水线——而当全景图被完全缩小拖动时，偏差达到这一量级，会使最新的瀑布图行相对于历史记录横向错位，错位量等于误差乘以拖动速度。设得过高或过低，错位的距离相同，方向相反。可用 `cargo run --release -p sdrcrow-tci --example retune_latency` 测量它；默认值针对的是在 ExpertSDR3 上以 192 kHz 运行的 SunSDR2DX。
+settings-radio-how-long-rig-s-iq = 在 sdrcrow 将电台的 IQ 移至新的中心频率后，它需要多长时间才能到达。这是电台自身的 DSP 流水线，而非网络——本机上的服务器同样有这一流水线——而当全景图被完全缩小拖动时，偏差达到这一量级，会使最新的瀑布图行相对于历史记录横向错位，错位量等于误差乘以拖动速度。设得过高或过低，错位的距离相同，方向相反。可用 `cargo run --release -p sdrcrow-tci --example retune_latency` 测量它；默认值针对的是在 ExpertSDR3 上以 192 kHz 运行的 SunSDR2DX。
 settings-radio-wideband-iq-receive-audio-transmit = 宽带 IQ 接收，音频发射。按下“应用 / 重新连接”即可无需重启地切换。
 settings-radio-radio-address = 电台地址
 settings-radio-address-shown-radio-under-set = 电台在 SET > Network 下显示的地址。那里必须开启“Network Control”，并且电台需要设置网络用户名和密码。
@@ -1478,17 +1478,17 @@ settings-radio-receive = 接收来源
 settings-radio-audio-sample-rate = 音频采样率
 settings-radio-t-12-khz-if-needs-48000 = 12 kHz IF 需要 48000 Hz 的数据流——在此速率下，使用的是电台解调后的音频。
 settings-radio-if-spectrum = IF 频谱
-settings-radio-which-way-round-radio-s = 电台的 12 kHz IF 以哪个方向运行。“自动”会采用已知该型号的做法——在 IC-7760 上为镜像，在其他所有 Icom 上为正常。若 SSB 出现在错误的边带上，请手动设置：其明显迹象是，在频段运行 LSB 的地方你必须选择 USB，同时电台自己的模式显示始终与 sdroxide 一致。
+settings-radio-which-way-round-radio-s = 电台的 12 kHz IF 以哪个方向运行。“自动”会采用已知该型号的做法——在 IC-7760 上为镜像，在其他所有 Icom 上为正常。若 SSB 出现在错误的边带上，请手动设置：其明显迹象是，在频段运行 LSB 的地方你必须选择 USB，同时电台自己的模式显示始终与 sdrcrow 一致。
 settings-radio-normal = 正常
 settings-radio-mirrored = 镜像
 settings-radio-displayed-bandwidth = 显示带宽
 settings-radio-width-audio-band-panadapter-cat = 音频频段全景图的宽度，与 CAT 电台相同。用于数字模式以及电台示波器关闭时；否则全景图本身就是示波器，其宽度由“示波器跨度”设定。
 settings-radio-how-cw-panel-s-keyer-2 = CW 面板的键控器如何发射。“电台键控器”将电台设为 CW，并把要发送的文字交给其自身的键控器（CI-V 0x17）。“声卡”则改为通过局域网以音频方式发送键控的侧音（MCW），音调为表盘 + 音调偏移——由于 CW 模式下的电台会忽略其调制器输入，因此选择 CW 后会让电台保持在普通的 USB 模式，即数字模式所使用的模式。
 settings-radio-how-much-audio-radio-holds = 电台在调制之前保留多少音频。网络越差，保留得越多，代价是发射延迟越大。
-settings-radio-streams-radio-s-own-475 = 传输电台自身的 475 频点扫描。在 AF 下，它就是全景图——电台发送的音频是经过其滤波器的结果，而非频段的画面；在 12 kHz IF 下，它则是其上方的全频段瀑布图。无论哪种方式，它都是电台的画面，而非 sdroxide 的 DSP 生成的：没有 I/Q 可供计算它。
+settings-radio-streams-radio-s-own-475 = 传输电台自身的 475 频点扫描。在 AF 下，它就是全景图——电台发送的音频是经过其滤波器的结果，而非频段的画面；在 12 kHz IF 下，它则是其上方的全频段瀑布图。无论哪种方式，它都是电台的画面，而非 sdrcrow 的 DSP 生成的：没有 I/Q 可供计算它。
 settings-radio-how-wide-sweep-only-wide = 扫描的宽度。这是 Icom 唯一的宽视图，而电台会保留其自身屏幕上最后选择的跨度——通常为几 kHz，这就是条带有时无法比其下方的全景图更宽的原因。在此设置跨度还会使示波器进入中心模式，从而跟随表盘。它也会改变电台自身的显示；“保持电台上的设置”则不作改动。
 settings-radio-switch-modulation-input-lan = 将调制输入切换为 LAN
-settings-radio-transmit-audio-only-heard-when = 只有当电台的 MOD 输入设为 LAN 时，发射音频才会被听到。若 sdroxide 认识该型号的菜单编号，它可以替你写入该设置；对于其他型号，它会说明情况并保持菜单不变。这是临时借用：会话开始时先读取电台在此处保存的内容，会话结束时再将其放回，因此之后单独使用的电台仍会听到它自己的话筒。
+settings-radio-transmit-audio-only-heard-when = 只有当电台的 MOD 输入设为 LAN 时，发射音频才会被听到。若 sdrcrow 认识该型号的菜单编号，它可以替你写入该设置；对于其他型号，它会说明情况并保持菜单不变。这是临时借用：会话开始时先读取电台在此处保存的内容，会话结束时再将其放回，因此之后单独使用的电台仍会听到它自己的话筒。
 settings-radio-copy-diagnostic-report = 复制诊断报告
 settings-radio-control-audio-radio-s-own = 控制、音频以及电台自身的示波器，都通过一条网络连接完成——无需串口线缆，也无需声卡。按下“应用 / 重新连接”即可无需重启地切换。
 settings-radio-testing = 测试中……
@@ -1499,17 +1499,17 @@ settings-radio-no-radios-press-discover = 没有电台——请按“搜索”
 settings-radio-address = 地址
 settings-radio-overrides-selection-above-usb-cable = 覆盖上面的选择。USB 线缆将 Pluto 呈现为网络适配器，而非串口，因此即使电台就在你的桌上，这里填写的也是 IP 地址。
 settings-radio-pluto-revision-c-pluto-unlocked = Pluto+ 或已解锁为 2R2T 的 C 版 Pluto，可以从一台设备为两个电台选项卡提供服务——此电台使用 RX1，另一台使用 RX2，各自接在自己的天线上。两条通道共用同一个振荡器，因此重新调谐任一电台都会同时移动两者；RX2 带来的是同一频谱上的第二根天线（分集），而不是第二个频段。发射机属于 RX1 的电台。标准的 1R1T Pluto 在连接时会拒绝 RX2。
-settings-radio-width-spectrum-sdrcrow-receives-ad9361 = sdroxide 所接收频谱的宽度。AD9361 可达 61.44 Msps；USB 网络链路则达不到，此列表即按此进行缩放。最低的速率需要加载到 AD9361 中的滤波器配置，而 sdroxide 不做这件事——标准的 Pluto 会改为以约 2.084 Msps 运行，并在连接时说明这一点。在“应用”后生效。
+settings-radio-width-spectrum-sdrcrow-receives-ad9361 = sdrcrow 所接收频谱的宽度。AD9361 可达 61.44 Msps；USB 网络链路则达不到，此列表即按此进行缩放。最低的速率需要加载到 AD9361 中的滤波器配置，而 sdrcrow 不做这件事——标准的 Pluto 会改为以约 2.084 Msps 运行，并在连接时说明这一点。在“应用”后生效。
 settings-radio-more-than-usb-2-will = {"  "}（超过 USB 2 所能承载的范围）
 settings-radio-stock-pluto-runs-2-084 = {"  "}（标准 Pluto 运行于 2.084）
 settings-radio-analog-filter = 模拟滤波器
 settings-radio-ad9361-s-baseband-filter-leave = AD9361 的基带滤波器。保持为 0 即为自动，此时它会打开到采样率的九成——之所以刻意设得很宽，是因为接收机会把其振荡器偏离表盘四分之一个跨度，以使信号远离直流尖峰；窄滤波器会恰好切掉它被移到的那一部分。在“应用”后生效。
 settings-radio-ad9361-has-four-modes-not = AD9361 有四种模式，而不是开/关开关。慢速起振适合 SSB 和 CW；快速起振适合突发信号；手动则是用于测量和弱信号数字模式的设置。立即生效。
 settings-radio-rx-gain = RX 增益
-settings-radio-applies-immediately-no-reconnect-ignored = 立即生效——无需重新连接。除非 AGC 设为手动，否则忽略此项，这是 AD9361 自身的行为，而非 sdroxide 的。
+settings-radio-applies-immediately-no-reconnect-ignored = 立即生效——无需重新连接。除非 AGC 设为手动，否则忽略此项，这是 AD9361 自身的行为，而非 sdrcrow 的。
 settings-radio-tx-gain = TX 增益
 settings-radio-negative-because-ad9361-expresses-transmit = 为负值，因为 AD9361 以衰减表示发射电平：0 dB 即为满功率输出。立即生效。在连接时应用此数值之前，发射机会先被设为最小，因此上一个程序留下的任何东西都不会处于激活状态。
-settings-radio-reference-error-parts-per-million = 参考误差，单位为百万分之一。以 RUST_LOG=sdrcrow_pluto=debug 运行，日志会在约 20 秒后打印测得的时钟误差——这就是应当输入的数值。由 sdroxide 应用，而不写入电台自身的持久微调。立即生效。
+settings-radio-reference-error-parts-per-million = 参考误差，单位为百万分之一。以 RUST_LOG=sdrcrow_pluto=debug 运行，日志会在约 20 秒后打印测得的时钟误差——这就是应当输入的数值。由 sdrcrow 应用，而不写入电台自身的持久微调。立即生效。
 settings-radio-full-duplex = 全双工
 settings-radio-keep-receiving-while-transmitting = 发射时继续接收
 settings-radio-leave-off-pluto-reached-over =
@@ -1522,7 +1522,7 @@ settings-radio-leave-off-pluto-reached-over =
     Takes effect on Apply.
 settings-radio-duplex = 双工
 settings-radio-whether-ad9361-runs-both-directions =
-    AD9361 是同时双向运行（FDD，即 Pluto 启动时的方式，也是 sdroxide 一直保持的状态），还是一次只运行一个方向（TDD）。
+    AD9361 是同时双向运行（FDD，即 Pluto 启动时的方式，也是 sdrcrow 一直保持的状态），还是一次只运行一个方向（TDD）。
 
     Leave this on FDD unless you want the PTT pins below — TDD is what those key from, and it rules out Full duplex above. Takes effect on Apply.
 settings-radio-ptt-pins = PTT 引脚
@@ -1549,14 +1549,14 @@ settings-radio-wideband-iq-receive-transmit-half = 宽带 IQ 接收与发射。�
 settings-radio-flexradio-announces-itself-local-network = FlexRadio 大约每秒在本地网络上宣告一次自身。通过路由器或 VPN 连接的电台永远不会向你广播——请改为在下方输入其地址。
 settings-radio-another-gui-client-has-radio = 另一个图形界面客户端正在使用此电台，并且已禁用 multiFLEX。请断开该客户端的连接，或在电台上启用 multiFLEX。
 settings-radio-overrides-selection-above-use-radio = 覆盖上面的选择。适用于位于另一子网、VPN 之后或使用非标准端口的电台。
-settings-radio-width-spectrum-sdrcrow-receives-192 = sdroxide 所接收频谱的宽度。192 kHz 是电台 DAX IQ 数据流的最大值，因此也是此界面能够显示的最宽跨度。
+settings-radio-width-spectrum-sdrcrow-receives-192 = sdrcrow 所接收频谱的宽度。192 kHz 是电台 DAX IQ 数据流的最大值，因此也是此界面能够显示的最宽跨度。
 settings-radio-t-192-khz-widest-dax-iq = 192 kHz 是 FLEX 能够发送的最宽 DAX IQ 数据流，而电台会将全景图的跨度与之绑定——因此这就是整个跨度，此处没有任何设置能使它更宽。
 settings-radio-dax-iq-channel = DAX IQ 通道
 settings-radio-radio-has-four-change-only = 电台有四个通道。只有当网络上的其他设备已在使用通道 1 时才需更改——电台会两次拒绝同一通道。
 settings-radio-station-name = 电台站点名称
-settings-radio-shown-against-session-radio-s = 在电台的客户端列表中，与此会话对应显示。电台也以此名称记住客户端，因此重命名会使电台将 sdroxide 视为一个新的客户端。
+settings-radio-shown-against-session-radio-s = 在电台的客户端列表中，与此会话对应显示。电台也以此名称记住客户端，因此重命名会使电台将 sdrcrow 视为一个新的客户端。
 settings-radio-gui-client-id = 图形界面客户端 ID
-settings-radio-identity-radio-restores-session-s = 电台用来恢复此会话的切片和全景图的身份。留空时，它由电台站点名称派生——稳定，但在每个保留默认名称的 sdroxide 上都相同，而电台会通过踢掉较早的客户端来处理重复项。sdroxide 能在线路上察觉这一点，并回退到单次会话的身份，这会失去恢复功能；若要保留它，请在此处填入你自己的 UUID。
+settings-radio-identity-radio-restores-session-s = 电台用来恢复此会话的切片和全景图的身份。留空时，它由电台站点名称派生——稳定，但在每个保留默认名称的 sdrcrow 上都相同，而电台会通过踢掉较早的客户端来处理重复项。sdrcrow 能在线路上察觉这一点，并回退到单次会话的身份，这会失去恢复功能；若要保留它，请在此处填入你自己的 UUID。
 settings-radio-optional-e-g-uuid-your = 可选，例如你自己的 UUID
 settings-radio-mirror-radio-s-i-q =
     以全景图的中心为轴镜像电台的 I/Q。默认关闭，FLEX-6600 即是以此方式验证的。
@@ -1574,7 +1574,7 @@ settings-radio-ask-every-installed-soapysdr-module = 要求每个已安装的 So
 settings-radio-not-enumerated-yet-press-rescan = 尚未枚举——请按“重新扫描”。
 settings-radio-no-soapysdr-devices-found-check = 未找到 SoapySDR 设备。请检查你电台的模块是否已安装，以及你是否有权访问该设备。
 settings-radio-not-radio = 不是电台
-settings-radio-sound-card-listed-above-if = 上面有一个声卡被列为 SDR。它接受任何频率并忽略它，因此打开它时显示的是声卡的输入，而非频段。sdroxide 不会自动选择它们——但在 device_args 中指名它的那一行仍会被执行。
+settings-radio-sound-card-listed-above-if = 上面有一个声卡被列为 SDR。它接受任何频率并忽略它，因此打开它时显示的是声卡的输入，而非频段。sdrcrow 不会自动选择它们——但在 device_args 中指名它的那一行仍会被执行。
 settings-radio-which-one-opens-set-device = 打开哪一个由 config.toml 中的 --device 或 device_args 设定；两者都没有时，列表中第一台电台生效。
 settings-radio-no-device = 无设备
 settings-radio-rig-has-no-software-adjustable = 此电台没有可由软件调节的增益。
@@ -1626,7 +1626,7 @@ settings-radio-no-devices-press-rescan = 没有设备——请按“重新扫描
 settings-radio-six-rates-are-six-different =
     这六种速率是六种不同的 FPGA 镜像，而不是一个寄存器——这就是为什么 ELAD 的协议中没有任何东西可以在它们之间进行选择，也是为什么此设置的含义取决于型号。
 
-    FDM-S1 / FDM-S2: a command. Their FPGA is loaded by the computer at every power-up, and sdroxide runs ELAD's own elad-firmware loader to put this rate's image in. Without that loader installed a sampler sends no samples at all, and sdroxide says so on screen.
+    FDM-S1 / FDM-S2: a command. Their FPGA is loaded by the computer at every power-up, and sdrcrow runs ELAD's own elad-firmware loader to put this rate's image in. Without that loader installed a sampler sends no samples at all, and sdrcrow says so on screen.
 
     FDM-DUO: not a command. The radio boots its own FPGA and arrives at whatever rate it powered up in or FDM-SW2 last left it in (192 kHz on a fresh one), and this only says how the stream is READ. Get it wrong and the panadapter is simply the wrong width, with every frequency inside it scaled to match.
 
@@ -1645,7 +1645,7 @@ settings-radio-how-transmit-keyed-cat-sends = 发射是如何被按下的。“C
 settings-radio-where-radio-takes-transmit-audio-2 =
     电台从何处获取其发射音频——即电台的 TI 命令，它在前面板的菜单 32“TX IN”中。端口打开时设置。
 
-    "USB audio" is what makes transmit work here: the FDM-DUO sends what sdroxide puts into its USB sound card. A radio left on "Microphone" sends the room instead, and nothing on screen says so.
+    "USB audio" is what makes transmit work here: the FDM-DUO sends what sdrcrow puts into its USB sound card. A radio left on "Microphone" sends the room instead, and nothing on screen says so.
 settings-radio-which-two-sockets-back-receiver-2 =
     接收机监听背面两个插座中的哪一个——即电台的 AN 命令，在前面板的菜单 31“ANTENNAS”中，并在其显示屏上以“ANT 1 2”指示。
 
@@ -1684,7 +1684,7 @@ settings-radio-not-yet-verified-against-real-3 = 尚未在实际硬件上验证�
 settings-radio-no-airspy-r2-mini-found = 未找到 Airspy R2 或 Mini——请按“重新扫描”
 settings-radio-read-receiver = 从此接收机读取
 settings-radio-r2-mini-offer-different-rates = R2 和 Mini 提供的速率不同，在打开其中一台之前无法区分
-settings-radio-rate-you-get-receiver-s = 这是你将得到的速率。接收机的 ADC 以其两倍的速率运行——它对真实信号进行数字化，然后由 sdroxide 在主机上从中生成复数基带。
+settings-radio-rate-you-get-receiver-s = 这是你将得到的速率。接收机的 ADC 以其两倍的速率运行——它对真实信号进行数字化，然后由 sdrcrow 在主机上从中生成复数基带。
 settings-radio-gain-curve = 增益曲线
 settings-radio-step-along-curve-above-not = 沿上面曲线的一个步进，而不是分贝数——调谐器的 LNA、混频器和 VGA 会一起移动，每一步的价值取决于曲线和频段。0 为最安静的一端。
 settings-radio-tuner-agc = 调谐器 AGC
@@ -1710,7 +1710,7 @@ settings-radio-antenna-sma-only-socket-bias = 天线 SMA——唯一后接偏置
 settings-radio-cable-socket-no-bias-tee = 线缆插座。这里没有偏置三通；硬件只把它接在 ANT 上。
 settings-radio-powers-active-antenna-preamp-down-2 = 通过同轴电缆为有源天线或前置放大器供电。只有 ANT 插座具有此功能——两个线缆端口是普通输入。
 settings-radio-third-less-usb-traffic-leave-2 = USB 流量减少三分之一。请保持开启：这是一台 USB 2.0 设备，最高速率为打包时 36 MB/s、未打包时 48 MB/s。在重新连接后生效。
-settings-radio-one-these-boards-1d50-60a1 = 其中一种板卡使用 1d50:60a1，这是 HydraSDR 原型机与 Airspy R2 和 Mini 共用的 USB 标识。sdroxide 会在打开后检查固件，若选错了接口（无论哪个方向），都会提示。
+settings-radio-one-these-boards-1d50-60a1 = 其中一种板卡使用 1d50:60a1，这是 HydraSDR 原型机与 Airspy R2 和 Mini 共用的 USB 标识。sdrcrow 会在打开后检查固件，若选错了接口（无论哪个方向），都会提示。
 settings-radio-receive-only-24-1800-mhz-2 = 仅接收，24–1800 MHz。无需 SoapySDR，也无需 libhydrasdr。接收机、采样率和打包在“应用”后生效；其他设置在你更改时即生效。
 settings-radio-re-list-fobos-sdrs-no = 重新列出 Fobos SDR。不会打开任何设备，因此在接收时按下也是安全的。
 settings-radio-no-fobos-sdr-found-press = 未找到 Fobos SDR——请按“重新扫描”
@@ -1991,7 +1991,7 @@ topbar-waiting-signal = 等待信号
 topbar-record-spectrum = 录制频谱
 topbar-i-q-wav = ● I/Q WAV
 topbar-i-q-wav-2 = I/Q WAV
-topbar-raw-spectrum-receiver-delivering-stereo = 接收机输出的原始频谱，保存为立体声 32 位浮点 WAV（超过 4 GB 时为 RF64），SDR#、SDRuno、HDSDR 和 SDRangel 都能打开它——sdroxide 自身也能用 --file 回放它。文件很大：每个采样 8 字节。
+topbar-raw-spectrum-receiver-delivering-stereo = 接收机输出的原始频谱，保存为立体声 32 位浮点 WAV（超过 4 GB 时为 RF64），SDR#、SDRuno、HDSDR 和 SDRangel 都能打开它——sdrcrow 自身也能用 --file 回放它。文件很大：每个采样 8 字节。
 topbar-radio-hands-over-demodulated-audio = 此电台输出的是解调后的音频，因此没有 I/Q 可供录制。
 topbar-what-capture-costs-sample-rate = 在此采样率下录制的开销
 topbar-engine = 引擎
@@ -2012,9 +2012,9 @@ topbar-which-socket-back-radio-receiving =
 topbar-radio-s-separate-receiving-antenna =
     电台独立的接收天线，切入或切出接收通路——即其自身的 RX ANT 设置。无论如何，主插座上的天线都保留用于发射。
 
-    The radio remembers this per band itself, so sdroxide reads it back after every band change rather than putting back what it last saw: clicking here is the only thing that moves it.
+    The radio remembers this per band itself, so sdrcrow reads it back after every band change rather than putting back what it last saw: clicking here is the only thing that moves it.
 topbar-radio-s-own-power-switch =
-    电台自身的电源开关，通过控制链路操作，也是本程序中唯一真正的开关——而非 sdroxide 的“连接”开关，后者只关闭 sdroxide 这一端，电台仍在运行。
+    电台自身的电源开关，通过控制链路操作，也是本程序中唯一真正的开关——而非 sdrcrow 的“连接”开关，后者只关闭 sdrcrow 这一端，电台仍在运行。
 
     For ON to reach anything the radio's control end has to stay awake while it is off: Network Control over the LAN, or a CI-V port still fed from the mains on a set switched off at the front.
 topbar-switch-radio = 开启电台
@@ -2150,7 +2150,7 @@ settings-radio-icom-scope-hint =
 
     The sweeps share the radio's internal USB bus with its own sound card. If received audio starts to drop out with the scope on, this box is the first thing to try turning off.
 settings-radio-rx-tx-words = { $rx } / 发射 { $tx }
-settings-radio-soapy-native = sdroxide 直接支持上面的硬件：{ $names }。选择上面的该接口可获得其自身的设置——SoapySDR 无法表达的增益级、滤波器和陷波——并且无需 SoapySDR 模块。
+settings-radio-soapy-native = sdrcrow 直接支持上面的硬件：{ $names }。选择上面的该接口可获得其自身的设置——SoapySDR 无法表达的增益级、滤波器和陷波——并且无需 SoapySDR 模块。
 settings-radio-rx888-width-hint = 全景图一次显示数字化频谱的多少。整个 DSP 链路都以此宽度运行，因此越宽则 CPU 开销成比例增加——1/2 即瀑布图中的整个频段，计算量相当可观。在 VHF 分界点（{ $crossover } MHz）以上，全景图看的不是天线，而是调谐器的中频，它宽 8 MHz，固定在 { $if_centre } MHz——因此任何宽于 { $widest } 的设置都无法将其居中，多出的宽度只是信号旁边的空白频谱，而并非更多的信号。
 settings-radio-sdrplay-serial-missing = 序列号 { $serial } 不在 SDRplay 服务报告的接收机之中。请选择列出的某一台接收机，或重新插拔此设备后按“重新扫描”。
 settings-radio-hdr-filter-hint =
@@ -2243,7 +2243,7 @@ topbar-drive-cal-band = { $band } 经校准为 { $trim } dB，因此同样的设
        *[more] 高
     } { $diff } dB 发射出去。
 topbar-drive-hover =
-    发射机被驱动的力度。在 sdroxide 自行调制的电台上，它缩放的是已调制的采样；在带有自身功率控制的电台上，它是请求电台输出的额定功率的比例。
+    发射机被驱动的力度。在 sdrcrow 自行调制的电台上，它缩放的是已调制的采样；在带有自身功率控制的电台上，它是请求电台输出的额定功率的比例。
 
     { $trim }
 
@@ -2627,9 +2627,9 @@ setup-my-grid = 我的网格
 setup-station-call = 电台呼号
 setup-ssid-oe3jjs-10-packet-station = 带 SSID——OE3JJS-10。分组电台通常使用与操作员不同的 SSID，而且在此设置之前不会发射任何内容。
 setup-speed = 速率
-setup-t-9600-needs-radio-s-data = 9600 需要电台的数据端口。麦克风和扬声器通路会在两端破坏它——这是电台的问题，而非 sdroxide 的。
+setup-t-9600-needs-radio-s-data = 9600 需要电台的数据端口。麦克风和扬声器通路会在两端破坏它——这是电台的问题，而非 sdrcrow 的。
 setup-tx-delay = 发射延迟
-setup-flags-sent-before-frame-so = 在一帧之前发送标志，使对方能够听到我们并锁定其时钟。在 CAT 电台上，仅 sdroxide 自身就要花 165–240 ms 才能发射，电台自身的发射就绪时间还要再加上去。
+setup-flags-sent-before-frame-so = 在一帧之前发送标志，使对方能够听到我们并锁定其时钟。在 CAT 电台上，仅 sdrcrow 自身就要花 165–240 ms 才能发射，电台自身的发射就绪时间还要再加上去。
 setup-packet-length = 分组长度
 setup-bytes = {" "}字节
 setup-most-single-frame-carries-shorter = 单帧所能承载的最大长度。较短的帧能在勉强可用的路径上存活——只需重发被击中的那一帧——但开销更大。HF 上为 128，路径可靠时为 256。
@@ -2676,7 +2676,7 @@ setup-first-goes-out-one-interval = 第一次信标会在从现在起一个间�
 setup-messages = 消息
 setup-acknowledge = 确认
 setup-answer-messages-addressed-you-acknowledgement = 应答发给你的消息。确认是本电台在无人请求时发出的发射，因此仅接收的设置应将其关闭——这样信标也就不再声称可以被联系到。
-setup-flags-sent-ahead-every-frame = 在每一帧之前发送的标志，使对方的调制解调器能在数据开始之前听到载波并锁定其时钟。它必须长于从按下发射到辐射出去之间的全部时间：仅 sdroxide 自身在 CAT 电台上就要占用其中的 165–240 ms，而通过网络接收音频的电台还会在此之上再加缓冲。设得太短，对方永远无法锁定——发射确实存在，却没有任何东西能将其解码。
+setup-flags-sent-ahead-every-frame = 在每一帧之前发送的标志，使对方的调制解调器能在数据开始之前听到载波并锁定其时钟。它必须长于从按下发射到辐射出去之间的全部时间：仅 sdrcrow 自身在 CAT 电台上就要占用其中的 165–240 ms，而通过网络接收音频的电台还会在此之上再加缓冲。设得太短，对方永远无法锁定——发射确实存在，却没有任何东西能将其解码。
 setup-shared-packet-mode = 与分组模式共用
 setup-keep-stations = 保留电台
 setup-how-long-station-stays-map = 电台最后一次被听到之后，会在地图上保留多久。这也是地图淡出所依据的时间，因此较短的窗口只显示当前活跃的内容。
@@ -2812,7 +2812,7 @@ sstv-chunks-received-lit-still-missing = 已接收的数据块（亮）和仍缺
 sstv-sstv = SSTV
 sstv-auto = 自动
 sstv-signal = 信号
-sstv-station-sending-mode-sdrcrow-does = 有电台正在发送一种 sdroxide 不支持的模式。信号和调谐都正常——只是没有针对此模式的解码器。你这一端无需做任何处理。
+sstv-station-sending-mode-sdrcrow-does = 有电台正在发送一种 sdrcrow 不支持的模式。信号和调谐都正常——只是没有针对此模式的解码器。你这一端无需做任何处理。
 sstv-listening = 正在收听……
 sstv-callsign-last-station-sent-fsk = 上一个电台在图片之后以 FSK ID 发送的呼号。
 sstv-tx-slant = 发射倾斜
@@ -3048,7 +3048,7 @@ sstv-older-load-more = 另有 { $n } 张更早的图片——加载更多
 sstv-delete-picture-from = 从{ $place }删除此图片
 sstv-rifp-profile = { $profile } · 占用约 { $khz } kHz · 表盘为信道中心
 sstv-rifp-too-wide = ⚠ { $profile } 占用约 { $khz } kHz——对于窄带段来说太宽
-sstv-rifp-no-frequency = RIFP 不指定频率，sdroxide 会将其在你调谐到的任何地方发射。一个 { $khz } kHz 的信道只适用于允许宽带或 FM 操作的地方——{ $segments }——而不适用于窄带段，在 HF 上尤其如此。即使在这些地方，你自己的执照条件也可能更窄。你是操作员；请核对你自己的规则。
+sstv-rifp-no-frequency = RIFP 不指定频率，sdrcrow 会将其在你调谐到的任何地方发射。一个 { $khz } kHz 的信道只适用于允许宽带或 FM 操作的地方——{ $segments }——而不适用于窄带段，在 HF 上尤其如此。即使在这些地方，你自己的执照条件也可能更窄。你是操作员；请核对你自己的规则。
 sstv-rifp-tx-frame = ● 发射帧 { $frame }/{ $frames } · 剩余 { $secs } 秒
 sstv-rifp-sent-as = 以 { $encoding } 发送 · { $octets } 字节
 sstv-rifp-rx-stats = 帧 { $frames } · 错误 { $bad } · 图片 { $pictures }
@@ -3089,7 +3089,7 @@ decodes-dupe = 重复
 decodes-reply = 应答
 decodes-queued-click-remove = 已排队——点击即可移除
 decodes-work-station-after-current-one = 在当前电台之后与此电台通联
-decodes-qsos-worked-since-sdrcrow-was = 自 sdroxide 启动以来完成的通联
+decodes-qsos-worked-since-sdrcrow-was = 自 sdrcrow 启动以来完成的通联
 decodes-qso-complete = ✓ 通联完成
 decodes-tx = ● 发射
 decodes-dxpedition-mode-transmit-frequency-held = DXpedition 模式。发射频率被保持在通带中 Fox 所占的那一半之外（1000 Hz 以下），直到 Fox 应答为止。
@@ -3259,7 +3259,7 @@ aprs-busy = 忙
 aprs-stations-heard-still-inside-window = 在 APRS 设置中设定的窗口内听到的电台，以及此刻是否有其他电台在信道上。忙碌时将不会键控任何内容。
 aprs-tx = ● 发射
 aprs-over-progress-frames-waiting-channel = 正在进行的通话、等待信道空闲的帧，或距离下一次计划信标的时间。
-aprs-audio-reaching-modem-flat-means = 到达调制解调器的音频。平直表示完全没有任何东西到达——请检查电台的数据输出是否就是 sdroxide 所收听的那一路。在调制解调器听到载波时，它会亮起绿色。
+aprs-audio-reaching-modem-flat-means = 到达调制解调器的音频。平直表示完全没有任何东西到达——请检查电台的数据输出是否就是 sdrcrow 所收听的那一路。在调制解调器听到载波时，它会亮起绿色。
 
 ## vdl2 (src/app/panels/vdl2.rs)
 
@@ -3292,7 +3292,7 @@ vdl2-forget-station-after = 在以下情况下忘记一个电台
 vdl2-nothing-heard = 且未从其收到任何内容
 vdl2-show-unread-payloads = 显示未读载荷
 vdl2-hex = 以十六进制显示
-vdl2-frames-carrying-x-25-clnp = 承载 X.25、CLNP 或其之上的数据链应用的帧。SDRoxide 会为它们命名并显示字节，而不是读取它们；若将其隐藏，就会隐藏这些流量所占的比例。
+vdl2-frames-carrying-x-25-clnp = 承载 X.25、CLNP 或其之上的数据链应用的帧。SDRCrow 会为它们命名并显示字节，而不是读取它们；若将其隐藏，就会隐藏这些流量所占的比例。
 vdl2-registration = 注册号
 vdl2-flight = 航班
 vdl2-label = 标签
@@ -3412,7 +3412,7 @@ ais-dgnss = {" "}（DGNSS）
 ais-first-heard = 首次收听
 ais-center = 居中
 ais-put-vessel-middle-chart = 将此船舶置于海图中央
-ais-last-message-station-nmea-sentences = 此电台最后一条消息，以接收机会发送到线路上的 NMEA 语句形式显示。可将其粘贴到任何其他 AIS 解码器中，以核对 sdroxide 对它的解读。
+ais-last-message-station-nmea-sentences = 此电台最后一条消息，以接收机会发送到线路上的 NMEA 语句形式显示。可将其粘贴到任何其他 AIS 解码器中，以核对 sdrcrow 对它的解读。
 ais-ais-setup = AIS 设置
 ais-channels = 信道
 ais-drop-chart-after = 超过以下时间后从海图中移除
@@ -3634,7 +3634,7 @@ adsb-icao = ICAO
 drm-waiting-receiver = 正在等待接收机……
 drm-not-drm-set-mode-drm = 不在 DRM 模式。请在数字短波广播上将模式设为 DRM——表盘应位于信道中心，而不是边带上。
 drm-no-drm-signal-locked-decoder = 尚未锁定 DRM 信号。在干净的载波上，解码器需要几秒钟：DRM 在能够读取任何内容之前，会进行 400 ms 或 2 s 的交织。
-drm-station-s-audio-codec-not = 此电台的音频编解码器在此无法解码。xHE-AAC 需要系统中的 libfdk-aac——它无法内置，因为其许可证与本程序的许可证不兼容。请安装它（Debian/Ubuntu：libfdk-aac2，Arch：libfdk-aac，macOS：brew install fdk-aac，Windows：与 sdroxide.exe 放在同一目录中的 libfdk-aac-2.dll），然后重新启动。此屏幕上的其他内容均可正常解码。
+drm-station-s-audio-codec-not = 此电台的音频编解码器在此无法解码。xHE-AAC 需要系统中的 libfdk-aac——它无法内置，因为其许可证与本程序的许可证不兼容。请安装它（Debian/Ubuntu：libfdk-aac2，Arch：libfdk-aac，macOS：brew install fdk-aac，Windows：与 sdrcrow.exe 放在同一目录中的 libfdk-aac-2.dll），然后重新启动。此屏幕上的其他内容均可正常解码。
 drm-quality = 质量
 drm-last-minute = 最近一分钟
 drm-waiting-locked-signal = 等待锁定的信号
@@ -3955,16 +3955,16 @@ ism-decoding = 解码中
 ism-needs-wideband-iq-source-cat = 需要宽带 IQ 信源；CAT 电台只发送音频
 ism-how-far-burst-must-stand = 突发信号在被解码之前，必须高出该信道自身底噪多少
 ism-give-each-band-width-normally = 为每个频段提供其通常所需的宽度——315、345 和 433 MHz 的 OOK 频段需要四分之一兆赫，868 和 915 则需要一整个兆赫。
-ism-several-hundred-more-device-decoders = 另有数百个设备解码器，来自 rtl_433 项目，已内置。可读取 sdroxide 自身解码器完全无法触及的 433 MHz OOK 设备。凡是两者都能读取的设备，rtl_433 知道的变体要多得多，并会接管。
+ism-several-hundred-more-device-decoders = 另有数百个设备解码器，来自 rtl_433 项目，已内置。可读取 sdrcrow 自身解码器完全无法触及的 433 MHz OOK 设备。凡是两者都能读取的设备，rtl_433 知道的变体要多得多，并会接管。
 ism-t-1-your-own = 1 个你自己的
 ism-device-decoders-registered-how-many = 已注册的设备解码器、其中来自你的 rtl433_flex.conf 的数量，以及自启动以来已解码的发射数。
 ism-reload-decoders = 重新加载解码器
 ism-re-read-rtl433-flex-conf = 编辑后重新读取 rtl433_flex.conf。已收听到的设备仍会保留在列表中。
-ism-rtl-433-knows-more-variants = rtl_433 比 sdroxide 自身的解码器了解这些设备的更多变体，因此在此收听时由它读取。选择另一个频段，sdroxide 自身的解码器便会重新接管。
+ism-rtl-433-knows-more-variants = rtl_433 比 sdrcrow 自身的解码器了解这些设备的更多变体，因此在此收听时由它读取。选择另一个频段，sdrcrow 自身的解码器便会重新接管。
 ism-decoder-your-rtl433-flex-conf = 你的 rtl433_flex.conf 中的一个解码器被拒绝。其余的已正常加载。请修正该行，然后按“重新加载解码器”。
 ism-waiting-decoder = 正在等待解码器……
 ism-where-decoder-actually-listening-follows = 解码器实际在收听的位置。它跟随接收机的硬件中心，而不是 VFO——在宽幅前端上，两者可能相距甚远，而决定哪些信道可以到达的正是这个窗口。
-ism-transmissions-gate-opened-how-many = 闸门打开过的发射次数，以及其中产生有效帧的次数。突发很多而解码很少，说明频段上充斥着 sdroxide 尚无法读取的设备。完全没有，则说明没有任何东西达到阈值——请调低阈值，或检查表盘是否在该频段上。
+ism-transmissions-gate-opened-how-many = 闸门打开过的发射次数，以及其中产生有效帧的次数。突发很多而解码很少，说明频段上充斥着 sdrcrow 尚无法读取的设备。完全没有，则说明没有任何东西达到阈值——请调低阈值，或检查表盘是否在该频段上。
 ism-nothing-heard-yet = 尚未听到任何内容
 ism-click-tune-receiver =
 
@@ -4050,7 +4050,7 @@ rade-callsign-station-put-end-over =
 rade-stop-talking = 停止说话
 rade-talk-ptt = 说话（PTT）
 rade-open-close-rade-over-modem = 开始或结束一次 RADE 通话。调制解调器在第一帧发出之前需要约 120 ms 的语音，并在你停止时发送一个通话结束帧，因此发射会在按钮松开后再持续一小段时间。
-rade-rade-v1-occupies-roughly-1060 = RADE V1 占用通带中约 1060–1880 Hz——上边带，或在 160、80 和 40 米上为下边带，RADE 在这些频段上保留了电话练习，sdroxide 会为你切换。将信号置于瀑布图上的阴影频带之内；调制解调器便会从那里找到它。
+rade-rade-v1-occupies-roughly-1060 = RADE V1 占用通带中约 1060–1880 Hz——上边带，或在 160、80 和 40 米上为下边带，RADE 在这些频段上保留了电话练习，sdrcrow 会为你切换。将信号置于瀑布图上的阴影频带之内；调制解调器便会从那里找到它。
 
 ## frame (src/app/frame.rs)
 
@@ -4075,7 +4075,7 @@ smeter-radio-reports-no-forward-power =
 smeter-no-swr-radio-has-no =
 
 
-    No SWR: this radio has no bridge to measure it with, and sdroxide will not invent one — it can only show what the radio itself reports. A rig with an SWR meter (over CAT, TCI or a LAN link) and an HPSDR board both fill this in; a plain SDR transmitter cannot.
+    No SWR: this radio has no bridge to measure it with, and sdrcrow will not invent one — it can only show what the radio itself reports. A rig with an SWR meter (over CAT, TCI or a LAN link) and an HPSDR board both fill this in; a plain SDR transmitter cannot.
 smeter-no-signal-report-yet-receiver = 尚无信号报告——接收机尚未提供表头读数。
 smeter-s9-73-dbm-each-s =
 
@@ -4181,7 +4181,7 @@ help-previous-match-shift-enter-shift = 上一个匹配项（Shift+Enter、Shift
 help-next-match-enter-f3 = 下一个匹配项（Enter、F3）
 help-no-matches = 无匹配
 help-clear-search-esc = 清除搜索（Esc）
-help-sdrcrow-manual = SDROXIDE 手册
+help-sdrcrow-manual = SDRCROW 手册
 help-contents = 目录
 
 ## aismap (src/ais_map.rs)
@@ -4201,7 +4201,7 @@ specview-hounds = HOUNDS
 
 spectrum-window-has-no-gpu-renderer = 此窗口没有 GPU 渲染器，因此瀑布图保持标准宽度。
 spectrum-machine-drawing-without-gpu-every = 此机器在没有 GPU 的情况下绘图——瀑布图的每一列都由处理器完成，而处理器已经与电台共享。
-spectrum-window-renders-through-opengl-which = 此窗口通过 OpenGL 渲染，这是 sdroxide 的兼容路径——例如 Raspberry Pi、较旧的显卡，或不支持 WebGPU 的浏览器。在那里，更宽的瀑布图不值得牺牲帧率。
+spectrum-window-renders-through-opengl-which = 此窗口通过 OpenGL 渲染，这是 sdrcrow 的兼容路径——例如 Raspberry Pi、较旧的显卡，或不支持 WebGPU 的浏览器。在那里，更宽的瀑布图不值得牺牲帧率。
 spectrum-wider-than-renderer-can-draw = 比此渲染器所能绘制的更宽。
 
 ## macros (src/app/panels/macros.rs)
@@ -4276,7 +4276,7 @@ worldmap-double-click-reframe = 双击重新取景
 
 ## duopower (src/app/duo_power.rs)
 
-duopower-sets-fdm-duo-s-own = 设置 FDM-DUO 自身的功率（菜单 34 TX POWER）。驱动和调谐随后在此范围内设置功率，而 SDRoxide 每次连接时都会重新发送此设置。
+duopower-sets-fdm-duo-s-own = 设置 FDM-DUO 自身的功率（菜单 34 TX POWER）。驱动和调谐随后在此范围内设置功率，而 SDRCrow 每次连接时都会重新发送此设置。
 
 ## Band conditions window: a peak date.
 
@@ -4620,7 +4620,7 @@ vdl2-use-worldwide-where-every-link = { $what }——全球通用，也是每条
 vdl2-assigned-which-channels-carry-anything = 分配给 { $what }。哪些信道承载内容取决于你所在的位置：除非另有所知，请全部保持开启。
 vdl2-mhz-db-snr-dbfs-evm = { $mhz } MHz · 信噪比 { $snr_db } dB · { $rssi_dbfs } dBFS · EVM { $evm_deg }° · { $freq_err_hz } Hz · 已纠正 { $rs_corrected } 个 RS 符号
 vdl2-characters = { $parity_errors } 个字符
-vdl2-parameter-sdrcrow-does-not-read = { $unknown } 个 SDRoxide 不读取的参数——见上方，以标识符和字节显示
+vdl2-parameter-sdrcrow-does-not-read = { $unknown } 个 SDRCrow 不读取的参数——见上方，以标识符和字节显示
 
 ## wefax: messages with values (src/app/panels/wefax.rs)
 
@@ -5031,7 +5031,7 @@ hpsdr-io-rx-input-io-board-pure-signal = IO 板 J9，发射时使用 PureSignal
 hydra-sdr-gain-linearity = 线性（最佳强信号处理）
 hydra-sdr-gain-sensitivity = 灵敏度（最佳弱信号）
 icom-rx-source-af = AF——电台解调
-icom-rx-source-if12k = 12 kHz 中频——sdroxide 解调
+icom-rx-source-if12k = 12 kHz 中频——sdrcrow 解调
 icom-scope-span-radio = 保持电台上的设置
 icom-scope-span-khz2-5 = 5 kHz（±2.5k）
 icom-scope-span-khz5 = 10 kHz（±5k）
@@ -5558,7 +5558,7 @@ settings-general-default = 默认
 
 settings-general-default-hint = 恢复默认：您的音乐文件夹，系统没有音乐文件夹时为配置目录
 
-settings-general-recordings-dir-note = 音频录音、定时录音和原始 I/Q 捕获的写入位置。默认：您的音乐文件夹下的 sdroxide 子文件夹；系统没有音乐文件夹时，为配置目录下的 recordings 文件夹。
+settings-general-recordings-dir-note = 音频录音、定时录音和原始 I/Q 捕获的写入位置。默认：您的音乐文件夹下的 sdrcrow 子文件夹；系统没有音乐文件夹时，为配置目录下的 recordings 文件夹。
 
 setup-suffix-cq = { " " }cq
 
@@ -6535,7 +6535,7 @@ decodes-muted-caps = 已静音
 
 decodes-muted-hint = 本次会话已静音——点击恢复收听
 
-decodes-ignore-hint = 在本次会话剩余时间内忽略此电台：它会离开解码列表，不再触发提示音，也不会被提供给自动模式。不会代表它发送或上传任何内容，重启 sdroxide 后它会恢复。
+decodes-ignore-hint = 在本次会话剩余时间内忽略此电台：它会离开解码列表，不再触发提示音，也不会被提供给自动模式。不会代表它发送或上传任何内容，重启 sdrcrow 后它会恢复。
 
 decodes-qso-complete-hint = 此通联已完成并在本地日志中。它在此保留几分钟，以便对方重复其消息时可重发最后一条消息——无需再做其他事。
 
@@ -6668,7 +6668,7 @@ settings-radio-rx-only-n = RX{ $n } 仅接收
 settings-radio-ng-level = nG 电平
 
 settings-radio-ng-level-hint =
-    nG 增加了 2.00x 固件所没有的两个命令，而这里是唯一可以设置它们的地方：nG 既不应答也不存储它们，因此每当链路打开时 sdroxide 都会重新发送。
+    nG 增加了 2.00x 固件所没有的两个命令，而这里是唯一可以设置它们的地方：nG 既不应答也不存储它们，因此每当链路打开时 sdrcrow 都会重新发送。
 
     音量是电台通过 USB 流发送的电平。nG 取的是经过 VOL 和 AGC 之后的音频，因此要修正解码器收到的信号过小或过大，应在这里调整，而不是电脑的混音器。
 
@@ -6682,7 +6682,7 @@ settings-radio-speaker = 扬声器
 
 settings-radio-on-while-streaming = 传输时开启
 
-settings-radio-ng-speaker-hint = 关闭会在传输期间关闭电台自己的扬声器（`UA2;`），这样声音只在 sdroxide 中听到。2.00x 没有这种形式。
+settings-radio-ng-speaker-hint = 关闭会在传输期间关闭电台自己的扬声器（`UA2;`），这样声音只在 sdrcrow 中听到。2.00x 没有这种形式。
 
 settings-radio-ng-agc-auto = 自动（数据模式下为 DIGI）
 
@@ -6722,7 +6722,7 @@ settings-radio-atsmini-vol = 音量
 
 settings-radio-atsmini-step = 步进
 
-settings-radio-atsmini-sent-at-once = 立即发送到电台。音量是接收机自己的音量（它的旋钮，也是 Si4732 的），不是 sdroxide 的 AF 滑块。
+settings-radio-atsmini-sent-at-once = 立即发送到电台。音量是接收机自己的音量（它的旋钮，也是 Si4732 的），不是 sdrcrow 的 AF 滑块。
 
 settings-radio-refresh = 刷新
 
@@ -6734,7 +6734,7 @@ settings-radio-no-slots-stored = 接收机上没有存储任何槽位。
 
 settings-radio-press-refresh-slots = 按刷新读取接收机的存储槽位。
 
-settings-radio-icomnet-receive-hint = AF：电台负责解调，sdroxide 显示音频频带。12 kHz IF：电台改为发送其 DRM 中频，由 sdroxide 解调，从而在约 ±12 kHz 范围内使用 sdroxide 自己的滤波器、降噪和解码器。无论哪种方式，宽带瀑布图都是电台自己的频谱显示——Icom 不输出 I/Q。
+settings-radio-icomnet-receive-hint = AF：电台负责解调，sdrcrow 显示音频频带。12 kHz IF：电台改为发送其 DRM 中频，由 sdrcrow 解调，从而在约 ±12 kHz 范围内使用 sdrcrow 自己的滤波器、降噪和解码器。无论哪种方式，宽带瀑布图都是电台自己的频谱显示——Icom 不输出 I/Q。
 
 settings-radio-copy-icom-session-hint = 将此电台最近一次会话——其握手和 CI-V 跟踪记录——复制到剪贴板（在不允许网页复制的浏览器中则保存为文件），用于提交错误报告。仅限此电台，而非整个电台站：局域网中有两台 Icom 时，每个标签页只回答其自己地址的情况。
 
@@ -6753,7 +6753,7 @@ settings-radio-rx888-dab-rate-hint = 如需解码 DAB/DAB+，请选择 80.0 Msps
 settings-radio-pluto-both-chains-hint = 要同时收听两根天线：在同一地址上添加第二台电台并设为 RX2。两台电台共用同一频率。
 
 settings-radio-duplex-tdd-hint =
-    AD9361 是同时运行两个方向（FDD，Pluto 的启动方式，也是 sdroxide 一贯保持的状态），还是一次只运行一个方向（TDD）。
+    AD9361 是同时运行两个方向（FDD，Pluto 的启动方式，也是 sdrcrow 一贯保持的状态），还是一次只运行一个方向（TDD）。
 
     除非您需要下面的 PTT 引脚，否则请保持 FDD——这些引脚由 TDD 触发，且它与上面的全双工互斥。应用后生效。
 
@@ -7266,7 +7266,7 @@ frame-listening-controls = 收听控制
 
 frame-listening-controls-hint = 隐藏发射控制，并把这台电台切换到收听界面（设置 → 电台）。不会重新调谐，解码器继续运行。
 
-frame-update-available = SDR Oxide Brown { $tag } 已发布，你当前使用的是 { $version }。
+frame-update-available = SDRCrow { $tag } 已发布，你当前使用的是 { $version }。
 
 frame-download = 下载
 
@@ -7555,7 +7555,7 @@ cwkey-grab-failed = 无法独占电键桨，其触点可能也会在其他窗口
 ignore-muted-hover =
     本次会话已静音：{ $names }。
 
-    被静音的电台不在解码列表中，不触发提醒，不被朗读，也绝不会被自动模式当作应答对象。不会代表它发射或上传任何内容，该列表在 sdroxide 关闭时即被清除，没有存储副本，所以一晚收听之后不会有任何内容保持隐藏。
+    被静音的电台不在解码列表中，不触发提醒，不被朗读，也绝不会被自动模式当作应答对象。不会代表它发射或上传任何内容，该列表在 sdrcrow 关闭时即被清除，没有存储副本，所以一晚收听之后不会有任何内容保持隐藏。
 
     点击可全部取消静音，或按其任一行上的 - 按钮。
 
@@ -7710,7 +7710,7 @@ settings-ui-sound-welcome-browser-only = 仅限浏览器，安装的程序无需
 settings-ui-profile-screen = 屏幕跟随你的配置文件
 
 settings-ui-profile-screen-hint =
-    当你是 `sdroxide --server` 的远程客户端时，此屏幕的*外观*（主题、布局、瀑布图和频谱、字体、简洁界面、地图图层、全景显示自己的视图）会与你登录所用的配置文件一起保存，因此在任何机器上都能恢复，而不是从默认值开始。
+    当你是 `sdrcrow --server` 的远程客户端时，此屏幕的*外观*（主题、布局、瀑布图和频谱、字体、简洁界面、地图图层、全景显示自己的视图）会与你登录所用的配置文件一起保存，因此在任何机器上都能恢复，而不是从默认值开始。
 
     { "**" }保存在服务器上，并且在你登录期间随时自动保存**，无需按任何按钮。这是有意为之：浏览器存储不可依赖，因为 `persist()` 在每个浏览器中的行为都不同，而且保存在那里的会话无法由不在该设备前的人重置。服务器上的配置文件是电台操作员可以恢复的文件。
 
@@ -8513,7 +8513,7 @@ settings-xvtr-drive-hint =
 
     您的驱动设置保持在此值之下而不被改动，因此当频率离开该波段时，您在HF上使用的数值会恢复。
 
-settings-brown-build-note = sdroxide的Brown版本：上游程序，外加11 m民用波段、短波收听和解码。作为普通业余电台运行，并增加了这些波段和工具。
+settings-brown-build-note = sdrcrow的Brown版本：上游程序，外加11 m民用波段、短波收听和解码。作为普通业余电台运行，并增加了这些波段和工具。
 
 settings-gain-by-band = 按波段记住前端增益
 
@@ -8659,7 +8659,7 @@ settings-log11dx-api-url = API地址
 
 settings-log11dx-api-token = API令牌
 
-settings-log11dx-note = 两者都来自您的LOG11DX个人资料页面。不需要它自己的WSJT-X桥接：sdroxide记录QSO并直接提交到那里。该网站会遮蔽令牌，因此生成时请复制下来：它和其他凭据一样存储在net.json中。
+settings-log11dx-note = 两者都来自您的LOG11DX个人资料页面。不需要它自己的WSJT-X桥接：sdrcrow记录QSO并直接提交到那里。该网站会遮蔽令牌，因此生成时请复制下来：它和其他凭据一样存储在net.json中。
 
 settings-pan-attached-note =
     它的频谱、瀑布图以及由它们读取的所有内容都在该电台的标签页上，所以它自己没有这些。上方的接口设置仍属于此电台并继续有效：更改后请按应用 / 重新连接，两台电台将一起重新启动。
@@ -8873,7 +8873,7 @@ aircraft-online-switch-on-hover = 在线：机型、运营商、航线和照片�
 
 aircraft-online-switch-off-hover = 离线：没有任何内容离开电台。点击开启机型、运营商、航线和照片（adsbdb和Planespotters）、机场图片（Wikipedia）以及机场天气（Open-Meteo）。
 
-aircraft-switch-held = 电台的操作员通过SDROXIDE_AIRCRAFT_ONLINE控制此项
+aircraft-switch-held = 电台的操作员通过SDRCROW_AIRCRAFT_ONLINE控制此项
 
 adsbmap-airport-photo-credit = 照片：Wikipedia
 
@@ -9253,9 +9253,9 @@ settings-general-band-plan-reset = 恢复内置 IARU
 
 settings-general-band-plan-reset-hint = 重新使用内置的 IARU 表。之后需要重新检查并确认 TX 和 RX 波段列表。
 
-settings-general-band-plan-folder = 方案就是电台所连接机器上 { $path } 中的文件，可以自行添加和删除。把某个波段缩小到您的执照范围，sdroxide 就会拒绝在其之外发射。频率单位为 MHz。这是区域划分，不是您的执照：您的实际条件可能更窄，各国方案在同一区域内也有差异。
+settings-general-band-plan-folder = 方案就是电台所连接机器上 { $path } 中的文件，可以自行添加和删除。把某个波段缩小到您的执照范围，sdrcrow 就会拒绝在其之外发射。频率单位为 MHz。这是区域划分，不是您的执照：您的实际条件可能更窄，各国方案在同一区域内也有差异。
 
-settings-general-band-plan-station-folder = 方案保存在电台所连接的机器上。把某个波段缩小到您的执照范围，sdroxide 就会拒绝在其之外发射。这是区域划分，不是您的执照：您的实际条件可能更窄，各国方案在同一区域内也有差异。
+settings-general-band-plan-station-folder = 方案保存在电台所连接的机器上。把某个波段缩小到您的执照范围，sdrcrow 就会拒绝在其之外发射。这是区域划分，不是您的执照：您的实际条件可能更窄，各国方案在同一区域内也有差异。
 
 settings-general-band-plan-manager = 波段方案管理
 

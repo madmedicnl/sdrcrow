@@ -49,7 +49,7 @@ The program uses `ProjectDirs::from("org", "sdrcrow", "sdrcrow")` with
 | macOS | `~/Library/Application Support/org.sdrcrow.sdrcrow` |
 | Windows | `%APPDATA%\sdrcrow\sdrcrow\config-brown` |
 
-`SDROXIDE_CONFIG_DIR` overrides all of it, which is how you run two independent
+`SDRCROW_CONFIG_DIR` overrides all of it, which is how you run two independent
 stations from one login.
 
 ## Taking the configuration from a machine you have set up

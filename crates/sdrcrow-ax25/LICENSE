@@ -1,12 +1,12 @@
 MIT License
 
 Copyright (c) Thomas Habets <thomas@habets.se>
-Copyright (c) The sdroxide authors
+Copyright (c) The sdrcrow authors
 
 Portions of this crate are derived from rax25
 (https://github.com/ThomasHabets/rax25) by Thomas Habets, used under the MIT
 licence. See ../../vendor/rax25/PROVENANCE.md for what was taken and what was
-changed. The remainder is original to sdroxide and offered under the same terms
+changed. The remainder is original to sdrcrow and offered under the same terms
 so that the crate is usable as a whole.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

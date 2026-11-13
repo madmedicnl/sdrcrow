@@ -4,7 +4,7 @@
 //! Deliberate layering: the *physics* lives here; the protocol *logic*
 //! (master election, ARQ, chat) is in [`crate::protocol`]. On the real radio
 //! neither this module nor its TCP server is used — `AtChatEngine` bridges the
-//! `Station` straight onto sdroxide's SSB transmit/receive path. The virtual
+//! `Station` straight onto sdrcrow's SSB transmit/receive path. The virtual
 //! channel exists for radio-less development and for the standalone test tools,
 //! and its wire is `channel_server.py`-compatible.
 

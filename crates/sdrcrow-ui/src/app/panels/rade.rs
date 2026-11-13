@@ -8,9 +8,9 @@ use crate::i18n::tr;
 use eframe::egui::{self, RichText};
 use sdrcrow_types::Command;
 
-use crate::app::{SdroxideApp, tx_gated};
+use crate::app::{SdrcrowApp, tx_gated};
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn rade_panel(
         &mut self,
         ui: &mut egui::Ui,

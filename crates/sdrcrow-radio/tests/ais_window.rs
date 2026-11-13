@@ -188,7 +188,7 @@ fn isolate_config(name: &str) {
     // An engine test that saves anything writes the operator's real config
     // directory unless this is set: the variable is process-global and unset
     // means the live one.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 }
 
 fn engine(rate: f64, dial: f64) -> sdrcrow_radio::EngineHandles {

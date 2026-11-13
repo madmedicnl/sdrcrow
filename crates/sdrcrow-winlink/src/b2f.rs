@@ -329,10 +329,10 @@ mod tests {
 
     #[test]
     fn local_sid_is_well_formed() {
-        let sid = Sid::local("sdroxide", "1.2.0");
+        let sid = Sid::local("sdrcrow", "1.2.0");
         assert_eq!(sid, "[sdrcrow-1.2.0-B2FHM$]");
         let parsed = Sid::parse(&sid).unwrap();
-        assert_eq!(parsed.name, "sdroxide");
+        assert_eq!(parsed.name, "sdrcrow");
         assert_eq!(parsed.version, "1.2.0");
         assert!(parsed.has("B2"));
         // `$` must close the code list.

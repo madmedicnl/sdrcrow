@@ -22,7 +22,7 @@ pub const DEFAULT_HOST: &str = "atsmini.local";
 pub const MONITOR_PERIOD_MS: u32 = 500;
 
 /// The modulation the *radio* is running, as reported in the telemetry `mode`
-/// field. This is the hardware demod; sdroxide's own receive mode only decides
+/// field. This is the hardware demod; sdrcrow's own receive mode only decides
 /// what it does with the resulting audio.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum FirmwareMode {
@@ -44,7 +44,7 @@ impl FirmwareMode {
         }
     }
 
-    /// The sdroxide receive mode that corresponds — the Si4732's FM is wide
+    /// The sdrcrow receive mode that corresponds — the Si4732's FM is wide
     /// broadcast FM.
     pub fn as_rx_mode(self) -> crate::Mode {
         match self {
@@ -66,7 +66,7 @@ impl FirmwareMode {
     }
 }
 
-/// The four demodulators the Si4732 has, as sdroxide receive modes.
+/// The four demodulators the Si4732 has, as sdrcrow receive modes.
 ///
 /// This is the ATS Mini popup's mode row, in full and in one place: the radio
 /// is receive-only, so every band offers every one of them and no band rule may

@@ -154,7 +154,7 @@ async fn an_answer_is_kept_per_login_and_browser_on_the_server() {
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).expect("config dir");
     // SAFETY: the only test in this binary, set before the server starts.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
     let user = "f6kim";
     spawn_server(

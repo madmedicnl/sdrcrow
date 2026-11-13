@@ -70,7 +70,7 @@ pub enum SpectrumDetail {
     /// Pick from this machine and this screen, and follow them if they change.
     #[default]
     Auto,
-    /// 2048 columns — what every sdroxide before this drew, and about what a
+    /// 2048 columns — what every sdrcrow before this drew, and about what a
     /// 1080p panadapter can show.
     Standard,
     /// 4096 columns — one per pixel of a 4K panadapter.
@@ -1251,7 +1251,7 @@ pub struct UiSettings {
     /// arrows on the instrument; see [`MeterView`].
     #[serde(default)]
     pub smeter_view: MeterView,
-    /// Ask sdroxide.com once per start whether a newer release has been
+    /// Ask sdrcrow.com once per start whether a newer release has been
     /// published, and say so in the notice banner above the panadapter. In
     /// `[ui]` because it is this screen's preference, like the theme — the
     /// native client checks for its own build, wherever its radio is.

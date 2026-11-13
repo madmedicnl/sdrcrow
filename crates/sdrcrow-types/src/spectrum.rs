@@ -97,7 +97,7 @@ impl SpectrumFrame {
 /// no client has configured — and a client from before the field existed —
 /// behaves exactly as it always did. It is the floor as well as the default: a
 /// client asking for less is either old or confused, and neither is a reason to
-/// draw a coarser picture than sdroxide has ever drawn.
+/// draw a coarser picture than sdrcrow has ever drawn.
 pub const DEFAULT_DISPLAY_BINS: u32 = 2048;
 
 /// The widest frame any client may ask an engine for.
@@ -211,7 +211,7 @@ mod tests {
 
     /// The width is an untrusted number off the network. Every value has to
     /// come back out as something an engine can allocate — and never as
-    /// something coarser than sdroxide has always drawn.
+    /// something coarser than sdrcrow has always drawn.
     #[test]
     fn any_requested_width_lands_in_range() {
         for want in [0, 1, 255, 2047, 2048, 4096, 8192, 8193, u32::MAX] {

@@ -5,7 +5,7 @@
 //! DTR through an opto-isolator or a small transistor, driving whatever wants a
 //! PTT closure. A DigiRig, a homebrew interface, and every outboard sequencer
 //! ever sold — W6PQL, DX Engineering, Array Solutions — take exactly this and
-//! nothing else. sdroxide already drives these lines for CAT PTT; this is the
+//! nothing else. sdrcrow already drives these lines for CAT PTT; this is the
 //! same trick pointed at the antenna instead of the radio.
 //!
 //! # Numbering

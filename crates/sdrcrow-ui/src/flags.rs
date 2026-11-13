@@ -7,7 +7,7 @@
 //! They are compiled in rather than fetched: a decode list that only shows
 //! where stations are once the network answers is a decode list that shows it
 //! differently on every machine, and the remote client has no business
-//! reaching past sdroxide to a third-party CDN.
+//! reaching past sdrcrow to a third-party CDN.
 
 use std::collections::HashMap;
 

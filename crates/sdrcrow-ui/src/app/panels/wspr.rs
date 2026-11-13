@@ -22,7 +22,7 @@ use sdrcrow_types::{Band, Command, WSPR_SLOT_S, WsprSpot, power_label};
 
 use crate::app::panels::widgets::{SlotState, row_cell, slot_bar, slot_phase_s};
 use crate::app::util::fmt_age;
-use crate::app::{SdroxideApp, rx_only_hint};
+use crate::app::{SdrcrowApp, rx_only_hint};
 use crate::chrome::StyledCombo;
 use crate::theme::ThemedScroll;
 use crate::time::{now_unix, now_unix_f64};
@@ -35,7 +35,7 @@ use crate::time::{now_unix, now_unix_f64};
 /// up (issue #316) — the counter beside the heading is the number of rows, so a
 /// cap is indistinguishable from a station that went deaf.
 ///
-/// Affordable because the list is virtualised — [`SdroxideApp::wspr_spot_list`]
+/// Affordable because the list is virtualised — [`SdrcrowApp::wspr_spot_list`]
 /// lays out only the rows the viewport covers — and because the arrival path
 /// de-duplicates through a set rather than a scan per spot. Without both, this
 /// number is a frame-rate setting.
@@ -71,7 +71,7 @@ fn wspr_row_slot(ui: &egui::Ui) -> f32 {
 /// three chances to be heard again.
 const WSPR_STATION_FADE_S: f64 = 600.0;
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn wspr_panel(
         &mut self,
         ui: &mut egui::Ui,

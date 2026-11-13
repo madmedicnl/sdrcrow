@@ -105,7 +105,7 @@ async fn a_station_that_has_not_switched_it_on_says_disabled() {
     spawn_station(PORT_SHUT, false, false).await;
     for path in [
         "/aircraft-info/484006",
-        "/sdroxide/aircraft-info/484006",
+        "/sdrcrow/aircraft-info/484006",
         "/shack/sdr/aircraft-info/4ca1fa?callsign=RYR123",
     ] {
         let answer = get(PORT_SHUT, path, None).await;
@@ -150,7 +150,7 @@ async fn an_open_station_refuses_a_bad_question_with_400() {
         "/aircraft-info/48400",
         "/aircraft-info/484006?callsign=KLM%20123",
         "/aircraft-info/484006?reg=PH%2FBXA",
-        "/sdroxide/aircraft-info/not-an-address",
+        "/sdrcrow/aircraft-info/not-an-address",
     ] {
         let answer = get(PORT_OPEN, path, None).await;
         assert!(answer.starts_with("HTTP/1.1 400"), "{path}: {answer}");
@@ -182,7 +182,7 @@ const PORT_PHOTO_OPEN: u16 = 39486;
 #[tokio::test]
 async fn the_photo_is_shut_while_the_relay_is_off() {
     spawn_station(PORT_PHOTO_SHUT, false, false).await;
-    for path in ["/aircraft-photo/484006", "/sdroxide/aircraft-photo/484006"] {
+    for path in ["/aircraft-photo/484006", "/sdrcrow/aircraft-photo/484006"] {
         let answer = get(PORT_PHOTO_SHUT, path, None).await;
         assert!(answer.starts_with("HTTP/1.1 503"), "{path}: {answer}");
         assert!(answer.to_ascii_lowercase().contains("cache-control: no-store"), "{answer}");
@@ -195,7 +195,7 @@ async fn the_photo_and_its_release_want_the_cookie() {
     spawn_station(PORT_PHOTO_PASSWORD, true, true).await;
     let without = get(PORT_PHOTO_PASSWORD, "/aircraft-photo/484006", None).await;
     assert!(without.starts_with("HTTP/1.1 401"), "{without}");
-    let release = send(PORT_PHOTO_PASSWORD, "DELETE", "/aircraft-photo", "x-sdroxide: 1\r\n").await;
+    let release = send(PORT_PHOTO_PASSWORD, "DELETE", "/aircraft-photo", "x-sdrcrow: 1\r\n").await;
     assert!(release.starts_with("HTTP/1.1 401"), "{release}");
 }
 
@@ -212,13 +212,13 @@ async fn nothing_is_fetched_for_an_aircraft_nobody_asked_about_and_a_release_nee
     assert!(bad.starts_with("HTTP/1.1 400"), "{bad}");
     let bare = send(PORT_PHOTO_OPEN, "DELETE", "/aircraft-photo", "").await;
     assert!(bare.starts_with("HTTP/1.1 403"), "{bare}");
-    let ok = send(PORT_PHOTO_OPEN, "DELETE", "/aircraft-photo", "x-sdroxide: 1\r\n").await;
+    let ok = send(PORT_PHOTO_OPEN, "DELETE", "/aircraft-photo", "x-sdrcrow: 1\r\n").await;
     assert!(ok.starts_with("HTTP/1.1 204"), "{ok}");
-    let one = send(PORT_PHOTO_OPEN, "DELETE", "/aircraft-photo/484006", "x-sdroxide: 1\r\n").await;
+    let one = send(PORT_PHOTO_OPEN, "DELETE", "/aircraft-photo/484006", "x-sdrcrow: 1\r\n").await;
     assert!(one.starts_with("HTTP/1.1 204"), "{one}");
     let bare_one = send(PORT_PHOTO_OPEN, "DELETE", "/aircraft-photo/484006", "").await;
     assert!(bare_one.starts_with("HTTP/1.1 403"), "{bare_one}");
-    let junk = send(PORT_PHOTO_OPEN, "DELETE", "/aircraft-photo/zz", "x-sdroxide: 1\r\n").await;
+    let junk = send(PORT_PHOTO_OPEN, "DELETE", "/aircraft-photo/zz", "x-sdrcrow: 1\r\n").await;
     assert!(junk.starts_with("HTTP/1.1 400"), "{junk}");
 }
 
@@ -232,7 +232,7 @@ const ARTICLE: &str = "?lang=en&title=Amsterdam_Airport_Schiphol";
 #[tokio::test]
 async fn the_airport_photo_is_shut_while_the_relay_is_off() {
     spawn_station(PORT_AIRPORT_SHUT, false, false).await;
-    for path in ["/airport-photo", "/sdroxide/airport-photo"] {
+    for path in ["/airport-photo", "/sdrcrow/airport-photo"] {
         let answer = get(PORT_AIRPORT_SHUT, &format!("{path}{ARTICLE}"), None).await;
         assert!(answer.starts_with("HTTP/1.1 503"), "{path}: {answer}");
         assert!(answer.to_ascii_lowercase().contains("cache-control: no-store"), "{answer}");
@@ -249,7 +249,7 @@ async fn the_airport_photo_and_its_release_want_the_cookie() {
         PORT_AIRPORT_PASSWORD,
         "DELETE",
         &format!("/airport-photo{ARTICLE}"),
-        "x-sdroxide: 1\r\n",
+        "x-sdrcrow: 1\r\n",
     )
     .await;
     assert!(release.starts_with("HTTP/1.1 401"), "{release}");
@@ -277,10 +277,10 @@ async fn an_airport_title_that_is_not_plain_is_refused_and_a_release_needs_the_h
     let path = format!("/airport-photo{ARTICLE}");
     let bare = send(PORT_AIRPORT_OPEN, "DELETE", &path, "").await;
     assert!(bare.starts_with("HTTP/1.1 403"), "{bare}");
-    let ok = send(PORT_AIRPORT_OPEN, "DELETE", &path, "x-sdroxide: 1\r\n").await;
+    let ok = send(PORT_AIRPORT_OPEN, "DELETE", &path, "x-sdrcrow: 1\r\n").await;
     assert!(ok.starts_with("HTTP/1.1 204"), "{ok}");
     let junk =
-        send(PORT_AIRPORT_OPEN, "DELETE", "/airport-photo?lang=EN&title=x", "x-sdroxide: 1\r\n")
+        send(PORT_AIRPORT_OPEN, "DELETE", "/airport-photo?lang=EN&title=x", "x-sdrcrow: 1\r\n")
             .await;
     assert!(junk.starts_with("HTTP/1.1 400"), "{junk}");
 }
@@ -295,7 +295,7 @@ const PLACE: &str = "?lat=52.31&lon=4.76";
 #[tokio::test]
 async fn the_airport_weather_is_shut_while_the_relay_is_off() {
     spawn_station(PORT_WEATHER_SHUT, false, false).await;
-    for path in ["/airport-weather", "/sdroxide/airport-weather"] {
+    for path in ["/airport-weather", "/sdrcrow/airport-weather"] {
         let answer = get(PORT_WEATHER_SHUT, &format!("{path}{PLACE}"), None).await;
         assert!(answer.starts_with("HTTP/1.1 503"), "{path}: {answer}");
         assert!(answer.to_ascii_lowercase().contains("cache-control: no-store"), "{answer}");

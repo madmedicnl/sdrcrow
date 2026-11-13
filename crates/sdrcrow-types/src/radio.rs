@@ -124,7 +124,7 @@ pub enum Backend {
     /// lines of LMS7002M register, PLL and calibration work rather than the
     /// only door there is.
     ///
-    /// A LimeSDR reaches sdroxide through SoapySDR too, and always has. What
+    /// A LimeSDR reaches sdrcrow through SoapySDR too, and always has. What
     /// this interface adds is the **LimeRFE**: SoapyLMS7 exposes none of it, so
     /// band filters, the LNA, the PA and the transmit/receive relay are
     /// unreachable from that side. Appended last, for the same reason as
@@ -288,7 +288,7 @@ impl SoapyDeviceInfo {
         matches!(driver.trim().to_ascii_lowercase().as_str(), "audio" | "null")
     }
 
-    /// The native sdroxide interface that drives this hardware directly, for
+    /// The native sdrcrow interface that drives this hardware directly, for
     /// drivers that have one. The native backends carry the model-specific
     /// controls a generic SoapySDR device cannot express — per-band LNA state
     /// and notches on an RSP, the bias tee and direct sampling on an RTL-SDR —
@@ -436,7 +436,7 @@ pub enum CatFamily {
     /// those. What comes off its sound card is complex baseband — a quadrature
     /// detector and a quadrature modulator either side of an Si5351 running at
     /// four times the dial — so the mode, the filter and the modulation are all
-    /// sdroxide's, and the serial port carries the two things that are the
+    /// sdrcrow's, and the serial port carries the two things that are the
     /// radio's.
     ///
     /// Appended after [`CatFamily::QrpLabs`] for the reason [`CatFamily::Flrig`]
@@ -674,14 +674,14 @@ impl IcomModel {
     ///
     /// The third thing on this list that CI-V cannot be asked. The command
     /// carries a socket *number* and nothing anywhere says how many a radio
-    /// has, so sdroxide learns the rest by probing: a radio with no selector
+    /// has, so sdrcrow learns the rest by probing: a radio with no selector
     /// NAKs the read, and one that answers is taken to have the two every
     /// model with a selector has at least.
     ///
     /// The IC-7300MK2 is where that broke. It answers the read — but with the
     /// *receiving antenna*'s setting, because on that radio `0x12` is not a
     /// selector at all: one aerial socket, sub-command `00` and no other, and
-    /// the byte behind it switches the RX ANT connector in and out. sdroxide
+    /// the byte behind it switches the RX ANT connector in and out. sdrcrow
     /// offered it an ANT1/ANT2 chip whose second position sends `12 01 …`,
     /// which the radio rejects (issue #229).
     ///
@@ -690,7 +690,7 @@ impl IcomModel {
     /// offered — which is not a claim about them but the existing floor, since
     /// a radio without a selector never answers the read. The four-socket
     /// IC-785x line is left at two on purpose: naming ANT3 would mean
-    /// extending `civ::ANTENNAS`, and a socket sdroxide cannot name already
+    /// extending `civ::ANTENNAS`, and a socket sdrcrow cannot name already
     /// reads back as no socket rather than a wrong one.
     pub fn antenna_sockets(self) -> usize {
         match self {
@@ -702,7 +702,7 @@ impl IcomModel {
 
 /// Which transceiver generation's `TX` command keys the rig.
 ///
-/// Really a question about the rig, not about sdroxide: the two generations
+/// Really a question about the rig, not about sdrcrow: the two generations
 /// disagree about what the `TX` parameter *means*, and there is no value that
 /// is right on both. On a TS-590 and later, `TX1;` is DATA SEND — key with the
 /// ACC2/USB input live — while the plain send selects the microphone input and
@@ -750,19 +750,19 @@ impl KenwoodSend {
 ///
 /// A setting rather than an assumption because the radio remembers it across
 /// power cycles and both mistakes are silent. A DUO left on `MIC` transmits the
-/// microphone no matter what sdroxide puts into its sound card — a digital-mode
+/// microphone no matter what sdrcrow puts into its sound card — a digital-mode
 /// over that goes out as room noise. One forced to `USB` behind an operator who
 /// wanted the microphone takes their voice away with nothing on screen to say
 /// where it went.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub enum EladTxInput {
-    /// `TI1;` — the USB audio port, which is where sdroxide's transmit audio
+    /// `TI1;` — the USB audio port, which is where sdrcrow's transmit audio
     /// goes. The default, because it is the setting that makes this interface
     /// work at all.
     #[default]
     UsbAudio,
     /// `TI0;` — the microphone jack. For an operator who talks into the radio
-    /// and uses sdroxide for everything else.
+    /// and uses sdrcrow for everything else.
     Mic,
     /// `TI2;` — the rig decides: the microphone for a PTT press on the
     /// microphone, the USB port for a CAT or RTS key-down.
@@ -948,7 +948,7 @@ pub enum CwKeying {
     /// frequency. Because it only reaches the air from a voice/data mode,
     /// selecting CW then keeps the rig on the digital modes' sideband
     /// (`digi_mode`; plain USB on the LAN backend) instead of switching it to
-    /// CW — the route for rigs whose keyer sdroxide cannot drive, like a Xiegu
+    /// CW — the route for rigs whose keyer sdrcrow cannot drive, like a Xiegu
     /// G90 (issue #119).
     Audio,
 }
@@ -990,7 +990,7 @@ impl Default for SerialConfig {
     }
 }
 
-/// How a (tr)uSDX's audio reaches sdroxide.
+/// How a (tr)uSDX's audio reaches sdrcrow.
 ///
 /// The radio has no sound card of its own and two ways to be listened to, and
 /// which one is right is a fact about the operator's shack rather than about
@@ -1034,7 +1034,7 @@ impl TrUsdxAudio {
 /// nG's own notes for app developers say to put the radio in DIGI for FT8 and
 /// the other data modes: the gain control then holds its gain through the other
 /// station's transmit gaps instead of regulating up into every pause, and its
-/// gain is capped. [`TrUsdxNgAgc::Auto`] follows the mode sdroxide has set —
+/// gain is capped. [`TrUsdxNgAgc::Auto`] follows the mode sdrcrow has set —
 /// DIGI for any digital mode, fast/on otherwise — which is the answer for an
 /// operator who never wants to think about it; the three fixed values override
 /// it. nG answers `GT` with nothing and does not store it, so the setting is
@@ -1292,7 +1292,7 @@ pub struct CatConfig {
     ///
     /// nG enables the stream with `UA1;` (speaker on) or `UA2;` (speaker off);
     /// 2.00x had only the first. Off is for an operator who wants the audio
-    /// *only* in sdroxide — a second set of ears beside the radio, or a quiet
+    /// *only* in sdrcrow — a second set of ears beside the radio, or a quiet
     /// shack at night.
     pub trusdx_ng_speaker: bool,
 }
@@ -2210,7 +2210,7 @@ impl HpsdrDevice {
 }
 
 /// TCI (Transceiver Control Interface, WebSocket) backend configuration.
-/// Receive is wideband IQ (sdroxide demodulates); transmit is audio.
+/// Receive is wideband IQ (sdrcrow demodulates); transmit is audio.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct TciConfig {
@@ -2256,7 +2256,7 @@ impl TciConfig {
     /// a `dds:` step took 109–131 ms to reach the samples at 192 kHz, 129 ms at
     /// 96 kHz and 169 ms at 48 kHz — near enough one number rather than a fixed
     /// count of samples, which is what a rig-side pipeline measured in
-    /// milliseconds looks like. Only 21 ms of it was sdroxide's own ring.
+    /// milliseconds looks like. Only 21 ms of it was sdrcrow's own ring.
     ///
     /// One rig on one host, so it is a starting point and not a constant of
     /// nature; a TCI server across a network will be slower. The cost of having
@@ -2278,16 +2278,16 @@ impl TciConfig {
 /// What the Icom's LAN audio stream is carrying.
 ///
 /// The radio decides this — `SET > Connectors > LAN AF/IF Output → Output
-/// Select` — and sdroxide can write the setting on a model it knows. The choice
+/// Select` — and sdrcrow can write the setting on a model it knows. The choice
 /// is between letting the radio demodulate and doing it here.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub enum IcomRxSource {
     /// Demodulated audio. The rig's filters, AGC and demodulator do the work
-    /// and sdroxide shows a narrow audio-band panadapter beside the rig's own
+    /// and sdrcrow shows a narrow audio-band panadapter beside the rig's own
     /// scope. Always available, on every model.
     #[default]
     Af,
-    /// The 12 kHz IF — Icom's DRM output. sdroxide mixes it to baseband and
+    /// The 12 kHz IF — Icom's DRM output. sdrcrow mixes it to baseband and
     /// demodulates it, which brings its own notch, noise reduction, digital
     /// modes and skimmer to bear over roughly ±12 kHz of real spectrum.
     ///
@@ -2302,7 +2302,7 @@ impl IcomRxSource {
     pub fn label(self) -> &'static str {
         match self {
             IcomRxSource::Af => "AF — the radio demodulates",
-            IcomRxSource::If12k => "12 kHz IF — sdroxide demodulates",
+            IcomRxSource::If12k => "12 kHz IF — sdrcrow demodulates",
         }
     }
     /// The value `1A 05 <lan_afif_select>` takes for this choice.
@@ -2320,7 +2320,7 @@ impl IcomRxSource {
 /// them — and the radio keeps whatever span the operator last chose on its own
 /// screen, which is routinely ±5 kHz. Left at that, the full-band strip is
 /// barely wider than the panadapter it sits above, which is exactly the
-/// complaint RS-BA1 does not get. So sdroxide asks for a span of its own.
+/// complaint RS-BA1 does not get. So sdrcrow asks for a span of its own.
 ///
 /// The values are Icom's, as its menu labels them: half widths. A radio that
 /// does not have one answers `FA` and keeps the span it had.
@@ -2443,7 +2443,7 @@ pub struct IcomNetConfig {
     /// consequence is unmistakable and the cause is not: a mirrored IF puts SSB
     /// on the opposite sideband, so the operator ends up selecting USB on 40 m
     /// and LSB on 20 m to make anyone intelligible, with the radio's own mode
-    /// display agreeing with sdroxide the whole time.
+    /// display agreeing with sdrcrow the whole time.
     ///
     /// Left as an override rather than a plain switch because the model table
     /// already knows the answer for the radios anybody has reported, and a
@@ -2517,7 +2517,7 @@ pub struct SmartSdrConfig {
     /// The radio remembers a GUI client by this id and restores its slices and
     /// panadapters to it, so a stable one is worth having. Empty — the default —
     /// derives it from [`Self::station`], which is stable but *not* unique:
-    /// every sdroxide that never renamed its station derives the same id, and a
+    /// every sdrcrow that never renamed its station derives the same id, and a
     /// radio resolves a duplicate id by evicting whoever had it first. The
     /// backend detects that on the wire and falls back to a per-session id;
     /// setting a UUID of your own here is how to keep the session restore as
@@ -2550,7 +2550,7 @@ impl Default for SmartSdrConfig {
             selected_ip: None,
             iq_sample_rate_hz: 192_000.0,
             iq_channel: 1,
-            station: "sdroxide".into(),
+            station: "sdrcrow".into(),
             gui_client_id: String::new(),
             network_mtu: 1450,
             swap_iq: false,
@@ -3208,7 +3208,7 @@ pub struct KiwiConfig {
     /// The name this end announces with `SET ident_user`, which the receiver's
     /// owner and its other listeners can see.
     ///
-    /// Empty means "the station callsign, or `sdroxide` when none is set" —
+    /// Empty means "the station callsign, or `sdrcrow` when none is set" —
     /// resolved where the source is opened, because this crate cannot reach the
     /// configuration. Identifying is the network's convention rather than a
     /// requirement, and some operators do block clients that will not.
@@ -3325,7 +3325,7 @@ impl KiwiConfig {
             return explicit.to_string();
         }
         let call = callsign.trim();
-        if call.is_empty() { "sdroxide".to_string() } else { format!("{call} (sdroxide)") }
+        if call.is_empty() { "sdrcrow".to_string() } else { format!("{call} (sdrcrow)") }
     }
 
     /// Roughly what one connected receiver costs, in kilobytes a second, so the
@@ -3373,7 +3373,7 @@ pub struct Rx888Device {
     /// Product string, or a generic name while it is still in its boot ROM.
     pub name: String,
     /// True while the device is still in the Cypress boot ROM. Not a fault:
-    /// every RX-888 looks like this until something programs it, and sdroxide
+    /// every RX-888 looks like this until something programs it, and sdrcrow
     /// does that on open.
     pub needs_firmware: bool,
     /// Whether the link negotiated SuperSpeed. Only meaningful once the device
@@ -3677,7 +3677,7 @@ impl EladDevice {
 
 /// The complex sample rates an ELAD DDC delivers, in Hz.
 ///
-/// **Not commandable.** Nothing sdroxide knows how to send changes this — ELAD's
+/// **Not commandable.** Nothing sdrcrow knows how to send changes this — ELAD's
 /// own `gr-elad` never sets it either, and the FDM-DUO has no front-panel menu
 /// for it — so this list is what the *stream can be*, not what it can be told to
 /// be. See [`EladConfig::sample_rate_hz`].
@@ -5666,7 +5666,7 @@ impl PlutoConfig {
     /// before framing, which is already most of the link.
     ///
     /// The entries below [`Self::NO_FIR_FLOOR_HZ`] need a FIR configuration
-    /// loaded into the part, which sdroxide does not do — a stock Pluto rounds
+    /// loaded into the part, which sdrcrow does not do — a stock Pluto rounds
     /// them all up to that floor and says so on connect. They are still offered
     /// because a board someone else has configured, or an IIO device that is
     /// not a Pluto at all, can honour them.
@@ -5674,7 +5674,7 @@ impl PlutoConfig {
         [521_000.0, 1_000_000.0, 2_000_000.0, 2_500_000.0, 3_840_000.0, 5_000_000.0];
 
     /// The lowest rate an AD936x can produce with its FIR decimator bypassed,
-    /// which is how a Pluto arrives and how sdroxide leaves it.
+    /// which is how a Pluto arrives and how sdrcrow leaves it.
     ///
     /// The part's clock-chain solver accepts a rate only if `rate × 12` clears
     /// the ADC's 25 MHz minimum, so the true floor is 25 MHz / 12 = 2083333.33
@@ -7144,7 +7144,7 @@ impl PanadapterTap {
 /// Which of the two radios you listen to.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub enum PanadapterAudio {
-    /// The attached receiver: sdroxide demodulates its I/Q, so its filter, AGC,
+    /// The attached receiver: sdrcrow demodulates its I/Q, so its filter, AGC,
     /// noise reduction and notch are the ones in the panel.
     #[default]
     Attached,
@@ -7210,7 +7210,7 @@ impl IfModeClass {
 pub const PANADAPTER_OFFSET_MAX_HZ: f64 = 1_000_000_000.0;
 
 /// Using another radio in the roster as this one's receiver: the panadapter,
-/// the waterfall and everything sdroxide reads off them come from that radio's
+/// the waterfall and everything sdrcrow reads off them come from that radio's
 /// front end, while the dial, the mode, the filter and the transmitter stay
 /// with this one.
 ///
@@ -7407,7 +7407,7 @@ impl FobosPort {
 /// found with dlopen at runtime the way the SDRplay and LimeSDR backends find
 /// their own vendor libraries, for the same build-portability reason: this
 /// crate ships in every build variant without every contributor needing
-/// `libfobos` installed to compile sdroxide.
+/// `libfobos` installed to compile sdrcrow.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct FobosConfig {
@@ -8524,7 +8524,7 @@ mod tests {
         assert!(CatFamily::Flrig.is_network());
     }
 
-    /// sdroxide's own serial default is a rate no FDM-DUO has, and the `cat`
+    /// sdrcrow's own serial default is a rate no FDM-DUO has, and the `cat`
     /// block it lives in is shared with the CAT / Audio interface — so the
     /// configuration an ELAD owner starts from describes a control port the
     /// radio cannot hear a word of. That was issue #146: a DUO receiving

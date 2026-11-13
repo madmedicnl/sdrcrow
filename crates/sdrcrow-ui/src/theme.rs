@@ -1,4 +1,4 @@
-//! The sdroxide look: dark panels, cut corners, Chakra Petch type (SIL OFL —
+//! The sdrcrow look: dark panels, cut corners, Chakra Petch type (SIL OFL —
 //! see assets/fonts/OFL.txt) — in one of a handful of colour themes, the
 //! classic navy/cyan/hot-pink one by default.
 //!
@@ -3700,11 +3700,11 @@ mod theme_file_tests {
         ERRORS.get_or_init(|| load_theme_files(fixtures()))
     }
 
-    /// `SDROXIDE_THEME_DUMP=<dir> cargo test -p sdrcrow-ui --lib theme_file`
+    /// `SDRCROW_THEME_DUMP=<dir> cargo test -p sdrcrow-ui --lib theme_file`
     /// writes every built-in out as a theme file: how a new one is started.
     #[test]
     fn a_builtin_theme_can_be_written_out_as_a_theme_file() {
-        let Ok(dir) = std::env::var("SDROXIDE_THEME_DUMP") else {
+        let Ok(dir) = std::env::var("SDRCROW_THEME_DUMP") else {
             return;
         };
         let dir = std::path::PathBuf::from(dir);

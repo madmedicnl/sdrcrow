@@ -1,4 +1,4 @@
-// Screen wake lock for the sdroxide web client.
+// Screen wake lock for the sdrcrow web client.
 //
 // A receiver panel is watched, not read: the operator looks at a waterfall and
 // an S-meter for minutes at a time without touching the glass, and a phone or
@@ -85,7 +85,7 @@
 
     // For the client to drive if it ever grows a setting for this: the panel is
     // the only thing that knows whether it is receiving or idle.
-    window.sdroxideWakeLock = {
+    window.sdrcrowWakeLock = {
         set: function (on) {
             wanted = !!on;
             if (wanted) acquire();

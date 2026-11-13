@@ -345,7 +345,7 @@ impl IqSource for AtsMiniSource {
         Ok(())
     }
 
-    /// The radio's own knob and mode buttons reaching sdroxide. The control
+    /// The radio's own knob and mode buttons reaching sdrcrow. The control
     /// thread reports a dial or mode it changed without being asked; a change
     /// it did cause is suppressed there, so this never echoes our own tune.
     fn poll_control(&mut self) -> Vec<ControlUpdate> {
@@ -394,7 +394,7 @@ impl IqSource for AtsMiniSource {
 /// The three-mode cycle the firmware steps through on HF: `LSB → USB → AM`.
 const MODE_CYCLE: [FirmwareMode; 3] = [FirmwareMode::Lsb, FirmwareMode::Usb, FirmwareMode::Am];
 
-/// Map an sdroxide receive mode to the firmware's demodulator, or `None` when
+/// Map an sdrcrow receive mode to the firmware's demodulator, or `None` when
 /// it has no equivalent (the caller then leaves the radio's mode alone).
 fn firmware_mode(mode: Mode) -> Option<FirmwareMode> {
     match mode {

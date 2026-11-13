@@ -71,7 +71,7 @@ pub(in crate::app) fn tune_commands(vfo: sdrcrow_types::Vfo, hz: f64) -> Vec<Com
     vec![Command::SetVfo { vfo, hz }, Command::SetMode { rx: RxId::Main, mode: Mode::Am }]
 }
 
-impl super::SdroxideApp {
+impl super::SdrcrowApp {
     pub(in crate::app) fn aircraft_vor_pane(
         &mut self,
         ui: &mut egui::Ui,

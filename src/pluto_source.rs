@@ -397,7 +397,7 @@ impl IqSource for PlutoSource {
     /// re-runs its whole setup. A live connection outliving its last radio
     /// makes an Apply that changes any of them do nothing at all, which is
     /// exactly what issue #135 reported: the GPO pair and the sample rate only
-    /// took effect after quitting and restarting sdroxide. The RSP backend
+    /// took effect after quitting and restarting sdrcrow. The RSP backend
     /// already closes on the last stream for the same reason.
     ///
     /// So the `Arc` goes here. Dropping the last one runs the connection's own

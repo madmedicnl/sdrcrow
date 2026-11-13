@@ -971,7 +971,7 @@ mod tests {
 
     /// The sense line and the program's own transmit state are independent, and
     /// the contacts follow either. A station whose rig is keyed at the
-    /// microphone while sdroxide thinks it is receiving must still be switched.
+    /// microphone while sdrcrow thinks it is receiving must still be switched.
     #[test]
     fn either_source_holds_the_contacts() {
         let t0 = Instant::now();

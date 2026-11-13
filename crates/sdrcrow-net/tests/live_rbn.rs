@@ -1,6 +1,6 @@
 //! Live end-to-end check of the RBN reader against the real skimmer feed.
 //! Ignored by default (needs network *and* a real callsign); run with:
-//!   SDROXIDE_TEST_CALL=OE1XXX \
+//!   SDRCROW_TEST_CALL=OE1XXX \
 //!     cargo test -p sdrcrow-net --test live_rbn -- --ignored --nocapture
 //!
 //! The callsign comes from the environment rather than a constant on purpose:
@@ -15,8 +15,8 @@ use sdrcrow_types::{NetworkConfig, RbnConfig};
 #[test]
 #[ignore = "connects to the live Reverse Beacon Network and logs in with a real callsign"]
 fn rbn_delivers_paths() {
-    let Ok(call) = std::env::var("SDROXIDE_TEST_CALL") else {
-        eprintln!("set SDROXIDE_TEST_CALL to your callsign to run this");
+    let Ok(call) = std::env::var("SDRCROW_TEST_CALL") else {
+        eprintln!("set SDRCROW_TEST_CALL to your callsign to run this");
         return;
     };
 

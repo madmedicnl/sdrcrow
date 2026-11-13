@@ -113,7 +113,7 @@ pub use navtex::{
 
 /// The NAVTEX transmit side, for tests and for anyone checking a receiver.
 ///
-/// There is no NAVTEX transmitter in sdroxide and there will not be — the
+/// There is no NAVTEX transmitter in sdrcrow and there will not be — the
 /// service is a coast station's — so this is exported as a signal *generator*
 /// rather than as part of a mode. It is what `sdrcrow-digi`'s framing tests
 /// are built on, and what a bench check of the decoder would use.

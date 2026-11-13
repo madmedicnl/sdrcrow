@@ -827,7 +827,7 @@ mod tests {
         f0: f64,
         bw_hz: f64,
     ) -> Option<(Vec<Complex32>, f64)> {
-        const DIR: &str = "/tmp/claude-1000/-home-toumal-Development-sdroxide/d63e031c-a0b0-468a-953e-c8e756a21bfa/scratchpad";
+        const DIR: &str = "/tmp/claude-1000/-home-toumal-Development-sdrcrow/d63e031c-a0b0-468a-953e-c8e756a21bfa/scratchpad";
         let raw = std::fs::read(format!("{DIR}/{name}")).ok()?;
         let one: Vec<f32> = raw[44..]
             .chunks_exact(2)

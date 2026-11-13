@@ -71,7 +71,7 @@ static NO_AUDIO_DECODER: AtomicBool = AtomicBool::new(false);
 pub(crate) const NO_AUDIO_DECODER_WHY: &str = "The nrsc5 library on this machine was built without \
      its audio decoder (USE_FAAD2=OFF), so it can find HD Radio stations but not play them. \
      Install an nrsc5 built with it — upstream's default, which carries its own patched faad2 — \
-     then restart sdroxide.";
+     then restart sdrcrow.";
 
 /// Whether the library has already shown it has no audio decoder.
 pub(crate) fn library_cannot_play() -> bool {

@@ -89,7 +89,7 @@
             const n = Math.floor(due);
             if (n >= 128) {
                 due -= n;
-                window.sdroxideAudio.pushPcm(block(n));
+                window.sdrcrowAudio.pushPcm(block(n));
             }
             arm();
         }, period);
@@ -336,7 +336,7 @@
         const BIG_MS = 2000;
         if (tap.port) tap.port.postMessage({ resetPeak: true });
         a = snap();
-        window.sdroxideAudio.pushPcm(block((SRC * BIG_MS) / 1000));
+        window.sdrcrowAudio.pushPcm(block((SRC * BIG_MS) / 1000));
         await wait(1000);
         const oversize = await sampleFor(1000);
         b = snap();
@@ -410,7 +410,7 @@
         // length produces. It must come back to the target without a cut.
         if (tap.port) tap.port.postMessage({ resetPeak: true });
         a = snap();
-        window.sdroxideAudio.pushPcm(block(SRC / 2));
+        window.sdrcrowAudio.pushPcm(block(SRC / 2));
         await wait(1000);
         const burst = await sampleFor(1000);
         b = snap();
@@ -432,7 +432,7 @@
         // (Lot B).
         a = snap();
         for (let i = 0; i < 3000; i++) {
-            window.sdroxideAudio.pushPcm(block(960));
+            window.sdrcrowAudio.pushPcm(block(960));
         }
         await wait(1000);
         const flood = await sampleFor(1000);

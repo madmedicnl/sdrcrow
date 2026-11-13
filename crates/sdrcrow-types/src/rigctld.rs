@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 /// Built-in Hamlib rigctld server configuration (`rigctld.json`).
 ///
-/// This is sdroxide *being* a rig for the wider ham software ecosystem: WSJT-X,
+/// This is sdrcrow *being* a rig for the wider ham software ecosystem: WSJT-X,
 /// fldigi, JS8Call, N1MM, Log4OM, GPredict and CQRLOG all speak Hamlib's
 /// "NET rigctl" (rig model 2) over TCP. It complements
 /// [`crate::TciServerConfig`], which serves the smaller set of TCI-speaking
@@ -36,7 +36,7 @@ impl Default for RigctldConfig {
             port: 4532,
             allow_tx: true,
             max_clients: 4,
-            rig_name: "sdroxide".into(),
+            rig_name: "sdrcrow".into(),
         }
     }
 }

@@ -97,12 +97,12 @@ mod tests {
     /// The real measurement: this station's own capture, which the vendored
     /// decoder reads and our own chain does not.
     ///
-    ///     SDROXIDE_S4285_SAMPLE=~/Downloads/....wav \
+    ///     SDRCROW_S4285_SAMPLE=~/Downloads/....wav \
     ///       cargo test -p sdrcrow-s4285 -- --ignored --nocapture
     #[test]
     #[ignore]
     fn the_capture_decodes() {
-        let path = std::env::var("SDROXIDE_S4285_SAMPLE").expect("set SDROXIDE_S4285_SAMPLE");
+        let path = std::env::var("SDRCROW_S4285_SAMPLE").expect("set SDRCROW_S4285_SAMPLE");
         let mut reader = hound::WavReader::open(&path).expect("open the wav");
         let spec = reader.spec();
         let raw: Vec<f32> = match spec.sample_format {

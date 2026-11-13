@@ -895,7 +895,7 @@ fn upload_map(
     let gray = match image::load_from_memory_with_format(png, image::ImageFormat::Png) {
         Ok(img) => img.to_luma8(),
         Err(e) => {
-            eprintln!("sdroxide: decoding {label}: {e}");
+            eprintln!("sdrcrow: decoding {label}: {e}");
             image::GrayImage::from_raw(1, 1, vec![0u8]).expect("1×1")
         }
     };
@@ -969,7 +969,7 @@ fn upload_body_maps(device: &wgpu::Device, queue: &wgpu::Queue) -> wgpu::Texture
                 Err(e) => {
                     // A checked-in asset failing to decode should cost that
                     // body's surface, not the window.
-                    eprintln!("sdroxide: decoding the {name} map: {e}");
+                    eprintln!("sdrcrow: decoding the {name} map: {e}");
                     image::RgbaImage::from_pixel(
                         BODY_MAP_W,
                         BODY_MAP_H,
@@ -1003,7 +1003,7 @@ fn upload_body_maps(device: &wgpu::Device, queue: &wgpu::Queue) -> wgpu::Texture
         // than smeared across the wrong latitudes.
         if img.dimensions() != (BODY_MAP_W, BODY_MAP_H) {
             eprintln!(
-                "sdroxide: {} is {:?}, expected {BODY_MAP_W}×{BODY_MAP_H}",
+                "sdrcrow: {} is {:?}, expected {BODY_MAP_W}×{BODY_MAP_H}",
                 BODY_MAPS[layer].0,
                 img.dimensions()
             );

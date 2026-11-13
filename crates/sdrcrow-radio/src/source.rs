@@ -83,7 +83,7 @@ pub enum ControlUpdate {
     /// The radio's own setting arriving, and *only* ever arriving: the rig
     /// recalls it per band (an IC-7610 keeps antenna memories at
     /// `1A 05 0276~0287`), so it is read and adopted rather than asserted, and
-    /// sdroxide writes it exactly when the operator clicks.
+    /// sdrcrow writes it exactly when the operator clicks.
     RxAntenna(bool),
     /// The state of the radio's own PTT line — a foot switch, a mic button, or
     /// whatever is wired to the board's PTT input. `true` is keyed.
@@ -94,12 +94,12 @@ pub enum ControlUpdate {
     /// arrives while something else already owns the transmitter.
     Ptt(bool),
     /// The radio in front of us is transmitting **on its own** — its mic
-    /// button, foot switch, VOX or keyer — and sdroxide is not driving the
+    /// button, foot switch, VOX or keyer — and sdrcrow is not driving the
     /// over. `true` is on the air.
     ///
     /// Emphatically not [`ControlUpdate::Ptt`], and the difference is the whole
-    /// point. `Ptt` is a line on hardware sdroxide transmits *through*: closing
-    /// it starts an sdroxide over, modulator and all. This is a transceiver
+    /// point. `Ptt` is a line on hardware sdrcrow transmits *through*: closing
+    /// it starts an sdrcrow over, modulator and all. This is a transceiver
     /// that has keyed itself and is putting its own microphone on the air, so
     /// there is nothing here to drive and nothing to send it — running the
     /// transmit chain would push the computer's audio into a radio that is
@@ -108,7 +108,7 @@ pub enum ControlUpdate {
     /// them off mid-word.
     ///
     /// So the engine *observes* it: the meter follows the over and shows its
-    /// SWR, and sdroxide will not key on top of it. It does not transmit.
+    /// SWR, and sdrcrow will not key on top of it. It does not transmit.
     RigTx(bool),
     /// The ATS Mini answered a memory dump; the engine forwards it to the
     /// screen as [`sdrcrow_types::RadioEvent::AtsMiniMemories`].
@@ -316,7 +316,7 @@ pub trait IqSource: Send {
     }
     /// Switch the *radio* off, or back on again, over its control link.
     ///
-    /// The radio's own power switch, not sdroxide's: an Icom answers `18 00` /
+    /// The radio's own power switch, not sdrcrow's: an Icom answers `18 00` /
     /// `18 01` on CI-V and keeps the control end of the link alive while the
     /// set is off, which is what lets the second of those reach it (issue
     /// #239). A no-op on every front end whose only power switch is its USB
@@ -603,7 +603,7 @@ pub trait IqSource: Send {
     /// A local USB front end is a millisecond or two of this and nothing to
     /// see. A radio at the end of a socket is not: measured on a SunSDR2DX
     /// through ExpertSDR3's TCI on the loopback interface, **131 ms** at
-    /// 192 kHz — of which only 21 ms was sdroxide's own ring, the rest inside
+    /// 192 kHz — of which only 21 ms was sdrcrow's own ring, the rest inside
     /// the rig. Nothing on the wire marks it, either: the `dds:` echo comes
     /// back in 0.4 ms, so it acknowledges the command rather than the data.
     ///
@@ -720,7 +720,7 @@ pub trait IqSource: Send {
     /// has to be left sitting there and not on our dial, or every over goes out
     /// a sidetone below the station (issue #170).
     ///
-    /// Default: false, which is how sdroxide has always treated every rig, so
+    /// Default: false, which is how sdrcrow has always treated every rig, so
     /// only a radio this is *known* about should answer otherwise.
     fn cw_iq_on_vfo(&self) -> bool {
         false
@@ -731,7 +731,7 @@ pub trait IqSource: Send {
     /// For a rig with its own pair, so that the one on its front panel is the
     /// one being worked: an FDM-DUO's window rides on whichever of its VFOs is
     /// selected, so mirroring the choice puts the radio's own display, its
-    /// knob and its A/B button on the same dial as sdroxide's.
+    /// knob and its A/B button on the same dial as sdrcrow's.
     ///
     /// The frequency comes along because the two are one decision at the
     /// radio's end — selecting a VFO that is holding a stale number moves the
@@ -825,7 +825,7 @@ pub trait IqSource: Send {
     /// *without* the mode also being imposed when the source is established.
     ///
     /// The weaker half of [`Self::tracks_rx_mode`], for a radio that is the rig
-    /// as well as the front end while sdroxide does the demodulating: an Icom
+    /// as well as the front end while sdrcrow does the demodulating: an Icom
     /// on its LAN port handing us the 12 kHz IF. Its mode still picks the IF
     /// filter the stream comes through, and it is the mode the operator sees on
     /// the radio's own display, so a mode chosen here has to reach it. But the
@@ -859,7 +859,7 @@ pub trait IqSource: Send {
     ///
     /// Separate from [`Self::mutes_rx_audio_on_tx`], and not a spelling of it.
     /// That one answers only for the arrangement where the receiver is read
-    /// through an over sdroxide keyed, and is false wherever the engine stops
+    /// through an over sdrcrow keyed, and is false wherever the engine stops
     /// reading instead — which is how a half-duplex front end goes quiet
     /// without anyone muting anything. Nothing here drives a rig-keyed over, so
     /// the receiver is read right through *every* one of them, and a front end
@@ -897,7 +897,7 @@ pub trait IqSource: Send {
     ///
     /// Deliberately not `cw_text_keying().is_none()`: that is also `None` for
     /// an SDR (which keys the sidetone through its own TX chain and has no rig
-    /// mode to protect) and for rigs whose keyer sdroxide cannot drive but
+    /// mode to protect) and for rigs whose keyer sdrcrow cannot drive but
     /// that genuinely belong in CW (ELAD paddle CW, rigctld). Only an explicit
     /// "Sound card (MCW)" choice answers true.
     fn cw_audio_keyed(&self) -> bool {
@@ -931,7 +931,7 @@ pub trait IqSource: Send {
     fn set_cw_wpm(&mut self, _wpm: f32) {}
     /// Tell the front end the sidetone pitch the operator is copying CW at.
     ///
-    /// sdroxide's CW dial is a zero-beat and the note sits a pitch above it, so
+    /// sdrcrow's CW dial is a zero-beat and the note sits a pitch above it, so
     /// on any arrangement where a *transceiver* makes its own CW carrier the
     /// rig's VFO belongs a pitch above our dial rather than on it. Where the
     /// rig is also the front end the engine does that arithmetic itself
@@ -1137,7 +1137,7 @@ impl ConverterStep {
 
 /// What is in front of the radio, band by band.
 ///
-/// One entry is the ordinary case and the one sdroxide shipped first: an
+/// One entry is the ordinary case and the one sdrcrow shipped first: an
 /// upconverter or an LNB that converts every frequency. A station with
 /// transverters has several, each covering the band it works, and the dial
 /// decides which applies — a 2 m and a 6 m transverter sharing a 28 MHz I.F.
@@ -1341,7 +1341,7 @@ pub fn plan_caps(
 /// Normally that is the one rule the whole feature is built on: the hardware is
 /// tuned to `dial + offset`. The exception is the dial that predates the
 /// converter, and every operator who sets one up makes it — they are listening
-/// to the converter's output on 739.494 MHz, and *then* tell sdroxide there is
+/// to the converter's output on 739.494 MHz, and *then* tell sdrcrow there is
 /// a 9750 MHz LNB in front of the radio. That dial is in the hardware's domain,
 /// so putting the offset on it asks the front end for −9010.505 MHz.
 ///
@@ -1960,7 +1960,7 @@ pub struct FileSource {
 }
 
 impl FileSource {
-    /// Play a raw interleaved CF32 stream — or one of sdroxide's own I/Q WAV
+    /// Play a raw interleaved CF32 stream — or one of sdrcrow's own I/Q WAV
     /// captures, whose header says what the caller would otherwise have to
     /// type: a capture made by the REC popup plays back at the rate and on the
     /// frequency it was made, with `--file` and nothing else (issue #217).

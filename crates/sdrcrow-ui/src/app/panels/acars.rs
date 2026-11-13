@@ -14,7 +14,7 @@ use crate::i18n::tr;
 use eframe::egui::{self, RichText};
 use sdrcrow_types::{AcarsStatus, Command, Vfo};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::theme;
 
 /// The airline channels ACARS is commonly found on. Widely published: 131.550
@@ -108,7 +108,7 @@ fn acars_channel_row(
     });
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn acars_panel(
         &mut self,
         ui: &mut egui::Ui,

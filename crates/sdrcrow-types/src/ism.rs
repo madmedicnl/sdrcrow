@@ -85,7 +85,7 @@ impl IsmFamily {
     /// Whether any protocol in this family is implemented yet.
     ///
     /// The chips for the rest are drawn disabled rather than hidden: the band is
-    /// full of these devices whether or not sdroxide can read them, and an
+    /// full of these devices whether or not sdrcrow can read them, and an
     /// operator who can see that meters are "not yet" is better informed than
     /// one who sees nothing and concludes there are none.
     pub fn implemented(self) -> bool {
@@ -374,7 +374,7 @@ pub struct IsmReport {
     /// status flags. Pre-formatted `(name, value)` pairs.
     pub extra: Vec<(String, String)>,
     /// The frame validated but its payload is encrypted, so `readings` is empty
-    /// and only the identity is known. sdroxide holds no keys.
+    /// and only the identity is known. sdrcrow holds no keys.
     pub encrypted: bool,
     /// The validated frame as hex, for identifying a device the decoder only
     /// half understands.

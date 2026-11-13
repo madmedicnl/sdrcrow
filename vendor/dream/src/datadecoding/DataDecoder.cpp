@@ -320,13 +320,13 @@ CDataDecoder::DecodeEPG(const CParameter & Parameters)
 			fileName = NewObj.strName;
 		}
 
-#ifdef SDROXIDE_NO_DATA_FILES
+#ifdef SDRCROW_NO_DATA_FILES
 		/* The object is decoded but not written out. `fileName` comes from the
 		   broadcast, and this is the only place in the receiver that creates
 		   directories and files: with the data directory set to ".", a station
 		   carrying an EPG would drop `./EPG/...` into whatever the host's
 		   working directory happens to be, under a name it does not control.
-		   sdroxide surfaces no EPG, so there is nothing to write. */
+		   sdrcrow surfaces no EPG, so there is nothing to write. */
 		(void)fileName;
 #else
 		string path = Parameters.GetDataDirectory("EPG") + fileName;

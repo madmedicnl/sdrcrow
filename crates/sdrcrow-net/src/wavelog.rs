@@ -116,7 +116,7 @@ impl Client {
             .timeout_connect(Some(Duration::from_secs(10)))
             .timeout_global(Some(Duration::from_secs(timeout_s)))
             .http_status_as_error(false)
-            .user_agent(concat!("sdroxide/", env!("CARGO_PKG_VERSION")))
+            .user_agent(concat!("sdrcrow/", env!("CARGO_PKG_VERSION")))
             .build();
         match &self.pin {
             Some(pin) => tls_pin::pinned_agent(config, Some(pin.clone())).0,
@@ -694,7 +694,7 @@ fn radio_worker(shared: &(Mutex<RadioSlot>, std::sync::Condvar), events: &EventT
 /// POST one status to `api/radio`.
 pub fn send_radio(cfg: &WavelogConfig, name: &str, now: &RadioNow) -> Result<(), String> {
     let client = Client::new(cfg)?;
-    let name = if name.is_empty() { "sdroxide" } else { name };
+    let name = if name.is_empty() { "sdrcrow" } else { name };
     let mut body = json!({ "radio": name, "frequency": now.tx_hz, "mode": now.mode });
     // Split: Wavelog's `frequency` is the transmit one and `frequency_rx` the
     // receive one, which the log form fills in as the RX frequency.
@@ -718,7 +718,7 @@ pub fn send_radio(cfg: &WavelogConfig, name: &str, now: &RadioNow) -> Result<(),
 /// Uploads to Wavelog, one at a time, in the order they were asked for.
 ///
 /// A queue rather than a thread per QSO, which is what the other services get,
-/// because Wavelog is the one service sdroxide sends backlogs to: "send the
+/// because Wavelog is the one service sdrcrow sends backlogs to: "send the
 /// QSOs it has not got" can be a thousand contacts, and a thousand concurrent
 /// requests would be refused by a rate-limited server and felt by a small one.
 /// A QSO already waiting is not queued twice, so the retry timer and the

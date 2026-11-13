@@ -9,7 +9,7 @@ use eframe::App;
 use eframe::egui;
 use sdrcrow_types::{Command, RadioController, RadioEvent};
 
-use super::SdroxideApp;
+use super::SdrcrowApp;
 
 /// Keeps every command the app sends.
 struct Sent(Rc<RefCell<Vec<Command>>>);
@@ -25,7 +25,7 @@ impl RadioController for Sent {
 
 struct Rig {
     ctx: egui::Context,
-    app: SdroxideApp,
+    app: SdrcrowApp,
     sent: Rc<RefCell<Vec<Command>>>,
     t: f64,
     size: egui::Vec2,
@@ -91,11 +91,11 @@ fn a_locked_screen_does_not_tune_and_a_three_second_hold_unlocks_it() {
     let dir = std::env::temp_dir().join(format!("sdrcrow-touch-lock-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
     let sent = Rc::new(RefCell::new(Vec::new()));
     let ctx = egui::Context::default();
-    let app = SdroxideApp::new_tab(&ctx, None, None, Box::new(Sent(sent.clone())), 0, true);
+    let app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(Sent(sent.clone())), 0, true);
     // A tablet, the tier the padlock was asked for.
     let size = egui::vec2(1000.0, 900.0);
     assert_eq!(
@@ -160,7 +160,7 @@ fn mem_sits_before_the_padlock_and_opens_the_memories() {
     let dir = std::env::temp_dir().join(format!("sdrcrow-mem-chip-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
     // Tablet (stacked), tablet (short: one row), phone.
     for (size, has_sys) in [
@@ -174,7 +174,7 @@ fn mem_sits_before_the_padlock_and_opens_the_memories() {
         std::fs::create_dir_all(&dir).unwrap();
         let sent = Rc::new(RefCell::new(Vec::new()));
         let ctx = egui::Context::default();
-        let app = SdroxideApp::new_tab(&ctx, None, None, Box::new(Sent(sent.clone())), 0, true);
+        let app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(Sent(sent.clone())), 0, true);
         let mut rig = Rig { ctx: ctx.clone(), app, sent, t: 0.0, size };
         for _ in 0..3 {
             rig.frame(Vec::new(), 0.05).drop_without_applying_deltas();
@@ -212,11 +212,11 @@ fn an_unlock_is_not_undone_by_the_finger_that_made_it() {
     let dir = std::env::temp_dir().join(format!("sdrcrow-touch-relock-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
     let sent = Rc::new(RefCell::new(Vec::new()));
     let ctx = egui::Context::default();
-    let app = SdroxideApp::new_tab(&ctx, None, None, Box::new(Sent(sent.clone())), 0, true);
+    let app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(Sent(sent.clone())), 0, true);
     let mut rig = Rig { ctx: ctx.clone(), app, sent, t: 0.0, size: egui::vec2(1000.0, 900.0) };
     for _ in 0..4 {
         rig.frame(Vec::new(), 0.05).drop_without_applying_deltas();
@@ -264,12 +264,12 @@ fn a_tap_on_mem_leaves_the_memories_open_across_frames() {
     let dir = std::env::temp_dir().join(format!("sdrcrow-mem-stays-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
     let size = egui::vec2(1000.0, 900.0);
     let sent = Rc::new(RefCell::new(Vec::new()));
     let ctx = egui::Context::default();
-    let app = SdroxideApp::new_tab(&ctx, None, None, Box::new(Sent(sent.clone())), 0, true);
+    let app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(Sent(sent.clone())), 0, true);
     let mut rig = Rig { ctx: ctx.clone(), app, sent, t: 0.0, size };
     for _ in 0..3 {
         rig.frame(Vec::new(), 0.05).drop_without_applying_deltas();
@@ -305,12 +305,12 @@ fn a_tap_on_aircraft_in_extras_leaves_the_window_open() {
     let dir = std::env::temp_dir().join(format!("sdrcrow-aircraft-stays-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
     let size = egui::vec2(1600.0, 900.0);
     let sent = Rc::new(RefCell::new(Vec::new()));
     let ctx = egui::Context::default();
-    let app = SdroxideApp::new_tab(&ctx, None, None, Box::new(Sent(sent.clone())), 0, true);
+    let app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(Sent(sent.clone())), 0, true);
     let mut rig = Rig { ctx: ctx.clone(), app, sent, t: 0.0, size };
     for _ in 0..3 {
         rig.frame(Vec::new(), 0.05).drop_without_applying_deltas();
@@ -347,12 +347,12 @@ fn a_tap_on_antenna_in_extras_opens_the_calculator() {
         std::env::temp_dir().join(format!("sdrcrow-antenna-opens-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
     let size = egui::vec2(1600.0, 900.0);
     let sent = Rc::new(RefCell::new(Vec::new()));
     let ctx = egui::Context::default();
-    let app = SdroxideApp::new_tab(&ctx, None, None, Box::new(Sent(sent.clone())), 0, true);
+    let app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(Sent(sent.clone())), 0, true);
     let mut rig = Rig { ctx: ctx.clone(), app, sent, t: 0.0, size };
     for _ in 0..3 {
         rig.frame(Vec::new(), 0.05).drop_without_applying_deltas();

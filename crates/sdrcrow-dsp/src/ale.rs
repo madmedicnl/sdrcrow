@@ -573,12 +573,12 @@ mod tests {
         );
     }
 
-    /// Off the air, behind an ignored test: point `SDROXIDE_ALE_SAMPLE` at a
+    /// Off the air, behind an ignored test: point `SDRCROW_ALE_SAMPLE` at a
     /// raw little-endian `f32` mono 8 kHz file and it must yield words.
     #[test]
     #[ignore]
     fn an_off_air_recording_decodes() {
-        let Ok(path) = std::env::var("SDROXIDE_ALE_SAMPLE") else {
+        let Ok(path) = std::env::var("SDRCROW_ALE_SAMPLE") else {
             return;
         };
         let bytes = std::fs::read(path).expect("read sample");

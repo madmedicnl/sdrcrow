@@ -65,7 +65,7 @@ fn a_voice_over_with_no_microphone_is_reported() {
     let dir = std::env::temp_dir().join(format!("sdrcrow-silentmic-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
     // No microphone at all — `EngineConfig { tx_bands_open: true, ..EngineConfig::default() }` opens none, which is
     // the same silence a microphone on the wrong card delivers.
@@ -90,7 +90,7 @@ fn a_voice_over_with_no_microphone_is_reported() {
     }
     drop(h);
     let _ = thread.map(|t| t.join());
-    unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+    unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
     let _ = std::fs::remove_dir_all(&dir);
 
     let said = said.expect(
@@ -110,7 +110,7 @@ fn a_tune_is_not_a_silent_over() {
     let dir = std::env::temp_dir().join(format!("sdrcrow-silentmic-t-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
     let mut h = start_engine(Box::new(Quiet), caps(), EngineConfig { tx_bands_open: true, ..EngineConfig::default() });
     let thread = h.thread.take();
@@ -130,7 +130,7 @@ fn a_tune_is_not_a_silent_over() {
     }
     drop(h);
     let _ = thread.map(|t| t.join());
-    unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+    unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
     let _ = std::fs::remove_dir_all(&dir);
 
     assert!(said.is_none(), "a tune was reported as a silent over: {said:?}");

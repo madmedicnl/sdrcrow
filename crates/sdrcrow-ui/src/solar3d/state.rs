@@ -1,7 +1,7 @@
 //! Everything the solar-system window's deferred viewport callback touches.
 //!
 //! `show_viewport_deferred` requires an `Fn + Send + Sync + 'static` closure, so
-//! the window cannot borrow `SdroxideApp`. All of its mutable state lives here
+//! the window cannot borrow `SdrcrowApp`. All of its mutable state lives here
 //! behind an `Arc<Mutex<_>>` that both the root pass and the child pass hold.
 
 use crate::i18n::tr;
@@ -346,7 +346,7 @@ pub struct SatPasses {
 
 /// FT8/FT4 activity, republished into the window each frame by the root pass.
 ///
-/// The decode list lives in `SdroxideApp`, which this window cannot borrow, so
+/// The decode list lives in `SdrcrowApp`, which this window cannot borrow, so
 /// the positions are copied across rather than shared.
 #[derive(Clone, Default)]
 pub struct DigiTraffic {

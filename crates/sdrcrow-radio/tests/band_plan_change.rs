@@ -123,7 +123,7 @@ fn a_change_of_plan_withdraws_the_confirmations_and_the_same_plan_does_not() {
     let root = std::env::temp_dir().join(format!("sdrcrow-plan-change-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     let h = start_engine(
         Box::new(MockRx { center: 14_074_000.0 }),

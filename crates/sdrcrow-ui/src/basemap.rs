@@ -144,7 +144,7 @@ impl Layer {
         let gray = match image::load_from_memory_with_format(png, image::ImageFormat::Png) {
             Ok(img) => img.to_luma8(),
             Err(e) => {
-                eprintln!("sdroxide: decoding {label}: {e}");
+                eprintln!("sdrcrow: decoding {label}: {e}");
                 image::GrayImage::from_raw(1, 1, vec![0u8]).expect("1×1")
             }
         };
@@ -310,7 +310,7 @@ fn parse_lines(blob: &'static [u8]) -> Lines {
     let mut rest = match blob.strip_prefix(b"SDXLINE1") {
         Some(rest) => rest,
         None => {
-            eprintln!("sdroxide: lines.bin is not a line table");
+            eprintln!("sdrcrow: lines.bin is not a line table");
             &[]
         }
     };
@@ -435,7 +435,7 @@ pub fn cities() -> &'static [City] {
 /// variable-length record per place.
 fn parse_cities(blob: &'static [u8]) -> Vec<City> {
     let Some(rest) = blob.strip_prefix(b"SDXCITY1") else {
-        eprintln!("sdroxide: cities.bin is not a city table");
+        eprintln!("sdrcrow: cities.bin is not a city table");
         return Vec::new();
     };
     let Some((count, mut rest)) = rest.split_at_checked(4) else { return Vec::new() };

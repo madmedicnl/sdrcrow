@@ -12,7 +12,7 @@
 //!
 //! # One test, not two
 //!
-//! Both scenarios would set `SDROXIDE_CONFIG_DIR`, which is process-global, so
+//! Both scenarios would set `SDRCROW_CONFIG_DIR`, which is process-global, so
 //! two tests in one binary race each other's engine. The second scenario uses
 //! the directory the first left behind, which is fine — its point is that it
 //! configures nothing.
@@ -103,7 +103,7 @@ fn engine_with_lock(
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).expect("scratch dir");
     // SAFETY: this is the only test in this binary; nothing races the setter.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
     let h = start_engine(
         Box::new(Silent),
         DeviceCaps::default(),

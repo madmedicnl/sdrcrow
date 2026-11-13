@@ -726,7 +726,7 @@ impl Worker {
             suggest_center_hz: window_is_the_problem.then(plan::ideal_center_hz),
             // Every time a gate opened, including the transmissions that ran too
             // long to be one of these protocols. A large count with no decodes is
-            // a busy band full of devices sdroxide cannot read yet, and that is
+            // a busy band full of devices sdrcrow cannot read yet, and that is
             // worth showing rather than leaving the panel looking broken.
             bursts: self.chans.iter().map(|c| c.gate.opened).sum(),
             decodes: self.decodes,

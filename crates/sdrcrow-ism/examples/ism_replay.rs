@@ -21,7 +21,7 @@
 //! here. Find out where the transmissions are before asking what they are.
 //!
 //! The file is interleaved little-endian `complex64` — two `f32`s per sample —
-//! which is what sdroxide's own file source reads and writes, so a capture made
+//! which is what sdrcrow's own file source reads and writes, so a capture made
 //! with the radio replays here unchanged.
 //!
 //! # Making a capture on an RX-888

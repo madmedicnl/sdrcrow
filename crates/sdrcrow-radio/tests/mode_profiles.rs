@@ -116,7 +116,7 @@ fn caps() -> DeviceCaps {
 /// A config directory of this test's own, so the profiles file it writes is not
 /// the operator's and no session is picked up from one.
 ///
-/// `SDROXIDE_CONFIG_DIR` is process-global, so the tests in this file take
+/// `SDRCROW_CONFIG_DIR` is process-global, so the tests in this file take
 /// [`CONFIG_LOCK`] around it: run in parallel they would each point the process
 /// at a different directory and the engines would write over one another.
 static CONFIG_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
@@ -125,7 +125,7 @@ fn isolate(name: &str) {
     let root = std::env::temp_dir().join(format!("sdrcrow-{name}-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 }
 
 fn start(mode: Mode) -> EngineHandles {
@@ -336,7 +336,7 @@ fn a_restored_session_is_not_reset_by_the_modes_defaults() {
         });
         stop(h);
     }
-    let dir = std::env::var("SDROXIDE_CONFIG_DIR").unwrap();
+    let dir = std::env::var("SDRCROW_CONFIG_DIR").unwrap();
     let _ = std::fs::remove_file(std::path::Path::new(&dir).join("modeprofiles.json"));
 
     let h = start(Mode::Ft8);
@@ -366,7 +366,7 @@ fn a_restored_sessions_levels_become_its_modes_own() {
         });
         stop(h);
     }
-    let dir = std::env::var("SDROXIDE_CONFIG_DIR").unwrap();
+    let dir = std::env::var("SDRCROW_CONFIG_DIR").unwrap();
     let _ = std::fs::remove_file(std::path::Path::new(&dir).join("modeprofiles.json"));
 
     let h = start(Mode::Usb);

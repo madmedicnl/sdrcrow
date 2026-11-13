@@ -11,7 +11,7 @@ use eframe::egui::{self, Color32, RichText};
 use sdrcrow_types::Command;
 
 use crate::app::panels::widgets::{pick_image, sstv_section};
-use crate::app::{SdroxideApp, rx_only_hint};
+use crate::app::{SdrcrowApp, rx_only_hint};
 
 // ───────────────────────── RF Paint panel ──────────────────────────────
 
@@ -192,7 +192,7 @@ fn draw_image_box(
     );
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn rf_paint_panel(
         &mut self,
         ui: &mut egui::Ui,

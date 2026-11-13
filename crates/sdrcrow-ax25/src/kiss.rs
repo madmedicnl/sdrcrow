@@ -1,6 +1,6 @@
 //! KISS framing — the byte-level protocol between a host and a TNC.
 //!
-//! sdroxide is the TNC in this arrangement, not the host: the KISS server lets
+//! sdrcrow is the TNC in this arrangement, not the host: the KISS server lets
 //! Pat, an APRS client or the Linux `ax25` stack use the radio, the same way the
 //! TCI and rigctld servers already do. Adapted from rax25's `escape`/`unescape`;
 //! see `vendor/rax25/PROVENANCE.md`.

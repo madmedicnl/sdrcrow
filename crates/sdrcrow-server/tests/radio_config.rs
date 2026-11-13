@@ -95,7 +95,7 @@ async fn the_servers_interface_is_replayed_editable_and_switchable_from_a_client
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).expect("scratch config dir");
     // SAFETY: set before anything reads it, and this binary holds one test.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     // Seeded through the same store the engine reads it with: a hand-rolled
     // file could pass this test against a shape the engine cannot load.

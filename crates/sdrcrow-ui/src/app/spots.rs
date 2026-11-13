@@ -12,7 +12,7 @@ use sdrcrow_types::{Command, Mode, RxId, Spot, SpotKind};
 use crate::theme::ThemedScroll;
 use crate::time::now_unix;
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 
 /// How close a broadcast station has to be to the dial to be named on the
 /// panadapter.
@@ -291,7 +291,7 @@ fn spot_rows_pane(
     });
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Whether a spot passes the operator's filters.
     ///
     /// The single place that decides this. The waterfall overlay, the SPOTS list
@@ -364,7 +364,7 @@ impl SdroxideApp {
     }
 }
 
-/// The pure half of [`SdroxideApp::broadcast_label_dedupe`], which is a thin
+/// The pure half of [`SdrcrowApp::broadcast_label_dedupe`], which is a thin
 /// wrapper because it never needed the app and a method that does not read its
 /// receiver is a lie about what it needs.
 pub(in crate::app) fn broadcast_label_dedupe(spots: &[Spot]) -> Vec<Spot> {
@@ -385,7 +385,7 @@ pub(in crate::app) fn broadcast_label_dedupe(spots: &[Spot]) -> Vec<Spot> {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn spot_visible(&self, s: &Spot) -> bool {
         // "Who heard me" is a map overlay, not a station to tune: it never
         // belongs in the spot list or on the panadapter, where a dot placed at
@@ -949,7 +949,7 @@ async fn fetch_broadcast(url: &str) -> Result<Vec<sdrcrow_types::BroadcastStatio
 
 #[cfg(test)]
 mod broadcast_only_the_tuned_tests {
-    use super::SdroxideApp;
+    use super::SdrcrowApp;
 
     /// The rule bebepip asked for: **the name on the tuned frequency and nothing
     /// else.** He asked for it as a checkbox and then said what it should mean —
@@ -958,29 +958,29 @@ mod broadcast_only_the_tuned_tests {
     #[test]
     fn only_the_station_you_are_tuned_to_is_named() {
         let dial = 9_580_000.0;
-        assert!(SdroxideApp::broadcast_named_at(dial, 9_580_000.0), "on it");
+        assert!(SdrcrowApp::broadcast_named_at(dial, 9_580_000.0), "on it");
         // Beside it is still it — a schedule row is a carrier and a dial is
         // rarely exactly on one.
         assert!(
-            SdroxideApp::broadcast_named_at(dial, 9_580_400.0),
+            SdrcrowApp::broadcast_named_at(dial, 9_580_400.0),
             "400 Hz off is the same station"
         );
         assert!(
-            SdroxideApp::broadcast_named_at(dial, 9_579_600.0),
+            SdrcrowApp::broadcast_named_at(dial, 9_579_600.0),
             "and the same on the other side"
         );
         // The next channel is not. Shortwave channels are 4–5 kHz apart, so a
         // 2 kHz-wide window in total has room for the dial to sit off the
         // carrier and still stops well short of the neighbour.
-        assert!(!SdroxideApp::broadcast_named_at(dial, 9_582_000.0), "2 kHz up is another station");
-        assert!(!SdroxideApp::broadcast_named_at(dial, 9_578_000.0), "and 2 kHz down");
+        assert!(!SdrcrowApp::broadcast_named_at(dial, 9_582_000.0), "2 kHz up is another station");
+        assert!(!SdrcrowApp::broadcast_named_at(dial, 9_578_000.0), "and 2 kHz down");
         // The boundary, stated rather than felt: **±1 kHz inclusive**, so the
         // width is a number this test holds rather than a feeling in the code.
         assert!(
-            SdroxideApp::broadcast_named_at(dial, 9_581_000.0),
+            SdrcrowApp::broadcast_named_at(dial, 9_581_000.0),
             "exactly 1 kHz is the edge, and it is inside"
         );
-        assert!(!SdroxideApp::broadcast_named_at(dial, 9_581_001.0), "1 Hz past it is out");
+        assert!(!SdrcrowApp::broadcast_named_at(dial, 9_581_001.0), "1 Hz past it is out");
     }
 
     /// ALL off: a favourite 2 kHz off the dial is still unnamed, exactly as
@@ -990,7 +990,7 @@ mod broadcast_only_the_tuned_tests {
         let dial = 9_580_000.0;
         let favs = vec!["BBC World Service".to_string()];
         assert!(
-            !SdroxideApp::broadcast_visible_at(
+            !SdrcrowApp::broadcast_visible_at(
                 dial,
                 9_582_000.0,
                 "BBC World Service",
@@ -1008,7 +1008,7 @@ mod broadcast_only_the_tuned_tests {
         let dial = 9_580_000.0;
         let favs = vec!["BBC World Service".to_string()];
         assert!(
-            SdroxideApp::broadcast_visible_at(
+            SdrcrowApp::broadcast_visible_at(
                 dial,
                 9_582_000.0,
                 "BBC World Service",
@@ -1026,7 +1026,7 @@ mod broadcast_only_the_tuned_tests {
         let dial = 9_580_000.0;
         let favs: Vec<String> = Vec::new();
         assert!(
-            !SdroxideApp::broadcast_visible_at(
+            !SdrcrowApp::broadcast_visible_at(
                 dial,
                 9_582_000.0,
                 "BBC World Service",
@@ -1052,14 +1052,14 @@ mod broadcast_only_the_tuned_tests {
         let favs: Vec<String> = Vec::new();
         for hz in [9_582_000.0, 6_070_000.0, 15_490_000.0] {
             assert!(
-                SdroxideApp::broadcast_visible_at(dial, hz, "Any station", &favs, false, true),
+                SdrcrowApp::broadcast_visible_at(dial, hz, "Any station", &favs, false, true),
                 "{hz} Hz is a broadcaster and BC ALL is on, so it is named"
             );
         }
         // And the tuned-only rule is untouched when it is off: the same call
         // with the preference off names one station, not three.
         assert!(
-            !SdroxideApp::broadcast_visible_at(
+            !SdrcrowApp::broadcast_visible_at(
                 dial,
                 6_070_000.0,
                 "Any station",

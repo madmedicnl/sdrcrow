@@ -7,7 +7,7 @@
 //! The banner is what the station puts its name on, so its two texts, its two
 //! colours and its height come from [`sdrcrow_types::DigiConfig`] rather than
 //! from here — see [`Banner`]. The stock settings compose exactly the strip
-//! this module used to hard-wire: the callsign at the left, `SDRoxide vX.Y.Z`
+//! this module used to hard-wire: the callsign at the left, `SDRCrow vX.Y.Z`
 //! at the right, white on red fading to black.
 //!
 //! Pure-Rust (`image` + `ab_glyph`) so it runs identically in the native app and
@@ -107,7 +107,7 @@ impl Banner {
 ///
 /// `{call}` is uppercased — a callsign belongs in capitals on the air and the
 /// header always printed it that way — but the template around it is left as
-/// the operator typed it, which is what stops `SDRoxide` becoming `SDROXIDE`.
+/// the operator typed it, which is what stops `SDRCrow` becoming `SDRCROW`.
 /// An unrecognised `{…}` is copied through untouched so a typo is visible in
 /// the preview rather than silently printing nothing.
 pub fn expand(template: &str, call: &str, grid: &str) -> String {
@@ -137,7 +137,7 @@ pub fn expand(template: &str, call: &str, grid: &str) -> String {
 pub const BANNER_PLACEHOLDERS: [(&str, &str); 3] = [
     ("{call}", "your callsign, in capitals"),
     ("{grid}", "your locator"),
-    ("{version}", "the sdroxide version"),
+    ("{version}", "the sdrcrow version"),
 ];
 
 /// The single font used for the header and the message overlay
@@ -674,7 +674,7 @@ mod tests {
         let cfg = DigiConfig { my_call: "oe1test".into(), ..DigiConfig::default() };
         let b = Banner::from_config(&cfg).expect("on by default");
         assert_eq!(b.left, "OE1TEST");
-        assert_eq!(b.right, format!("SDRoxide v{}", env!("CARGO_PKG_VERSION")));
+        assert_eq!(b.right, format!("SDRCrow v{}", env!("CARGO_PKG_VERSION")));
         assert_eq!(b.height, 16);
         assert_eq!(b.fill, [170, 0, 0]);
     }
@@ -686,11 +686,11 @@ mod tests {
     }
 
     /// The callsign goes up in capitals, but only the callsign: uppercasing the
-    /// whole template would turn `SDRoxide` into `SDROXIDE`.
+    /// whole template would turn `SDRCrow` into `SDRCROW`.
     #[test]
     fn only_the_callsign_is_uppercased() {
         assert_eq!(expand("de {call} ", " oe1test ", ""), "de OE1TEST ");
-        assert_eq!(expand("SDRoxide {grid}", "", "jn88"), "SDRoxide jn88");
+        assert_eq!(expand("SDRCrow {grid}", "", "jn88"), "SDRCrow jn88");
         assert_eq!(expand("v{version}", "", ""), format!("v{}", env!("CARGO_PKG_VERSION")));
         // Case-insensitive, so {CALL} works as well as {call}.
         assert_eq!(expand("{CALL}", "oe1test", ""), "OE1TEST");
@@ -894,7 +894,7 @@ mod tests {
         assert!(large > small, "200% text printed {large} ink pixels against {small} at 100%");
 
         // For the eye, and only when asked: a file to look at.
-        if std::env::var("SDROXIDE_SSTV_DUMP").is_ok() {
+        if std::env::var("SDRCROW_SSTV_DUMP").is_ok() {
             let (rgb, ww, hh2) =
                 compose(w, h, &src, w, h, "TEST", Some(&banner(true, 175)), &style);
             let path = "/tmp/opencode/sstv-banner-bottom.png";

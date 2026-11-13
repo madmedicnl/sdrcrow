@@ -16,7 +16,7 @@
 //!
 //! The armouring is here because it is what makes this decoder *checkable*.
 //! Every AIS tool in the world speaks `!AIVDM`, so a sentence in the panel is
-//! something an operator can paste into one and compare against what sdroxide
+//! something an operator can paste into one and compare against what sdrcrow
 //! made of it — which, for a decoder written from a standard and not from a
 //! recording, is the check that matters.
 //!
@@ -209,7 +209,7 @@ mod tests {
     ///
     /// It is the one end-to-end check on this file that does not come from this
     /// file: it exercises the armouring, the most-significant-bit-first read
-    /// and their agreement, against a fact stated outside sdroxide.
+    /// and their agreement, against a fact stated outside sdrcrow.
     #[test]
     fn the_first_armoured_character_is_the_message_type() {
         for (ty, ch) in [(1u64, '1'), (3, '3'), (5, '5'), (18, 'B'), (21, 'E'), (24, 'H')] {

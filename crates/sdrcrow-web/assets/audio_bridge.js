@@ -1,4 +1,4 @@
-// Audio bridge for the sdroxide web client.
+// Audio bridge for the sdrcrow web client.
 //
 // Downlink: wasm pushes mono 48 kHz PCM (Float32Array) -> playback worklet.
 // Uplink: capture worklet posts mic blocks here; wasm polls pullMic().
@@ -105,7 +105,7 @@
         // The solar view is a silent viewer; an audio warning there is noise.
         if (location.search.includes("view=solar")) return;
         console.warn(
-            "sdroxide audio: this page is not a secure context, so the browser " +
+            "sdrcrow audio: this page is not a secure context, so the browser " +
             "withholds AudioWorklet and the microphone. Receive audio and " +
             "microphone transmit are unavailable. Reach the server over HTTPS " +
             "(a reverse proxy or a VPN), or via localhost through an SSH tunnel."
@@ -341,17 +341,17 @@
                     () => {
                         if (gen !== generation) return;
                         sinkId = readSink(next);
-                        console.log("sdroxide audio: output device", sinkId);
+                        console.log("sdrcrow audio: output device", sinkId);
                     },
-                    (e) => console.warn("sdroxide audio: setSinkId(default) refused:", e)
+                    (e) => console.warn("sdrcrow audio: setSinkId(default) refused:", e)
                 );
             } catch (e) {
-                console.warn("sdroxide audio: setSinkId is not usable:", e);
+                console.warn("sdrcrow audio: setSinkId is not usable:", e);
             }
         }
         next.onstatechange = () => {
             if (gen !== generation) return;
-            console.log("sdroxide audio: context state", next.state);
+            console.log("sdrcrow audio: context state", next.state);
             if (next.state === "running") {
                 hideHint();
                 hideRestartBar();
@@ -390,10 +390,10 @@
             player = node;
             // Second chance, now that there is something to hear.
             resumeCtx();
-            console.log("sdroxide audio: playback ready at", next.sampleRate, "Hz");
+            console.log("sdrcrow audio: playback ready at", next.sampleRate, "Hz");
             if (micWanted) startMic();
         } catch (e) {
-            console.warn("sdroxide audio: playback bridge failed:", e);
+            console.warn("sdrcrow audio: playback bridge failed:", e);
             if (gen !== generation) return;
             // The same bound as a stall: a bridge that will not build is not
             // going to build on the fourth attempt either, and each one is a
@@ -413,7 +413,7 @@
         const now = performance.now();
         if (!force && now - lastRebuildAt < REBUILD_MIN_MS) return;
         lastRebuildAt = now;
-        console.log("sdroxide audio: rebuilding the playback path:", reason);
+        console.log("sdrcrow audio: rebuilding the playback path:", reason);
         buildAudio();
     }
 
@@ -531,7 +531,7 @@
                 (t) => t.readyState === "live"
             );
             if (live) {
-                console.log("sdroxide audio: microphone re-attached to a new context");
+                console.log("sdrcrow audio: microphone re-attached to a new context");
             } else {
                 // Raw capture, explicitly. A browser defaults all three of these
                 // ON, because its idea of a microphone is a conference call: the
@@ -564,7 +564,7 @@
                 const track = micStream.getAudioTracks()[0];
                 const got = (track && track.getSettings) ? track.getSettings() : {};
                 console.log(
-                    "sdroxide audio: microphone", (track && track.label) || "(unnamed)",
+                    "sdrcrow audio: microphone", (track && track.label) || "(unnamed)",
                     "rate", got.sampleRate || "(context)",
                     "channels", got.channelCount || 1,
                     "aec", got.echoCancellation, "ns", got.noiseSuppression,
@@ -587,12 +587,12 @@
             // silence and cannot feed back.
             capture.connect(ctx.destination);
             micReady = true;
-            console.log("sdroxide audio: mic ready");
+            console.log("sdrcrow audio: mic ready");
         } catch (e) {
             // Safari wants transient activation for getUserMedia, and the TX
             // request reaches us a frame or more after the tap that caused it.
             // Leave micWanted set so the next gesture tries again.
-            console.warn("sdroxide audio: no microphone (will retry):", e);
+            console.warn("sdrcrow audio: no microphone (will retry):", e);
         } finally {
             micStarting = false;
         }
@@ -691,7 +691,7 @@
         setInterval(() => watchAudio(performance.now()), 1000);
     }
 
-    window.sdroxideAudio = {
+    window.sdrcrowAudio = {
         pushPcm: function (pcm) {
             if (player) {
                 // Copy: the wasm memory view is invalidated on return.

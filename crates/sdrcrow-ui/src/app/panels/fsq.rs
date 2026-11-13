@@ -12,7 +12,7 @@ use sdrcrow_types::{Command, Decode};
 use crate::theme::ThemedScroll;
 
 use crate::app::panels::widgets::pick_image;
-use crate::app::{SdroxideApp, tx_gated};
+use crate::app::{SdrcrowApp, tx_gated};
 use crate::time::now_unix;
 
 /// How long an FSQ station stays lit on the maps after it was last heard.
@@ -41,7 +41,7 @@ fn fsq_save_contacts(contacts: &[sdrcrow_types::FsqContact]) {
 #[cfg(target_arch = "wasm32")]
 fn fsq_save_contacts(_contacts: &[sdrcrow_types::FsqContact]) {}
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// FSQ mode settings (speed + directed-message callsign), shown inline in the
     /// FSQ panel header next to the tune buttons.
     fn fsq_params_row(&mut self, ui: &mut egui::Ui, cmds: &mut Vec<Command>) {

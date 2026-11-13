@@ -236,17 +236,17 @@ fn dated<'a>(
     name: &str,
 ) -> Option<(u32, &'a [u8], usize)> {
     let Some(rest) = blob.strip_prefix(magic) else {
-        eprintln!("sdroxide: {name} is not the table it should be");
+        eprintln!("sdrcrow: {name} is not the table it should be");
         return None;
     };
     if rest.len() < 8 {
-        eprintln!("sdroxide: {name} is short of its own header");
+        eprintln!("sdrcrow: {name} is short of its own header");
         return None;
     }
     let (date, count) = (u32_at(rest, 0), u32_at(rest, 4) as usize);
     let body = &rest[8..];
     if body.len() < count.saturating_mul(size) {
-        eprintln!("sdroxide: {name} is short of its own count");
+        eprintln!("sdrcrow: {name} is short of its own count");
         return None;
     }
     Some((date, body, count))
@@ -294,7 +294,7 @@ fn parse_wiki(blob: &[u8]) -> std::collections::HashMap<String, (String, String)
     };
     for _ in 0..count {
         if body.len() < 11 || body.len() < 11 + usize::from(body[10]) {
-            eprintln!("sdroxide: wiki.bin ends in the middle of a record");
+            eprintln!("sdrcrow: wiki.bin ends in the middle of a record");
             break;
         }
         let len = usize::from(body[10]);
@@ -364,13 +364,13 @@ const AIRPORT_LEN: usize = 54;
 
 fn parse_navaids(blob: &[u8]) -> Vec<Navaid> {
     let Some(rest) = blob.strip_prefix(b"SDXNAV01") else {
-        eprintln!("sdroxide: navaids.bin is not a navaid table");
+        eprintln!("sdrcrow: navaids.bin is not a navaid table");
         return Vec::new();
     };
     let count = usize::from(u16_at(rest, 0));
     let body = &rest[2..];
     if body.len() < count * NAVAID_LEN {
-        eprintln!("sdroxide: navaids.bin is short of its own count");
+        eprintln!("sdrcrow: navaids.bin is short of its own count");
         return Vec::new();
     }
     (0..count)
@@ -391,13 +391,13 @@ fn parse_navaids(blob: &[u8]) -> Vec<Navaid> {
 
 fn parse_airports(blob: &[u8]) -> Vec<Airport> {
     let Some(rest) = blob.strip_prefix(b"SDXAPT01") else {
-        eprintln!("sdroxide: airports.bin is not an airport table");
+        eprintln!("sdrcrow: airports.bin is not an airport table");
         return Vec::new();
     };
     let count = usize::from(u16_at(rest, 0));
     let body = &rest[2..];
     if body.len() < count * AIRPORT_LEN {
-        eprintln!("sdroxide: airports.bin is short of its own count");
+        eprintln!("sdrcrow: airports.bin is short of its own count");
         return Vec::new();
     }
     (0..count)

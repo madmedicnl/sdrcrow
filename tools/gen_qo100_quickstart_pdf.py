@@ -2,7 +2,7 @@
 """Render the QO-100 quick-start guide's UI-panel diagrams and PDFs.
 
 The guide (`docs/qo100-quickstart.{en,tr}.md`) illustrates each step with a
-small drawn mock-up of the relevant sdroxide panel — not a screenshot, so it
+small drawn mock-up of the relevant sdrcrow panel — not a screenshot, so it
 never goes stale when a control moves, and not ASCII art, so it reads well in
 the rendered PDF. This script is *both* halves of that pipeline, driven
 entirely off the Markdown, so the two are never out of sync:
@@ -374,7 +374,7 @@ def diagram_main_window_mini(chrome, tmp, lang):
                "paneli bir köşede açık bırakın — pencere kapalıyken de düzeltmeyi sürdürür")
     html = f"""
     <div class="panel" style="width:640px">
-      <div class="titlebar">sdroxide <span class="path">main window</span></div>
+      <div class="titlebar">sdrcrow <span class="path">main window</span></div>
       <div class="body" style="position:relative; height:140px;">
         <div style="position:absolute; inset:14px; border:1px dashed {LINE}; display:flex;
                     align-items:center; justify-content:center; color:{CYAN_DIM}; font-size:11px;">

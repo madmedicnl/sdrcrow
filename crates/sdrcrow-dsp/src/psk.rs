@@ -1801,9 +1801,9 @@ mod tests {
     /// QPSK against a real recording, because a loopback can only prove the two
     /// halves agree with each other.
     ///
-    /// Point `SDROXIDE_QPSK_SAMPLE` at a mono WAV and, if it is not 31.25 baud
-    /// or not centred on 1000 Hz, say so with `SDROXIDE_QPSK_BAUD` and
-    /// `SDROXIDE_QPSK_HZ`. MultiPSK's `QPSK31-1000_Hz.WAV` works unmodified.
+    /// Point `SDRCROW_QPSK_SAMPLE` at a mono WAV and, if it is not 31.25 baud
+    /// or not centred on 1000 Hz, say so with `SDRCROW_QPSK_BAUD` and
+    /// `SDRCROW_QPSK_HZ`. MultiPSK's `QPSK31-1000_Hz.WAV` works unmodified.
     ///
     /// The assertion is deliberately weak — text rather than a known sentence.
     /// The sample's content is somebody else's recording and pinning a word
@@ -1811,15 +1811,15 @@ mod tests {
     /// decoder; what matters here is that a real symbol stream comes back as
     /// readable text at all.
     #[test]
-    #[ignore = "needs a recording: SDROXIDE_QPSK_SAMPLE=/path/file.wav"]
+    #[ignore = "needs a recording: SDRCROW_QPSK_SAMPLE=/path/file.wav"]
     fn an_off_air_qpsk_recording_decodes() {
-        let Ok(path) = std::env::var("SDROXIDE_QPSK_SAMPLE") else {
+        let Ok(path) = std::env::var("SDRCROW_QPSK_SAMPLE") else {
             return;
         };
         let baud: f64 =
-            std::env::var("SDROXIDE_QPSK_BAUD").ok().and_then(|v| v.parse().ok()).unwrap_or(31.25);
+            std::env::var("SDRCROW_QPSK_BAUD").ok().and_then(|v| v.parse().ok()).unwrap_or(31.25);
         let hz: f64 =
-            std::env::var("SDROXIDE_QPSK_HZ").ok().and_then(|v| v.parse().ok()).unwrap_or(1000.0);
+            std::env::var("SDRCROW_QPSK_HZ").ok().and_then(|v| v.parse().ok()).unwrap_or(1000.0);
         let mut r = hound::WavReader::open(&path).expect("open the recording");
         let spec = r.spec();
         let scale = (1i64 << (spec.bits_per_sample.max(1) - 1)) as f32;
@@ -2544,16 +2544,16 @@ mod tests {
 
     /// What the decoder makes of a real transmission.
     ///
-    /// `SDROXIDE_PSK_SAMPLE` is a mono 8 kHz WAV of a PSK signal;
-    /// `SDROXIDE_PSK_CENTRE` (default 1500 Hz), `_BAUD` (31.25) and `_TEXT`
+    /// `SDRCROW_PSK_SAMPLE` is a mono 8 kHz WAV of a PSK signal;
+    /// `SDRCROW_PSK_CENTRE` (default 1500 Hz), `_BAUD` (31.25) and `_TEXT`
     /// describe it. Run it with
-    /// `SDROXIDE_PSK_SAMPLE=... cargo test -p sdrcrow-dsp --release --lib \\
+    /// `SDRCROW_PSK_SAMPLE=... cargo test -p sdrcrow-dsp --release --lib \\
     ///   -- --ignored --nocapture an_off_air_capture_decodes`.
     #[test]
     #[ignore]
     fn an_off_air_capture_decodes() {
-        let Ok(path) = std::env::var("SDROXIDE_PSK_SAMPLE") else {
-            eprintln!("SDROXIDE_PSK_SAMPLE unset; skipping");
+        let Ok(path) = std::env::var("SDRCROW_PSK_SAMPLE") else {
+            eprintln!("SDRCROW_PSK_SAMPLE unset; skipping");
             return;
         };
         let mut reader = hound::WavReader::open(&path).expect("open the sample WAV");
@@ -2563,15 +2563,15 @@ mod tests {
         let audio: Vec<f32> =
             reader.samples::<i16>().map(|s| s.expect("sample") as f32 / 32_768.0).collect();
         let num = |k: &str, d: f64| std::env::var(k).ok().and_then(|v| v.parse().ok()).unwrap_or(d);
-        let centre = num("SDROXIDE_PSK_CENTRE", 1500.0);
-        let baud = num("SDROXIDE_PSK_BAUD", 31.25);
+        let centre = num("SDRCROW_PSK_CENTRE", 1500.0);
+        let baud = num("SDRCROW_PSK_BAUD", 31.25);
         let mut rx = PskRx::new_baud(8000.0, centre, baud);
         let mut out = String::new();
         for chunk in audio.chunks(512) {
             out.push_str(&rx.process(chunk));
         }
         eprintln!("decoded {} chars at {baud} baud, {centre} Hz: {out:?}", out.len());
-        if let Ok(want) = std::env::var("SDROXIDE_PSK_TEXT") {
+        if let Ok(want) = std::env::var("SDRCROW_PSK_TEXT") {
             for w in want.split_whitespace() {
                 assert!(out.contains(w), "off-air PSK did not recover {w:?}: {out:?}");
             }

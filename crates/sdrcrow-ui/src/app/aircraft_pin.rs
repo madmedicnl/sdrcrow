@@ -18,7 +18,7 @@
 use eframe::egui;
 use sdrcrow_types::AdsbAircraft;
 
-use super::SdroxideApp;
+use super::SdrcrowApp;
 use super::aircraft_card::CardKey;
 use super::aircraft_history;
 use super::aircraft_hover::{self, PinAction};
@@ -59,7 +59,7 @@ pub(in crate::app) fn lookup_after(
     })
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Give the open airport box what the station can tell it — the Wikipedia
     /// picture, and the local time and temperature — and keep it only while the
     /// box is open: the box asks every frame it is drawn, and what it holds goes

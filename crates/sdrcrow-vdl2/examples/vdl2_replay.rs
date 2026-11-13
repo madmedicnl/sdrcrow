@@ -5,7 +5,7 @@
 //! cargo run --release -p sdrcrow-vdl2 --example vdl2_replay -- /tmp/vdl2.iq 2400000 136825000
 //! ```
 //!
-//! The file is interleaved little-endian `f32`, the format `sdroxide --file`
+//! The file is interleaved little-endian `f32`, the format `sdrcrow --file`
 //! reads and `--record-iq` writes. `rate` and `center` are the recording's, in
 //! hertz.
 //!
@@ -271,7 +271,7 @@ impl Totals {
     }
 }
 
-/// Interleaved `f32` I/Q, either raw or inside the RIFF wrapper SDRoxide's own
+/// Interleaved `f32` I/Q, either raw or inside the RIFF wrapper SDRCrow's own
 /// I/Q recorder writes — a recording contributed on an issue arrives as the
 /// latter, and stripping 152 bytes off half a gigabyte by hand to replay it is
 /// a step nobody should have to work out.

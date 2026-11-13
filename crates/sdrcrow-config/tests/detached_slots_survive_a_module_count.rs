@@ -8,7 +8,7 @@
 //! and answers `Settings::default()`, which would take the operator's theme,
 //! fonts, layout and the rest of their station with it.
 //!
-//! One test in the binary, because `SDROXIDE_CONFIG_DIR` is process-global and
+//! One test in the binary, because `SDRCROW_CONFIG_DIR` is process-global and
 //! setting it from a `#[test]` sharing a binary with others would race them.
 
 use std::fs;
@@ -27,7 +27,7 @@ fn scratch(tag: &str) -> std::path::PathBuf {
 /// parsed), the slots that were undocked, and whether the file is still there.
 fn load_with(dir: &std::path::Path, detached: &str) -> (UiSettings, Vec<bool>, bool) {
     // SAFETY: this is the only test in this binary; nothing races the setter.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", dir) };
     fs::write(
         dir.join("config.toml"),
         format!("[ui]\nframe_rate_fps = 37\ndetached = [{detached}]\n"),

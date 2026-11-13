@@ -10,7 +10,7 @@ use crate::i18n::tr;
 use eframe::egui::{self, Color32, RichText};
 use sdrcrow_types::{Command, Mode, Pi4Spot};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::app::panels::widgets::{SlotState, row_cell, slot_bar, slot_phase_s};
 use crate::app::util::fmt_age;
 use crate::theme::ThemedScroll;
@@ -30,7 +30,7 @@ fn pi4_row_slot(ui: &egui::Ui) -> f32 {
     PI4_ROW_H.max(ui.spacing().interact_size.y) + ui.spacing().item_spacing.y
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn pi4_panel(
         &mut self,
         ui: &mut egui::Ui,

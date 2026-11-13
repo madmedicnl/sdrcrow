@@ -12,7 +12,7 @@ use sdrcrow_types::{
     MemorySort, Mode, RepeaterState, Shift, ToneMode,
 };
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::chrome::StyledCombo;
 
 /// What a drag out of the memory list carries: the memory's id. Its own type
@@ -508,7 +508,7 @@ fn framed_colour_edit(ui: &mut egui::Ui, col: &mut [u8; 3]) -> bool {
     super::colour_edit::colour_paste(ui, col, &swatch, paste)
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn memories_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         // The shell's window: an egui window or its own OS one, with the ⇱
         // WINDOW chip. Wide enough for a row — the recall button, a name, a

@@ -15,7 +15,7 @@ Requirements, all of which are already on the bench:
 
   * fldigi running with XML-RPC enabled (`CHKUSEXMLRPCIS` = 1, port 7362)
   * the CRT SS9900v on VOX, its PCM level not at zero (`amixer -c 1 sget PCM`)
-  * the RSP1 free — **sdroxide must be closed**, since it holds the device
+  * the RSP1 free — **sdrcrow must be closed**, since it holds the device
   * `tools/rsp1-capture/target/release/rspcap` built
 
 Nothing here touches the radio's frequency: tune the transmitter by hand and pass
@@ -33,7 +33,7 @@ import xmlrpc.client
 import numpy as np
 
 HOME = os.path.expanduser("~")
-ROOT = os.path.join(HOME, "sdroxide")
+ROOT = os.path.join(HOME, "sdrcrow")
 RSPCAP = os.path.join(ROOT, "tools", "rsp1-capture", "target", "release", "rspcap")
 DECODER = [os.path.join(ROOT, "target", "release", "examples", "decode_file")]
 XMLRPC = "http://127.0.0.1:7362"

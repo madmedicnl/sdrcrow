@@ -700,7 +700,7 @@ fn front_end_warning(identity: Option<Identity>) -> Option<String> {
     }
     Some(if id.recognised() {
         format!(
-            "this is {}, and sdroxide drives the Mk2's front end only: the bias tee, dither, \
+            "this is {}, and sdrcrow drives the Mk2's front end only: the bias tee, dither, \
              ADC range and both gain stages will do nothing here, and there is no VHF tuner to \
              reach. Reception is unaffected — the ADC, the sample clock and the whole HF \
              spectrum work exactly as they do on a Mk2, and the gain in front of the converter \

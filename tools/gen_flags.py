@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build the packaged country-flag set for the decode list.
 
-sdroxide ships its flags rather than fetching them, so this turns a directory
+sdrcrow ships its flags rather than fetching them, so this turns a directory
 of source flag images into the small PNGs under
 `crates/sdrcrow-ui/assets/flags/` and regenerates the `include_bytes!` table
 in `crates/sdrcrow-ui/src/flags.rs`.
@@ -51,7 +51,7 @@ HEADER = '''//! The packaged country flags, and the texture cache that draws the
 //! They are compiled in rather than fetched: a decode list that only shows
 //! where stations are once the network answers is a decode list that shows it
 //! differently on every machine, and the remote client has no business
-//! reaching past sdroxide to a third-party CDN.
+//! reaching past sdrcrow to a third-party CDN.
 
 use std::collections::HashMap;
 

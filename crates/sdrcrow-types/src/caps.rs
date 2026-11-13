@@ -104,7 +104,7 @@ pub enum SettingKind {
 ///
 /// Not a fixed list and deliberately not interpreted: a HackRF's `bias_tx`, an
 /// RTL-SDR's `direct_samp` and an RSP's `rfnotch_ctrl` all arrive here the same
-/// way, and sdroxide draws a control for each without knowing what any of them
+/// way, and sdrcrow draws a control for each without knowing what any of them
 /// means. That is the whole point of reaching a radio through SoapySDR, and it
 /// is why this is carried as data rather than as per-driver code.
 ///
@@ -274,7 +274,7 @@ pub struct DeviceCaps {
     /// Appended last, for the same reason as `shared_lo_rx`.
     #[serde(default)]
     pub cw_audio_keyed: bool,
-    /// The radio has a squelch of its own that sdroxide can set, so the SQL
+    /// The radio has a squelch of its own that sdrcrow can set, so the SQL
     /// control drives *that* rather than the engine's own gate
     /// ([`crate::RadioState::rig_squelch`] rather than
     /// [`crate::RxState::squelch_db`]).

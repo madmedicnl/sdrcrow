@@ -33,7 +33,7 @@ pub(in crate::app) fn dab_mhz(hz: f64) -> String {
     format!("{:.3}", hz / 1e6)
 }
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::i18n::tr;
 use crate::theme;
 
@@ -198,7 +198,7 @@ pub(in crate::app) fn dab_service_extra(s: &DabService) -> String {
     extra
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn dab_panel(
         &mut self,
         ui: &mut egui::Ui,

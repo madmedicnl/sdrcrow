@@ -13,7 +13,7 @@ use crate::i18n::{Tr, tr};
 use eframe::egui::{self, Color32, RichText};
 use sdrcrow_types::{RdsData, RdsGroupLog, RdsStandard, pty_name, rt_plus_class};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::chrome::StyledCombo;
 
 /// How many groups the diagnostics log keeps. About a minute at the eleven
@@ -33,7 +33,7 @@ fn dim_ink() -> Color32 {
     crate::theme::gray(110)
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Fold a snapshot from the engine into the window's state.
     ///
     /// The group log arrives as a delta with an absolute index, so a batch lost

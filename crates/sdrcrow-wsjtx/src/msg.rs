@@ -300,16 +300,16 @@ mod tests {
     #[test]
     fn every_message_opens_with_the_same_header() {
         for (packet, kind) in [
-            (heartbeat("sdroxide", "0.6.0"), T_HEARTBEAT),
-            (clear("sdroxide"), T_CLEAR),
-            (close("sdroxide"), T_CLOSE),
-            (logged_adif("sdroxide", "<CALL:5>W9XYZ<EOR>"), T_LOGGED_ADIF),
+            (heartbeat("sdrcrow", "0.6.0"), T_HEARTBEAT),
+            (clear("sdrcrow"), T_CLEAR),
+            (close("sdrcrow"), T_CLOSE),
+            (logged_adif("sdrcrow", "<CALL:5>W9XYZ<EOR>"), T_LOGGED_ADIF),
         ] {
             let mut r = Reader::new(&packet);
             let (schema, got, id) = r.header();
             assert_eq!(schema, SCHEMA);
             assert_eq!(got, kind);
-            assert_eq!(id.as_deref(), Some("sdroxide"));
+            assert_eq!(id.as_deref(), Some("sdrcrow"));
         }
     }
 

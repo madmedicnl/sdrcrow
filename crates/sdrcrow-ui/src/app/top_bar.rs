@@ -1,6 +1,6 @@
 //! The control strip along the top of the window.
 //!
-//! One method per module in the strip, all called from [`SdroxideApp::top_bar`]
+//! One method per module in the strip, all called from [`SdrcrowApp::top_bar`]
 //! in the order they appear: frequency, S-meter, VFO/RIT, band and mode,
 //! RX filter, sub-RX, TX, the skimmer and display popups, and the window
 //! buttons. Each pushes [`Command`]s rather than touching the controller, so
@@ -33,7 +33,7 @@ use sdrcrow_types::{
 
 use crate::widgets::{freq_display, smeter};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::app::panels::digi_freq_for_band;
 use crate::chrome::StyledCombo;
 
@@ -186,7 +186,7 @@ const PTT_LABEL: &str = " PTT ";
 const PTT_TEXT: f32 = 15.0;
 /// What the compact PTT chip says on hover. Hover is a pointing device's
 /// affordance — a finger never sees this — so it leads with the half that
-/// only a mouse has. See [`SdroxideApp::held_ptt`].
+/// only a mouse has. See [`SdrcrowApp::held_ptt`].
 /// The on-screen name of a module's window (the types crate carries the English
 /// one, which is also what logs and tests read).
 #[cfg_attr(target_arch = "wasm32", allow(dead_code))]
@@ -222,7 +222,7 @@ const STRIP_PTT_TEXT: f32 = 17.0;
 ///
 /// The readout is `digits` fixed-width digits ([`freq_display::DIGITS`]
 /// normally, [`freq_display::DIGITS_EXT`] on a radio whose converter reaches
-/// past 10 GHz — see [`SdroxideApp::readout_digits`]), three group separators
+/// past 10 GHz — see [`SdrcrowApp::readout_digits`]), three group separators
 /// and a " Hz" tail, spaced 1 pt apart — so its width is linear in the digit
 /// size, and one measurement of the live fonts gives the slope. Inverting
 /// that is what lets one formula serve a 360 pt phone and a 2560 pt desktop.
@@ -273,7 +273,7 @@ impl ReadoutFit {
 }
 
 /// The frequency box's measured geometry — see
-/// [`SdroxideApp::freq_box_plan`]: the digit size, the two side columns, the
+/// [`SdrcrowApp::freq_box_plan`]: the digit size, the two side columns, the
 /// readout between them, and the outer width the box reserves around it all.
 struct FreqBoxPlan {
     size: f32,
@@ -362,7 +362,7 @@ fn plan_short_strip(
 const LOCK_LABEL: &str = "DISP";
 
 /// Which menu a chip on a compact strip opens. One list drives both the
-/// measuring and the drawing of the row (see [`SdroxideApp::menu_chips`]), so
+/// measuring and the drawing of the row (see [`SdrcrowApp::menu_chips`]), so
 /// the two cannot come to disagree about what is on it — a chip counted but
 /// not drawn, or the reverse, is exactly what breaks a planned row.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -685,7 +685,7 @@ fn freq_w_for_fewest_rows(
     (lo - 0.5).max(min_w)
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn top_bar(&mut self, ui: &mut egui::Ui, cmds: &mut Vec<Command>) {
         ui.spacing_mut().item_spacing = egui::vec2(8.0, 8.0);
         let tier = crate::layout::tier(ui.ctx());
@@ -2071,7 +2071,7 @@ impl SdroxideApp {
             let full_h = ui.available_height();
 
             // VFO A/B selector, vertically centred in the full box height —
-            // with sdroxide's link switch stacked above it where this station
+            // with sdrcrow's link switch stacked above it where this station
             // holds the switch and the box has room for both rows. Where it has
             // not — the touched tiers, whose chips are half again as tall — the
             // VFO menu carries the same switch instead, and the two ask
@@ -2239,7 +2239,7 @@ impl SdroxideApp {
         });
     }
 
-    /// sdroxide's link switch, above the A/B selector: the same switch this
+    /// sdrcrow's link switch, above the A/B selector: the same switch this
     /// radio's tab on the strip carries, wired to the same shell request, so
     /// the two can never disagree. Having it on the main window is what lets a
     /// *single*-radio session — which has no strip, and whose settings roster
@@ -2436,7 +2436,7 @@ impl SdroxideApp {
 
     /// Under a satellite lock with the corrections on, the frequency the radio
     /// itself is on — the receive frequency with its correction, or, while it
-    /// transmits (from sdroxide or its own microphone), the corrected uplink —
+    /// transmits (from sdrcrow or its own microphone), the corrected uplink —
     /// and whether it is the uplink. The dial underneath stays on the published
     /// frequency; this is what is *shown*. `None` otherwise.
     fn sat_readout(&self) -> Option<(f64, bool)> {
@@ -4975,7 +4975,7 @@ impl SdroxideApp {
         // A demod-audio radio hands over audio and no I/Q, so there is nothing
         // for this to write. Said on the chip rather than hidden: an operator
         // looking for the feature has to find out that this radio has not got
-        // it, not that sdroxide has not.
+        // it, not that sdrcrow has not.
         let have_iq = self.state.sample_rate > 96_000.0;
         ui.horizontal_wrapped(|ui| {
             let iq_label = if iq { tr!("topbar-i-q-wav") } else { tr!("topbar-i-q-wav-2") };
@@ -6860,7 +6860,7 @@ impl SdroxideApp {
         // SWL LOG. The SPOTS window stays — the receive-only networks are a
         // listener's tool as much as a ham's, and it is only the DX cluster /
         // POTA / SOTA feeds *inside* it that SWL mode drops (see
-        // `SdroxideApp::spot_visible`). The labels here are mirrored by
+        // `SdrcrowApp::spot_visible`). The labels here are mirrored by
         // `system_top_row`, which is what sizes the box — the two have to agree
         // or the strip overflows (issue #211).
         let swl = self.swl_mode();
@@ -7158,7 +7158,7 @@ impl SdroxideApp {
 ///
 /// Push-to-talk and a latch on one control, told apart by what the operator
 /// did with it rather than by the tier the window is wearing — see
-/// [`SdroxideApp::held_ptt`] for why the tier is the wrong thing to ask.
+/// [`SdrcrowApp::held_ptt`] for why the tier is the wrong thing to ask.
 /// The state is here rather than in a pair of bools so that the one rule that
 /// matters — a finger's release always unkeys — is a single `match` arm
 /// somebody can check, and so [`Self::on_pointer`] can be tested without an
@@ -7263,7 +7263,7 @@ const SYSTEM_CHIPS_TOP: [&str; 6] = ["LOG", "SPOTS", "AWARDS", "BANDS", "SAT", L
 /// [`SYSTEM_CHIPS_TOP`].
 ///
 /// The **▣** is not in this list: it appears beside the gear only while a module
-/// is out of this window (see [`SdroxideApp::module_windows_chip_wanted`]), so
+/// is out of this window (see [`SdrcrowApp::module_windows_chip_wanted`]), so
 /// [`system_bottom_row`] inserts it. A chip is width, and width on this strip is
 /// rows: one more chip here costs a 1600 pt window a whole row of waterfall in
 /// the widest arrangement (`the_cessb_rail_costs_the_desktop_strip_no_row`).
@@ -7289,7 +7289,7 @@ fn log_chip_opens_swl(swl: bool) -> bool {
 /// the panadapter draws — the last of those only on a front end with a
 /// full-band lane. Peak hold used to stand here too and now lives in SPEC's
 /// popup, beside the spectrum line it is drawn over. Visible to the app module
-/// because [`SdroxideApp::solar_button`], which draws its first chip, lives in
+/// because [`SdrcrowApp::solar_button`], which draws its first chip, lives in
 /// `app::solar`.
 pub(in crate::app) const DISPLAY_VIEW_CHIPS: [&str; 3] = ["☀ 3D", "SPEC", "WIDE"];
 
@@ -7343,7 +7343,7 @@ fn tx_rows_fixed_w(ui: &egui::Ui, keyer: bool) -> (f32, f32) {
 ///
 /// `side_col_w` is [`TX_MIC_COL_W`] or [`TX_LEVEL_COL_W`] — exactly one of the
 /// two rails is drawn, and they are not the same width.
-/// [`SdroxideApp::digi_tx_level_applies`] over the two things that decide it, so
+/// [`SdrcrowApp::digi_tx_level_applies`] over the two things that decide it, so
 /// the rule can be tested without an application around it.
 fn digi_tx_level_applies_to(mode: Mode, caps: Option<&sdrcrow_types::DeviceCaps>) -> bool {
     let Some(caps) = caps else { return false };
@@ -7353,7 +7353,7 @@ fn digi_tx_level_applies_to(mode: Mode, caps: Option<&sdrcrow_types::DeviceCaps>
     mode != Mode::Cw || caps.cw_audio_keyed
 }
 
-/// [`SdroxideApp::cessb_applies`] over the two things that decide it, so the
+/// [`SdrcrowApp::cessb_applies`] over the two things that decide it, so the
 /// rule can be tested without an application around it.
 fn cessb_applies_to(mode: Mode, caps: Option<&sdrcrow_types::DeviceCaps>) -> bool {
     let Some(caps) = caps else { return false };
@@ -7719,7 +7719,7 @@ pub(in crate::app) fn sql_hold_toggle(
 /// A chip on the RX box's chip run: everything that follows the SQL rail, in
 /// the order it is drawn.
 ///
-/// One list is measured ([`rx_rows`]) and drawn ([`SdroxideApp::rx_chip`]), so
+/// One list is measured ([`rx_rows`]) and drawn ([`SdrcrowApp::rx_chip`]), so
 /// a chip the box never reserved room for cannot be added to it. The DRM chip
 /// was: the box drew it past its own right edge, pushed the boxes beside it
 /// along the row and cost the System box its last chips over the edge of the
@@ -7750,7 +7750,7 @@ pub(in crate::app) enum RxChip {
     /// NFM's sub-audible tone.
     Tone,
     /// The way back to the mode's own settings, drawn only while they differ
-    /// ([`SdroxideApp::mode_defaults_chip`]) but reserved in every mode.
+    /// ([`SdrcrowApp::mode_defaults_chip`]) but reserved in every mode.
     Defaults,
 }
 
@@ -7763,7 +7763,7 @@ fn defaults_chip_side(ui: &egui::Ui) -> f32 {
 
 impl RxChip {
     /// Whether this chip's rows are inlined at the bottom of the menu column
-    /// instead of being drawn as a chip there ([`SdroxideApp::rx_controls`]).
+    /// instead of being drawn as a chip there ([`SdrcrowApp::rx_controls`]).
     ///
     /// True for every chip whose click opens a *second* popup. egui counts a
     /// click on one of those as a click outside the menu the chip was drawn
@@ -7986,7 +7986,7 @@ fn active_preset_label(
 /// `NR` alone says only whether noise reduction is in circuit — which is right
 /// on the **desktop strip**, where the chip opens the picker with all five
 /// engines in it and a label that grew and shrank would move every chip beside
-/// it (see [`SdroxideApp::nr_button`]). On the **compact** layouts the chip
+/// it (see [`SdrcrowApp::nr_button`]). On the **compact** layouts the chip
 /// cycles the strength instead and the engines are a row inside the RX menu
 /// below it, so a listener sees the bare `NR` and never learns there is a
 /// choice to make. There the label carries the engine, which costs a little
@@ -8253,7 +8253,7 @@ fn vfo_chip_labels(tx_capable: bool) -> Vec<&'static str> {
     labels
 }
 
-/// [`SdroxideApp::readout`]'s arithmetic, over the state alone — so what the
+/// [`SdrcrowApp::readout`]'s arithmetic, over the state alone — so what the
 /// readout says on the air can be tested without an app around it.
 /// What the frequency readout shows, and by how much it differs from the dial.
 ///
@@ -8335,7 +8335,7 @@ fn readout_for_audio(
 
 /// One row of the SPEC popup: a caption naming the setting, then a chip per
 /// step of it. Chips rather than a `ComboBox` for the reason
-/// [`SdroxideApp::spectrum_controls`] gives — a combo opened inside a popup
+/// [`SdrcrowApp::spectrum_controls`] gives — a combo opened inside a popup
 /// counts as a click outside it and closes it under the operator.
 ///
 /// The caption carries the explanation, and each chip only what that step
@@ -8909,7 +8909,7 @@ pub(in crate::app) fn wideband_chip_grid(
 }
 
 /// The RADIO chip of the Wideband row: the same switch as EXTRAS' RADIO chip.
-/// It only reports the click; [`SdroxideApp::toggle_radio_classic`] acts on it.
+/// It only reports the click; [`SdrcrowApp::toggle_radio_classic`] acts on it.
 pub(in crate::app) struct RadioChip {
     /// Whether RADIO CLASSIC is on, as the caller read it.
     pub on: bool,
@@ -9108,7 +9108,7 @@ const LISTEN_MODES: [Mode; 9] = [
 /// test can lay the whole menu out on a phone-sized viewport without an app
 /// around it — see `the_band_menu_fits_a_phone_screen`.
 #[allow(clippy::too_many_arguments)]
-/// The band popup for an ATS Mini: the firmware's own bands, not sdroxide's
+/// The band popup for an ATS Mini: the firmware's own bands, not sdrcrow's
 /// ham allocations, and receive-only. Picking one steps the receiver's band
 /// cycle (the protocol has no direct select); the firmware's table is
 /// user-editable, so this is its defaults, not a promise.
@@ -10665,7 +10665,7 @@ mod tests {
         [("RX", 44.1, 18.1), ("DISP", 57.1, 31.1), ("☰", 43.0, 17.0)];
     const P_PTT_W: f32 = 59.2;
     const P_TEXT: f32 = 14.5;
-    /// Every gap on the strip: the `item_spacing` [`SdroxideApp::top_bar`] sets
+    /// Every gap on the strip: the `item_spacing` [`SdrcrowApp::top_bar`] sets
     /// for itself, not the style's own.
     const P_GAP: f32 = 8.0;
     /// The active-VFO tag at 13 pt — the same figure the short strip is
@@ -10690,7 +10690,7 @@ mod tests {
     }
 
     /// The whole phone strip as it lays itself out on a `viewport` this wide:
-    /// what [`SdroxideApp::freq_module_compact`] decides about the readout and
+    /// what [`SdrcrowApp::freq_module_compact`] decides about the readout and
     /// the band/mode chip, and what [`plan_phone_tail`] then makes of the row
     /// that is left — all of it in plain numbers, measured off the constants
     /// above rather than a live style.
@@ -11679,7 +11679,7 @@ mod tests {
         assert_eq!(w, 450.0);
     }
 
-    /// Every box on the desktop strip, priced the way [`SdroxideApp::desktop_strip`]
+    /// Every box on the desktop strip, priced the way [`SdrcrowApp::desktop_strip`]
     /// prices it, for a transmit-capable CAT rig with a full-band lane and no
     /// front-end gain or decimation of its own — an IC-705 over the LAN, which
     /// is the shape the strip first ran out of room on. Widths only; the boxes

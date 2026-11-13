@@ -22,7 +22,7 @@ use crate::i18n::tr;
 use eframe::egui::{self, RichText};
 use sdrcrow_types::{AdsbAircraft, AdsbStatus, Command};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::app::aircraft_history;
 use crate::app::aircraft_hover;
 use crate::app::aircraft_search;
@@ -46,7 +46,7 @@ pub(in crate::app) enum AdsbSort {
     Signal,
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn adsb_panel(
         &mut self,
         ui: &mut egui::Ui,
@@ -554,7 +554,7 @@ impl SdroxideApp {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// How the decoder behaves: the two timeouts, the trail length and the
     /// leader-line time.
     ///

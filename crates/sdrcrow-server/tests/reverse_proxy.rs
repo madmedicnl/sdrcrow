@@ -1,7 +1,7 @@
 //! A station reached through a reverse proxy that does not strip its path
 //! prefix (issue #241).
 //!
-//! Putting sdroxide behind `https://host/sdroxide/` is an ordinary arrangement
+//! Putting sdrcrow behind `https://host/sdrcrow/` is an ordinary arrangement
 //! and not an exotic one: a Tailscale certificate covers a host and offers no
 //! subdomains, so a subpath is the only place a second service can go. Caddy's
 //! plain `reverse_proxy` forwards the prefix untouched, and every request then
@@ -103,7 +103,7 @@ async fn a_path_prefix_the_proxy_left_on_still_reaches_the_station() {
     assert!(direct.starts_with("HTTP/1.1 200"), "the station's own address broke: {direct}");
     assert!(direct.contains("\"path\":\"/ws/0\""), "{direct}");
 
-    for path in ["/sdroxide/radios", "/shack/sdr/radios"] {
+    for path in ["/sdrcrow/radios", "/shack/sdr/radios"] {
         let through = get(path).await;
         assert!(through.starts_with("HTTP/1.1 200"), "{path} answered: {through}");
         assert!(through.contains("\"path\":\"/ws/0\""), "{path} answered: {through}");
@@ -113,7 +113,7 @@ async fn a_path_prefix_the_proxy_left_on_still_reaches_the_station() {
     // not turn one that names nothing into one that does. Where the answer goes
     // instead depends on the build — the client's own page with the web client
     // embedded, the placeholder without it — but it is never another endpoint's.
-    let missing = get("/sdroxide/nonsense").await;
+    let missing = get("/sdrcrow/nonsense").await;
     assert!(!missing.contains("\"path\":\"/ws/0\""), "a stray address reached /radios: {missing}");
 }
 
@@ -123,7 +123,7 @@ async fn a_path_prefix_the_proxy_left_on_still_reaches_the_station() {
 async fn the_socket_opens_through_a_path_prefix() {
     spawn_server(WS_PORT).await;
 
-    for path in ["ws", "sdroxide/ws", "sdroxide/ws/0", "shack/sdr/ws"] {
+    for path in ["ws", "sdrcrow/ws", "sdrcrow/ws/0", "shack/sdr/ws"] {
         let url = format!("ws://127.0.0.1:{WS_PORT}/{path}");
         let (mut ws, _) = tokio_tungstenite::connect_async(&url)
             .await
@@ -161,7 +161,7 @@ async fn the_socket_opens_through_a_path_prefix() {
 }
 
 /// The client itself, through a prefix: the page, and the bundle the page asks
-/// for. This is the half the issue was reported against — `https://host/sdroxide/`
+/// for. This is the half the issue was reported against — `https://host/sdrcrow/`
 /// answering "not found".
 ///
 /// Only where the client is embedded, which is also the only build that has one
@@ -189,7 +189,7 @@ async fn the_client_and_its_bundle_load_through_a_path_prefix() {
     // With the trailing slash and without it: a browser resolves the page's
     // relative links against whichever one the operator typed, and both have to
     // arrive at the client.
-    for path in ["/sdroxide/", "/sdroxide", "/shack/sdr/"] {
+    for path in ["/sdrcrow/", "/sdrcrow", "/shack/sdr/"] {
         let page = get(path.to_string()).await;
         assert!(page.starts_with("HTTP/1.1 200"), "{path}: {}", &page[..page.len().min(200)]);
         assert!(page.contains("sdrcrow_canvas"), "{path} did not answer with the client");
@@ -198,7 +198,7 @@ async fn the_client_and_its_bundle_load_through_a_path_prefix() {
     // The page's own bundle, asked for the way the browser will ask for it —
     // which is the whole reason the emitted URL is relative. Anything else and
     // the page loads and the client never starts.
-    let page = get("/sdroxide/".to_string()).await;
+    let page = get("/sdrcrow/".to_string()).await;
     let bundle = page
         .split_once("module_or_path: '")
         .and_then(|(_, rest)| rest.split_once('\''))
@@ -209,7 +209,7 @@ async fn the_client_and_its_bundle_load_through_a_path_prefix() {
         "the bundle is addressed from the server root ({bundle}), so it cannot be found under a \
          prefix — see crates/sdrcrow-web/Trunk.toml"
     );
-    let asked_for = format!("/sdroxide/{}", bundle.trim_start_matches("./"));
+    let asked_for = format!("/sdrcrow/{}", bundle.trim_start_matches("./"));
     let answer = get(asked_for.clone()).await;
     assert!(
         answer.starts_with("HTTP/1.1 200"),

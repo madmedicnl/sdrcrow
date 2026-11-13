@@ -30,8 +30,8 @@ fn isolated_config() {
         // SAFETY: first thing the test does, before any thread of ours reads
         // the environment.
         unsafe {
-            std::env::set_var("SDROXIDE_CONFIG_DIR", &dir);
-            std::env::remove_var("SDROXIDE_AIRCRAFT_HISTORY");
+            std::env::set_var("SDRCROW_CONFIG_DIR", &dir);
+            std::env::remove_var("SDRCROW_AIRCRAFT_HISTORY");
         }
     });
 }
@@ -126,7 +126,7 @@ async fn a_station_that_has_not_switched_it_on_keeps_and_serves_nothing() {
     for path in [
         "/aircraft-history",
         "/aircraft-history/4840d6",
-        "/sdroxide/aircraft-history",
+        "/sdrcrow/aircraft-history",
         "/shack/sdr/aircraft-history/4840D6",
     ] {
         let answer = get(PORT_OFF, path, None).await;

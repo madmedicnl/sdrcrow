@@ -12,7 +12,7 @@ use sdrcrow_types::{Band, Command, Mode, RadioEvent, SpectrumConfig, Spot};
 use crate::time::now_unix;
 use crate::widgets::spectrum_view;
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 #[cfg(not(target_arch = "wasm32"))]
 use crate::app::ToolWindowState;
 use crate::app::net::auto_upload_adif;
@@ -164,7 +164,7 @@ fn paint_panadapter_chrome(ui: &egui::Ui, area: egui::Rect) {
 /// FIT chip that fixes it lives at the bottom of the Display module, which is
 /// not where anyone is looking at a flat black screen. The fix belongs next to
 /// the symptom, and one click of this pill is the same as switching FIT back on
-/// (`SdroxideApp::fit_levels_now`).
+/// (`SdrcrowApp::fit_levels_now`).
 fn levels_hidden_chip(ui: &mut egui::Ui, area: egui::Rect) -> bool {
     let galley = ui.painter().layout_no_wrap(
         tr!("frame-no-contrast-fit"),
@@ -425,7 +425,7 @@ fn tool_window_title_button(
     clicked
 }
 
-/// See [`SdroxideApp::tool_window_egui`]: the id epoch that resets a tool
+/// See [`SdrcrowApp::tool_window_egui`]: the id epoch that resets a tool
 /// window's remembered geometry when this window's bounding changes. Bump it
 /// whenever a tool window's default size or its body's height-filling changes.
 const TOOL_WINDOW_EPOCH: &str = "b3";
@@ -639,7 +639,7 @@ struct DetachedOutcome {
     /// back next frame".
     close_requested: bool,
     /// Where the window ended up, for the settle-persist in
-    /// [`SdroxideApp::handle_detached_outcome`].
+    /// [`SdrcrowApp::handle_detached_outcome`].
     geometry: Option<sdrcrow_types::DetachedWindow>,
 }
 
@@ -667,7 +667,7 @@ impl ChildWindow {
     /// A window whose own width earns its tier — a spectrum, an operating
     /// panel, a tool.
     #[cfg_attr(target_arch = "wasm32", allow(dead_code))]
-    fn own(app: &SdroxideApp) -> Self {
+    fn own(app: &SdrcrowApp) -> Self {
         Self {
             salt: app.radio_id,
             mode: app.ui_settings.layout,
@@ -678,7 +678,7 @@ impl ChildWindow {
     /// A desk tool, desktop-shaped whatever its height — the RX control
     /// console, the band selector, the rotator.
     #[cfg_attr(target_arch = "wasm32", allow(dead_code))]
-    fn desk(app: &SdroxideApp) -> Self {
+    fn desk(app: &SdrcrowApp) -> Self {
         Self {
             salt: app.radio_id,
             mode: app.ui_settings.layout,
@@ -688,7 +688,7 @@ impl ChildWindow {
 
     /// An **operating panel**: one pane at a time when the window is too narrow
     /// for two, with the window drawing the pane chips itself.
-    fn panes(app: &SdroxideApp) -> Self {
+    fn panes(app: &SdrcrowApp) -> Self {
         Self {
             salt: app.radio_id,
             mode: app.ui_settings.layout,
@@ -801,9 +801,9 @@ fn detached_viewport(
 }
 
 /// Everything the panadapter draw needs that is derived from the radio's state
-/// and the current mode, gathered by [`SdroxideApp::panadapter_inputs`].
+/// and the current mode, gathered by [`SdrcrowApp::panadapter_inputs`].
 ///
-/// The point is that [`SdroxideApp::draw_panadapter`] becomes self-contained:
+/// The point is that [`SdrcrowApp::draw_panadapter`] becomes self-contained:
 /// it is then callable from the main window *or* a detached window without the
 /// frame loop's branch having to compute a dozen locals first. The one thing
 /// that must still run before the draw — the sub-band view-fitting that sets
@@ -823,7 +823,7 @@ struct PanadapterInputs {
     mem: Vec<crate::widgets::memories::MemMark>,
 }
 
-impl eframe::App for SdroxideApp {
+impl eframe::App for SdrcrowApp {
     /// The anti-touch lock works on the input itself, before any widget reads
     /// it — see [`crate::touch_lock`].
     fn raw_input_hook(&mut self, ctx: &egui::Context, raw_input: &mut egui::RawInput) {
@@ -1330,7 +1330,7 @@ impl eframe::App for SdroxideApp {
                 self.panel_undock_notice_mode = None;
             }
         }
-        // The engine's notice first, then another sdroxide on this machine.
+        // The engine's notice first, then another sdrcrow on this machine.
         // The transmit band list: why transmit is off at the dial, then the standing
         // request to check and confirm the list (never dismissable — it stays
         // until the operator has confirmed).
@@ -2512,7 +2512,7 @@ pub(in crate::app) struct DabScan {
 /// comfortable margin that keeps a 38-block sweep under two minutes.
 const DAB_SCAN_DWELL_S: f64 = 3.0;
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Everything the panadapter draw needs, gathered from `self` and the
     /// current mode so the draw is self-contained (see [`PanadapterInputs`]).
     /// Both frame-loop paths and the undocked window call this.
@@ -3472,7 +3472,7 @@ impl SdroxideApp {
     /// caller stores that back in its `show_*` flag.
     ///
     /// The undocked flag and the remembered geometry live in
-    /// [`SdroxideApp::tool_windows`], keyed by `id`. **Session-only**, like the
+    /// [`SdrcrowApp::tool_windows`], keyed by `id`. **Session-only**, like the
     /// in-viewport positions egui keeps for the same windows: a tool is
     /// transient, and where it sat last run is not worth a config field per tool.
     ///
@@ -4032,7 +4032,7 @@ impl SdroxideApp {
                     // was taken in another span and means nothing in this one.
                     if self.view.adopt_driver(&c.driver) {
                         tracing::debug!(
-                            target: "sdroxide::panadapter",
+                            target: "sdrcrow::panadapter",
                             driver = %c.driver,
                             "new front end — refitting the panadapter window"
                         );
@@ -5305,7 +5305,7 @@ impl SdroxideApp {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// This client's "do not ask me again" answers, as it holds them now.
     fn current_client_acks(&self) -> sdrcrow_types::ClientAcks {
         let mut rx_only_dismissed = Vec::new();
@@ -5373,7 +5373,7 @@ const CLIENT_AUTO_SAVE_S: f64 = 2.0;
 /// Control bindings the signed-in profile carries, offered rather than
 /// dropped when this client has not adopted the opt-in.
 ///
-/// The same shape as [`SdroxideApp::client_settings_stored`]: kept so the
+/// The same shape as [`SdrcrowApp::client_settings_stored`]: kept so the
 /// question can be asked with the profile's name in it, and so accepting is
 /// a single click rather than a round trip.
 /// What to do with the control bindings a server just offered.
@@ -5433,7 +5433,7 @@ fn bindings_should_offer(already_asked_this_session: bool, declined: bool) -> bo
     !already_asked_this_session && !declined
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// The profile carries control bindings and this client has not said it
     /// wants them. Ask, once, and act on the answer.
     ///
@@ -5622,7 +5622,7 @@ impl SdroxideApp {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Put the profile's stored look back, discarding local changes to it.
     pub(in crate::app) fn revert_screen_to_profile(&mut self) {
         match self.client_settings_stored.clone() {
@@ -5669,7 +5669,7 @@ impl SdroxideApp {
         // Destructured rather than borrowed field-by-field: the runtime needs
         // `state` and the window flags mutably at the same time, and they are
         // disjoint parts of `self`.
-        let SdroxideApp {
+        let SdrcrowApp {
             input,
             state,
             view,
@@ -5760,7 +5760,7 @@ impl SdroxideApp {
     /// De-assert every held control. Closing the window while a footswitch or
     /// a bound key is down must not leave the transmitter keyed.
     pub(in crate::app) fn release_held_controls(&mut self, cmds: &mut Vec<Command>) {
-        let SdroxideApp {
+        let SdrcrowApp {
             input,
             state,
             view,
@@ -5854,10 +5854,10 @@ mod tests {
     #[test]
     fn ctr_centres_the_picture_in_the_image_modes() {
         use sdrcrow_types::Mode;
-        assert!(super::SdroxideApp::centres_on_picture(Mode::Sstv));
-        assert!(super::SdroxideApp::centres_on_picture(Mode::Wefax));
-        assert!(!super::SdroxideApp::centres_on_picture(Mode::Usb));
-        assert!(!super::SdroxideApp::centres_on_picture(Mode::Ft8));
+        assert!(super::SdrcrowApp::centres_on_picture(Mode::Sstv));
+        assert!(super::SdrcrowApp::centres_on_picture(Mode::Wefax));
+        assert!(!super::SdrcrowApp::centres_on_picture(Mode::Usb));
+        assert!(!super::SdrcrowApp::centres_on_picture(Mode::Ft8));
     }
 
     /// **The round trip, in the window grammar.** No state is a one-way door:
@@ -6088,7 +6088,7 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-dock-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         #[derive(Default)]
         struct Silent;
@@ -6100,7 +6100,7 @@ mod tests {
         }
 
         let ctx = egui::Context::default();
-        let mut app = super::SdroxideApp::new_tab(&ctx, None, None, Box::new(Silent), 0, true);
+        let mut app = super::SdrcrowApp::new_tab(&ctx, None, None, Box::new(Silent), 0, true);
         // The modes that used to be opened on entry, and a few that never were, so
         // the sweep is not only the list it was written from.
         let modes = [
@@ -6548,7 +6548,7 @@ mod bindings_offer_tests {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn dsc_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         let open = self.tool_window(ctx, "dsc", "DSC", [640.0, 480.0], self.show_dsc, |me, ui| {
             let h = ui.available_height();
@@ -6612,7 +6612,7 @@ impl SdroxideApp {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn sstv_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         let open =
             self.tool_window(ctx, "sstv", "SSTV", [760.0, 600.0], self.show_sstv, |me, ui| {
@@ -6705,7 +6705,7 @@ impl SdroxideApp {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn acars_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         let open =
             self.tool_window(ctx, "acars", "ACARS", [720.0, 560.0], self.show_acars, |me, ui| {
@@ -6763,7 +6763,7 @@ impl SdroxideApp {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn adsb_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         let open =
             self.tool_window(ctx, "adsb", "ADS-B", [720.0, 560.0], self.show_adsb, |me, ui| {
@@ -6827,7 +6827,7 @@ impl SdroxideApp {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn wspr_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         let open =
             self.tool_window(ctx, "wspr", "WSPR", [640.0, 480.0], self.show_wspr, |me, ui| {
@@ -6891,7 +6891,7 @@ impl SdroxideApp {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn jtty_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         let open =
             self.tool_window(ctx, "jtty", "JTTY", [640.0, 480.0], self.show_jtty, |me, ui| {

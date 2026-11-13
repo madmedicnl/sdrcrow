@@ -11,11 +11,11 @@
 use eframe::egui::{self, Color32, RichText};
 use sdrcrow_types::{Command, JttyStatus};
 
-use crate::app::{SdroxideApp, tx_gated};
+use crate::app::{SdrcrowApp, tx_gated};
 use crate::i18n::tr;
 use crate::theme;
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn jtty_panel(
         &mut self,
         ui: &mut egui::Ui,

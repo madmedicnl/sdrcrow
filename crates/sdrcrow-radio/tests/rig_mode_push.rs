@@ -1,10 +1,10 @@
 //! A radio that is the rig as well as the front end follows the mode control.
 //!
 //! An Icom on its LAN port handing us the 12 kHz IF is not in audio mode — the
-//! stream is ordinary complex baseband and sdroxide demodulates it — so for as
+//! stream is ordinary complex baseband and sdrcrow demodulates it — so for as
 //! long as the engine keyed "command the rig's mode" on `audio_mode` alone, the
 //! mode control moved nothing on the radio. Mode travelled rig→app, on the
-//! source's own poll, and never the other way: switching USB↔LSB in sdroxide
+//! source's own poll, and never the other way: switching USB↔LSB in sdrcrow
 //! left the radio where it was.
 //!
 //! What holds the fix is [`IqSource::commands_rx_mode`]: the operator's mode has

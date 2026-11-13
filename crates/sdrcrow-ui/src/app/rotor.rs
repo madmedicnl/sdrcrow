@@ -21,7 +21,7 @@ use eframe::egui::{self, Align2, FontId, RichText};
 
 use sdrcrow_types::{Command, RotatorAuthority, all_entities, bearing_deg};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::theme;
 
 /// Where a compass bearing (degrees clockwise from north) lands on a dial
@@ -50,7 +50,7 @@ fn norm360(deg: f64) -> f64 {
     deg.rem_euclid(360.0)
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// The rotator window's body. Drawn both by the detached window and, when
     /// docked, is simply not shown — the rotator is a window-only tool, so this
     /// has one caller.

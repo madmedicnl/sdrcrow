@@ -50,7 +50,7 @@ CAudioCodec::~CAudioCodec() {
  * CAudioSourceDecoder in the program, with a plain `int` reference count and no
  * lock at all. That is safe for a single-receiver console application and for
  * a Qt GUI, where everything happens on one thread; it is not safe for a host
- * that runs a receiver per thread, which is what sdroxide does — one for each
+ * that runs a receiver per thread, which is what sdrcrow does — one for each
  * radio, plus an overlapping pair for the moment a receiver is being replaced.
  * Two threads in InitCodecList at once double-free the vector's storage, and
  * that is only the first thing to go wrong: GetDecoder hands both receivers the

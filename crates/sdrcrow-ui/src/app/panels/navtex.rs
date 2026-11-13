@@ -14,7 +14,7 @@ use crate::i18n::tr;
 use eframe::egui::{self, RichText};
 use sdrcrow_types::{Command, NavtexMessage, NavtexStatus, Vfo};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::theme;
 
 /// The HF NAVTEX channels the panel offers, by their assigned frequency. The
@@ -194,7 +194,7 @@ pub(super) fn navtex_list_header(ui: &mut egui::Ui, st: &NavtexStatus) {
     });
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn navtex_panel(
         &mut self,
         ui: &mut egui::Ui,
@@ -362,7 +362,7 @@ impl SdroxideApp {
                         format!("{}{}{:02}  {}", m.station, m.kind, m.serial, m.kind_label());
                     let colour = if m.is_mandatory() {
                         // The three classes a ship's receiver may not switch
-                        // off. sdroxide does not offer to hide them either, and
+                        // off. sdrcrow does not offer to hide them either, and
                         // they are marked so an eye finds them first.
                         theme::ALERT()
                     } else if m.complete {

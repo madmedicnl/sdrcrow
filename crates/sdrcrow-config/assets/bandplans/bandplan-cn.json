@@ -1,15 +1,15 @@
 {
   "readme": [
-    "sdroxide band plan. Every band edge, transmit lockout, waterfall band strip and skimmer window follows this file.",
+    "sdrcrow band plan. Every band edge, transmit lockout, waterfall band strip and skimmer window follows this file.",
     "All frequencies are in MHz. Edges are inclusive; a sub-segment covers [lo_mhz, hi_mhz).",
-    "bands: the amateur allocations, plus the broadcast services an SWL tunes. Omit a band and this region does not have it; narrow one to your own licence and sdroxide will refuse to transmit outside it (with tx_ham_only set, which is the default).",
+    "bands: the amateur allocations, plus the broadcast services an SWL tunes. Omit a band and this region does not have it; narrow one to your own licence and sdrcrow will refuse to transmit outside it (with tx_ham_only set, which is the default).",
     "The listening services — the broadcast bands Lw, Mw, Sw, Fm and the airbands Air and Mil — are not amateur allocations, so the transmit lockout holds there with the default tx_ham_only, exactly as it does on 11 m (M11). Sw deliberately overlies the amateur HF bands; the operator on a frequency in both is read as being on the amateur band.",
-    "A band sdroxide adds in a later version — 4 m (M4) was the first, the airbands Air and Mil the latest — is not in a file written before it existed, so it is filled in from the built-in tables when this file names it in no region at all. Give it a row in any region and this file decides it everywhere, as it does for every other band.",
+    "A band sdrcrow adds in a later version — 4 m (M4) was the first, the airbands Air and Mil the latest — is not in a file written before it existed, so it is filled in from the built-in tables when this file names it in no region at all. Give it a row in any region and this file decides it everywhere, as it does for every other band.",
     "segments: the sub-band plan drawn on the waterfall. kind is Cw, Digi, Phone, Beacon or All; an optional label (\"label\": \"CONTEST\") names the block on the waterfall strip instead of the kind.",
     "psk_windows / rtty_windows: where the wideband skimmers listen. Narrow windows cost less CPU than wide ones.",
     "Which region applies is the IARU region setting on the General tab (region in config.toml).",
     "Edit, save, then press RELOAD BAND PLAN on the General tab — no restart. Delete this file to get the built-in IARU tables back; a fresh one is written on the next reload or start.",
-    "A file sdroxide cannot parse is left exactly as it is and the built-in tables are used for that session, so a typo costs nothing. A single row that says something impossible is dropped and named in the notice bar; the rest of the file still applies."
+    "A file sdrcrow cannot parse is left exactly as it is and the built-in tables are used for that session, so a typo costs nothing. A single row that says something impossible is dropped and named in the notice bar; the rest of the file still applies."
   ],
   "meta": {
     "name": "China (Mainland)",

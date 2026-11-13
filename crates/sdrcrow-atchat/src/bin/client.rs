@@ -1,7 +1,7 @@
 //! `atchat-client` — a headless AtCHAT NET station on a plain terminal, for
 //! RF-less testing.
 //!
-//! The same [`AtChatSession`] the sdroxide ATCHAT mode drives, here on a
+//! The same [`AtChatSession`] the sdrcrow ATCHAT mode drives, here on a
 //! virtual TCP channel (`atchat-channel`, or `channel_server.py`) instead of
 //! the radio. Type to chat; the roster, master election and ARQ file transfer
 //! all run underneath exactly as they do on the air.

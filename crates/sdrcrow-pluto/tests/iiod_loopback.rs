@@ -956,7 +956,7 @@ fn a_2r2t_pluto_plus_streams_its_first_pair_and_leaves_the_second_disabled() {
 }
 
 /// The field failure this guards against: the operator picks a rate at or below
-/// the device's floor, sdroxide clamps it up to the 2083333 the device
+/// the device's floor, sdrcrow clamps it up to the 2083333 the device
 /// published, and the device answers `-EINVAL` to the very number it just
 /// printed. Nothing after that write ever ran — no buffer was opened, no sample
 /// arrived, and the screen stayed on "waiting for spectrum" while the radio sat
@@ -2188,7 +2188,7 @@ fn a_stock_pluto_refuses_a_second_chain() {
 ///
 /// The control thread tracks a gain-control mode per chain and seeds both from
 /// the radio's configuration, but only chain 0 was ever put there — so on a
-/// board whose firmware boots chain 1 in an attack mode, sdroxide believed it
+/// board whose firmware boots chain 1 in an attack mode, sdrcrow believed it
 /// was in manual, sent the gain, and the driver answered `-EOPNOTSUPP` (-95).
 /// The slider moved and nothing happened.
 ///
@@ -2231,7 +2231,7 @@ fn the_second_receivers_gain_reaches_the_second_receiver() {
 }
 
 /// And if the two ever disagree anyway — another program moved the mode, or a
-/// firmware boots a chain somewhere sdroxide did not put it — a refused gain
+/// firmware boots a chain somewhere sdrcrow did not put it — a refused gain
 /// write is recovered from rather than merely logged.
 #[test]
 fn a_chain_found_in_the_wrong_mode_is_put_right_and_the_gain_retried() {
@@ -2245,7 +2245,7 @@ fn a_chain_found_in_the_wrong_mode_is_put_right_and_the_gain_retried() {
         fake.state.lock().expect("lock").get("ad9361-phy/INPUT/voltage1/hardwaregain").is_some()
     });
 
-    // Somebody else puts the chain into an attack mode behind sdroxide's back.
+    // Somebody else puts the chain into an attack mode behind sdrcrow's back.
     fake.state.lock().expect("lock").attrs.push((
         "ad9361-phy/INPUT/voltage1/gain_control_mode".to_string(),
         "slow_attack".to_string(),

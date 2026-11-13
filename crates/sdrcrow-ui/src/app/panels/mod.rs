@@ -1,6 +1,6 @@
 //! The bottom panel: whichever operating mode is selected owns it.
 //!
-//! [`SdroxideApp::digi_panel`] is the dispatcher — it picks the panel for the
+//! [`SdrcrowApp::digi_panel`] is the dispatcher — it picks the panel for the
 //! current [`Mode`] and hands it the height it may use. One submodule per
 //! panel:
 //!
@@ -55,7 +55,7 @@ use crate::i18n::tr;
 use eframe::egui::{self, Color32, RichText};
 use sdrcrow_types::{Band, Command, DigiStatus, Mode};
 
-use crate::app::{SdroxideApp, tx_gated};
+use crate::app::{SdrcrowApp, tx_gated};
 
 /// The waterfall's tab. Always last, and every mode has one: on a phone the
 /// panadapter is a view of its own rather than a strip above the panel, because
@@ -165,7 +165,7 @@ pub(in crate::app) fn prop_source_for(mode: Mode) -> Option<sdrcrow_types::PropS
 /// room above it — a row there took a chip off WEFAX's header at 600 pt, and the
 /// pane's own header is where the crowdedness the operator reported is, so the
 /// answer belongs there too. Returns whether it was clicked; the caller calls
-/// [`crate::app::SdroxideApp::detach_operating_panel`].
+/// [`crate::app::SdrcrowApp::detach_operating_panel`].
 ///
 /// **It floats the panel inside this window**, not into a new OS window: a
 /// floating panel is the thing the operator asked for here. It is the same
@@ -222,7 +222,7 @@ fn save_chip(ui: &mut egui::Ui, ready: bool, hover: &str) -> egui::Response {
     }
 }
 
-/// [`SdroxideApp::clear_rx_chip_enabled`] for a header row drawn by a free
+/// [`SdrcrowApp::clear_rx_chip_enabled`] for a header row drawn by a free
 /// function, which has the commands but not the app.
 pub(in crate::app) fn clear_rx_chip_at(ui: &mut egui::Ui, cmds: &mut Vec<Command>, enabled: bool) {
     let resp = crate::chrome::chip_accent_enabled(
@@ -244,7 +244,7 @@ pub(in crate::app) fn clear_rx_chip_at(ui: &mut egui::Ui, cmds: &mut Vec<Command
     }
 }
 
-/// [`SdroxideApp::save_rx_chip`] for a header row drawn by a free function:
+/// [`SdrcrowApp::save_rx_chip`] for a header row drawn by a free function:
 /// `status` is the app's `digi_status`.
 pub(in crate::app) fn save_rx_chip_for(ui: &mut egui::Ui, status: Option<&DigiStatus>) {
     let ready = status.is_some_and(crate::app::save_text::digi_has_log);
@@ -284,7 +284,7 @@ fn map_style_buttons(
         .collect()
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Fold everything this frame knows into the propagation field, and hand
     /// back the texture the map should paint under itself.
     ///
@@ -626,7 +626,7 @@ fn digi_dial_freqs(mode: Mode) -> &'static [(&'static str, f64)] {
         ],
         // FreeDV calling frequencies. Dial, on whichever sideband the band is
         // worked: 80 m and 40 m are LSB, everything above USB — the switch is
-        // sdroxide's to make, not the operator's (`Mode::sideband_follows_band`).
+        // sdrcrow's to make, not the operator's (`Mode::sideband_follows_band`).
         Mode::Rade => &[
             ("80m", 3_625_000.0),
             ("40m", 7_177_000.0),
@@ -789,7 +789,7 @@ fn digi_dial_freqs(mode: Mode) -> &'static [(&'static str, f64)] {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Drop everything derived from the previous mode's decodes: the waterfall
     /// callsign boxes, the decode list, the world-map station dots and the
     /// clicked-decode preview. Called on every RX mode change so leaving FT8/FT4
@@ -1805,7 +1805,7 @@ mod tests {
 /// Whether the front-end overload warning belongs on screen.
 ///
 /// One line, in a function of its own because the decision is the whole of it —
-/// [`SdroxideApp::front_end_overload_warning`] asks this and draws or does not.
+/// [`SdrcrowApp::front_end_overload_warning`] asks this and draws or does not.
 fn overload_warning_wanted(overloaded: bool, protection_on: bool, at_floor: bool) -> bool {
     overloaded && (!protection_on || at_floor)
 }

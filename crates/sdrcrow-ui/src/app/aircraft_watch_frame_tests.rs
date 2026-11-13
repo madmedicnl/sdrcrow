@@ -8,7 +8,7 @@ use eframe::egui;
 use sdrcrow_aircraft_history::watch::{WatchReply, Watchlist};
 use sdrcrow_types::{AdsbAircraft, RadioController, RadioEvent};
 
-use super::SdroxideApp;
+use super::SdrcrowApp;
 use super::aircraft_watch::{Answer, WatchState};
 
 struct Station;
@@ -39,7 +39,7 @@ fn texts(shapes: &[egui::epaint::ClippedShape]) -> String {
     out
 }
 
-fn frame(ctx: &egui::Context, app: &mut SdroxideApp, t: f64) -> String {
+fn frame(ctx: &egui::Context, app: &mut SdrcrowApp, t: f64) -> String {
     let input = egui::RawInput {
         screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1600.0, 900.0))),
         time: Some(t),
@@ -61,10 +61,10 @@ fn a_watched_aircraft_coming_on_the_air_shows_on_the_banner_the_chip_and_the_vie
     let dir = std::env::temp_dir().join(format!("sdrcrow-watch-frame-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
     let ctx = egui::Context::default();
-    let mut app = SdroxideApp::new_tab(&ctx, None, None, Box::new(Station), 0, true);
+    let mut app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(Station), 0, true);
     app.show_aircraft = true;
     app.show_extras = true;
 
@@ -78,7 +78,7 @@ fn a_watched_aircraft_coming_on_the_air_shows_on_the_banner_the_chip_and_the_vie
     app.aircraft_tracker.observe(now() - 100, &list, &[]);
 
     let mut t = 0.0;
-    let mut go = |app: &mut SdroxideApp| {
+    let mut go = |app: &mut SdrcrowApp| {
         t += 0.1;
         frame(&ctx, app, t)
     };
@@ -137,9 +137,9 @@ fn without_a_station_the_view_says_where_the_list_is_kept() {
     let dir = std::env::temp_dir().join(format!("sdrcrow-watch-nostation-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
     let ctx = egui::Context::default();
-    let mut app = SdroxideApp::new_tab(&ctx, None, None, Box::new(NoStation), 0, true);
+    let mut app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(NoStation), 0, true);
     app.show_aircraft = true;
     app.aircraft_watch_view = true;
     let mut text = String::new();

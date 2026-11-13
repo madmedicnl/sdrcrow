@@ -21,13 +21,13 @@
 //! what that window is centred *on* is the transceiver's own VFO. The DDC is
 //! not a second receiver alongside the one the radio tunes for itself: move the
 //! VFO and the window moves with it, hertz for hertz. There is therefore no
-//! arrangement in which the radio's displayed frequency and sdroxide's dial can
+//! arrangement in which the radio's displayed frequency and sdrcrow's dial can
 //! be different numbers and both be true, so [`IqSource::center_is_dial`] says
 //! so and the engine commands the VFO for every tune, exactly as it does for a
 //! transceiver sending I/Q down a sound card ([`crate::audio_cat_source`]).
 //!
 //! CW is the one exception, and it is not really one. The window still rides the
-//! VFO — that is the point — but sdroxide's CW dial is a zero-beat and the tone
+//! VFO — that is the point — but sdrcrow's CW dial is a zero-beat and the tone
 //! being copied sits a sidetone pitch above it, while the DUO keys its own
 //! transmitter on the VFO. So there the VFO goes on the station and the dial
 //! stays a pitch under it: [`IqSource::cw_iq_on_vfo`] is this radio saying which
@@ -37,7 +37,7 @@
 //!
 //! It used to be the other way round — the VFO was parked on the panadapter
 //! centre and the dial moved inside the window in software — and every way that
-//! could go wrong, did. The rig's display never agreed with sdroxide's readout;
+//! could go wrong, did. The rig's display never agreed with sdrcrow's readout;
 //! the radio's own audio was demodulating the centre rather than the station
 //! being listened to; an over keyed at the *radio* (mic, key, VOX) went out on
 //! the centre, which is up to half a window from where the operator could see
@@ -158,7 +158,7 @@ pub struct EladSource {
     ///
     /// A mirror, like the two switches above, but unlike them it starts as a
     /// *guess*: the setting lives in the radio and survives a power cycle, so
-    /// what it is when sdroxide arrives is the rig's business. Over the serial
+    /// what it is when sdrcrow arrives is the rig's business. Over the serial
     /// link the guess is corrected within a poll — the port asks `AN;` as it
     /// opens and the answer is adopted. Over the USB gateway nothing can be
     /// asked, so it stays the radio's own default (one antenna, on RTX) until
@@ -178,7 +178,7 @@ pub struct EladSource {
     /// on its way there — leaves genuine front-panel movements getting through,
     /// which is the whole point of reading the rig at all.
     expect_freq: Option<(f64, std::time::Instant)>,
-    /// Which of the radio's own VFOs sdroxide is driving.
+    /// Which of the radio's own VFOs sdrcrow is driving.
     ///
     /// Only ever anything but [`Vfo::A`] on the gateway path — see
     /// [`IqSource::select_vfo`] on this type for why the serial path stays on
@@ -198,7 +198,7 @@ pub struct EladSource {
     /// one (it is the interface the samples are already arriving on), and a
     /// serial port has one as soon as the radio has answered it. Seeded from the
     /// startup query and latched on by the first thing the rig says afterwards,
-    /// so a DUO switched on after sdroxide — or one whose CAT baud the operator
+    /// so a DUO switched on after sdrcrow — or one whose CAT baud the operator
     /// has just corrected — is picked up rather than left out for the session.
     /// Never cleared: a rig that has missed a poll or two is still a rig whose
     /// dial we own, and flipping the panadapter's whole tuning behaviour on a
@@ -207,7 +207,7 @@ pub struct EladSource {
     /// False for an FDM-S, which has no VFO, and for a DUO on a serial port
     /// nothing has ever answered — see the module header.
     dial_reachable: bool,
-    /// Whether sdroxide is holding the rig keyed.
+    /// Whether sdrcrow is holding the rig keyed.
     ///
     /// For the length of an over the VFO is the *transmit* frequency rather
     /// than the receive window's centre, so what the rig reports about its
@@ -608,7 +608,7 @@ impl IqSource for EladSource {
     /// Without this the engine's "command the rig's mode" gate never fired — it
     /// is demod audio, a tracked mode, or this — so the mode travelled rig→app
     /// on the `MD;` poll and never the other way. Change mode on the radio and
-    /// sdroxide followed perfectly; change it in sdroxide and the radio sat
+    /// sdrcrow followed perfectly; change it in sdrcrow and the radio sat
     /// there on the old one until the next key-down, where `tx_begin` asserts it
     /// anyway — which is the wrong moment to find out the rig was still on the
     /// other sideband ([issue #146]). The same fault, in the same shape, as the
@@ -621,7 +621,7 @@ impl IqSource for EladSource {
     ///
     /// The receive *filter* does not travel with it. The engine guards that
     /// separately on whether the rig is the one doing the receiving, and here it
-    /// is not — sdroxide demodulates the DDC window itself, and the width the
+    /// is not — sdrcrow demodulates the DDC window itself, and the width the
     /// operator sets belongs to its own demodulator, not to the radio's IF.
     ///
     /// [issue #146]: https://github.com/dividebysandwich/sdroxide/issues/146
@@ -722,7 +722,7 @@ impl IqSource for EladSource {
 
     // ── Rig control ──────────────────────────────────────────────────────────
 
-    /// Take up the radio's own VFO B when the operator takes up sdroxide's,
+    /// Take up the radio's own VFO B when the operator takes up sdrcrow's,
     /// so the radio's display, its knob and its A/B button are on the same
     /// dial as the panadapter.
     ///
@@ -735,7 +735,7 @@ impl IqSource for EladSource {
     /// **Only on the gateway path.** With a CAT serial port the dial is read
     /// back by polling `FA;`, and that answers VFO A's frequency whichever VFO
     /// the radio is on: mirroring there would report the wrong dial for
-    /// everything sdroxide does with B. The USB read-back has no such problem
+    /// everything sdrcrow does with B. The USB read-back has no such problem
     /// — it reports the frequency the receiver is actually on — so the two
     /// paths differ, and the serial one keeps the radio on VFO A as it always
     /// has. Lifting that means teaching the CAT layer to ask for the dial it
@@ -749,7 +749,7 @@ impl IqSource for EladSource {
     /// Sent even when it names the VFO this end already believes the radio is
     /// on. A press of A/B at the radio cannot be seen from here (the read-back
     /// reports a frequency, not a VFO), and after one every command goes to the
-    /// VFO the radio is no longer on; re-selecting the VFO in sdroxide is the
+    /// VFO the radio is no longer on; re-selecting the VFO in sdrcrow is the
     /// way back into step, and it would do nothing if a no-change were skipped.
     fn select_vfo(&mut self, vfo: Vfo, hz: f64) {
         if !matches!(self.control, Control::Gateway) {
@@ -784,7 +784,7 @@ impl IqSource for EladSource {
         let updates = cat.poll();
         // A radio that has said anything at all is a radio whose VFO this end
         // can move — the point of the latch is a DUO switched on, or a baud rate
-        // corrected, after sdroxide started. See `IqSource::center_is_dial`.
+        // corrected, after sdrcrow started. See `IqSource::center_is_dial`.
         self.dial_reachable |= !updates.is_empty();
         let mut out = Vec::new();
         for u in updates {
@@ -846,7 +846,7 @@ impl IqSource for EladSource {
 
     /// The rig's own receive filter.
     ///
-    /// Sent even though sdroxide demodulates the wideband stream itself and has
+    /// Sent even though sdrcrow demodulates the wideband stream itself and has
     /// its own filter in front of the operator: the rig's filter is what shapes
     /// the audio it *transmits*, and on a radio that is also usable standalone
     /// it is the one the operator sees on the front panel. Only over the serial

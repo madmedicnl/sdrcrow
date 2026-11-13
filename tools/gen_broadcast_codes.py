@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Refresh the compiled-in EiBi lookup tables and the offline fallback schedule.
 
-sdroxide downloads EiBi's seasonal schedule at runtime and parses it itself (see
+sdrcrow downloads EiBi's seasonal schedule at runtime and parses it itself (see
 `sdrcrow_types::broadcast::parse_schedule`), so this tool does *not* convert
 schedule rows — doing that here as well would be a second implementation to keep
 in step with the first. It only produces the two things that cannot be fetched

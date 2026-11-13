@@ -14,9 +14,9 @@ use crate::i18n::tr;
 use sdrcrow_types::auto;
 use sdrcrow_types::{Command, QsoStep};
 
-use super::SdroxideApp;
+use super::SdrcrowApp;
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Whether this station may key the band the dial is on: the one rule of
     /// the operator's transmit band list (ticked and validated), the same the
     /// engine's key-down gate applies.
@@ -425,14 +425,14 @@ mod auto_session_tests {
         }
     }
 
-    fn app() -> SdroxideApp {
+    fn app() -> SdrcrowApp {
         let dir =
             std::env::temp_dir().join(format!("sdrcrow-auto-session-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let ctx = egui::Context::default();
-        SdroxideApp::new_tab(
+        SdrcrowApp::new_tab(
             &ctx,
             None,
             None,

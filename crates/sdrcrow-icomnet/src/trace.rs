@@ -124,7 +124,7 @@ impl Trace {
         let g = self.lock();
         let c = g.counters;
         let mut out = String::with_capacity(64 * 1024);
-        out.push_str("=== sdroxide Icom LAN session trace ===\n");
+        out.push_str("=== sdrcrow Icom LAN session trace ===\n");
         out.push_str(&format!("elapsed: {:.1} s\n", self.started.elapsed().as_secs_f64()));
         if g.dropped > 0 {
             out.push_str(&format!(

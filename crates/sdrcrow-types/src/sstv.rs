@@ -163,7 +163,7 @@ impl SstvMode {
     ///
     /// A receiver that has read a valid header knows exactly what it is being
     /// sent and exactly why it is about to draw nothing. Saying so is the
-    /// difference between "sdroxide's SSTV is broken" and "that station is
+    /// difference between "sdrcrow's SSTV is broken" and "that station is
     /// using Pasokon P3" — issue #421, where a picture arrived in a mode this
     /// decoder did not have and the panel went on saying *waiting for a
     /// signal* with a textbook signal on the waterfall.

@@ -9,7 +9,7 @@ use crate::i18n::{Tr, tr};
 use eframe::egui::{self, RichText};
 use sdrcrow_types::{Command, IsmFamily, IsmReport, IsmSettings, Mode, Vfo};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::app::panels::widgets::{row_cell, sort_head_cell};
 use crate::app::util::fmt_age;
 use crate::theme::ThemedScroll;
@@ -48,7 +48,7 @@ const COL_GAP: f32 = 5.0;
 /// Below this the signal columns are dropped rather than squeezing the readings.
 const NARROW_W: f32 = 560.0;
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn ism_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         if !self.show_ism {
             return;
@@ -244,7 +244,7 @@ impl SdroxideApp {
                 .on_hover_text(tr!("ism-device-decoders-registered-how-many"));
                 ui.add_space(6.0);
             }
-            // The operator's decoder file is edited outside sdroxide, so nothing
+            // The operator's decoder file is edited outside sdrcrow, so nothing
             // notices it changed until asked — the same reason the band plan has
             // a reload button.
             if crate::chrome::chip(ui, false, tr!("ism-reload-decoders"))
@@ -255,7 +255,7 @@ impl SdroxideApp {
             }
         });
 
-        // Which of sdroxide's own decoders have stood down, so a Bresser row
+        // Which of sdrcrow's own decoders have stood down, so a Bresser row
         // changing its protocol name is explained rather than mysterious.
         if !rt.superseded.is_empty() {
             let names: Vec<String> = rt.superseded.iter().map(|p| p.tr()).collect();

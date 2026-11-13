@@ -25,7 +25,7 @@ use crate::i18n::{Tr, tr};
 use eframe::egui::{self, RichText};
 use sdrcrow_types::{AisKind, AisStatus, AisVessel, Command};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::app::util::fmt_age;
 use crate::theme;
 use crate::theme::ThemedScroll;
@@ -61,7 +61,7 @@ const WIDE_W: f32 = 440.0;
 /// mentioning and well before anything is being lost.
 const OFFSET_WARN_HZ: f32 = 2_000.0;
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn ais_panel(
         &mut self,
         ui: &mut egui::Ui,
@@ -527,7 +527,7 @@ impl SdroxideApp {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// How the decoder behaves: the channels, the two timeouts, the trail
     /// window and the vector time.
     ///

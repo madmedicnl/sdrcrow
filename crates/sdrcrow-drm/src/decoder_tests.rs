@@ -10,7 +10,7 @@
 //!
 //! Decoding a real broadcast needs a recording, which cannot live in the
 //! repository: they are minutes of somebody's copyrighted programme material,
-//! and megabytes of it. Point `SDROXIDE_DRM_SAMPLE` at one to run that test —
+//! and megabytes of it. Point `SDRCROW_DRM_SAMPLE` at one to run that test —
 //! see the harness in `examples/drm_harness.rs`, which is the fuller tool.
 
 use crate::{AUDIO_RATE, DrmWorker, SIGNAL_RATE};
@@ -120,8 +120,8 @@ fn two_decoders_can_start_at_the_same_time() {
 /// covers the baseband path as well.
 #[test]
 fn a_recording_decodes() {
-    let Ok(path) = std::env::var("SDROXIDE_DRM_SAMPLE") else {
-        eprintln!("set SDROXIDE_DRM_SAMPLE to a 48 kHz DRM recording to run this");
+    let Ok(path) = std::env::var("SDRCROW_DRM_SAMPLE") else {
+        eprintln!("set SDRCROW_DRM_SAMPLE to a 48 kHz DRM recording to run this");
         return;
     };
 
@@ -511,14 +511,14 @@ fn aac_stays_with_faad2_whatever_else_is_installed() {
 /// So a count of decoded samples catches the first and a listen catches the
 /// second. Both are asserted here as far as they can be.
 ///
-/// Set `SDROXIDE_DRM_XHE_SAMPLE` to a 48 kHz recording of an xHE-AAC broadcast.
+/// Set `SDRCROW_DRM_XHE_SAMPLE` to a 48 kHz recording of an xHE-AAC broadcast.
 /// `FMGold_xHE_ModeB_9khz.flac` from
 /// <https://sourceforge.net/projects/drm/files/samples/DRM%20sample%20recordings/>
 /// is one; convert it with `ffmpeg -i x.flac -ar 48000 -ac 1 x.wav`.
 #[test]
 fn an_xhe_aac_recording_decodes() {
-    let Ok(path) = std::env::var("SDROXIDE_DRM_XHE_SAMPLE") else {
-        eprintln!("set SDROXIDE_DRM_XHE_SAMPLE to a 48 kHz xHE-AAC recording to run this");
+    let Ok(path) = std::env::var("SDRCROW_DRM_XHE_SAMPLE") else {
+        eprintln!("set SDRCROW_DRM_XHE_SAMPLE to a 48 kHz xHE-AAC recording to run this");
         return;
     };
 

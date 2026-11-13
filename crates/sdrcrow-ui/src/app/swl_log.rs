@@ -12,7 +12,7 @@
 use eframe::egui::{self, RichText};
 use sdrcrow_types::{Command, Mode, RxId, SignalReport, Sinpo, Sio, SwlEntry, Vfo};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::i18n::tr;
 use crate::app::persist::persist_swl_log;
 use crate::time::now_unix;
@@ -397,7 +397,7 @@ fn prefill_station(
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// The SWL LOG window: the reception log, its entry form and its report.
     pub(in crate::app) fn swl_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         // The reception REPORT was asked for, so its "report sent" is stamped

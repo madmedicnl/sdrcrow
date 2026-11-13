@@ -92,7 +92,7 @@ pub fn run(
     // eframe keeps `app.ron` (window geometry, view state such as the SPOTS
     // chips, UI settings) in a folder named after `viewport.app_id` when one is
     // set, and only falls back to `app_name` when it is not. Our windows set
-    // `app_id("sdroxide")` — the Wayland/WM class the packaging matches on — so
+    // `app_id("sdrcrow")` — the Wayland/WM class the packaging matches on — so
     // Brown wrote into upstream's folder and the two builds overwrote each
     // other's BC filter and window position (issue #283). Pin the file to
     // `app_name`, which is ours, and leave `app_id` alone.
@@ -178,8 +178,8 @@ mod tests {
     #[test]
     fn first_start_copies_the_shared_file_and_leaves_it_alone() {
         let dir = scratch("copy");
-        let shared = dir.join("sdroxide/data/app.ron");
-        let own = dir.join("sdroxide-brown/data/app.ron");
+        let shared = dir.join("sdrcrow/data/app.ron");
+        let own = dir.join("sdrcrow-brown/data/app.ron");
         std::fs::create_dir_all(shared.parent().unwrap()).unwrap();
         std::fs::write(&shared, "(window: 1)").unwrap();
         adopt_shared_storage(&own, &shared);
@@ -211,7 +211,7 @@ mod tests {
 
     #[test]
     fn brown_and_upstream_do_not_share_a_storage_folder() {
-        if let (Some(a), Some(b)) = (storage_file("sdroxide-brown"), storage_file("sdroxide")) {
+        if let (Some(a), Some(b)) = (storage_file("sdrcrow-brown"), storage_file("sdrcrow")) {
             assert_ne!(a, b);
         }
     }

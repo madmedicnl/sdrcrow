@@ -57,7 +57,7 @@ use eframe::egui::{
 };
 use sdrcrow_types::{Command, QO100_BEACON_HZ, Qo100Status, SpectrumFrame, Vfo};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::{colormap, theme};
 
 /// Columns the mini waterfall's history is resampled to — independent of the
@@ -376,7 +376,7 @@ fn paint_strip(
     crate::chrome::paint_cut_border(&painter, rect, theme::LINE_LIT(), theme::PANEL());
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn qo100_body(
         &mut self,
         ui: &mut egui::Ui,

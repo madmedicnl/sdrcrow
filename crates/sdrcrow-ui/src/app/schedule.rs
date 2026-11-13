@@ -12,7 +12,7 @@ use sdrcrow_types::{
     BroadcastStation, Command, ProgramsFilters, ProgramsSort, RxId, ScheduleSource, Vfo, broadcast,
 };
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::app::swl_log::SwlEditForm;
 use crate::time::now_unix;
 
@@ -229,7 +229,7 @@ fn hhmm_text(hhmm: u16) -> String {
     format!("{:02}:{:02}", hhmm / 100, hhmm % 100)
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// The SCHEDULE window. Tuning and logging are done by the commands and the
     /// entry form it fills in, after the window has closed the borrow of the log
     /// — so the body carries the three asks back and the tail acts on them.
@@ -1226,7 +1226,7 @@ mod preview {
             std::env::temp_dir().join(format!("sdrcrow-sched-preview-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let num =
             |var: &str, d: f32| std::env::var(var).ok().and_then(|v| v.parse().ok()).unwrap_or(d);
         let width = num("SCHED_W", SCHEDULE_WINDOW_MIN_W);
@@ -1240,7 +1240,7 @@ mod preview {
 
         for tag in langs.split(',').map(str::trim).filter(|t| !t.is_empty()) {
             let ctx = egui::Context::default();
-            let mut app = SdroxideApp::new_tab(&ctx, None, None, Box::new(Quiet), 0, true);
+            let mut app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(Quiet), 0, true);
             crate::i18n::set_language(sdrcrow_types::UiLanguage::from_tag(tag).unwrap());
             app.schedule.show = true;
             app.schedule.local_time = local;
@@ -1430,9 +1430,9 @@ mod fit_and_keep {
         let dir = std::env::temp_dir().join(format!("sdrcrow-state-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, Box::new(Quiet), 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(Quiet), 0, true);
         let mut state = sdrcrow_types::ProgramsState::default();
         state.filters.all = true;
         state.filters.query = "BBC".into();
@@ -1460,17 +1460,17 @@ mod fit_and_keep {
         let dir = std::env::temp_dir().join(format!("sdrcrow-tout-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, Box::new(Quiet), 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(Quiet), 0, true);
         assert!(!app.broadcast_all, "a fresh install starts with TOUT off");
         app.set_broadcast_all(true);
         let favs = app.broadcast_favs.len();
         drop(app);
 
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, Box::new(Quiet), 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(Quiet), 0, true);
         assert!(app.broadcast_all, "TOUT was lit and is lost");
         assert_eq!(app.broadcast_favs.len(), favs, "the favourites it made are lost");
         // And a frame with the window open keeps it, whatever the bar writes back.
@@ -1492,7 +1492,7 @@ mod fit_and_keep {
         assert!(app.broadcast_all && app.ui_settings.programs.all);
         drop(app);
         let ctx = egui::Context::default();
-        let app = SdroxideApp::new_tab(&ctx, None, None, Box::new(Quiet), 0, true);
+        let app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(Quiet), 0, true);
         assert!(app.broadcast_all, "TOUT is lost after the window was drawn");
     }
 }

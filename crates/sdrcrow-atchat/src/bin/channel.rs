@@ -1,6 +1,6 @@
 //! `atchat-channel` — the headless TCP channel, for RF-less testing.
 //!
-//! Not part of sdroxide itself (the ATCHAT mode talks to the radio, or to this
+//! Not part of sdrcrow itself (the ATCHAT mode talks to the radio, or to this
 //! over a socket in "virtual channel" mode). This is the bench version of the
 //! channel physics: the same command line and the same wire as
 //! `channel_server.py`, so `atchat-client`, `atchat-monitor` and the Python

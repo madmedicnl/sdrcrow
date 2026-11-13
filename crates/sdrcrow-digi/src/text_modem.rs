@@ -1947,12 +1947,12 @@ mod tests {
     /// reference front end, our text reader, and the incremental hand-over to the
     /// console.
     ///
-    ///     SDROXIDE_S4285_SAMPLE=~/Downloads/....wav \
+    ///     SDRCROW_S4285_SAMPLE=~/Downloads/....wav \
     ///       cargo test -p sdrcrow-digi --release -- --ignored --nocapture this_tape
     #[test]
     #[ignore]
     fn this_tape_reads_through_the_console() {
-        let path = std::env::var("SDROXIDE_S4285_SAMPLE").expect("set SDROXIDE_S4285_SAMPLE");
+        let path = std::env::var("SDRCROW_S4285_SAMPLE").expect("set SDRCROW_S4285_SAMPLE");
         let mut reader = hound::WavReader::open(&path).expect("open the wav");
         let spec = reader.spec();
         let raw: Vec<f32> = match spec.sample_format {

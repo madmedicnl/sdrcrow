@@ -8,7 +8,7 @@
 //!
 //! 1. **The device has no firmware of its own.** Its FX3 has no populated boot
 //!    EEPROM, so every plug-in leaves it sitting in the Cypress boot ROM as
-//!    `04b4:00f3` with no radio behaviour whatsoever. sdroxide uploads an image
+//!    `04b4:00f3` with no radio behaviour whatsoever. sdrcrow uploads an image
 //!    (see `firmware/PROVENANCE.md`) over EP0, after which the device
 //!    re-enumerates as `04b4:00f1` and becomes a receiver. [`crate::usb::open`]
 //!    hides this; callers never see the boot-ROM state.

@@ -67,7 +67,7 @@ fn isolate_config() {
         let root = std::env::temp_dir().join(format!("sdrcrow-drive-trim-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
         std::fs::create_dir_all(&root).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
     });
 }
 
@@ -204,7 +204,7 @@ impl IqSource for MockIqTx {
 
 /// The same calibration on the radios that have no power control of their own,
 /// where it lands on the samples rather than on a commanded fraction — which is
-/// every direct-sampling and zero-IF transmitter sdroxide modulates itself, and
+/// every direct-sampling and zero-IF transmitter sdrcrow modulates itself, and
 /// the half a LimeSDR operator reported as doing nothing (issue #376).
 ///
 /// Measured as a *ratio* between two bands rather than against an absolute

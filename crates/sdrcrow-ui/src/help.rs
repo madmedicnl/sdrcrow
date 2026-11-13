@@ -662,7 +662,7 @@ impl Help {
 
         let mut open = self.open;
         let win = egui::Window::new(tr!("help-sdrcrow-manual"))
-            .id(crate::layout::salted_id(ctx, "SDROXIDE MANUAL"))
+            .id(crate::layout::salted_id(ctx, "SDRCROW MANUAL"))
             .open(&mut open)
             .frame(crate::chrome::window_frame())
             .collapsible(false);
@@ -2205,7 +2205,7 @@ Nothing to see here.
         // The section headers are drawn in the techno face, which a bare
         // context has never heard of.
         crate::theme::apply(&ctx);
-        let id = crate::layout::salted_id(&ctx, "SDROXIDE MANUAL");
+        let id = crate::layout::salted_id(&ctx, "SDRCROW MANUAL");
         let pass = |help: &mut Help, w: f32, h: f32| {
             ctx.begin_pass(egui::RawInput {
                 screen_rect: Some(Rect::from_min_size(pos2(0.0, 0.0), vec2(w, h))),

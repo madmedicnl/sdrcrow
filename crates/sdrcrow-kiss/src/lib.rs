@@ -1,10 +1,10 @@
-//! A KISS TNC on a socket: sdroxide's modem, offered to other people's software.
+//! A KISS TNC on a socket: sdrcrow's modem, offered to other people's software.
 //!
-//! sdroxide is the **TNC** here, not the host. Pat, an APRS client, `axcall`,
+//! sdrcrow is the **TNC** here, not the host. Pat, an APRS client, `axcall`,
 //! or the Linux kernel's AX.25 stack via `kissattach` connect to this port and
 //! use the radio through it. That is the same posture as the TCI and rigctld
-//! servers — "sdroxide is the server" — and it is what makes the packet work
-//! useful to programs that will never know sdroxide exists.
+//! servers — "sdrcrow is the server" — and it is what makes the packet work
+//! useful to programs that will never know sdrcrow exists.
 //!
 //! It also earns its keep before any of that: pointing the Linux AX.25 stack at
 //! this port tests our framing, modem and connected-mode machine against an

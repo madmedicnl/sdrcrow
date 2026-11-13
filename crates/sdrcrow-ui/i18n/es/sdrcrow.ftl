@@ -1,5 +1,5 @@
-# sdroxide — traducción al español de la interfaz. La referencia es
-# en-US/sdroxide.ftl; lo que falta aquí se muestra en inglés.
+# sdrcrow — traducción al español de la interfaz. La referencia es
+# en-US/sdrcrow.ftl; lo que falta aquí se muestra en inglés.
 
 ## The language's own name, as the language picker lists it.
 language-name = Español
@@ -355,7 +355,7 @@ settings-frequency = Frecuencia
 settings-clear = BORRAR
 settings-zero-leaves-dial-alone-which = Cero deja el dial en paz, que es lo que quieres cuando te quedas en un solo canal. Cualquier otro valor sintoniza la radio al iniciar la sesión.
 settings-my-gateways = Mis pasarelas
-settings-winlink-s-published-gateway-list = La lista de pasarelas que publica Winlink necesita una clave de API que sdroxide no tiene, así que lleva tu propia lista. Las dos o tres pasarelas alcanzables desde un lugar se averiguan probando y rara vez cambian.
+settings-winlink-s-published-gateway-list = La lista de pasarelas que publica Winlink necesita una clave de API que sdrcrow no tiene, así que lleva tu propia lista. Las dos o tres pasarelas alcanzables desde un lugar se averiguan probando y rara vez cambian.
 settings-use-2 = USAR
 settings-call-one-next-connect = Llamar a esta en la próxima conexión
 settings-current-dial = dial actual
@@ -366,7 +366,7 @@ settings-save-gateway-above-list = Guardar en la lista la pasarela de arriba
 settings-internet-gateway = Pasarela de internet
 settings-cms-address = Dirección del CMS
 settings-client-name = Nombre del cliente
-settings-winlink-s-production-servers-only = Los servidores de producción de Winlink solo aceptan nombres de cliente que conocen, y a uno desconocido le responden «Unknown client types are not allowed on production servers». Hasta que sdroxide esté registrado en el Winlink Development Team, conectar necesita un nombre que reconozcan.
+settings-winlink-s-production-servers-only = Los servidores de producción de Winlink solo aceptan nombres de cliente que conocen, y a uno desconocido le responden «Unknown client types are not allowed on production servers». Hasta que sdrcrow esté registrado en el Winlink Development Team, conectar necesita un nombre que reconozcan.
 settings-automatic-connection = Conexión automática
 settings-connect-timer = Conectar con un temporizador
 settings-every = Cada
@@ -423,7 +423,7 @@ settings-mirror-receiver-s-span-about = Refleja el ancho del receptor respecto a
 settings-mute-transmit = Silenciar al transmitir
 settings-silence-receive-audio-while-radio = Silencia el audio de recepción mientras esta radio transmite. Activado de forma predeterminada: con el receptor en la misma antena, o en la FI de esta radio, lo que oye durante un turno es tu propio transmisor. Los turnos activados en la propia radio — el PTT del micrófono, un pedal, MOX — también cuentan, en cuanto el enlace CAT dice que el equipo ha pasado a transmitir.
 settings-blank-transmit = Borrar al transmitir
-settings-stop-panadapter-waterfall-while-radio = Detiene el panadaptador y la cascada mientras esta radio transmite. Activado de forma predeterminada: un transmisor pintado en todo el ancho borra la banda que hay detrás. Desactívalo para ver la banda — o tu propia señal — durante un turno, lo que merece la pena con el receptor en una antena aparte. Se aplica a los turnos que activa sdroxide: uno activado en la propia radio se recibe de punta a punta, así que la imagen sigue corriendo diga lo que diga esto.
+settings-stop-panadapter-waterfall-while-radio = Detiene el panadaptador y la cascada mientras esta radio transmite. Activado de forma predeterminada: un transmisor pintado en todo el ancho borra la banda que hay detrás. Desactívalo para ver la banda — o tu propia señal — durante un turno, lo que merece la pena con el receptor en una antena aparte. Se aplica a los turnos que activa sdrcrow: uno activado en la propia radio se recibe de punta a punta, así que la imagen sigue corriendo diga lo que diga esto.
 settings-per-mode-offsets-radio-whose = Desplazamientos por modo, para una radio cuya FI se mueve con el modo. Un modo vacío usa el desplazamiento de arriba.
 settings-computer = En este ordenador
 settings-add-radio-computer = Añadir una radio en este ordenador
@@ -476,7 +476,7 @@ settings-alerts-each-station-quiet-while-after = Cada estación calla un rato tr
 
 settings-amp-amplifier = Amplificador
 settings-amp-waiting-station-s-amplifier-configuration = Esperando la configuración del amplificador de la estación…
-settings-amp-hobbypcb-hardrock-500-hardrock-50 = Un HobbyPCB Hardrock-500 o Hardrock-50 en su puerto serie USB. SDRoxide lee sus medidores, cambia su banda, modo y antena, y maneja su acoplador desde la ventana AMP. El amplificador sigue activándose con la línea PTT de la radio como antes.
+settings-amp-hobbypcb-hardrock-500-hardrock-50 = Un HobbyPCB Hardrock-500 o Hardrock-50 en su puerto serie USB. SDRCrow lee sus medidores, cambia su banda, modo y antena, y maneja su acoplador desde la ventana AMP. El amplificador sigue activándose con la línea PTT de la radio como antes.
 settings-amp-enable = Activar
 settings-amp-model = Modelo
 settings-amp-untested-panel-has-only-been = Sin probar: este panel solo se ha probado con un Hardrock-500. Los límites de los medidores de este modelo se escalan a partir de los del Hardrock-500 y pueden ser erróneos. Vigila la pantalla del propio amplificador.
@@ -552,13 +552,13 @@ settings-controls-none = — ninguno —
 
 settings-general-system-default = Predeterminado del sistema
 settings-general-remote-access = Acceso remoto
-settings-general-what-remote-client-browser-page = Lo que un cliente remoto — la página del navegador, u otro sdroxide iniciado con --connect — tiene que presentar para que esta estación le deje operar. Se aplica en modo servidor (--server); el siguiente inicio de sesión recoge el cambio, sin reiniciar.
+settings-general-what-remote-client-browser-page = Lo que un cliente remoto — la página del navegador, u otro sdrcrow iniciado con --connect — tiene que presentar para que esta estación le deje operar. Se aplica en modo servidor (--server); el siguiente inicio de sesión recoge el cambio, sin reiniciar.
 settings-general-username = Usuario
 settings-general-password = Contraseña
 settings-general-clients-must-give-password-leaving = Los clientes deben dar la contraseña. Dejar el usuario vacío está bien.
 settings-general-clients-must-sign = Los clientes deben iniciar sesión.
 settings-general-empty-anyone-who-can-reach = ⚠ Vacío: cualquiera que alcance el puerto del servidor puede operar esta radio, con tu indicativo. Fija una contraseña antes de redirigir el puerto.
-settings-general-stored-clear-config-toml-like = Guardada en claro en config.toml, como las demás contraseñas que guarda sdroxide.
+settings-general-stored-clear-config-toml-like = Guardada en claro en config.toml, como las demás contraseñas que guarda sdrcrow.
 settings-general-receive-audio-gain = Ganancia del audio de recepción
 settings-general-t-0-db = 0 dB
 settings-general-extra-gain-everything-radio-sends =
@@ -572,9 +572,9 @@ settings-general-settings-are-machine-radio-attached = Los ajustes están en la 
 settings-general-export = EXPORTAR…
 settings-general-write-every-setting-station-radios = Escribe todos los ajustes de esta estación — las radios, los modos, los servidores, las memorias, el plan de bandas — en un único archivo que puedes llevar a otra instalación. Tu diario y cualquier contraseña de servidor guardada se quedan aquí.
 settings-general-import = IMPORTAR…
-settings-general-replace-station-s-settings-ones = Sustituye los ajustes de esta estación por los de un archivo exportado desde otra instalación. Reinicia sdroxide después.
-settings-general-import-overwrites-what-here-file = Una importación sobrescribe lo que hay aquí, archivo por archivo, y surte efecto la próxima vez que se inicie sdroxide — de lo contrario los ajustes que ya están en memoria se volverían a escribir encima. Lo que el archivo no menciona se deja como está, así que un paquete de una estación con una sola radio no elimina una segunda radio de aquí. Tu diario nunca está en el archivo: expórtalo como ADIF desde la ventana LOG si quieres llevarte también eso.
-settings-general-sdrcrow-settings = Ajustes de sdroxide
+settings-general-replace-station-s-settings-ones = Sustituye los ajustes de esta estación por los de un archivo exportado desde otra instalación. Reinicia sdrcrow después.
+settings-general-import-overwrites-what-here-file = Una importación sobrescribe lo que hay aquí, archivo por archivo, y surte efecto la próxima vez que se inicie sdrcrow — de lo contrario los ajustes que ya están en memoria se volverían a escribir encima. Lo que el archivo no menciona se deja como está, así que un paquete de una estación con una sola radio no elimina una segunda radio de aquí. Tu diario nunca está en el archivo: expórtalo como ADIF desde la ventana LOG si quieres llevarte también eso.
+settings-general-sdrcrow-settings = Ajustes de sdrcrow
 settings-general-swr-guard = Protección de ROE
 settings-general-stop-transmitting-high-swr = Dejar de transmitir con ROE alta
 settings-general-trip = Saltar en
@@ -617,7 +617,7 @@ settings-net-persist-re-connect = Guardar y (re)conectar
 settings-net-season = Temporada
 settings-net-downloading = descargando…
 settings-net-using-built-copy = usando la copia integrada
-settings-net-your-own-stations-corrections-go = Tus propias emisoras y correcciones van en este archivo. sdroxide nunca lo escribe, y una entrada de aquí sustituye a una del horario con el mismo nombre y frecuencia.
+settings-net-your-own-stations-corrections-go = Tus propias emisoras y correcciones van en este archivo. sdrcrow nunca lo escribe, y una entrada de aquí sustituye a una del horario con el mismo nombre y frecuencia.
 settings-net-reload = Recargar
 settings-net-re-read-your-station-file = Volver a leer tu archivo de emisoras tras editarlo
 settings-net-broadcast-stations-labelled-waterfall-come = Las emisoras etiquetadas en la cascada proceden de la lista integrada en esta compilación. Editarlas requiere la aplicación de escritorio.
@@ -631,11 +631,11 @@ settings-controls-last-midi = Último mensaje: { $message }  valor { $value }
 settings-general-exported = Exportado { $note } — elige dónde guardarlo.
 settings-general-export-failed = Error al exportar: { $error }
 settings-general-import-failed = Error al importar: { $error }
-settings-general-imported = { $summary } — reinicia sdroxide para usarlos.
+settings-general-imported = { $summary } — reinicia sdrcrow para usarlos.
 settings-general-import-skipped = Omitido { $path }: { $why }
 settings-general-swr-tripped = ⚠ Saltó en { $swr }:1 — la transmisión está bloqueada.
 settings-net-call-grid-set-on-general = { $call } / { $grid } — fijado en la pestaña General
-settings-net-reporting-as = Informando como { $call } / { $grid } — SDRoxide { $version }
+settings-net-reporting-as = Informando como { $call } / { $grid } — SDRCrow { $version }
 settings-net-schedule-download-failed = ⚠ Error de descarga: { $error }. Usando el horario integrado.
 settings-net-test-service = Probar { $service }
 
@@ -697,7 +697,7 @@ settings-profiles-profile-captures-whole-working-setup = Un perfil captura toda 
 settings-profiles-save-current-setup = Guardar la configuración actual
 settings-profiles-profile-name = nombre del perfil
 settings-profiles-save = Guardar
-settings-profiles-applies-whatever-sdrcrow-attached-dials = Se aplica a aquello a lo que esté conectado sdroxide: diales y VFO, modo y filtros, niveles, ganancias, excitación, antenas, la identidad digital y las pilas de banda.
+settings-profiles-applies-whatever-sdrcrow-attached-dials = Se aplica a aquello a lo que esté conectado sdrcrow: diales y VFO, modo y filtros, niveles, ganancias, excitación, antenas, la identidad digital y las pilas de banda.
 settings-profiles-no-profiles-saved-yet-name = Aún no hay perfiles guardados — ponle nombre a uno arriba y pulsa Guardar.
 settings-profiles-saved-profiles = Perfiles guardados
 settings-profiles-apply = Aplicar
@@ -750,7 +750,7 @@ settings-relay-if-will-not-answer = Si no responde
 settings-relay-switch-exists-protect-receiver-not = Un conmutador que existe para proteger un receptor no vale la pena si deja de protegerlo en silencio — por eso negarse es lo predeterminado. Elige la otra opción donde un cable USB suelto que acabe con tu concurso sea el peor resultado.
 settings-relay-order-timings-longest-lead-closes = El orden son los tiempos: la antelación más larga cierra primero, y la retención más larga abre la última. Así que da al relé de antena la antelación y la retención más largas, y al amplificador las más cortas — entonces la antena siempre se conmuta antes de que se active el amplificador, y el amplificador siempre se desactiva antes de que vuelva la antena.
 settings-relay-transmit-sense-input = Entrada de detección de transmisión
-settings-relay-when-transceiver-keys-itself-own = Cuando un transceptor se activa solo — su propio botón del micrófono, pedal, VOX o manipulador —, sdroxide se entera preguntando por CAT, y esa respuesta llega unos cientos de milisegundos después de empezar el turno. Cablea la línea SEND del equipo, a través de un optoaislador, a una entrada de handshake de este mismo puerto y se ve en pocos milisegundos. El medidor y el enclavamiento de transmisión se vuelven más rápidos con ello.
+settings-relay-when-transceiver-keys-itself-own = Cuando un transceptor se activa solo — su propio botón del micrófono, pedal, VOX o manipulador —, sdrcrow se entera preguntando por CAT, y esa respuesta llega unos cientos de milisegundos después de empezar el turno. Cablea la línea SEND del equipo, a través de un optoaislador, a una entrada de handshake de este mismo puerto y se ve en pocos milisegundos. El medidor y el enclavamiento de transmisión se vuelven más rápidos con ello.
 settings-relay-line = Línea
 settings-relay-transmitting = Transmitir es
 settings-relay-high-line = una línea alta
@@ -759,8 +759,8 @@ settings-relay-belongs-radio = Pertenece a la radio
 settings-relay-which-radio-tab-sensed-transceiver = Qué pestaña de radio es el transceptor detectado. En una estación con una sola radio es 1 y nada depende de ello.
 settings-relay-needs-serial-port-handshake-lines = Necesita un puerto serie — las líneas de handshake están en él.
 settings-relay-wiring-only-fail-safe-survives = El cableado es la única protección que sobrevive a este programa.
-settings-relay-choose-tx-closes-so-de = Elige «TX cierra» de modo que el contacto *desenergizado* sea el estado que quieres cuando la placa está desenchufada, el ordenador apagado o sdroxide no se está ejecutando. Cableado de forma que desenergizado signifique a masa, un relé muerto deja el SDR sordo — molesto, pero seguro. Cableado al revés, un relé muerto más una transmisión es una etapa de entrada muerta. Con un amplificador de verdad detrás, toma la primera.
-settings-relay-cannot-protect-first-instant-over = Esto no puede proteger el primer instante de un turno que inicias en la radio. Activa el equipo desde sdroxide y los contactos siempre preceden a la RF; cablea la entrada de detección de arriba y la siguen en milisegundos. Para una etapa de entrada que de verdad merezca protección, usa además un conmutador T/R de hardware con detección de RF — ningún programa de un ordenador puede ser la respuesta completa.
+settings-relay-choose-tx-closes-so-de = Elige «TX cierra» de modo que el contacto *desenergizado* sea el estado que quieres cuando la placa está desenchufada, el ordenador apagado o sdrcrow no se está ejecutando. Cableado de forma que desenergizado signifique a masa, un relé muerto deja el SDR sordo — molesto, pero seguro. Cableado al revés, un relé muerto más una transmisión es una etapa de entrada muerta. Con un amplificador de verdad detrás, toma la primera.
+settings-relay-cannot-protect-first-instant-over = Esto no puede proteger el primer instante de un turno que inicias en la radio. Activa el equipo desde sdrcrow y los contactos siempre preceden a la RF; cablea la entrada de detección de arriba y la siguen en milisegundos. Para una etapa de entrada que de verdad merezca protección, usa además un conmutador T/R de hardware con detección de RF — ningún programa de un ordenador puede ser la respuesta completa.
 settings-relay-contacts-transmit = contactos en TRANSMISIÓN
 settings-relay-not-open = No abierto.
 settings-relay-status-unknown-press-apply = Estado desconocido — pulsa APLICAR.
@@ -779,15 +779,15 @@ settings-relay-persist-re-open-switch = Guardar y (re)abrir el conmutador
 ## Settings window, Remote (src/app/settings/remote.rs)
 
 settings-remote-connect-server = Conectar a un servidor
-settings-remote-drive-sdrcrow-running-somewhere-else = Maneja por la red un sdroxide que se ejecuta en otro sitio — la máquina de la estación, un emplazamiento remoto. Ponlo en marcha allí con --server e introduce aquí su dirección. La radio, los decodificadores y el diario se quedan en esa máquina; esta pantalla recibe la cascada y el audio, y sus altavoces y micrófono son los que usas.
+settings-remote-drive-sdrcrow-running-somewhere-else = Maneja por la red un sdrcrow que se ejecuta en otro sitio — la máquina de la estación, un emplazamiento remoto. Ponlo en marcha allí con --server e introduce aquí su dirección. La radio, los decodificadores y el diario se quedan en esa máquina; esta pantalla recibe la cascada y el audio, y sus altavoces y micrófono son los que usas.
 settings-remote-address = Dirección
 settings-remote-host-name-ip = nombre de host o IP
-settings-remote-machine-running-sdrcrow-server-host = La máquina que ejecuta sdroxide --server: un nombre de host, una dirección IPv4 o IPv6, o una URL ws:// (o wss://) completa si el servidor está tras un proxy inverso — una URL se usa exactamente como se escribe e ignora el puerto y el interruptor de abajo.
+settings-remote-machine-running-sdrcrow-server-host = La máquina que ejecuta sdrcrow --server: un nombre de host, una dirección IPv4 o IPv6, o una URL ws:// (o wss://) completa si el servidor está tras un proxy inverso — una URL se usa exactamente como se escribe e ignora el puerto y el interruptor de abajo.
 settings-remote-port = Puerto
 settings-remote-port-server-listens-server-port = El puerto en el que escucha ese servidor — server_port en su config.toml. 4950 salvo que se le diera --port.
 settings-remote-secure = Seguro
 settings-remote-wss-tls = wss:// (TLS)
-settings-remote-tick-where-server-sits-behind = Marca esto cuando el servidor esté tras algo que termina HTTPS por él — un proxy inverso en el puerto 443, que es la forma habitual de llegar a una estación a través de internet. El servidor propio de sdroxide habla ws:// sin cifrar y no quiere esto.
+settings-remote-tick-where-server-sits-behind = Marca esto cuando el servidor esté tras algo que termina HTTPS por él — un proxy inverso en el puerto 443, que es la forma habitual de llegar a una estación a través de internet. El servidor propio de sdrcrow habla ws:// sin cifrar y no quiere esto.
 settings-remote-connect = {" "}CONECTAR{" "}
 settings-remote-open-station-radio-tab-own = Abrir esta estación como una pestaña de radio propia
 settings-remote-client-cannot-hold-second-connection = Este cliente no puede mantener una segunda conexión.
@@ -798,7 +798,7 @@ settings-remote-client-cannot-hold-second-connection = Este cliente no puede man
 
 settings-servers-wsjt-x-udp-broadcast = Difusión UDP de WSJT-X
 settings-servers-waiting-station-s-wsjt-x = Esperando la configuración de difusión WSJT-X de la estación…
-settings-servers-sends-decodes-station-status-logged = Envía decodificaciones, estado de la estación y QSO registrados como lo hace WSJT-X, de modo que GridTracker, JTAlert, N1MM+ y Log4OM funcionan con sdroxide sin cambios. Solo salida — nada en este socket puede tocar la radio.
+settings-servers-sends-decodes-station-status-logged = Envía decodificaciones, estado de la estación y QSO registrados como lo hace WSJT-X, de modo que GridTracker, JTAlert, N1MM+ y Log4OM funcionan con sdrcrow sin cambios. Solo salida — nada en este socket puede tocar la radio.
 settings-servers-enable = Activar
 settings-servers-send = Enviar a
 settings-servers-t-127-0-0-1-reaches = 127.0.0.1 llega a los clientes de esta máquina; una dirección de red local o un grupo multicast (224.0.0.1) llega a otros
@@ -862,7 +862,7 @@ settings-tle-fetch-track-listing = Obtener y seguir este listado
 settings-tle-remove-subscription = Quitar esta suscripción
 settings-tle-orbits = Órbitas
 settings-tle-which-satellites-listing-get-orbit = Qué satélites de este listado reciben un anillo de órbita y una etiqueta. Un grupo entero pide «curated»: noventa anillos a la vez son ilegibles, y ninguno deja noventa puntos anónimos.
-settings-tle-nothing-listing-sdrcrow-s-curated = Nada de este listado está en la lista curada de sdroxide — esa lista son diez satélites de aficionados, así que esto se comportaría exactamente como «ninguno».
+settings-tle-nothing-listing-sdrcrow-s-curated = Nada de este listado está en la lista curada de sdrcrow — esa lista son diez satélites de aficionados, así que esto se comportaría exactamente como «ninguno».
 settings-tle-all-satellites = todos los satélites
 settings-tle-catalogue-numbers-keep-comma-separated = Números de catálogo que conservar, separados por comas. Vacío sigue todo lo que lleva el listado.
 settings-tle-not-fetched-yet = aún no obtenido
@@ -1017,22 +1017,22 @@ settings-radio-which-socket-back-radio-using =
 
     Se aplica al instante, y es un ajuste de la radio y no una copia guardada aquí: el conector en el que está la radio se lee de vuelta al abrirse la sesión.
 
-    La elección se recuerda por banda. Cambia al haz en 2 m y al hilo en 40, y cada uno vuelve la próxima vez que el dial entre en esa banda — y la próxima vez que se inicie sdroxide. Un canal de memoria guardado aquí lleva también su conector.
+    La elección se recuerda por banda. Cambia al haz en 2 m y al hilo en 40, y cada uno vuelve la próxima vez que el dial entre en esa banda — y la próxima vez que se inicie sdrcrow. Un canal de memoria guardado aquí lleva también su conector.
 settings-radio-receive-antenna = Antena de recepción
 settings-radio-radio-s-separate-receiving-antenna =
     La antena de recepción independiente de la radio — RX ANT en la parte trasera — conmutada dentro o fuera de la ruta de recepción. Es un ajuste propio, el mismo que el botón RX ANT de la radio.
 
     La antena del conector principal sigue en transmisión en ambos casos: es una entrada adicional para recibir, un lazo o una beverage, no una elección de conector.
 
-    A diferencia de la antena de arriba, esta *no* se recuerda aquí. La radio la guarda por banda ella misma, así que sdroxide la lee de vuelta tras cada cambio de banda y muestra lo que dice la radio; marcar esta casilla es lo único que la mueve.
+    A diferencia de la antena de arriba, esta *no* se recuerda aquí. La radio la guarda por banda ella misma, así que sdrcrow la lee de vuelta tras cada cambio de banda y muestra lo que dice la radio; marcar esta casilla es lo único que la mueve.
 settings-radio-receive-path = En la ruta de recepción
 settings-radio-radio-power = Alimentación de la radio
 settings-radio-switch-radio-itself-off-back =
-    Apaga la propia radio y la vuelve a encender, por el enlace de control. Este es el único encendido/apagado de verdad del programa — no el interruptor ENLACE de sdroxide, que cierra el extremo de sdroxide y deja la radio funcionando.
+    Apaga la propia radio y la vuelve a encender, por el enlace de control. Este es el único encendido/apagado de verdad del programa — no el interruptor ENLACE de sdrcrow, que cierra el extremo de sdrcrow y deja la radio funcionando.
 
-    Para que el encendido llegue a algo, el extremo de control de la radio tiene que seguir despierto mientras está apagada. Por red, eso es lo que hace Network Control. Por cable serie es el puerto CI-V de la radio, que sigue alimentado desde la red eléctrica en un equipo apagado desde el frontal en lugar de desenchufado; sdroxide envía la secuencia de despertar que pide la propia documentación de Icom antes del encendido.
+    Para que el encendido llegue a algo, el extremo de control de la radio tiene que seguir despierto mientras está apagada. Por red, eso es lo que hace Network Control. Por cable serie es el puerto CI-V de la radio, que sigue alimentado desde la red eléctrica en un equipo apagado desde el frontal en lugar de desenchufado; sdrcrow envía la secuencia de despertar que pide la propia documentación de Icom antes del encendido.
 
-    Apagar termina el audio y los medidores — no hay radio detrás de ellos — y sdroxide mantiene abierto el enlace de control para que el encendido tenga adónde llegar.
+    Apagar termina el audio y los medidores — no hay radio detrás de ellos — y sdrcrow mantiene abierto el enlace de control para que el encendido tenga adónde llegar.
 settings-radio-on = Encendida
 settings-radio-off = Apagada
 settings-radio-waiting-configuration-machine-radio-attached = Esperando la configuración de la máquina a la que está conectada la radio.
@@ -1103,24 +1103,24 @@ settings-radio-how-transmit-keyed = Cómo se activa la transmisión.
 settings-radio-how-transmit-keyed-network-link = Cómo se activa la transmisión. Un enlace de red no tiene líneas de control, así que DTR y RTS no activan nada aquí — usa CAT, que pide al demonio que active la radio, o VOX.
 settings-radio-mode-control = Control de modo
 settings-radio-digimode-mode = Modo para digimodos
-settings-radio-what-put-radio-mode-sdroxide =
-    En qué poner la radio para un modo que sdroxide modula a través de su tarjeta de sonido. «DIGI» selecciona la posición DATA/PKT del equipo, que toma el audio de transmisión de la entrada USB o ACC sin el procesado de voz de la ruta del micrófono; «USB» lo deja en la banda lateral normal, para una radio ya configurada para modular BLU desde su entrada de datos o una sin posición DATA.
+settings-radio-what-put-radio-mode-sdrcrow =
+    En qué poner la radio para un modo que sdrcrow modula a través de su tarjeta de sonido. «DIGI» selecciona la posición DATA/PKT del equipo, que toma el audio de transmisión de la entrada USB o ACC sin el procesado de voz de la ruta del micrófono; «USB» lo deja en la banda lateral normal, para una radio ya configurada para modular BLU desde su entrada de datos o una sin posición DATA.
 
     Cubre todos los modos digitales — FT8, FT4, PSK, RTTY, SSTV y el resto — y el CW enviado como «Tarjeta de sonido», y prevalece sobre el Control de modo para ellos. SSTV es el único cuya banda lateral sigue a la banda, así que ahí significa la posición DATA en esa banda lateral: USB-D por encima de 40 m, LSB-D en 40 m y por debajo. SSTV-FM no forma parte de ello — una portadora FM no tiene banda lateral que elegir.
 settings-radio-cw-keying = Manipulación de CW
 settings-radio-how-cw-panel-s-keyer =
     Cómo transmite el manipulador del panel de CW. «Manipulador del equipo» pone la radio en CW y le entrega el texto para enviar con su propio manipulador. Usa la velocidad del manipulador del equipo (fijada desde las WPM del panel) y en Yaesu envía por medio de la memoria 1 del manipulador, sobrescribiendo lo que hubiera guardado en ella.
 
-    Necesita break-in activado en la radio, que sdroxide activa por sí mismo con cada mensaje en Icom, Yaesu y Kenwood — un equipo con el break-in desactivado acepta el mensaje y no transmite nada. Se deja activado después, y un break-in completo nunca se baja a semi.
+    Necesita break-in activado en la radio, que sdrcrow activa por sí mismo con cada mensaje en Icom, Yaesu y Kenwood — un equipo con el break-in desactivado acepta el mensaje y no transmite nada. Se deja activado después, y un break-in completo nunca se baja a semi.
 
     «Tarjeta de sonido» envía en cambio el tono lateral manipulado como audio (MCW), un tono en dial + tono — y como un equipo en CW ignoraría por completo su tarjeta de sonido, seleccionar CW sigue entonces el ajuste Modo para digimodos (USB, DATA o Controlado por radio) en lugar de poner el equipo en CW. Elige ahí «Controlado por radio» para equipos cuya posición de datos no puede ordenarse por CAT (la U-D de un Xiegu) y aparca tú mismo el equipo en ella, como para FT8.
 settings-radio-poll-rate = Frecuencia de sondeo
 settings-radio-how-often-radio-asked-what =
-    Con qué frecuencia se pregunta a la radio qué está haciendo — su dial, su modo y sus medidores. Es la mitad del enlace de control que va de la radio a sdroxide: gira el mando VFO del propio equipo o cambia su modo en el panel frontal y la lectura, la banda y el panadaptador siguen en un sondeo.
+    Con qué frecuencia se pregunta a la radio qué está haciendo — su dial, su modo y sus medidores. Es la mitad del enlace de control que va de la radio a sdrcrow: gira el mando VFO del propio equipo o cambia su modo en el panel frontal y la lectura, la banda y el panadaptador siguen en un sondeo.
 
     También es todo el tráfico de control que genera este extremo, y en un Icom moderno ese tráfico no es gratis: el puerto CI-V y la tarjeta de sonido están tras un mismo concentrador USB dentro de la radio, así que las tramas pedidas aquí son tiempo de bus que el audio no recibe — se oyen como cortes que parecen un fallo del DSP y no lo son. El valor predeterminado de 2 Hz va medio segundo por detrás del mando y es lo bastante discreto para no estorbar al audio. Súbelo donde el puerto de control es un dispositivo propio (un adaptador USB-serie aparte, un rigctld de red); bájalo si el audio de la radio se entrecorta.
 
-    Un Icom con CI-V Transceive activado en su propio menú no necesita nada de esto para el dial: informa del mando en el instante en que se mueve, y sdroxide deja de sondear el dial en cuanto ve que lo hace — y lo retoma si la radio llega a moverse sin avisar.
+    Un Icom con CI-V Transceive activado en su propio menú no necesita nada de esto para el dial: informa del mando en el instante en que se mueve, y sdrcrow deja de sondear el dial en cuanto ve que lo hace — y lo retoma si la radio llega a moverse sin avisar.
 
     La frecuencia es la del dial. El modo va incluido solo cada cuarto sondeo, ya que es un ajuste que cambia unas pocas veces en una tarde y no uno que siga a un mando.
 settings-radio-send-command = Enviar comando
@@ -1129,7 +1129,7 @@ settings-radio-which-transceiver-generation-keys-rig =
 
     «Estilo TS-2000 (TX;)» — TS-480, TS-570, TS-870, TS-2000: el envío normal, en la banda principal.
 
-    «Estilo TS-590 (TX1;)» — TS-590S/SG, TS-890, TS-990: DATA SEND, que activa con la entrada de audio ACC2/USB activa. En estos equipos el envío normal selecciona el micrófono y silencia el audio que transmite sdroxide.
+    «Estilo TS-590 (TX1;)» — TS-590S/SG, TS-890, TS-990: DATA SEND, que activa con la entrada de audio ACC2/USB activa. En estos equipos el envío normal selecciona el micrófono y silencia el audio que transmite sdrcrow.
 
     Mal configurado, un TS-590 transmite silencio — pero un TS-2000 transmite en la subbanda, que es otra banda por completo.
 settings-radio-radio = Radio
@@ -1142,7 +1142,7 @@ settings-radio-transmit-input = Entrada de transmisión
 settings-radio-where-radio-takes-transmit-audio =
     De dónde toma la radio su audio de transmisión — el comando TI del equipo, que es el menú 32 «TX IN» del panel frontal. Se establece al abrir el puerto.
 
-    «Audio USB» es lo que hace funcionar esta interfaz: el FDM-DUO transmite lo que sdroxide pone en su tarjeta de sonido USB. Una radio dejada en «Micrófono» envía en cambio la sala, y nada en pantalla lo dice.
+    «Audio USB» es lo que hace funcionar esta interfaz: el FDM-DUO transmite lo que sdrcrow pone en su tarjeta de sonido USB. Una radio dejada en «Micrófono» envía en cambio la sala, y nada en pantalla lo dice.
 
     «Auto» deja que elija el equipo — el micrófono para una pulsación de PTT en el micrófono, el puerto USB para una activación por CAT o RTS.
 
@@ -1173,10 +1173,10 @@ settings-radio-baud-rate-ignored-port-usb = Los baudios se ignoran — el puerto
 settings-radio-qmx-serves-own-virtual-com =
     Un QMX sirve sus propios puertos COM virtuales por USB, así que la velocidad fijada arriba no tiene efecto en ninguno de los dos extremos. Ofrece hasta tres; si la radio no responde nada, lo más probable es que sea el puerto equivocado.
 
-    Hay algo que sí importa del puerto: un retorno de carro enviado a él pone la radio en modo terminal el resto de la sesión. sdroxide nunca envía uno — pero un programa de terminal abierto en el mismo puerto sí lo hará, y el CAT deja de funcionar en cuanto lo haga.
+    Hay algo que sí importa del puerto: un retorno de carro enviado a él pone la radio en modo terminal el resto de la sesión. sdrcrow nunca envía uno — pero un programa de terminal abierto en el mismo puerto sí lo hará, y el CAT deja de funcionar en cuanto lo haga.
 settings-radio-i-q-mode-switched-radio = El modo I/Q se activa en la radio
 settings-radio-radio-s-sound-card-carries =
-    La tarjeta de sonido de la radio lleva o bien audio demodulado o bien el I/Q en bruto que ve su ADC, y sdroxide establece el que pida el Formato de sonido de arriba al abrir el puerto (el comando Q9 de la radio, la entrada de menú «IQ mode»).
+    La tarjeta de sonido de la radio lleva o bien audio demodulado o bien el I/Q en bruto que ve su ADC, y sdrcrow establece el que pida el Formato de sonido de arriba al abrir el puerto (el comando Q9 de la radio, la entrada de menú «IQ mode»).
 
     El desplazamiento del centro y la frecuencia de muestreo de arriba se han fijado a lo que necesita un QMX: su receptor es un superheterodino con una FI de 12 kHz, así que el sintetizador queda 12 kHz por debajo del dial y todo lo que hay en la tarjeta está 12 kHz por encima del centro del ancho. La tarjeta funciona a 48 kHz, lo que hace el panadaptador de 48 kHz de ancho.
 
@@ -1187,11 +1187,11 @@ settings-radio-rs-hfiq-5-w-hf = RS-HFIQ (transceptor de HF de 5 W)
 settings-radio-hobbypcb-s-rs-hfiq-there =
     El RS-HFIQ de HobbyPCB. Aquí no hay nada que elegir: el perfil es todo el conjunto de comandos de la radio, y la versión de firmware se registra al abrir el puerto.
 
-    El enlace de control lleva dos cosas y no más — dónde poner el oscilador y si transmitir. No hay comando de modo, potencia, filtro, silenciador ni medidor, porque la radio no tiene ninguno. Todo lo demás es de sdroxide: lo que sale de la tarjeta de sonido es banda base compleja centrada en el dial, así que el modo, el filtro y la modulación ocurren de este lado.
+    El enlace de control lleva dos cosas y no más — dónde poner el oscilador y si transmitir. No hay comando de modo, potencia, filtro, silenciador ni medidor, porque la radio no tiene ninguno. Todo lo demás es de sdrcrow: lo que sale de la tarjeta de sonido es banda base compleja centrada en el dial, así que el modo, el filtro y la modulación ocurren de este lado.
 
     El comando de frecuencia cubre 3–30 MHz. Pide algo fuera de eso y la radio lo rechaza y se queda donde está; el registro lo dice.
 
-    El CW se activa como audio a través de la cadena de transmisión — esta radio no tiene manipulador que acepte texto. (Tiene un generador de CW interno; sdroxide nunca lo usa, por consejo del propio firmware.)
+    El CW se activa como audio a través de la cadena de transmisión — esta radio no tiene manipulador que acepte texto. (Tiene un generador de CW interno; sdrcrow nunca lo usa, por consejo del propio firmware.)
 settings-radio-sound-format-baud-ptt-are = El formato de sonido, los baudios y el PTT son de la radio, no ajustes
 settings-radio-all-three-have-been-filled =
     Los tres se han rellenado y ninguno es una preferencia:
@@ -1220,7 +1220,7 @@ settings-radio-which-icom-two-things-ci =
 
     La dirección del transceptor de abajo se rellena a partir de él: cada modelo sale con una distinta, y una trama enviada a la dirección equivocada simplemente se ignora — una radio que no responde nada, sin ningún error en ninguna parte que diga por qué.
 
-    También decide si sdroxide puede seleccionar el modo DATA. En CI-V, USB y USB-DATA son el mismo byte de modo y un comando aparte los distingue; sin él un turno en modo digital sale por la entrada de micrófono, con el procesado de voz y el filtro de BLU del equipo en la ruta.
+    También decide si sdrcrow puede seleccionar el modo DATA. En CI-V, USB y USB-DATA son el mismo byte de modo y un comando aparte los distingue; sin él un turno en modo digital sale por la entrada de micrófono, con el procesado de voz y el filtro de BLU del equipo en la ruta.
 
     «Otro» te deja la dirección a ti y no envía ningún comando de modo DATA.
 settings-radio-radio-id-hex = ID de la radio (hex)
@@ -1268,7 +1268,7 @@ settings-radio-frequency-correction = Corrección de frecuencia
 settings-radio-crystal-tcxo-error-ppm-applied = Error del cristal/TCXO en ppm, aplicado a RX y TX. Se aplica al instante.
 settings-radio-ppm = {" "}ppm
 settings-radio-transmit-buffer = Búfer de transmisión
-settings-radio-how-far-ahead-real-time = Con cuánta antelación sobre el tiempo real se alimenta de audio de transmisión a la placa por la red, antes de que sdroxide se ralentice para igualarlo. La propia placa no tiene tal búfer — esto solo ensancha el margen propio de sdroxide. Súbelo en un enlace WiFi o una VPN, donde el valor bajo predeterminado (correcto para una conexión cableada directa) no da holgura suficiente frente a la fluctuación y el audio transmitido o el PTT se entrecortan; más alto cuesta latencia de transmisión. Surte efecto con APLICAR, que reconecta con la placa.
+settings-radio-how-far-ahead-real-time = Con cuánta antelación sobre el tiempo real se alimenta de audio de transmisión a la placa por la red, antes de que sdrcrow se ralentice para igualarlo. La propia placa no tiene tal búfer — esto solo ensancha el margen propio de sdrcrow. Súbelo en un enlace WiFi o una VPN, donde el valor bajo predeterminado (correcto para una conexión cableada directa) no da holgura suficiente frente a la fluctuación y el audio transmitido o el PTT se entrecortan; más alto cuesta latencia de transmisión. Surte efecto con APLICAR, que reconecta con la placa.
 settings-radio-puresignal = PureSignal
 settings-radio-adaptive-predistortion-linearise-transmitter-sample = Predistorsión adaptativa: linealiza el transmisor a partir de una muestra de lo que realmente emitió, para unos veinte decibelios menos de intermodulación a la misma potencia. El receptor es el camino de realimentación — la placa sigue recibiendo durante un turno —, así que un acoplador direccional y un atenuador tienen que poner una muestra de la salida del amplificador en una entrada que el conmutador T/R no quite al transmitir. En un Hermes-Lite 2 eso significa el conector PureSignal de la placa IO, y la entrada de recepción de arriba fijada en consecuencia; en una placa sin ella, el puerto RX de un ANAN o un relé externo que conmute el acoplador mientras dure el turno. Es este receptor el que se lee — una placa con un segundo ADC no puede usar RX2 como toma de realimentación, por mucho que su propio firmware lo enrute. Sin nada acoplado, el lazo nunca engancha y el transmisor queda exactamente como habría estado. Se aplica con Aplicar / reconectar, y solo en la radio que posee el transmisor (DDC1).
 settings-radio-correct-transmitter-receiver-s-own = Corregir el transmisor con la realimentación del propio receptor
@@ -1467,7 +1467,7 @@ settings-radio-how-much-band-receiver-s =
     La banda completa es el valor predeterminado y es lo que hace de la franja algo por lo que sintonizar; el panadaptador de debajo son los ~12 kHz de I/Q. Se aplica al instante.
 settings-radio-receiver-agc = AGC del receptor
 settings-radio-receiver-s-agc-which-far =
-    El AGC del *receptor*, que está en el lado lejano del enlace y delante del I/Q — así que actúa antes que cualquier cosa de sdroxide.
+    El AGC del *receptor*, que está en el lado lejano del enlace y delante del I/Q — así que actúa antes que cualquier cosa de sdrcrow.
 
     Activado de forma predeterminada, a diferencia de todos los SDR locales de aquí, porque la alternativa medida era peor: en un receptor real la ganancia manual no era monótona a lo largo de su rango y su extremo superior recortaba el I/Q a fondo de escala, mientras que el AGC mantenía unos -24 dBFS con 7 dB de margen.
 
@@ -1481,7 +1481,7 @@ settings-radio-iq-sample-rate = Frecuencia de muestreo IQ
 settings-radio-receiver = Receptor
 settings-radio-rig-two-receivers-sunsdr2dx-can = Un equipo con dos receptores (SunSDR2DX) puede servir dos pestañas de radio desde una conexión — ejecuta esta radio en RX1 y otra en RX2. El transmisor pertenece a la radio de RX1.
 settings-radio-stream-delay = Retardo del flujo
-settings-radio-how-long-rig-s-iq = Cuánto tarda en llegar el IQ del equipo en un centro nuevo después de que sdroxide lo mueva. Es la propia canalización de DSP del equipo, no la red — un servidor en esta máquina también la tiene — y mientras se arrastra el panadaptador con el zoom al mínimo, equivocarse en esto mueve las filas más recientes de la cascada hacia un lado respecto al historial en el error por la velocidad del arrastre. Demasiado alto las desplaza exactamente tanto como demasiado bajo, en el otro sentido. Mídelo con `cargo run --release -p sdrcrow-tci --example retune_latency`; el valor predeterminado es un SunSDR2DX con ExpertSDR3 a 192 kHz.
+settings-radio-how-long-rig-s-iq = Cuánto tarda en llegar el IQ del equipo en un centro nuevo después de que sdrcrow lo mueva. Es la propia canalización de DSP del equipo, no la red — un servidor en esta máquina también la tiene — y mientras se arrastra el panadaptador con el zoom al mínimo, equivocarse en esto mueve las filas más recientes de la cascada hacia un lado respecto al historial en el error por la velocidad del arrastre. Demasiado alto las desplaza exactamente tanto como demasiado bajo, en el otro sentido. Mídelo con `cargo run --release -p sdrcrow-tci --example retune_latency`; el valor predeterminado es un SunSDR2DX con ExpertSDR3 a 192 kHz.
 settings-radio-wideband-iq-receive-audio-transmit = Recepción IQ de banda ancha, transmisión de audio. Pulsa «Aplicar / reconectar» para cambiar sin reiniciar.
 settings-radio-radio-address = Dirección de la radio
 settings-radio-address-shown-radio-under-set = La dirección que muestra la radio en SET > Network. Allí tiene que estar activado Network Control, y la radio necesita un nombre de usuario y una contraseña de red.
@@ -1494,17 +1494,17 @@ settings-radio-receive = Recibir de
 settings-radio-audio-sample-rate = Frecuencia de muestreo del audio
 settings-radio-t-12-khz-if-needs-48000 = Una FI de 12 kHz necesita el flujo de 48000 Hz — con esta frecuencia se usa en su lugar el audio demodulado de la radio.
 settings-radio-if-spectrum = Espectro de FI
-settings-radio-which-way-round-radio-s = En qué sentido corre la FI de 12 kHz de la radio. «Automático» usa lo que se sabe que hace el modelo — espejado en un IC-7760, normal en todos los demás Icom. Fíjalo a mano si la BLU sale en la banda lateral equivocada: la señal delatora es tener que seleccionar USB donde la banda es LSB mientras la pantalla de modo de la propia radio coincide con sdroxide en todo momento.
+settings-radio-which-way-round-radio-s = En qué sentido corre la FI de 12 kHz de la radio. «Automático» usa lo que se sabe que hace el modelo — espejado en un IC-7760, normal en todos los demás Icom. Fíjalo a mano si la BLU sale en la banda lateral equivocada: la señal delatora es tener que seleccionar USB donde la banda es LSB mientras la pantalla de modo de la propia radio coincide con sdrcrow en todo momento.
 settings-radio-normal = Normal
 settings-radio-mirrored = Espejado
 settings-radio-displayed-bandwidth = Ancho de banda mostrado
 settings-radio-width-audio-band-panadapter-cat = Ancho del panadaptador de banda de audio, como en un equipo CAT. Se usa en los modos digitales y donde el scope de la radio está apagado; en otro caso el panadaptador es el scope, y el Ancho del scope fija su anchura.
 settings-radio-how-cw-panel-s-keyer-2 = Cómo transmite el manipulador del panel de CW. «Manipulador del equipo» pone la radio en CW y le entrega el texto para enviar con su propio manipulador (CI-V 0x17). «Tarjeta de sonido» envía en cambio el tono lateral manipulado por la LAN como audio (MCW), un tono en dial + tono — y como un equipo en CW ignoraría su entrada de modulador, seleccionar CW mantiene entonces la radio en USB normal, el mismo modo en que van los modos digitales.
 settings-radio-how-much-audio-radio-holds = Cuánto audio retiene la radio antes de modular. Más aguanta una red peor, a costa de latencia de transmisión.
-settings-radio-streams-radio-s-own-475 = Transmite el barrido propio de 475 bins de la radio. En AF es el panadaptador — el audio que envía la radio es lo que pasó por su filtro, no una imagen de la banda — y en la FI de 12 kHz es la cascada de banda completa sobre uno. En cualquier caso es la imagen de la radio, no el DSP de sdroxide: no hay I/Q con el que calcular una.
+settings-radio-streams-radio-s-own-475 = Transmite el barrido propio de 475 bins de la radio. En AF es el panadaptador — el audio que envía la radio es lo que pasó por su filtro, no una imagen de la banda — y en la FI de 12 kHz es la cascada de banda completa sobre uno. En cualquier caso es la imagen de la radio, no el DSP de sdrcrow: no hay I/Q con el que calcular una.
 settings-radio-how-wide-sweep-only-wide = Qué ancho barrer. Es la única vista ancha que tiene un Icom, y la radio conserva el ancho que se eligió por última vez en su propia pantalla — a menudo unos pocos kHz, por lo que la franja puede salir no más ancha que el panadaptador de debajo. Fijar aquí un ancho también pone el scope en modo centrado, de modo que sigue al dial. También cambia la pantalla de la propia radio; «Como esté en la radio» lo deja en paz.
 settings-radio-switch-modulation-input-lan = Cambiar la entrada de modulación a LAN
-settings-radio-transmit-audio-only-heard-when = El audio de transmisión solo se oye cuando la entrada MOD de la radio está en LAN. sdroxide puede escribirlo en un modelo cuya numeración de menú conoce; en cualquier otro lo dice y deja el menú en paz. Es un préstamo: lo que tuviera la radio ahí se lee primero y se restituye al terminar la sesión, de modo que un equipo usado solo después sigue oyendo su propio micrófono.
+settings-radio-transmit-audio-only-heard-when = El audio de transmisión solo se oye cuando la entrada MOD de la radio está en LAN. sdrcrow puede escribirlo en un modelo cuya numeración de menú conoce; en cualquier otro lo dice y deja el menú en paz. Es un préstamo: lo que tuviera la radio ahí se lee primero y se restituye al terminar la sesión, de modo que un equipo usado solo después sigue oyendo su propio micrófono.
 settings-radio-copy-diagnostic-report = Copiar informe de diagnóstico
 settings-radio-control-audio-radio-s-own = Control, audio y el scope propio de la radio por una sola conexión de red — sin cable serie y sin tarjeta de sonido. Pulsa «Aplicar / reconectar» para cambiar sin reiniciar.
 settings-radio-testing = Probando…
@@ -1515,17 +1515,17 @@ settings-radio-no-radios-press-discover = sin radios — pulsa Descubrir
 settings-radio-address = Dirección
 settings-radio-overrides-selection-above-usb-cable = Anula la selección de arriba. El cable USB presenta el Pluto como un adaptador de red, no como un puerto serie, así que esto es una dirección IP incluso cuando la radio está en tu mesa.
 settings-radio-pluto-revision-c-pluto-unlocked = Un Pluto+ o un Pluto de revisión C desbloqueado a 2R2T puede servir dos pestañas de radio desde una caja — esta radio en RX1 y otra en RX2, cada una con su propia antena. Las dos cadenas comparten el único oscilador, así que resintonizar cualquiera de las radios mueve ambas; lo que compra RX2 es una segunda antena sobre el mismo espectro (diversidad), no una segunda banda. El transmisor pertenece a la radio de RX1. Un Pluto 1R1T de serie rechaza RX2 al conectar.
-settings-radio-width-spectrum-sdrcrow-receives-ad9361 = Ancho del espectro que recibe sdroxide. El AD9361 llega a 61,44 Msps; el enlace de red USB no, que es a lo que se escala esta lista. Las frecuencias más bajas necesitan una configuración de filtro cargada en el AD9361, que sdroxide no hace — un Pluto de serie las ejecuta en cambio a unos 2,084 Msps y lo dice al conectar. Surte efecto con Aplicar.
+settings-radio-width-spectrum-sdrcrow-receives-ad9361 = Ancho del espectro que recibe sdrcrow. El AD9361 llega a 61,44 Msps; el enlace de red USB no, que es a lo que se escala esta lista. Las frecuencias más bajas necesitan una configuración de filtro cargada en el AD9361, que sdrcrow no hace — un Pluto de serie las ejecuta en cambio a unos 2,084 Msps y lo dice al conectar. Surte efecto con Aplicar.
 settings-radio-more-than-usb-2-will = {"  "}(más de lo que llevará USB 2)
 settings-radio-stock-pluto-runs-2-084 = {"  "}(un Pluto de serie funciona a 2,084)
 settings-radio-analog-filter = Filtro analógico
 settings-radio-ad9361-s-baseband-filter-leave = El filtro de banda base del AD9361. Déjalo en 0 para automático, que lo abre a nueve décimas de la frecuencia de muestreo — ancho a propósito, porque el receptor aparca su oscilador a un cuarto de ancho del dial para mantener las señales lejos del pico de continua, y un filtro estrecho cortaría justo la parte a la que las movió. Surte efecto con Aplicar.
 settings-radio-ad9361-has-four-modes-not = El AD9361 tiene cuatro modos, no un interruptor de encendido/apagado. El ataque lento va bien para BLU y CW; el ataque rápido para señales a ráfagas; manual es el ajuste para medir y para los modos digitales de señal débil. Se aplica al instante.
 settings-radio-rx-gain = Ganancia RX
-settings-radio-applies-immediately-no-reconnect-ignored = Se aplica al instante — sin reconectar. Se ignora salvo que el AGC esté en manual, lo que es comportamiento propio del AD9361, no de sdroxide.
+settings-radio-applies-immediately-no-reconnect-ignored = Se aplica al instante — sin reconectar. Se ignora salvo que el AGC esté en manual, lo que es comportamiento propio del AD9361, no de sdrcrow.
 settings-radio-tx-gain = Ganancia TX
 settings-radio-negative-because-ad9361-expresses-transmit = Negativa porque el AD9361 expresa el nivel de transmisión como atenuación: 0 dB es la salida completa. Se aplica al instante. El transmisor se pone en lo más silencioso antes de aplicar este valor al conectar, de modo que nada de lo que dejó el programa anterior puede estar activo.
-settings-radio-reference-error-parts-per-million = Error de referencia en partes por millón. Ejecuta con RUST_LOG=sdrcrow_pluto=debug y el registro imprime el error de reloj medido tras unos 20 segundos — ese es el número que hay que introducir. Lo aplica sdroxide, no se escribe en el ajuste persistente propio de la radio. Se aplica al instante.
+settings-radio-reference-error-parts-per-million = Error de referencia en partes por millón. Ejecuta con RUST_LOG=sdrcrow_pluto=debug y el registro imprime el error de reloj medido tras unos 20 segundos — ese es el número que hay que introducir. Lo aplica sdrcrow, no se escribe en el ajuste persistente propio de la radio. Se aplica al instante.
 settings-radio-full-duplex = Dúplex completo
 settings-radio-keep-receiving-while-transmitting = Seguir recibiendo mientras se transmite
 settings-radio-leave-off-pluto-reached-over =
@@ -1538,7 +1538,7 @@ settings-radio-leave-off-pluto-reached-over =
     Surte efecto con Aplicar.
 settings-radio-duplex = Dúplex
 settings-radio-whether-ad9361-runs-both-directions =
-    Si el AD9361 funciona en ambos sentidos a la vez (FDD, que es como arranca un Pluto y en lo que sdroxide siempre lo ha dejado) o de uno en uno (TDD).
+    Si el AD9361 funciona en ambos sentidos a la vez (FDD, que es como arranca un Pluto y en lo que sdrcrow siempre lo ha dejado) o de uno en uno (TDD).
 
     Déjalo en FDD salvo que quieras los pines PTT de abajo — TDD es de lo que se activan, y descarta el Dúplex completo de arriba. Surte efecto con Aplicar.
 settings-radio-ptt-pins = Pines PTT
@@ -1565,14 +1565,14 @@ settings-radio-wideband-iq-receive-transmit-half = Recepción y transmisión IQ 
 settings-radio-flexradio-announces-itself-local-network = Una FlexRadio se anuncia sola en la red local aproximadamente una vez por segundo. Una radio alcanzada a través de un router o una VPN nunca emite hacia ti — introduce su dirección abajo en su lugar.
 settings-radio-another-gui-client-has-radio = Otro cliente con interfaz tiene esta radio y multiFLEX está desactivado. Desconecta ese cliente, o activa multiFLEX en la radio.
 settings-radio-overrides-selection-above-use-radio = Anula la selección de arriba. Úsalo para una radio en otra subred, tras una VPN o en un puerto no estándar.
-settings-radio-width-spectrum-sdrcrow-receives-192 = Ancho del espectro que recibe sdroxide. 192 kHz es el máximo de la radio para un flujo DAX IQ, y por tanto el ancho más amplio que puede mostrar esta interfaz.
+settings-radio-width-spectrum-sdrcrow-receives-192 = Ancho del espectro que recibe sdrcrow. 192 kHz es el máximo de la radio para un flujo DAX IQ, y por tanto el ancho más amplio que puede mostrar esta interfaz.
 settings-radio-t-192-khz-widest-dax-iq = 192 kHz es el flujo DAX IQ más ancho que enviará una FLEX, y la radio ata el ancho del panadaptador a él — así que ese es todo el ancho, y ningún ajuste de aquí lo amplía.
 settings-radio-dax-iq-channel = Canal DAX IQ
 settings-radio-radio-has-four-change-only = La radio tiene cuatro. Cámbialo solo si algo más de la red ya usa el canal 1 — la radio rechaza un canal dos veces.
 settings-radio-station-name = Nombre de la estación
-settings-radio-shown-against-session-radio-s = Se muestra junto a esta sesión en la lista de clientes de la radio. La radio también recuerda a un cliente por él, así que cambiarlo hace que la radio trate a sdroxide como uno nuevo.
+settings-radio-shown-against-session-radio-s = Se muestra junto a esta sesión en la lista de clientes de la radio. La radio también recuerda a un cliente por él, así que cambiarlo hace que la radio trate a sdrcrow como uno nuevo.
 settings-radio-gui-client-id = ID de cliente GUI
-settings-radio-identity-radio-restores-session-s = La identidad a la que la radio restaura los slices y panadaptadores de esta sesión. Vacía se deriva del nombre de la estación — estable, pero igual en todos los sdroxide que conservaron el nombre predeterminado, y una radio resuelve un duplicado echando al cliente anterior. sdroxide lo detecta en el cable y recurre a una identidad de una sola sesión, lo que cuesta la restauración; pon aquí un UUID propio para conservarla.
+settings-radio-identity-radio-restores-session-s = La identidad a la que la radio restaura los slices y panadaptadores de esta sesión. Vacía se deriva del nombre de la estación — estable, pero igual en todos los sdrcrow que conservaron el nombre predeterminado, y una radio resuelve un duplicado echando al cliente anterior. sdrcrow lo detecta en el cable y recurre a una identidad de una sola sesión, lo que cuesta la restauración; pon aquí un UUID propio para conservarla.
 settings-radio-optional-e-g-uuid-your = opcional, p. ej. un UUID propio
 settings-radio-mirror-radio-s-i-q =
     Refleja el I/Q de la radio respecto al centro del panadaptador. Desactivado de forma predeterminada, que es como se verificó una FLEX-6600.
@@ -1590,7 +1590,7 @@ settings-radio-ask-every-installed-soapysdr-module = Pide a cada módulo de Soap
 settings-radio-not-enumerated-yet-press-rescan = Aún no enumerado — pulsa Volver a buscar.
 settings-radio-no-soapysdr-devices-found-check = No se han encontrado dispositivos SoapySDR. Comprueba que el módulo de tu radio está instalado y que puedes acceder al dispositivo.
 settings-radio-not-radio = no es una radio
-settings-radio-sound-card-listed-above-if = Arriba aparece una tarjeta de sonido como si fuera un SDR. Acepta cualquier frecuencia y la ignora, así que abrirla muestra la entrada de la tarjeta de sonido en lugar de la banda. sdroxide no las elige automáticamente — pero una línea device_args que nombre una sigue obedeciéndose.
+settings-radio-sound-card-listed-above-if = Arriba aparece una tarjeta de sonido como si fuera un SDR. Acepta cualquier frecuencia y la ignora, así que abrirla muestra la entrada de la tarjeta de sonido en lugar de la banda. sdrcrow no las elige automáticamente — pero una línea device_args que nombre una sigue obedeciéndose.
 settings-radio-which-one-opens-set-device = Cuál se abre lo fija --device o device_args en config.toml; con ninguno, gana la primera radio listada.
 settings-radio-no-device = sin dispositivo
 settings-radio-rig-has-no-software-adjustable = Este equipo no tiene ganancias ajustables por software.
@@ -1642,7 +1642,7 @@ settings-radio-no-devices-press-rescan = sin dispositivos — pulsa Volver a bus
 settings-radio-six-rates-are-six-different =
     Las seis frecuencias son seis imágenes de FPGA distintas, no un registro — por eso nada en el protocolo de ELAD elige entre ellas, y por eso lo que significa este ajuste depende del modelo.
 
-    FDM-S1 / FDM-S2: un comando. Su FPGA la carga el ordenador en cada encendido, y sdroxide ejecuta el cargador elad-firmware de ELAD para poner la imagen de esta frecuencia. Sin ese cargador instalado un muestreador no envía ninguna muestra, y sdroxide lo dice en pantalla.
+    FDM-S1 / FDM-S2: un comando. Su FPGA la carga el ordenador en cada encendido, y sdrcrow ejecuta el cargador elad-firmware de ELAD para poner la imagen de esta frecuencia. Sin ese cargador instalado un muestreador no envía ninguna muestra, y sdrcrow lo dice en pantalla.
 
     FDM-DUO: no es un comando. La radio arranca su propia FPGA y llega a la frecuencia en que se encendió o en la que la dejó FDM-SW2 por última vez (192 kHz en una nueva), y esto solo dice cómo se LEE el flujo. Si te equivocas, el panadaptador simplemente tiene el ancho equivocado, con cada frecuencia dentro de él escalada en consecuencia.
 
@@ -1661,7 +1661,7 @@ settings-radio-how-transmit-keyed-cat-sends = Cómo se activa la transmisión. �
 settings-radio-where-radio-takes-transmit-audio-2 =
     De dónde toma la radio su audio de transmisión — el comando TI del equipo, que es el menú 32 «TX IN» del panel frontal. Se establece al abrir el puerto.
 
-    «Audio USB» es lo que hace funcionar la transmisión aquí: el FDM-DUO envía lo que sdroxide pone en su tarjeta de sonido USB. Una radio dejada en «Micrófono» envía en cambio la sala, y nada en pantalla lo dice.
+    «Audio USB» es lo que hace funcionar la transmisión aquí: el FDM-DUO envía lo que sdrcrow pone en su tarjeta de sonido USB. Una radio dejada en «Micrófono» envía en cambio la sala, y nada en pantalla lo dice.
 settings-radio-which-two-sockets-back-receiver-2 =
     En cuál de los dos conectores de la parte trasera escucha el receptor — el comando AN del equipo, que es el menú 31 «ANTENNAS» del panel frontal y el indicador «ANT 1 2» de su pantalla.
 
@@ -1700,7 +1700,7 @@ settings-radio-not-yet-verified-against-real-3 = Aún no verificado con hardware
 settings-radio-no-airspy-r2-mini-found = No se ha encontrado ningún Airspy R2 ni Mini — pulsa Volver a buscar
 settings-radio-read-receiver = leído de este receptor
 settings-radio-r2-mini-offer-different-rates = un R2 y un Mini ofrecen frecuencias distintas y no se pueden distinguir hasta que uno está abierto
-settings-radio-rate-you-get-receiver-s = Esta es la frecuencia que obtienes. El ADC del receptor funciona al doble — digitaliza una señal real y sdroxide hace banda base compleja a partir de ella en el host.
+settings-radio-rate-you-get-receiver-s = Esta es la frecuencia que obtienes. El ADC del receptor funciona al doble — digitaliza una señal real y sdrcrow hace banda base compleja a partir de ella en el host.
 settings-radio-gain-curve = Curva de ganancia
 settings-radio-step-along-curve-above-not = Un paso a lo largo de la curva de arriba, no una cifra en dB — el LNA, el mezclador y el VGA del sintonizador se mueven juntos, y lo que vale cada paso depende de la curva y de la banda. 0 es el extremo silencioso.
 settings-radio-tuner-agc = AGC del sintonizador
@@ -1726,7 +1726,7 @@ settings-radio-antenna-sma-only-socket-bias = El SMA de antena — el único con
 settings-radio-cable-socket-no-bias-tee = Un conector de cable. Aquí no hay bias tee; el hardware lo pone solo en ANT.
 settings-radio-powers-active-antenna-preamp-down-2 = Alimenta una antena activa o un preamplificador por el coaxial. Solo el conector ANT tiene uno — los dos puertos de cable son entradas normales.
 settings-radio-third-less-usb-traffic-leave-2 = Un tercio menos de tráfico USB. Déjalo activado: es un dispositivo USB 2.0 y la frecuencia máxima son 36 MB/s empaquetados frente a 48 sin empaquetar. Se aplica al reconectar.
-settings-radio-one-these-boards-1d50-60a1 = Una de estas placas está en 1d50:60a1, el ID USB que los prototipos de HydraSDR comparten con el Airspy R2 y el Mini. sdroxide comprueba el firmware tras abrir y lo dirá si se ha elegido la interfaz equivocada, en cualquiera de los dos sentidos.
+settings-radio-one-these-boards-1d50-60a1 = Una de estas placas está en 1d50:60a1, el ID USB que los prototipos de HydraSDR comparten con el Airspy R2 y el Mini. sdrcrow comprueba el firmware tras abrir y lo dirá si se ha elegido la interfaz equivocada, en cualquiera de los dos sentidos.
 settings-radio-receive-only-24-1800-mhz-2 = Solo recepción, 24–1800 MHz. No hacen falta ni SoapySDR ni libhydrasdr. El receptor, la frecuencia de muestreo y el empaquetado surten efecto con Aplicar; todo lo demás se aplica a medida que lo cambias.
 settings-radio-re-list-fobos-sdrs-no = Vuelve a listar los Fobos SDR. No se abre ningún dispositivo, así que es seguro pulsarlo mientras se recibe.
 settings-radio-no-fobos-sdr-found-press = No se ha encontrado ningún Fobos SDR — pulsa Volver a buscar
@@ -2007,7 +2007,7 @@ topbar-waiting-signal = esperando una señal
 topbar-record-spectrum = GRABAR ESPECTRO
 topbar-i-q-wav = ● WAV I/Q
 topbar-i-q-wav-2 = WAV I/Q
-topbar-raw-spectrum-receiver-delivering-stereo = El espectro en bruto que entrega el receptor, como un WAV estéreo de 32 bits en coma flotante (RF64 por encima de 4 GB) que abren SDR#, SDRuno, HDSDR y SDRangel — y que el propio sdroxide reproduce con --file. Grande: 8 bytes por muestra.
+topbar-raw-spectrum-receiver-delivering-stereo = El espectro en bruto que entrega el receptor, como un WAV estéreo de 32 bits en coma flotante (RF64 por encima de 4 GB) que abren SDR#, SDRuno, HDSDR y SDRangel — y que el propio sdrcrow reproduce con --file. Grande: 8 bytes por muestra.
 topbar-radio-hands-over-demodulated-audio = Esta radio entrega audio demodulado, así que no hay I/Q que grabar.
 topbar-what-capture-costs-sample-rate = Lo que cuesta una captura con esta frecuencia de muestreo
 topbar-engine = MOTOR
@@ -2028,9 +2028,9 @@ topbar-which-socket-back-radio-receiving =
 topbar-radio-s-separate-receiving-antenna =
     La antena de recepción independiente de la radio, conmutada dentro o fuera de la ruta de recepción — su propio ajuste RX ANT. La antena del conector principal sigue en transmisión en ambos casos.
 
-    La radio lo recuerda por banda ella misma, así que sdroxide lo lee de vuelta tras cada cambio de banda en lugar de restituir lo último que vio: hacer clic aquí es lo único que lo mueve.
+    La radio lo recuerda por banda ella misma, así que sdrcrow lo lee de vuelta tras cada cambio de banda en lugar de restituir lo último que vio: hacer clic aquí es lo único que lo mueve.
 topbar-radio-s-own-power-switch =
-    El interruptor de encendido propio de la radio, por el enlace de control, y el único encendido/apagado de verdad del programa — no el interruptor ENLACE de sdroxide, que cierra el extremo de sdroxide y deja la radio funcionando.
+    El interruptor de encendido propio de la radio, por el enlace de control, y el único encendido/apagado de verdad del programa — no el interruptor ENLACE de sdrcrow, que cierra el extremo de sdrcrow y deja la radio funcionando.
 
     Para que ENCENDER llegue a algo, el extremo de control de la radio tiene que seguir despierto mientras está apagada: Network Control por la LAN, o un puerto CI-V todavía alimentado desde la red eléctrica en un equipo apagado desde el frontal.
 topbar-switch-radio = Encender la radio
@@ -2165,7 +2165,7 @@ settings-radio-icom-scope-hint =
 
     Los barridos comparten el bus USB interno de la radio con su propia tarjeta de sonido. Si el audio recibido empieza a cortarse con el scope activado, esta casilla es lo primero que hay que probar a desactivar.
 settings-radio-rx-tx-words = { $rx } / TX { $tx }
-settings-radio-soapy-native = El hardware de arriba lo soporta directamente sdroxide: { $names }. Seleccionar esa interfaz arriba te da sus propios ajustes — etapas de ganancia, filtros y notches que SoapySDR no puede expresar — y no necesita ningún módulo SoapySDR.
+settings-radio-soapy-native = El hardware de arriba lo soporta directamente sdrcrow: { $names }. Seleccionar esa interfaz arriba te da sus propios ajustes — etapas de ganancia, filtros y notches que SoapySDR no puede expresar — y no necesita ningún módulo SoapySDR.
 settings-radio-rx888-width-hint = Cuánto del espectro digitalizado muestra el panadaptador a la vez. Toda la cadena de DSP funciona a este ancho, así que más ancho cuesta proporcionalmente más CPU — 1/2 es la banda entera en la cascada, y una cantidad seria de aritmética. Por encima del cruce de VHF ({ $crossover } MHz) el panadaptador no mira la antena sino la FI del sintonizador, que tiene 8 MHz de ancho y está aparcada en { $if_centre } MHz — así que nada más ancho que { $widest } puede centrarse en ella, y el ancho extra es espectro muerto junto a la señal en lugar de más de ella.
 settings-radio-sdrplay-serial-missing = El número de serie { $serial } no está entre los receptores que informa el servicio de SDRplay. Elige uno de los receptores listados, o vuelve a enchufar este y pulsa Volver a buscar.
 settings-radio-hdr-filter-hint =
@@ -2254,7 +2254,7 @@ topbar-drive-cal-band = { $band } está calibrada { $trim } dB, así que el mism
        *[more] más
     } en el aire que en una banda sin calibrar.
 topbar-drive-hover =
-    Con qué fuerza se excita el transmisor. En una radio que sdroxide modula por sí mismo escala las muestras moduladas; en un equipo con control de potencia propio es la fracción de la potencia nominal que se le pide al equipo.
+    Con qué fuerza se excita el transmisor. En una radio que sdrcrow modula por sí mismo escala las muestras moduladas; en un equipo con control de potencia propio es la fracción de la potencia nominal que se le pide al equipo.
 
     { $trim }
 
@@ -2637,9 +2637,9 @@ setup-my-grid = Mi locátor
 setup-station-call = Indicativo de la estación
 setup-ssid-oe3jjs-10-packet-station = Con un SSID — OE3JJS-10. Una estación de packet suele tener un SSID distinto del del operador, y no se transmite nada hasta que esto esté fijado.
 setup-speed = Velocidad
-setup-t-9600-needs-radio-s-data = 9600 necesita el puerto de datos de la radio. Un camino de micrófono y altavoz lo destruye en ambos extremos — eso es la radio, no sdroxide.
+setup-t-9600-needs-radio-s-data = 9600 necesita el puerto de datos de la radio. Un camino de micrófono y altavoz lo destruye en ambos extremos — eso es la radio, no sdrcrow.
 setup-tx-delay = Retardo TX
-setup-flags-sent-before-frame-so = Banderas enviadas antes de una trama, para que el otro extremo nos oiga y enganche su reloj. En un equipo CAT, solo sdroxide gasta 165–240 ms en salir al aire, y el propio tiempo de transmisión listo del equipo se suma a eso.
+setup-flags-sent-before-frame-so = Banderas enviadas antes de una trama, para que el otro extremo nos oiga y enganche su reloj. En un equipo CAT, solo sdrcrow gasta 165–240 ms en salir al aire, y el propio tiempo de transmisión listo del equipo se suma a eso.
 setup-packet-length = Longitud del paquete
 setup-bytes = {" "}bytes
 setup-most-single-frame-carries-shorter = Lo máximo que lleva una sola trama. Las tramas más cortas sobreviven a un trayecto marginal — solo se reenvía la trama que recibió el golpe — y cuestan más sobrecarga. 128 en HF, 256 donde el trayecto es sólido.
@@ -2686,7 +2686,7 @@ setup-first-goes-out-one-interval = La primera sale un intervalo después de aho
 setup-messages = Mensajes
 setup-acknowledge = Acusar recibo
 setup-answer-messages-addressed-you-acknowledgement = Responde a los mensajes dirigidos a ti. Un acuse de recibo es una transmisión que hace esta estación sin que se la pidan, así que una configuración solo de recepción debería desactivarlo — y entonces la baliza también deja de afirmar que es alcanzable.
-setup-flags-sent-ahead-every-frame = Banderas enviadas antes de cada trama, para que el módem del otro extremo oiga la portadora y enganche su reloj antes de que empiecen los datos. Tiene que durar más que todo lo que hay entre pulsar transmitir y radiar: solo sdroxide gasta 165–240 ms de ello en un equipo CAT, y una radio que toma el audio por una red almacena más aún. Demasiado poco y el otro extremo nunca engancha — la transmisión está ahí y nada la decodifica.
+setup-flags-sent-ahead-every-frame = Banderas enviadas antes de cada trama, para que el módem del otro extremo oiga la portadora y enganche su reloj antes de que empiecen los datos. Tiene que durar más que todo lo que hay entre pulsar transmitir y radiar: solo sdrcrow gasta 165–240 ms de ello en un equipo CAT, y una radio que toma el audio por una red almacena más aún. Demasiado poco y el otro extremo nunca engancha — la transmisión está ahí y nada la decodifica.
 setup-shared-packet-mode = compartido con el modo packet
 setup-keep-stations = Conservar estaciones
 setup-how-long-station-stays-map = Cuánto tiempo permanece una estación en el mapa tras oírse por última vez. También es contra lo que se mide el desvanecimiento del mapa, así que una ventana corta muestra solo lo que está en vivo.
@@ -2822,7 +2822,7 @@ sstv-chunks-received-lit-still-missing = Fragmentos recibidos (iluminados) y aú
 sstv-sstv = SSTV
 sstv-auto = Auto
 sstv-signal = Señal
-sstv-station-sending-mode-sdrcrow-does = Una estación está enviando en un modo que sdroxide no tiene. La señal y la sintonía están bien — simplemente no hay decodificador para este. No hay nada que arreglar por tu parte.
+sstv-station-sending-mode-sdrcrow-does = Una estación está enviando en un modo que sdrcrow no tiene. La señal y la sintonía están bien — simplemente no hay decodificador para este. No hay nada que arreglar por tu parte.
 sstv-listening = escuchando…
 sstv-callsign-last-station-sent-fsk = El indicativo que envió la última estación como ID FSK tras su imagen.
 sstv-tx-slant = Inclinación TX
@@ -3060,7 +3060,7 @@ sstv-older-load-more = { $n } más antiguas — cargar más
 sstv-delete-picture-from = Eliminar esta imagen { $place }
 sstv-rifp-profile = { $profile } · ~{ $khz } kHz ocupados · el dial es el centro del canal
 sstv-rifp-too-wide = ⚠ { $profile } ocupa ~{ $khz } kHz — demasiado ancho para un segmento de banda estrecha
-sstv-rifp-no-frequency = RIFP no asigna ninguna frecuencia, y sdroxide lo transmitirá donde sintonices. Un canal de { $khz } kHz solo cabe donde se permite la operación de banda ancha o FM — { $segments } — y no en un segmento de banda estrecha, y menos aún en HF. Incluso dentro de esos, tus propias condiciones de licencia pueden ser más estrechas. Tú eres el operador; consulta tus propias normas.
+sstv-rifp-no-frequency = RIFP no asigna ninguna frecuencia, y sdrcrow lo transmitirá donde sintonices. Un canal de { $khz } kHz solo cabe donde se permite la operación de banda ancha o FM — { $segments } — y no en un segmento de banda estrecha, y menos aún en HF. Incluso dentro de esos, tus propias condiciones de licencia pueden ser más estrechas. Tú eres el operador; consulta tus propias normas.
 sstv-rifp-tx-frame = ● TX trama { $frame }/{ $frames } · quedan { $secs } s
 sstv-rifp-sent-as = enviado como { $encoding } · { $octets } octetos
 sstv-rifp-rx-stats = tramas { $frames } · erróneas { $bad } · imágenes { $pictures }
@@ -3101,7 +3101,7 @@ decodes-dupe = DUPL.
 decodes-reply = RESP.
 decodes-queued-click-remove = En cola — haz clic para quitar
 decodes-work-station-after-current-one = Trabajar esta estación después de la actual
-decodes-qsos-worked-since-sdrcrow-was = QSO trabajados desde que se inició sdroxide
+decodes-qsos-worked-since-sdrcrow-was = QSO trabajados desde que se inició sdrcrow
 decodes-qso-complete = ✓ QSO COMPLETO
 decodes-tx = ● TX
 decodes-dxpedition-mode-transmit-frequency-held = Modo DXpedición. La frecuencia de transmisión se mantiene fuera de la mitad del Fox de la banda pasante (por debajo de 1000 Hz) hasta que el Fox responda.
@@ -3271,7 +3271,7 @@ aprs-busy = OCUPADO
 aprs-stations-heard-still-inside-window = Estaciones oídas que siguen dentro de la ventana fijada en la configuración de APRS, y si hay otra estación en el canal ahora mismo. No se activará nada mientras esté ocupado.
 aprs-tx = ● TX
 aprs-over-progress-frames-waiting-channel = El turno en curso, las tramas que esperan a que el canal se libere, o el tiempo hasta la próxima baliza programada.
-aprs-audio-reaching-modem-flat-means = Audio que llega al módem. Plano significa que no llega nada en absoluto — comprueba que la salida de datos de la radio es la que escucha sdroxide. Se ilumina en verde mientras el módem oye una portadora.
+aprs-audio-reaching-modem-flat-means = Audio que llega al módem. Plano significa que no llega nada en absoluto — comprueba que la salida de datos de la radio es la que escucha sdrcrow. Se ilumina en verde mientras el módem oye una portadora.
 
 ## vdl2 (src/app/panels/vdl2.rs)
 
@@ -3304,7 +3304,7 @@ vdl2-forget-station-after = Olvidar una estación tras
 vdl2-nothing-heard = sin oír nada de ella
 vdl2-show-unread-payloads = Mostrar cargas útiles sin leer
 vdl2-hex = en hexadecimal
-vdl2-frames-carrying-x-25-clnp = Tramas que llevan X.25, CLNP o las aplicaciones de enlace de datos por encima de ellos. SDRoxide las nombra y muestra los bytes en lugar de leerlas, y ocultarlas escondería cuánto del tráfico es eso.
+vdl2-frames-carrying-x-25-clnp = Tramas que llevan X.25, CLNP o las aplicaciones de enlace de datos por encima de ellos. SDRCrow las nombra y muestra los bytes en lugar de leerlas, y ocultarlas escondería cuánto del tráfico es eso.
 vdl2-registration = Matrícula
 vdl2-flight = Vuelo
 vdl2-label = Etiqueta
@@ -3424,7 +3424,7 @@ ais-dgnss = {" "}(DGNSS)
 ais-first-heard = oído por primera vez
 ais-center = CENTRAR
 ais-put-vessel-middle-chart = Pone este buque en el centro de la carta
-ais-last-message-station-nmea-sentences = El último mensaje de esta estación, como las sentencias NMEA que pondría en el cable un receptor. Pégalo en cualquier otro decodificador AIS para comprobar qué hizo sdroxide con él.
+ais-last-message-station-nmea-sentences = El último mensaje de esta estación, como las sentencias NMEA que pondría en el cable un receptor. Pégalo en cualquier otro decodificador AIS para comprobar qué hizo sdrcrow con él.
 ais-ais-setup = Configuración de AIS
 ais-channels = Canales
 ais-drop-chart-after = Quitar de la carta tras
@@ -3646,7 +3646,7 @@ adsb-icao = OACI
 drm-waiting-receiver = esperando al receptor…
 drm-not-drm-set-mode-drm = No está en DRM. Pon el modo en DRM en una emisión digital de onda corta — el dial va en el centro del canal, no en una banda lateral.
 drm-no-drm-signal-locked-decoder = Ninguna señal DRM enganchada. El decodificador necesita unos segundos con una portadora limpia: DRM entrelaza durante 400 ms o 2 s antes de que se pueda leer nada.
-drm-station-s-audio-codec-not = El códec de audio de esta emisora no se está decodificando aquí. xHE-AAC necesita libfdk-aac en el sistema — no puede incorporarse, porque su licencia y la de este programa son incompatibles. Instálala (Debian/Ubuntu: libfdk-aac2, Arch: libfdk-aac, macOS: brew install fdk-aac, Windows: libfdk-aac-2.dll junto a sdroxide.exe) y reinicia. Todo lo demás de esta pantalla se decodifica con normalidad.
+drm-station-s-audio-codec-not = El códec de audio de esta emisora no se está decodificando aquí. xHE-AAC necesita libfdk-aac en el sistema — no puede incorporarse, porque su licencia y la de este programa son incompatibles. Instálala (Debian/Ubuntu: libfdk-aac2, Arch: libfdk-aac, macOS: brew install fdk-aac, Windows: libfdk-aac-2.dll junto a sdrcrow.exe) y reinicia. Todo lo demás de esta pantalla se decodifica con normalidad.
 drm-quality = CALIDAD
 drm-last-minute = último minuto
 drm-waiting-locked-signal = esperando una señal enganchada
@@ -3967,16 +3967,16 @@ ism-decoding = DECODIFICANDO
 ism-needs-wideband-iq-source-cat = Necesita una fuente IQ de banda ancha; un equipo CAT solo envía audio
 ism-how-far-burst-must-stand = Cuánto debe destacar una ráfaga sobre el suelo de ruido propio del canal antes de decodificarse
 ism-give-each-band-width-normally = Da a cada banda el ancho que normalmente necesita — un cuarto de megahercio para las bandas OOK de 315, 345 y 433 MHz, uno entero para 868 y 915.
-ism-several-hundred-more-device-decoders = Varios cientos de decodificadores de dispositivos más, del proyecto rtl_433, integrados. Lee los dispositivos OOK de 433 MHz a los que los decodificadores propios de sdroxide no llegan en absoluto. Donde ambos pueden leer un dispositivo, rtl_433 conoce muchas más variantes y toma el relevo.
+ism-several-hundred-more-device-decoders = Varios cientos de decodificadores de dispositivos más, del proyecto rtl_433, integrados. Lee los dispositivos OOK de 433 MHz a los que los decodificadores propios de sdrcrow no llegan en absoluto. Donde ambos pueden leer un dispositivo, rtl_433 conoce muchas más variantes y toma el relevo.
 ism-t-1-your-own = 1 propio
 ism-device-decoders-registered-how-many = Decodificadores de dispositivos registrados, cuántos proceden de tu rtl433_flex.conf y cuántas transmisiones se han decodificado desde que se inició.
 ism-reload-decoders = RECARGAR DECODIFICADORES
 ism-re-read-rtl433-flex-conf = Vuelve a leer rtl433_flex.conf tras editarlo. Los dispositivos ya oídos permanecen en la lista.
-ism-rtl-433-knows-more-variants = rtl_433 conoce más variantes de estos que los decodificadores propios de sdroxide, así que los lee mientras escucha aquí. Selecciona otra banda y los de sdroxide retoman el relevo.
+ism-rtl-433-knows-more-variants = rtl_433 conoce más variantes de estos que los decodificadores propios de sdrcrow, así que los lee mientras escucha aquí. Selecciona otra banda y los de sdrcrow retoman el relevo.
 ism-decoder-your-rtl433-flex-conf = Se rechazó un decodificador de tu rtl433_flex.conf. Los demás se cargaron. Corrige la línea y pulsa RECARGAR DECODIFICADORES.
 ism-waiting-decoder = esperando al decodificador…
 ism-where-decoder-actually-listening-follows = Dónde está escuchando realmente el decodificador. Esto sigue el centro de hardware del receptor, no el VFO — en una etapa de entrada ancha los dos pueden estar muy separados, y es la ventana la que decide qué canales son alcanzables.
-ism-transmissions-gate-opened-how-many = Transmisiones en que se abrió la puerta, y cuántas produjeron una trama válida. Muchas ráfagas y ninguna decodificación significa que la banda está ocupada por dispositivos que sdroxide aún no sabe leer. Ninguna en absoluto significa que nada llega al umbral — bájalo, o comprueba que el dial está en la banda.
+ism-transmissions-gate-opened-how-many = Transmisiones en que se abrió la puerta, y cuántas produjeron una trama válida. Muchas ráfagas y ninguna decodificación significa que la banda está ocupada por dispositivos que sdrcrow aún no sabe leer. Ninguna en absoluto significa que nada llega al umbral — bájalo, o comprueba que el dial está en la banda.
 ism-nothing-heard-yet = aún no se ha oído nada
 ism-click-tune-receiver =
 
@@ -4062,7 +4062,7 @@ rade-callsign-station-put-end-over =
 rade-stop-talking = DEJAR DE HABLAR
 rade-talk-ptt = HABLAR (PTT)
 rade-open-close-rade-over-modem = Abre o cierra un turno RADE. El módem necesita ~120 ms de voz antes de que salga la primera trama, y envía una trama de fin de turno cuando paras, así que la transmisión se prolonga un poco más allá del botón.
-rade-rade-v1-occupies-roughly-1060 = RADE V1 ocupa aproximadamente 1060–1880 Hz de la banda pasante — banda lateral superior, o inferior en 160, 80 y 40 m, donde RADE mantiene la práctica de fonía y sdroxide cambia por ti. Pon la señal dentro de la banda sombreada de la cascada; el módem la encuentra desde ahí.
+rade-rade-v1-occupies-roughly-1060 = RADE V1 ocupa aproximadamente 1060–1880 Hz de la banda pasante — banda lateral superior, o inferior en 160, 80 y 40 m, donde RADE mantiene la práctica de fonía y sdrcrow cambia por ti. Pon la señal dentro de la banda sombreada de la cascada; el módem la encuentra desde ahí.
 
 ## frame (src/app/frame.rs)
 
@@ -4087,7 +4087,7 @@ smeter-radio-reports-no-forward-power =
 smeter-no-swr-radio-has-no =
 
 
-    Sin ROE: esta radio no tiene puente con que medirla, y sdroxide no se la inventará — solo puede mostrar lo que informa la propia radio. Un equipo con medidor de ROE (por CAT, TCI o un enlace LAN) y una placa HPSDR la rellenan ambos; un transmisor SDR simple no puede.
+    Sin ROE: esta radio no tiene puente con que medirla, y sdrcrow no se la inventará — solo puede mostrar lo que informa la propia radio. Un equipo con medidor de ROE (por CAT, TCI o un enlace LAN) y una placa HPSDR la rellenan ambos; un transmisor SDR simple no puede.
 smeter-no-signal-report-yet-receiver = Aún no hay informe de señal — el receptor no ha entregado una lectura del medidor.
 smeter-s9-73-dbm-each-s =
 
@@ -4193,7 +4193,7 @@ help-previous-match-shift-enter-shift = Coincidencia anterior (Mayús+Intro, May
 help-next-match-enter-f3 = Siguiente coincidencia (Intro, F3)
 help-no-matches = sin coincidencias
 help-clear-search-esc = Borrar la búsqueda (Esc)
-help-sdrcrow-manual = MANUAL DE SDROXIDE
+help-sdrcrow-manual = MANUAL DE SDRCROW
 help-contents = CONTENIDO
 
 ## aismap (src/ais_map.rs)
@@ -4213,7 +4213,7 @@ specview-hounds = HOUNDS
 
 spectrum-window-has-no-gpu-renderer = Esta ventana no tiene renderizador por GPU, así que la cascada se queda con su ancho estándar.
 spectrum-machine-drawing-without-gpu-every = Esta máquina dibuja sin GPU — cada columna de la cascada es trabajo del procesador, que ya lo comparte con la radio.
-spectrum-window-renders-through-opengl-which = Esta ventana se renderiza a través de OpenGL, que es la vía de compatibilidad de sdroxide — una Raspberry Pi, un chip gráfico antiguo o un navegador sin WebGPU. Una cascada más ancha no compensa la tasa de fotogramas allí.
+spectrum-window-renders-through-opengl-which = Esta ventana se renderiza a través de OpenGL, que es la vía de compatibilidad de sdrcrow — una Raspberry Pi, un chip gráfico antiguo o un navegador sin WebGPU. Una cascada más ancha no compensa la tasa de fotogramas allí.
 spectrum-wider-than-renderer-can-draw = Más ancho de lo que puede dibujar este renderizador.
 
 ## macros (src/app/panels/macros.rs)
@@ -4288,7 +4288,7 @@ worldmap-double-click-reframe = DOBLE CLIC PARA REENCUADRAR
 
 ## duopower (src/app/duo_power.rs)
 
-duopower-sets-fdm-duo-s-own = Fija el ajuste de potencia propio del FDM-DUO (menú 34 TX POWER). La Excitación y Tune fijan entonces la potencia dentro de él, y SDRoxide vuelve a enviar el ajuste cada vez que conecta.
+duopower-sets-fdm-duo-s-own = Fija el ajuste de potencia propio del FDM-DUO (menú 34 TX POWER). La Excitación y Tune fijan entonces la potencia dentro de él, y SDRCrow vuelve a enviar el ajuste cada vez que conecta.
 
 ## Band conditions window: a peak date.
 
@@ -4647,8 +4647,8 @@ vdl2-assigned-which-channels-carry-anything = Asignado a un { $what }. Qué cana
 vdl2-mhz-db-snr-dbfs-evm = { $mhz } MHz · { $snr_db } dB SNR · { $rssi_dbfs } dBFS · EVM { $evm_deg }° · { $freq_err_hz } Hz · { $rs_corrected } símbolos RS corregidos
 vdl2-characters = { $parity_errors } caracteres
 vdl2-parameter-sdrcrow-does-not-read = { $unknown ->
-        [one] { $unknown } parámetro que SDRoxide no lee
-       *[other] { $unknown } parámetros que SDRoxide no lee
+        [one] { $unknown } parámetro que SDRCrow no lee
+       *[other] { $unknown } parámetros que SDRCrow no lee
     } — mostrado arriba como identificador y bytes
 
 ## wefax: messages with values (src/app/panels/wefax.rs)
@@ -5078,7 +5078,7 @@ hpsdr-io-rx-input-io-board-pure-signal = Placa IO J9, PureSignal en transmisión
 hydra-sdr-gain-linearity = Linealidad (mejor manejo de señales fuertes)
 hydra-sdr-gain-sensitivity = Sensibilidad (mejor con señales débiles)
 icom-rx-source-af = AF — la radio demodula
-icom-rx-source-if12k = FI de 12 kHz — sdroxide demodula
+icom-rx-source-if12k = FI de 12 kHz — sdrcrow demodula
 icom-scope-span-radio = Como esté en la radio
 icom-scope-span-khz2-5 = 5 kHz (±2,5k)
 icom-scope-span-khz5 = 10 kHz (±5k)
@@ -5605,7 +5605,7 @@ settings-general-default = PREDETERMINADO
 
 settings-general-default-hint = Volver al valor predeterminado: su carpeta de música, o el directorio de configuración si el sistema no tiene ninguna
 
-settings-general-recordings-dir-note = Dónde se escriben las grabaciones de audio, las grabaciones programadas y las capturas I/Q en bruto. Por defecto: la subcarpeta sdroxide de su carpeta de música, o la carpeta de grabaciones del directorio de configuración si el sistema no expone una carpeta de música.
+settings-general-recordings-dir-note = Dónde se escriben las grabaciones de audio, las grabaciones programadas y las capturas I/Q en bruto. Por defecto: la subcarpeta sdrcrow de su carpeta de música, o la carpeta de grabaciones del directorio de configuración si el sistema no expone una carpeta de música.
 
 setup-suffix-cq = { " " }CQ
 
@@ -6582,7 +6582,7 @@ decodes-muted-caps = SILENCIADO
 
 decodes-muted-hint = Silenciado durante esta sesión — haga clic para volver a oírlo
 
-decodes-ignore-hint = Ignora esta estación durante el resto de la sesión: sale de la lista de decodificaciones, deja de activar las alertas y nunca se ofrece al modo automático. No se envía ni se sube nada en su nombre, y reiniciar sdroxide la devuelve.
+decodes-ignore-hint = Ignora esta estación durante el resto de la sesión: sale de la lista de decodificaciones, deja de activar las alertas y nunca se ofrece al modo automático. No se envía ni se sube nada en su nombre, y reiniciar sdrcrow la devuelve.
 
 decodes-qso-complete-hint = El contacto está completo y en el registro local. Se mantiene aquí unos minutos para poder reenviar el mensaje final si la otra estación repite el suyo — no se debe nada más.
 
@@ -6715,7 +6715,7 @@ settings-radio-rx-only-n = Solo RX{ $n }
 settings-radio-ng-level = Nivel nG
 
 settings-radio-ng-level-hint =
-    nG añade dos comandos que el firmware 2.00x no tiene, y este es el único lugar donde se pueden ajustar: nG no responde a ninguno ni guarda ninguno, así que sdroxide los reenvía cada vez que se abre el enlace.
+    nG añade dos comandos que el firmware 2.00x no tiene, y este es el único lugar donde se pueden ajustar: nG no responde a ninguno ni guarda ninguno, así que sdrcrow los reenvía cada vez que se abre el enlace.
     
     Volumen es el nivel que la radio envía por el flujo USB. nG toma ese audio después de VOL y AGC, así que este es el lugar adecuado para corregir un decodificador que ve muy poca o demasiada señal, y no el mezclador del ordenador.
     
@@ -6729,7 +6729,7 @@ settings-radio-speaker = Altavoz
 
 settings-radio-on-while-streaming = Activo durante el flujo de audio
 
-settings-radio-ng-speaker-hint = Desactivado, apaga el altavoz propio de la radio mientras envía audio (`UA2;`), de modo que el audio solo se oye en sdroxide. La 2.00x no tenía esta forma.
+settings-radio-ng-speaker-hint = Desactivado, apaga el altavoz propio de la radio mientras envía audio (`UA2;`), de modo que el audio solo se oye en sdrcrow. La 2.00x no tenía esta forma.
 
 settings-radio-ng-agc-auto = Auto (DIGI en modos de datos)
 
@@ -6769,7 +6769,7 @@ settings-radio-atsmini-vol = VOL
 
 settings-radio-atsmini-step = PASO
 
-settings-radio-atsmini-sent-at-once = Se envía a la radio de inmediato. VOL es el volumen propio del receptor (su mando y el del Si4732), no el control AF de sdroxide.
+settings-radio-atsmini-sent-at-once = Se envía a la radio de inmediato. VOL es el volumen propio del receptor (su mando y el del Si4732), no el control AF de sdrcrow.
 
 settings-radio-refresh = Actualizar
 
@@ -6781,7 +6781,7 @@ settings-radio-no-slots-stored = No hay posiciones guardadas en el receptor.
 
 settings-radio-press-refresh-slots = Pulsa Actualizar para leer las posiciones de memoria del receptor.
 
-settings-radio-icomnet-receive-hint = AF: la radio demodula y sdroxide muestra la banda de audio. FI de 12 kHz: la radio envía en su lugar su frecuencia intermedia DRM y sdroxide demodula, lo que aporta sus propios filtros, reducción de ruido y decodificadores sobre unos ±12 kHz. En ambos casos la cascada ancha es el scope propio de la radio: ningún Icom entrega I/Q.
+settings-radio-icomnet-receive-hint = AF: la radio demodula y sdrcrow muestra la banda de audio. FI de 12 kHz: la radio envía en su lugar su frecuencia intermedia DRM y sdrcrow demodula, lo que aporta sus propios filtros, reducción de ruido y decodificadores sobre unos ±12 kHz. En ambos casos la cascada ancha es el scope propio de la radio: ningún Icom entrega I/Q.
 
 settings-radio-copy-icom-session-hint = Copia al portapapeles (o a un archivo, en un navegador que no permite que una página copie) la última sesión de esta radio — su negociación y su traza CI-V — para un informe de error. De esta radio, no de la estación: con dos Icom en la LAN cada pestaña responde de su propia dirección.
 
@@ -6800,7 +6800,7 @@ settings-radio-rx888-dab-rate-hint = Elige 80.0 Msps y el ancho de 2.500 MHz (1/
 settings-radio-pluto-both-chains-hint = Para escuchar por ambas antenas: añade una segunda radio con la misma dirección y ponla en RX2. Ambas radios comparten la misma frecuencia.
 
 settings-radio-duplex-tdd-hint =
-    Indica si el AD9361 funciona en ambos sentidos a la vez (FDD, como arranca un Pluto y como sdroxide siempre lo ha dejado) o de uno en uno (TDD).
+    Indica si el AD9361 funciona en ambos sentidos a la vez (FDD, como arranca un Pluto y como sdrcrow siempre lo ha dejado) o de uno en uno (TDD).
     
     Déjalo en FDD salvo que quieras los pines PTT de abajo: el TDD es lo que los activa, y excluye el dúplex completo de arriba. Surte efecto al aplicar.
     
@@ -7317,7 +7317,7 @@ frame-listening-controls = Controles de escucha
 
 frame-listening-controls-hint = Oculta los controles de transmisión y pasa esta radio a la pantalla de escucha (Ajustes → Radio). No se resintoniza nada y el decodificador sigue funcionando.
 
-frame-update-available = SDR Oxide Brown { $tag } está disponible — usas la { $version }.
+frame-update-available = SDRCrow { $tag } está disponible — usas la { $version }.
 
 frame-download = Descargar
 
@@ -7606,7 +7606,7 @@ cwkey-grab-failed = no se pudo tomar la llave en exclusiva: sus contactos tambi�
 ignore-muted-hover =
     Silenciadas en esta sesión: { $names }.
     
-    Una estación silenciada sale de la lista de decodificación, no activa las alertas, no se lee en voz alta y nunca se ofrece al modo auto como una a la que responder. No se transmite ni se sube nada en su nombre, y la lista se olvida cuando se cierra sdroxide: no hay copia guardada, así que nada queda oculto tras una tarde de escucha.
+    Una estación silenciada sale de la lista de decodificación, no activa las alertas, no se lee en voz alta y nunca se ofrece al modo auto como una a la que responder. No se transmite ni se sube nada en su nombre, y la lista se olvida cuando se cierra sdrcrow: no hay copia guardada, así que nada queda oculto tras una tarde de escucha.
     
     Haz clic para reactivarlas todas o pulsa el botón − en cualquiera de sus filas.
 
@@ -7761,7 +7761,7 @@ settings-ui-sound-welcome-browser-only = solo navegador — el programa instalad
 settings-ui-profile-screen = La pantalla sigue su perfil
 
 settings-ui-profile-screen-hint =
-    Cuando es cliente remoto de `sdroxide --server`, el *aspecto* de esta pantalla (tema, disposición, cascada y espectro, fuentes, interfaz simple, capas de mapas, la vista propia del panadapter) se guarda con el perfil con el que inició sesión, y vuelve en cualquier máquina en lugar de partir de los valores por defecto.
+    Cuando es cliente remoto de `sdrcrow --server`, el *aspecto* de esta pantalla (tema, disposición, cascada y espectro, fuentes, interfaz simple, capas de mapas, la vista propia del panadapter) se guarda con el perfil con el que inició sesión, y vuelve en cualquier máquina en lugar de partir de los valores por defecto.
     
     { "**" }Guardado en el servidor, y guardado sobre la marcha mientras tiene la sesión iniciada**: no hay nada que pulsar. Es deliberado: no se puede confiar en el almacenamiento del navegador, porque `persist()` se comporta distinto en cada navegador, y una sesión guardada allí no puede restablecerla nadie que no esté en ese dispositivo. Un perfil en el servidor es un archivo que el operador de la estación puede restaurar.
     
@@ -8564,7 +8564,7 @@ settings-xvtr-drive-hint =
     
     Su ajuste de potencia se mantiene por debajo de este en lugar de moverse, de modo que el número que usa en HF vuelve cuando el dial sale de la banda.
 
-settings-brown-build-note = La versión Brown de sdroxide: el programa original, más la banda ciudadana de 11 m, la escucha de onda corta y su decodificación. Funciona como una estación de radioaficionado normal con esas bandas y herramientas añadidas.
+settings-brown-build-note = La versión Brown de sdrcrow: el programa original, más la banda ciudadana de 11 m, la escucha de onda corta y su decodificación. Funciona como una estación de radioaficionado normal con esas bandas y herramientas añadidas.
 
 settings-gain-by-band = Recordar la ganancia de entrada por banda
 
@@ -8710,7 +8710,7 @@ settings-log11dx-api-url = URL de la API
 
 settings-log11dx-api-token = Token de API
 
-settings-log11dx-note = Ambos provienen de la página de su perfil LOG11DX. No hace falta su puente WSJT-X propio: sdroxide registra el QSO y lo envía directamente. El sitio oculta el token, así que cópielo al generarlo; se guarda en net.json como las demás credenciales.
+settings-log11dx-note = Ambos provienen de la página de su perfil LOG11DX. No hace falta su puente WSJT-X propio: sdrcrow registra el QSO y lo envía directamente. El sitio oculta el token, así que cópielo al generarlo; se guarda en net.json como las demás credenciales.
 
 settings-pan-attached-note =
     Su espectro, su cascada y todo lo que se lee de ellos están en la pestaña de esa radio, por eso no tiene la suya. Los ajustes de interfaz de arriba siguen siendo de esta radio y se aplican: pulse Aplicar / reconectar tras cambiarlos y las dos radios vuelven a arrancar juntas.
@@ -8924,7 +8924,7 @@ aircraft-online-switch-on-hover = En línea: el tipo, el operador, la ruta y la 
 
 aircraft-online-switch-off-hover = Sin conexión: nada sale de la estación. Pulse para activar el tipo, el operador, la ruta y la foto (adsbdb y Planespotters), las imágenes de aeropuerto (Wikipedia) y el tiempo del aeropuerto (Open-Meteo).
 
-aircraft-switch-held = el operador de la estación lo fija con SDROXIDE_AIRCRAFT_ONLINE
+aircraft-switch-held = el operador de la estación lo fija con SDRCROW_AIRCRAFT_ONLINE
 
 adsbmap-airport-photo-credit = Foto: Wikipedia
 
@@ -9306,9 +9306,9 @@ settings-general-band-plan-reset = VOLVER A IARU INTEGRADO
 
 settings-general-band-plan-reset-hint = Vuelve a usar las tablas IARU integradas. Después hay que revisar y confirmar de nuevo las listas de bandas de TX y RX.
 
-settings-general-band-plan-folder = Los planes son los archivos de { $path } en el equipo al que está conectada la radio; puedes añadir y borrar. Reduce una banda a tu licencia y sdroxide se negará a transmitir fuera de ella. Frecuencias en MHz. Es la asignación regional, no tu licencia: tus condiciones pueden ser más estrechas y los planes nacionales difieren dentro de una región.
+settings-general-band-plan-folder = Los planes son los archivos de { $path } en el equipo al que está conectada la radio; puedes añadir y borrar. Reduce una banda a tu licencia y sdrcrow se negará a transmitir fuera de ella. Frecuencias en MHz. Es la asignación regional, no tu licencia: tus condiciones pueden ser más estrechas y los planes nacionales difieren dentro de una región.
 
-settings-general-band-plan-station-folder = Los planes se guardan en el equipo al que está conectada la radio. Reduce una banda a tu licencia y sdroxide se negará a transmitir fuera de ella. Es la asignación regional, no tu licencia: tus condiciones pueden ser más estrechas y los planes nacionales difieren dentro de una región.
+settings-general-band-plan-station-folder = Los planes se guardan en el equipo al que está conectada la radio. Reduce una banda a tu licencia y sdrcrow se negará a transmitir fuera de ella. Es la asignación regional, no tu licencia: tus condiciones pueden ser más estrechas y los planes nacionales difieren dentro de una región.
 
 settings-general-band-plan-manager = Gestor de planes de bandas
 

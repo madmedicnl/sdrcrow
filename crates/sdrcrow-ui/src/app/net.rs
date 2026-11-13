@@ -13,7 +13,7 @@ use sdrcrow_types::{
     CallsignInfo, Command, LookupProvider, NetworkConfig, QsoRecord, UploadResult, UploadTarget,
 };
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::app::persist::persist_qso_log;
 
 /// Wasm-safe wall clock — `SystemTime::now()` panics in the browser (#262/#297).
@@ -111,7 +111,7 @@ pub(in crate::app) fn auto_upload_adif(
     Some((rec.id, sdrcrow_types::qso_log_to_adif(std::slice::from_ref(rec)), targets))
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Queue an auto-lookup if a provider + auto-lookup are configured.
     ///
     /// Returns whether one was actually queued, so a caller that rations

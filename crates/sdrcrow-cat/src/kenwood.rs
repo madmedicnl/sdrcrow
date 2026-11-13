@@ -70,7 +70,7 @@ struct ModelCaps {
     /// that predate a sub receiver have only the bare `SM;`.
     smeter_has_vfo: bool,
     /// The rig's SSB-side slope filter as `(low-cut, high-cut)` index tables,
-    /// in Hz. `None` where sdroxide has no table for this model, in which case
+    /// in Hz. `None` where sdrcrow has no table for this model, in which case
     /// its filter is left alone rather than moved to a guessed index.
     slopes: Option<(&'static [u32], &'static [u32])>,
 }
@@ -210,7 +210,7 @@ fn caps_for(id: u32) -> Option<ModelCaps> {
             swr_needs_enable: true,
             smeter_has_vfo: true,
             // The later pair address their filters differently again, and
-            // sdroxide has no table for them.
+            // sdrcrow has no table for them.
             slopes: None,
         },
         24 => ModelCaps {
@@ -308,7 +308,7 @@ impl Kenwood {
                 self.caps = m;
             }
             None => warn!(
-                "Kenwood CAT: rig reports model ID {id:03}, which sdroxide has no meter scales \
+                "Kenwood CAT: rig reports model ID {id:03}, which sdrcrow has no meter scales \
                  for — the S-meter will read approximately and the SWR not at all"
             ),
         }
@@ -327,7 +327,7 @@ impl Kenwood {
     /// Deliberately not the inverse of [`Self::mode_frames`] over its whole
     /// range. A rig position that would be commanded back as something else
     /// yields `None` — the two would otherwise take turns correcting each
-    /// other. That covers FSK/FSK-R (sdroxide's RTTY is its own modem in a data
+    /// other. That covers FSK/FSK-R (sdrcrow's RTTY is its own modem in a data
     /// sideband, not the rig's FSK) and the DATA flavours of FM and AM, which
     /// have no round-trip-stable app equivalent.
     fn effective_mode(&self) -> Option<Mode> {
@@ -626,7 +626,7 @@ impl Protocol for Kenwood {
                 let w = (hi - lo).round().clamp(0.0, 9999.0) as u32;
                 vec![format!("FW{w:04};").into_bytes()]
             }
-            // FM and AM have their own slope tables, which sdroxide does not
+            // FM and AM have their own slope tables, which sdrcrow does not
             // carry: their filters are wide, rarely worth narrowing from here,
             // and getting an index wrong in AM costs more than it buys.
             Mode::Nfm
@@ -639,7 +639,7 @@ impl Protocol for Kenwood {
             | Mode::Aprs
             | Mode::SstvFm => Vec::new(),
             // Everything else rides a sideband, where the filter is not a width
-            // at all but a pair of cuts — which is exactly what sdroxide's own
+            // at all but a pair of cuts — which is exactly what sdrcrow's own
             // filter edges are, so the two map onto each other directly.
             _ => {
                 let Some((sl, sh)) = self.caps.slopes else {
@@ -910,7 +910,7 @@ mod tests {
     #[test]
     fn rig_positions_without_a_stable_round_trip_are_left_alone() {
         let mut k = kenwood();
-        // FSK / FSK-R: sdroxide's RTTY is its own modem in a data sideband and
+        // FSK / FSK-R: sdrcrow's RTTY is its own modem in a data sideband and
         // would be commanded back as `MD2;DA1;`.
         assert!(parse_str(&mut k, "MD6;DA0;").is_empty());
         assert!(parse_str(&mut k, "MD9;DA0;").is_empty());
@@ -1123,7 +1123,7 @@ mod tests {
         let mut k = kenwood();
         parse_str(&mut k, "ID021;"); // TS-590
         // On a sideband the rig's filter is two cuts, which is exactly what
-        // sdroxide's own filter edges are — so they map across directly rather
+        // sdrcrow's own filter edges are — so they map across directly rather
         // than being collapsed into a width and centred again.
         assert_eq!(frames(k.set_filter(Mode::Usb, 200.0, 2400.0)), vec!["SL03;SH07;"]);
         // LSB arrives negative — sideband lives in the sign of the edges here —
@@ -1168,7 +1168,7 @@ mod tests {
         assert!(k.set_filter(Mode::Usb, 200.0, 2400.0).is_empty());
         parse_str(&mut k, "ID024;");
         assert!(k.set_filter(Mode::Usb, 200.0, 2400.0).is_empty());
-        // AM and FM have slope tables of their own that sdroxide does not
+        // AM and FM have slope tables of their own that sdrcrow does not
         // carry, on every model.
         let mut k = kenwood();
         parse_str(&mut k, "ID021;");

@@ -1,7 +1,7 @@
 //! Multi-radio shell: one window, one radio per tab — or several side by
 //! side.
 //!
-//! Each tab owns a complete [`SdroxideApp`] — controller, view state, panels,
+//! Each tab owns a complete [`SdrcrowApp`] — controller, view state, panels,
 //! decoders' UI — so radios are isolated by construction rather than by a
 //! field-by-field split of the app struct. The shell draws the radio strip,
 //! hands the rest of the window to the radios on screen, and gives every
@@ -14,7 +14,7 @@
 //! their own, splitting the main area into equal columns that each carry
 //! their own copy of the strip — so any pane can be switched to any radio
 //! that isn't already on screen. Exactly one visible radio holds the
-//! keyboard/MIDI focus; each [`SdroxideApp`] gates its input handling on it,
+//! keyboard/MIDI focus; each [`SdrcrowApp`] gates its input handling on it,
 //! and clicking a pane moves it there.
 //!
 //! What keeps the radios from stepping on each other lives mostly *below*
@@ -31,7 +31,7 @@
 use crate::i18n::tr;
 use eframe::egui::{self, RichText};
 
-use crate::app::{RadioChip, RadioTabRequest, SdroxideApp};
+use crate::app::{RadioChip, RadioTabRequest, SdrcrowApp};
 use sdrcrow_types::{LayoutMode, RadioController};
 
 /// One radio handed to [`MultiApp::new`] by the frontend.
@@ -81,7 +81,7 @@ const REMOTE_TAB_ID_BASE: u32 = 1 << 31;
 struct Tab {
     id: u32,
     name: String,
-    app: SdroxideApp,
+    app: SdrcrowApp,
     /// The radio that has borrowed this one's receiver as its panadapter, if
     /// one has. Such a radio has no front end of its own — the borrower opened
     /// it — so it is kept out of the strip: a tab that can only ever say "my
@@ -311,7 +311,7 @@ impl MultiApp {
             .enumerate()
             .map(|(i, r)| {
                 let remote = r.ctrl.engine_is_remote();
-                let mut app = SdroxideApp::new_tab(
+                let mut app = SdrcrowApp::new_tab(
                     &cc.egui_ctx,
                     cc.storage,
                     cc.wgpu_render_state.clone(),
@@ -388,7 +388,7 @@ impl MultiApp {
         }
     }
 
-    /// Show, on every tab, that another sdroxide on this machine may be
+    /// Show, on every tab, that another sdrcrow on this machine may be
     /// reading the same radios. On every tab because the collision is the
     /// station's, not one radio's — and the tab the operator is listening on
     /// is the one that has to say why the sound breaks up.
@@ -475,7 +475,7 @@ impl MultiApp {
         {
             let local: Vec<u32> = self.tabs.iter().filter(|t| !t.remote).map(|t| t.id).collect();
             if let Err(e) = sdrcrow_config::reorder_radios(&local) {
-                eprintln!("sdroxide: recording the radio order: {e}");
+                eprintln!("sdrcrow: recording the radio order: {e}");
             }
         }
     }
@@ -818,7 +818,7 @@ impl MultiApp {
         // there is somebody else's radio.
         #[cfg(not(target_arch = "wasm32"))]
         if let Err(e) = sdrcrow_config::rename_radio(id, name) {
-            eprintln!("sdroxide: renaming radio {id}: {e}");
+            eprintln!("sdrcrow: renaming radio {id}: {e}");
         }
     }
 
@@ -885,7 +885,7 @@ impl MultiApp {
         tab.enabled = on;
         #[cfg(not(target_arch = "wasm32"))]
         if let Err(e) = sdrcrow_config::set_radio_enabled(id, on) {
-            eprintln!("sdroxide: switching radio {id} {}: {e}", if on { "on" } else { "off" });
+            eprintln!("sdrcrow: switching radio {id} {}: {e}", if on { "on" } else { "off" });
         }
         tab.app.reopen_source();
         // The switch reaches the receiver this radio borrows as its panadapter,
@@ -1437,7 +1437,7 @@ impl MultiApp {
         }
     }
 
-    /// Dial another sdroxide server and give it a tab of its own — Settings →
+    /// Dial another sdrcrow server and give it a tab of its own — Settings →
     /// Remote's CONNECT button, which is native-only (see
     /// [`RadioTabRequest::Connect`](crate::app::RadioTabRequest)).
     ///
@@ -1485,7 +1485,7 @@ impl MultiApp {
     /// also puts it in front of them.
     fn append_tab(&mut self, r: RadioTab, ctx: &egui::Context) -> usize {
         let remote = r.ctrl.engine_is_remote();
-        let mut app = SdroxideApp::new_tab(
+        let mut app = SdrcrowApp::new_tab(
             ctx,
             // A brand-new radio has no saved view to restore, and the
             // station-wide settings are read from their real files on
@@ -1535,7 +1535,7 @@ impl MultiApp {
     }
 
     /// Hand the station radio's network spots to this machine's other radios.
-    /// See [`SdroxideApp::adopt_spot_feed`]. A connection to another station
+    /// See [`SdrcrowApp::adopt_spot_feed`]. A connection to another station
     /// keeps its own: that station's radio runs its own feeds.
     fn share_spot_feed(&mut self) {
         let Some(station) = self.station_radio else { return };
@@ -1582,7 +1582,7 @@ impl MultiApp {
         if !tab.remote
             && let Err(e) = sdrcrow_config::remove_radio(tab.id)
         {
-            eprintln!("sdroxide: removing radio {} from the roster: {e}", tab.id);
+            eprintln!("sdrcrow: removing radio {} from the roster: {e}", tab.id);
         }
         crate::waterfall_gpu::retire(self.wgpu.as_ref(), u64::from(tab.id));
         // The removal shifted everything after `i` down by one.
@@ -1607,7 +1607,7 @@ impl MultiApp {
     ///
     /// The size asked for at startup is in *points*, and a scaled display has
     /// fewer of them than its pixel count suggests: a 1920×1080 screen at 150%
-    /// is 1280×720 points, and the 1280×800 window sdroxide asks for is then
+    /// is 1280×720 points, and the 1280×800 window sdrcrow asks for is then
     /// wider than the whole desktop and 80 points taller. What that looks like
     /// is the controls along the right-hand edge — the Setup gear at the end of
     /// the top bar among them — simply not being on the display (issue #234).
@@ -2033,7 +2033,7 @@ mod split_tests {
         ));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let ctx = egui::Context::default();
         let cc = eframe::CreationContext::_new_kittest(ctx.clone());
@@ -2111,7 +2111,7 @@ mod split_tests {
     /// The radio a station announces later, or 0 while it has not. Test state
     /// carried on the controller rather than pushed through the app, because the
     /// production side has no reason to hold it and a test-only method on
-    /// [`SdroxideApp`] would be a hook nobody asked for.
+    /// [`SdrcrowApp`] would be a hook nobody asked for.
     type Announced = std::rc::Rc<std::cell::Cell<u32>>;
 
     /// A controller that behaves like a connection to somebody else's station:
@@ -2201,7 +2201,7 @@ mod split_tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-{tag}-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         dir
     }
 
@@ -2296,7 +2296,7 @@ mod split_tests {
             let dir = std::env::temp_dir().join(format!("sdrcrow-spans-{w}"));
             let _ = std::fs::remove_dir_all(&dir);
             std::fs::create_dir_all(&dir).unwrap();
-            unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+            unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
             let ctx = egui::Context::default();
             let cc = eframe::CreationContext::_new_kittest(ctx.clone());
@@ -2394,7 +2394,7 @@ mod split_tests {
             let dir = std::env::temp_dir().join(format!("sdrcrow-spans-{w}"));
             let _ = std::fs::remove_dir_all(&dir);
             std::fs::create_dir_all(&dir).unwrap();
-            unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+            unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
             let ctx = egui::Context::default();
             let cc = eframe::CreationContext::_new_kittest(ctx.clone());
@@ -2576,7 +2576,7 @@ mod split_tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-shapes-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let ctx = egui::Context::default();
         let cc = eframe::CreationContext::_new_kittest(ctx.clone());

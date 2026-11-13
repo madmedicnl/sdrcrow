@@ -14,7 +14,7 @@ use crate::theme::ThemedScroll;
 use crate::time::now_unix;
 
 use crate::app::panels::widgets::{row_cell, row_cell_ui, snr_color, station_card};
-use crate::app::{SdroxideApp, rx_only_hint, tx_gated};
+use crate::app::{SdrcrowApp, rx_only_hint, tx_gated};
 
 /// One decode as the list draws it: the entry itself, plus everything the row
 /// needs resolved once up front — how far away they are, whether this is a CQ
@@ -57,7 +57,7 @@ fn buttons_left(bs: [&Option<egui::Response>; 3]) -> Option<f32> {
     bs.iter().filter_map(|r| r.as_ref().map(|r| r.rect.left())).reduce(f32::min)
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// A small confirmation, beside a completed QSO, that the contact reached
     /// the online logbooks it was set to be uploaded to — or a red warning that
     /// it did not.

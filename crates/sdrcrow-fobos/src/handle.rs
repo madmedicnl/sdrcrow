@@ -40,7 +40,7 @@ pub(crate) enum Ctrl {
     /// stop/reconfigure/restart shape on `Port::Rf`; the HF ports build
     /// their downconverter at open time and log-and-ignore one instead.
     ///
-    /// Part of this crate's own API rather than something sdroxide drives:
+    /// Part of this crate's own API rather than something sdrcrow drives:
     /// `IqSource` has no live rate setter, so `src/fobos_source.rs` never
     /// sends this and an operator changing the rate in Settings gets a
     /// reopen. `examples/stream_probe.rs` is what exercises it — the same

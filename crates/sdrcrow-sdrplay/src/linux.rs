@@ -11,10 +11,10 @@
 //! stock Ubuntu the kernel claims the receiver before `sdrplay_apiService` ever
 //! sees it. The RSPs after it (`1df7:3000` and up) are not in the driver's
 //! table, which is why this is an RSP1 story specifically, and why the same
-//! receiver on the same version of sdroxide works on a Mac and not here
+//! receiver on the same version of sdrcrow works on a Mac and not here
 //! (issue #277).
 //!
-//! None of this is something sdroxide can fix — unbinding another driver's
+//! None of this is something sdrcrow can fix — unbinding another driver's
 //! device is the operator's call and needs root — but it is something it can
 //! *say*, which is the whole of this module.
 

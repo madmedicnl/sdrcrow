@@ -14,7 +14,7 @@ fn agent() -> ureq::Agent {
         .timeout_connect(Some(Duration::from_secs(10)))
         .timeout_global(Some(Duration::from_secs(20)))
         .http_status_as_error(false)
-        .user_agent(concat!("sdroxide/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("sdrcrow/", env!("CARGO_PKG_VERSION")))
         .build()
         .into()
 }

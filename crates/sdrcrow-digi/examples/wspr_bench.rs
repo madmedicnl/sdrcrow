@@ -169,7 +169,7 @@ fn main() {
     }
     let false_pos = found.iter().filter(|c| !list.iter().any(|b| &&b.0 == c)).count();
     eprintln!(
-        "--- sdroxide: recall {hits}/{}  false {false_pos}  in {:.1} s",
+        "--- sdrcrow: recall {hits}/{}  false {false_pos}  in {:.1} s",
         list.len(),
         dur.as_secs_f64()
     );

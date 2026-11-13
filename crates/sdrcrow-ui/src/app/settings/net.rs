@@ -72,7 +72,7 @@ pub(in crate::app) fn dx_cluster_status(ui: &mut egui::Ui, status: &Option<Strin
 /// certificate may be its own.
 pub(in crate::app) fn wavelog_section(
     ui: &mut egui::Ui,
-    app: &crate::app::SdroxideApp,
+    app: &crate::app::SdrcrowApp,
     cmds: &mut Vec<sdrcrow_types::Command>,
     cfg: &mut sdrcrow_types::WavelogConfig,
 ) {
@@ -800,7 +800,7 @@ async fn post_broadcast_import(peer: Option<&str>, data: &[u8]) -> Result<String
     init.set_mode(web_sys::RequestMode::SameOrigin);
     let headers = web_sys::Headers::new().map_err(|_| "headers".to_string())?;
     headers.set("content-type", "application/octet-stream").map_err(|_| "headers".to_string())?;
-    headers.set("x-sdroxide", "1").map_err(|_| "headers".to_string())?;
+    headers.set("x-sdrcrow", "1").map_err(|_| "headers".to_string())?;
     init.set_headers(&headers);
     let array = js_sys::Uint8Array::from(data);
     init.set_body(&array.into());
@@ -844,7 +844,7 @@ async fn post_broadcast_import(peer: Option<&str>, data: &[u8]) -> Result<String
     }
 }
 
-impl crate::app::SdroxideApp {
+impl crate::app::SdrcrowApp {
     /// One "Test" button and its answer, for a logging service's credentials.
     ///
     /// The point of it: today the first sign that a password is wrong is a QSO

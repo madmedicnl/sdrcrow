@@ -4433,11 +4433,11 @@ mod tests {
     }
     /// **The real thing: an off-air recording decodes a picture.**
     ///
-    /// Point `SDROXIDE_WEFAX_SAMPLE` at a mono **12 kHz** WAV — convert a
+    /// Point `SDRCROW_WEFAX_SAMPLE` at a mono **12 kHz** WAV — convert a
     /// capture with `ffmpeg -i capture.mp3 -ac 1 -ar 12000 fax.wav` (the
     /// engine's digi tap rate, which is what the decoder is built for) — and
     /// set the geometry if it is not the usual one:
-    /// `SDROXIDE_WEFAX_LPM` and `SDROXIDE_WEFAX_IOC`.
+    /// `SDRCROW_WEFAX_LPM` and `SDRCROW_WEFAX_IOC`.
     ///
     /// Off-air material cannot live in the tree, so the test is `#[ignore]`d and
     /// skips when the variable is unset. Run it with
@@ -4457,8 +4457,8 @@ mod tests {
     #[test]
     #[ignore]
     fn an_off_air_recording_decodes() {
-        let Ok(path) = std::env::var("SDROXIDE_WEFAX_SAMPLE") else {
-            eprintln!("SDROXIDE_WEFAX_SAMPLE unset; skipping");
+        let Ok(path) = std::env::var("SDRCROW_WEFAX_SAMPLE") else {
+            eprintln!("SDRCROW_WEFAX_SAMPLE unset; skipping");
             return;
         };
         let mut reader = hound::WavReader::open(&path).expect("open the sample WAV");
@@ -4477,14 +4477,14 @@ mod tests {
         }
         .expect("read the sample");
 
-        let lpm = match std::env::var("SDROXIDE_WEFAX_LPM").ok().as_deref() {
+        let lpm = match std::env::var("SDRCROW_WEFAX_LPM").ok().as_deref() {
             Some("60") => Lpm::L60,
             Some("90") => Lpm::L90,
             Some("180") => Lpm::L180,
             Some("240") => Lpm::L240,
             _ => Lpm::L120,
         };
-        let ioc = match std::env::var("SDROXIDE_WEFAX_IOC").ok().as_deref() {
+        let ioc = match std::env::var("SDRCROW_WEFAX_IOC").ok().as_deref() {
             Some("288") => Ioc::I288,
             _ => Ioc::I576,
         };

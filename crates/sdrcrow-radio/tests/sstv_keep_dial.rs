@@ -62,7 +62,7 @@ fn caps() -> DeviceCaps {
     }
 }
 
-/// `SetDigiConfig` saves, and `SDROXIDE_CONFIG_DIR` is process-global: without
+/// `SetDigiConfig` saves, and `SDRCROW_CONFIG_DIR` is process-global: without
 /// this the test would write over the real station's settings.
 fn isolate_config() {
     static ONCE: std::sync::Once = std::sync::Once::new();
@@ -71,7 +71,7 @@ fn isolate_config() {
             std::env::temp_dir().join(format!("sdrcrow-sstv-keep-dial-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
         std::fs::create_dir_all(&root).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
     });
 }
 

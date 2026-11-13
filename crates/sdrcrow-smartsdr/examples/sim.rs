@@ -1,4 +1,4 @@
-//! Run the wire-level FlexRadio simulator, so sdroxide can be pointed at
+//! Run the wire-level FlexRadio simulator, so sdrcrow can be pointed at
 //! "a radio" with none in the room.
 //!
 //! Run: `cargo run -p sdrcrow-smartsdr --example sim [-- --port 4992 --announce]`

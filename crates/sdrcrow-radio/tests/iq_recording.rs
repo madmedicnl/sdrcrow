@@ -67,7 +67,7 @@ fn a_capture_is_written_and_plays_back_at_the_rate_it_was_made() {
     let dir = std::env::temp_dir().join(format!("sdrcrow-iqrec-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
     unsafe { std::env::set_var("XDG_MUSIC_DIR", dir.join("music")) };
 
     let counted = Arc::new(AtomicU64::new(0));
@@ -123,7 +123,7 @@ fn a_capture_is_written_and_plays_back_at_the_rate_it_was_made() {
         assert!((q + i / 2.0).abs() < 1e-6, "frame {n} is not one of the source's: {i}, {q}");
     }
 
-    unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+    unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
     let _ = std::fs::remove_dir_all(&dir);
 }
 

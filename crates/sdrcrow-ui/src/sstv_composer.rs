@@ -935,7 +935,7 @@ mod tests {
     /// calls rather than drawn by hand.
     #[test]
     fn a_mosaic_with_a_retransmission_label_can_be_dumped_to_look_at() {
-        if std::env::var("SDROXIDE_MOSAIC_DUMP").is_err() {
+        if std::env::var("SDRCROW_MOSAIC_DUMP").is_err() {
             return;
         }
         // Four "received" pictures, each a different colour with a band so the
@@ -999,7 +999,7 @@ mod tests {
     /// A layout is judged by looking, not by counting pixels.
     #[test]
     fn a_sample_layout_can_be_dumped_to_look_at() {
-        if std::env::var("SDROXIDE_COMPOSER_DUMP").is_err() {
+        if std::env::var("SDRCROW_COMPOSER_DUMP").is_err() {
             return;
         }
         let mut c = Composer::default();

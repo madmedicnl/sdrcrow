@@ -379,7 +379,7 @@ pub struct AisVessel {
     /// Here rather than a hex dump because it is the one thing in the panel an
     /// operator can *check*. This decoder was written from ITU-R M.1371 and not
     /// from a recording, so the question "is it reading the standard right"
-    /// cannot be answered from inside sdroxide; a sentence every AIS tool in
+    /// cannot be answered from inside sdrcrow; a sentence every AIS tool in
     /// the world accepts can be pasted into one of them and the answers
     /// compared.
     pub nmea: String,

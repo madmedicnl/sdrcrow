@@ -8,7 +8,7 @@
 //! pacing, unsolicited status broadcast, and client accounting.
 //!
 //! Each test binds its own port in the 50051.. range (not the default 50001,
-//! which a local ExpertSDR3 or another sdroxide would hold) so the suite can
+//! which a local ExpertSDR3 or another sdrcrow would hold) so the suite can
 //! run in parallel; a test whose port is unavailable skips rather than fails.
 
 use std::time::{Duration, Instant};
@@ -231,7 +231,7 @@ fn connect_burst_is_complete() {
 
     let summary = sdrcrow_tci::test_connection(&addr(50051), Duration::from_secs(3))
         .expect("server should complete the handshake");
-    assert!(summary.contains("sdroxide"), "device name missing from {summary:?}");
+    assert!(summary.contains("sdrcrow"), "device name missing from {summary:?}");
     assert!(summary.contains("96000"), "IQ rate missing from {summary:?}");
 }
 

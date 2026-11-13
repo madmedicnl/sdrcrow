@@ -13,7 +13,7 @@ use eframe::egui::{self, RichText};
 
 use crate::theme::ThemedScroll;
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 
 /// One "N worked / M confirmed" summary line for an award map.
 fn award_summary<K>(
@@ -66,7 +66,7 @@ fn award_cell_grid(
     });
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// The cached award tally for the current band filter (recomputed when the
     /// log length or the band filter changes).
     pub(in crate::app) fn ensure_awards(&mut self) {

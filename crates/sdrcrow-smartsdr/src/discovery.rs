@@ -114,7 +114,7 @@ pub fn parse_broadcast(data: &[u8]) -> FlexRadioInfo {
 /// Listen for discovery broadcasts for `window` and return the radios seen,
 /// deduplicated by serial (falling back to IP for a radio that omits one).
 ///
-/// Binding 4992 is deliberately shared: SmartSDR itself, or another sdroxide
+/// Binding 4992 is deliberately shared: SmartSDR itself, or another sdrcrow
 /// window, may already hold it, and a scan that fails because a second listener
 /// exists would be useless on exactly the machines most likely to run one.
 pub fn discover(window: Duration) -> std::io::Result<Vec<FlexRadioInfo>> {
@@ -171,7 +171,7 @@ pub fn discover_default() -> Vec<FlexRadioInfo> {
 }
 
 /// Bind a UDP port with address reuse, so a scan works alongside SmartSDR — or
-/// a second sdroxide window — already listening on it.
+/// a second sdrcrow window — already listening on it.
 ///
 /// This is why the crate takes `socket2`: the reuse flags have to be set
 /// *before* the bind, and `std::net::UdpSocket` gives no window in which to do

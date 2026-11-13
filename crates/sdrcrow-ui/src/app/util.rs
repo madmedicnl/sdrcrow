@@ -1,6 +1,6 @@
 //! Small shared helpers: UTC formatting and text elision.
 //!
-//! Nothing here knows about [`SdroxideApp`]; these are the bits of formatting
+//! Nothing here knows about [`SdrcrowApp`]; these are the bits of formatting
 //! that several panels and windows would otherwise each grow their own copy of.
 
 /// Parse `"YYYY-MM-DD"` + `"HH:MM"` (UTC) to a Unix timestamp, falling back to

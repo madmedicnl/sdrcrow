@@ -1,4 +1,4 @@
-//! The squelch on a rig that hands sdroxide audio it has already gated
+//! The squelch on a rig that hands sdrcrow audio it has already gated
 //! (issue #192).
 //!
 //! On such a radio the software squelch is not the one the operator hears.
@@ -18,7 +18,7 @@ use sdrcrow_types::{Command, DeviceCaps, RadioEvent, RxId};
 const RATE: f64 = 48_000.0;
 
 /// A stand-in for a CAT rig on a sound card: audio in, and a squelch in the
-/// radio that sdroxide can command. `adopt` is the level the radio reports when
+/// radio that sdrcrow can command. `adopt` is the level the radio reports when
 /// its control link opens, delivered once.
 struct SquelchRig {
     center: f64,

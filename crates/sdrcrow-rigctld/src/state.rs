@@ -400,7 +400,7 @@ pub fn to_hamlib_mode(m: Mode) -> &'static str {
 /// Parse a Hamlib mode string.
 ///
 /// The reverse-sideband variants (`CWR`, `RTTYR`) fold onto their base mode:
-/// sdroxide has no separate reverse mode, and refusing them would break
+/// sdrcrow has no separate reverse mode, and refusing them would break
 /// clients that only offer that spelling. `DIGU`/`DIGL`/`DATA-U`/`DATA-L` are
 /// accepted because operators type them, but they are never emitted — Hamlib
 /// has no such names and would not parse them back.

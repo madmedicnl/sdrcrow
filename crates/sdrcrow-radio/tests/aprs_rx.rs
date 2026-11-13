@@ -11,7 +11,7 @@
 //! frame on the channel, and reads the station list from the status event the
 //! panel itself draws from.
 //!
-//! ⚠️ `SetDigiConfig` makes the engine save, and `SDROXIDE_CONFIG_DIR` is
+//! ⚠️ `SetDigiConfig` makes the engine save, and `SDRCROW_CONFIG_DIR` is
 //! process-global: see [`isolate_config`].
 
 use std::time::{Duration, Instant};
@@ -131,7 +131,7 @@ fn isolate_config() {
         let root = std::env::temp_dir().join(format!("sdrcrow-aprs-rx-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
         std::fs::create_dir_all(&root).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
     });
 }
 

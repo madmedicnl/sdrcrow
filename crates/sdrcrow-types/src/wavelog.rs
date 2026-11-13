@@ -67,7 +67,7 @@ pub struct WavelogConfig {
     pub sync_interval_min: u32,
     /// Tell Wavelog the radio's frequency and mode as they change, for its
     /// live-logging form and bandmap — the other half of what WaveLogGate
-    /// does. Not the power: sdroxide knows the drive as a fraction and the
+    /// does. Not the power: sdrcrow knows the drive as a fraction and the
     /// forward power only while transmitting, and Wavelog's power field is
     /// watts set on the rig — a number made up from either would be wrong.
     pub radio_status: bool,
@@ -88,7 +88,7 @@ impl Default for WavelogConfig {
             download_station_ids: Vec::new(),
             sync_interval_min: 15,
             radio_status: false,
-            radio_name: "sdroxide".into(),
+            radio_name: "sdrcrow".into(),
         }
     }
 }
@@ -211,7 +211,7 @@ impl WavelogSyncState {
 /// Mode is left out on purpose. The same FT4 contact is `FT4` in one log and
 /// `MFSK`/`FT4` in another, and an SSB one `SSB` or `USB`; the same callsign
 /// on the same band within two minutes in two different modes is not a thing
-/// that happens. The same window as sdroxide's own ADIF import.
+/// that happens. The same window as sdrcrow's own ADIF import.
 pub fn same_contact(a: &crate::QsoRecord, b: &crate::QsoRecord) -> bool {
     a.call.eq_ignore_ascii_case(&b.call)
         && a.band.eq_ignore_ascii_case(&b.band)
@@ -369,7 +369,7 @@ pub fn plan_resync(log: &[crate::QsoRecord], downloaded: Vec<crate::QsoRecord>) 
 
 /// The downloaded record as it will stand in the log: Wavelog's content under
 /// the local id, with the uploads this station made to other services kept —
-/// Wavelog does not know sdroxide sent the contact to QRZ.
+/// Wavelog does not know sdrcrow sent the contact to QRZ.
 fn keep_local_flags(local: &crate::QsoRecord, mut d: crate::QsoRecord) -> crate::QsoRecord {
     d.id = local.id;
     d.wavelog_sent = true;

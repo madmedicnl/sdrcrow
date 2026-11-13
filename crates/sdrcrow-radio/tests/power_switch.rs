@@ -6,7 +6,7 @@
 //! set — which is the whole trap. Nothing the stand-in can carry may be allowed
 //! to overwrite what the operator asked for.
 //!
-//! One test function on purpose: `SDROXIDE_CONFIG_DIR` is process-global and
+//! One test function on purpose: `SDRCROW_CONFIG_DIR` is process-global and
 //! this one writes a real `session.json` under it.
 
 use std::sync::Arc;
@@ -125,7 +125,7 @@ fn the_decimation_and_gains_survive_the_power_switch() {
     let root = std::env::temp_dir().join(format!("sdrcrow-power-switch-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     let off = Arc::new(AtomicBool::new(false));
     let gains = Arc::new(Mutex::new(vec![("LNA".to_string(), 0.0)]));
@@ -182,6 +182,6 @@ fn the_decimation_and_gains_survive_the_power_switch() {
     assert_eq!(saved.decimation, 4, "and session.json must not have been overwritten with 1");
     assert_eq!(saved.gains, vec![("LNA".into(), 24.0)]);
 
-    unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+    unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
     let _ = std::fs::remove_dir_all(&root);
 }

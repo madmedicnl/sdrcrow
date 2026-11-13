@@ -365,7 +365,7 @@ pub(in crate::app) fn settings_rigctld_tab(
     );
 }
 
-/// The antenna rotator — the one interface on this tab where sdroxide dials
+/// The antenna rotator — the one interface on this tab where sdrcrow dials
 /// out instead of listening. Driven by the satellite lock's az/el, or by hand
 /// from the ROTATOR window. The transport is a Hamlib `rotctld` daemon over TCP
 /// by default, or an EasyComm II / GS-232 controller on a serial port.

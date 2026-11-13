@@ -1,4 +1,4 @@
-//! Decode a raw CF32 I/Q capture of a DSC channel with sdroxide's own chain.
+//! Decode a raw CF32 I/Q capture of a DSC channel with sdrcrow's own chain.
 //!
 //! Usage: `dsc_capture capture.cs16 capture_rate_hz [audio_offset_hz]`
 //!

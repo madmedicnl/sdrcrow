@@ -2,7 +2,7 @@
 //! against it. Diagnostic tool for issue #23.
 //!
 //! It deliberately does *not* call `set_center` — the rig may be shared with a
-//! running sdroxide session, and retuning someone's receiver out from under
+//! running sdrcrow session, and retuning someone's receiver out from under
 //! them to run a test is not on. It captures wherever the rig already is and
 //! takes the centre frequency from the TCI status burst.
 //!

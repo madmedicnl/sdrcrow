@@ -96,7 +96,7 @@ fn supported_format(f: SampleFormat) -> bool {
 /// A device that merely won't run a configuration says so in milliseconds, so
 /// working down the list costs nothing. A device the sound stack is *stuck* on
 /// is a different animal: ALSA's PulseAudio plugin asked to open a PipeWire
-/// monitor of a card sdroxide already holds waits its full 30-second timeout
+/// monitor of a card sdrcrow already holds waits its full 30-second timeout
 /// before failing, and every further candidate spends that timeout again. Once
 /// an open has been that slow, the configuration was never the problem.
 const SLOW_REFUSAL: Duration = Duration::from_secs(5);
@@ -1581,7 +1581,7 @@ mod tests {
 
     /// The whole point of the background open: whatever the sound stack does
     /// with the request, asking is instant. A default input that PipeWire
-    /// cannot deliver — a monitor of a card sdroxide already holds — sat in the
+    /// cannot deliver — a monitor of a card sdrcrow already holds — sat in the
     /// ALSA PulseAudio plugin for 30 seconds per candidate configuration, and
     /// that used to be startup's wait, not a worker thread's.
     #[test]

@@ -1,6 +1,6 @@
 //! Moving a station's settings between installations, as one file.
 //!
-//! Everything sdroxide remembers lives as a handful of small files under
+//! Everything sdrcrow remembers lives as a handful of small files under
 //! [`crate::config_dir`], which is fine until an operator has two of them: a
 //! second machine, a club callsign beside a personal one, a rebuilt laptop.
 //! Copying that by hand means knowing which files there are and where the
@@ -12,7 +12,7 @@
 //! Every settings file in the config directory and in each radio's
 //! `radio-<n>/` subdirectory, carried **verbatim** — the text as it is on the
 //! disk, not a re-serialisation of a parsed value. A bundle written by a newer
-//! sdroxide therefore keeps settings this one has never heard of, and a field
+//! sdrcrow therefore keeps settings this one has never heard of, and a field
 //! added between two versions is not quietly dropped in transit.
 //!
 //! Two things deliberately do not travel, and both for the same reason: they
@@ -64,7 +64,7 @@ pub struct Bundle {
     /// Always [`MAGIC`]. The first thing [`import`] checks.
     pub kind: String,
     pub format: u32,
-    /// The sdroxide that wrote it, for a human reading the file.
+    /// The sdrcrow that wrote it, for a human reading the file.
     pub version: String,
     /// When it was written, unix seconds. `0` if the clock could not be read.
     pub exported_unix: i64,
@@ -78,7 +78,7 @@ impl Bundle {
     pub fn summary(&self) -> String {
         let radios = self.files.keys().filter_map(|k| radio_dir_of(k)).max().map_or(1, |n| n + 1);
         format!(
-            "{} settings file(s) for {radios} radio(s), from sdroxide {}",
+            "{} settings file(s) for {radios} radio(s), from sdrcrow {}",
             self.files.len(),
             self.version,
         )
@@ -155,7 +155,7 @@ pub fn export() -> Result<Bundle, ConfigError> {
 }
 
 /// A bundle as the file that gets written: pretty-printed, so it can be read
-/// and edited like every other file sdroxide keeps.
+/// and edited like every other file sdrcrow keeps.
 pub fn export_json() -> Result<String, ConfigError> {
     let bundle = export()?;
     Ok(serde_json::to_string_pretty(&bundle).expect("a bundle of strings always serializes"))
@@ -222,28 +222,28 @@ fn destination(path: &str) -> Result<(Option<String>, String), String> {
 /// left alone, so importing a bundle from a station with one radio does not
 /// delete a second radio's configuration on this one.
 ///
-/// The caller has to restart sdroxide afterwards. Nothing here reaches into a
+/// The caller has to restart sdrcrow afterwards. Nothing here reaches into a
 /// running engine — the settings it is holding in memory were read at startup
 /// and would be written straight back over these on the next save.
 pub fn import(json: &str) -> Result<ImportReport, ConfigError> {
     let bundle: Bundle = serde_json::from_str(json).map_err(|e| {
         ConfigError::Io(std::io::Error::new(
             std::io::ErrorKind::InvalidData,
-            format!("this is not an sdroxide settings file: {e}"),
+            format!("this is not an sdrcrow settings file: {e}"),
         ))
     })?;
     if bundle.kind != MAGIC {
         return Err(ConfigError::Io(std::io::Error::new(
             std::io::ErrorKind::InvalidData,
-            format!("this is a {:?} file, not an sdroxide settings export", bundle.kind),
+            format!("this is a {:?} file, not an sdrcrow settings export", bundle.kind),
         )));
     }
     if bundle.format > FORMAT {
         return Err(ConfigError::Io(std::io::Error::new(
             std::io::ErrorKind::InvalidData,
             format!(
-                "this settings file is version {} and this sdroxide reads version {FORMAT} — \
-                 update sdroxide to import it",
+                "this settings file is version {} and this sdrcrow reads version {FORMAT} — \
+                 update sdrcrow to import it",
                 bundle.format
             ),
         )));

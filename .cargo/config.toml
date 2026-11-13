@@ -3,7 +3,7 @@
 # what MinGW links against by default is a set of DLLs that only exist on a
 # machine with MSYS2 or PothosSDR installed. A user without either gets
 # "libgcc_s_seh-1.dll not found" — or, for the C++ half of the same problem,
-# "libstdc++-6.dll not found" — the moment they double-click sdroxide.exe.
+# "libstdc++-6.dll not found" — the moment they double-click sdrcrow.exe.
 #
 # So link the compiler runtime in. The C++ side (libstdc++/winpthread) is
 # handled in each C++ crate's build.rs (sdrcrow-drm, sdrcrow-olivia,

@@ -6,7 +6,7 @@
 //! of which loaded the file successfully and returned plausible-looking rows.
 //!
 //! ```sh
-//! SDROXIDE_CONFIG_DIR=/tmp/hfcc-live \
+//! SDRCROW_CONFIG_DIR=/tmp/hfcc-live \
 //!   cargo test -p sdrcrow-config --test hfcc_live -- --ignored --nocapture
 //! ```
 #[test]

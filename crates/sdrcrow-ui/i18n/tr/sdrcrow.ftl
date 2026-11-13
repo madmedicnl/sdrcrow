@@ -1,4 +1,4 @@
-# sdroxide — arayüzün Türkçe çevirisi. Başvuru dosyası en-US/sdroxide.ftl;
+# sdrcrow — arayüzün Türkçe çevirisi. Başvuru dosyası en-US/sdrcrow.ftl;
 # burada eksik olan her şey İngilizce gösterilir.
 #
 # Ids are grouped by where they are shown, and named after it:
@@ -361,7 +361,7 @@ settings-frequency = Frekans
 settings-clear = TEMİZLE
 settings-zero-leaves-dial-alone-which = Sıfır, skalaya dokunmaz; tek bir kanala park ettiğinizde istediğiniz budur. Başka her değer, oturum başladığında radyoyu ayarlar.
 settings-my-gateways = Ağ geçitlerim
-settings-winlink-s-published-gateway-list = Winlink'in yayımladığı ağ geçidi listesi, sdroxide'ın sahip olmadığı bir API anahtarı gerektirir; bu yüzden kendinizinkini tutun. Tek bir konumdan erişilen iki ya da üç ağ geçidi denemeyle öğrenilir ve nadiren değişirler.
+settings-winlink-s-published-gateway-list = Winlink'in yayımladığı ağ geçidi listesi, sdrcrow'ın sahip olmadığı bir API anahtarı gerektirir; bu yüzden kendinizinkini tutun. Tek bir konumdan erişilen iki ya da üç ağ geçidi denemeyle öğrenilir ve nadiren değişirler.
 settings-use-2 = KULLAN
 settings-call-one-next-connect = Bunu bir sonraki bağlantıda çağır
 settings-current-dial = mevcut skala
@@ -372,7 +372,7 @@ settings-save-gateway-above-list = Yukarıdaki ağ geçidini listeye kaydet
 settings-internet-gateway = İnternet ağ geçidi
 settings-cms-address = CMS adresi
 settings-client-name = İstemci adı
-settings-winlink-s-production-servers-only = Winlink'in üretim sunucuları yalnızca tanıdıkları istemci adlarını kabul eder ve tanımadığı birine "Unknown client types are not allowed on production servers" yanıtı verir. sdroxide, Winlink Development Team ile kaydedilene kadar bağlanmak, onların tanıyacağı bir ad gerektirir.
+settings-winlink-s-production-servers-only = Winlink'in üretim sunucuları yalnızca tanıdıkları istemci adlarını kabul eder ve tanımadığı birine "Unknown client types are not allowed on production servers" yanıtı verir. sdrcrow, Winlink Development Team ile kaydedilene kadar bağlanmak, onların tanıyacağı bir ad gerektirir.
 settings-automatic-connection = Otomatik bağlantı
 settings-connect-timer = Zamanlayıcıyla bağlan
 settings-every = Her
@@ -429,7 +429,7 @@ settings-mirror-receiver-s-span-about = Alıcının genişliğini merkezi etraf�
 settings-mute-transmit = Yayında sustur
 settings-silence-receive-audio-while-radio = Bu radyo yayın yaparken alma sesini sustur. Varsayılan olarak açıktır: alıcı aynı anten üzerindeyken ya da bu radyonun A.F.'sindeyken, bir yayın sırasında duyduğu şey kendi vericinizdir. Doğrudan radyonun üzerinden anahtarlanan yayınlar — mikrofonun PTT'si, ayak anahtarı, MOX — de sayılır; CAT bağlantısı cihazın yayına geçtiğini bildirdiği anda.
 settings-blank-transmit = Yayında boşalt
-settings-stop-panadapter-waterfall-while-radio = Bu radyo yayın yaparken panadaptörü ve şelaleyi durdur. Varsayılan olarak açıktır: bütün aralığa boyanan bir verici, arkasındaki bandı siler. Bir yayın boyunca bandı — ya da kendi sinyalinizi — izlemek için kapatın; alıcı ayrı bir antendeyken buna değer. sdroxide'ın anahtarladığı yayınlar için geçerlidir: radyonun üzerinden anahtarlananlar baştan sona alınır, bu ne derse desin görüntü çalışmaya devam eder.
+settings-stop-panadapter-waterfall-while-radio = Bu radyo yayın yaparken panadaptörü ve şelaleyi durdur. Varsayılan olarak açıktır: bütün aralığa boyanan bir verici, arkasındaki bandı siler. Bir yayın boyunca bandı — ya da kendi sinyalinizi — izlemek için kapatın; alıcı ayrı bir antendeyken buna değer. sdrcrow'ın anahtarladığı yayınlar için geçerlidir: radyonun üzerinden anahtarlananlar baştan sona alınır, bu ne derse desin görüntü çalışmaya devam eder.
 settings-per-mode-offsets-radio-whose = Mod başına kaymalar, A.F.'si modla birlikte kayan bir radyo için. Boş bırakılan bir mod, yukarıdaki kaymayı kullanır.
 settings-computer = Bu bilgisayarda
 settings-add-radio-computer = Bu bilgisayara bir radyo ekle
@@ -482,7 +482,7 @@ settings-alerts-each-station-quiet-while-after = Her istasyon bir uyarıdan sonr
 
 settings-amp-amplifier = Amplifikatör
 settings-amp-waiting-station-s-amplifier-configuration = İstasyonun amplifikatör yapılandırması bekleniyor…
-settings-amp-hobbypcb-hardrock-500-hardrock-50 = USB seri bağlantı noktasındaki bir HobbyPCB Hardrock-500 ya da Hardrock-50. SDRoxide, metrelerini okur; bandını, modunu ve antenini değiştirir ve tuner'ını AMP penceresinden çalıştırır. Amplifikatör, daha önce olduğu gibi hâlâ radyonun PTT hattıyla anahtarlanır.
+settings-amp-hobbypcb-hardrock-500-hardrock-50 = USB seri bağlantı noktasındaki bir HobbyPCB Hardrock-500 ya da Hardrock-50. SDRCrow, metrelerini okur; bandını, modunu ve antenini değiştirir ve tuner'ını AMP penceresinden çalıştırır. Amplifikatör, daha önce olduğu gibi hâlâ radyonun PTT hattıyla anahtarlanır.
 settings-amp-enable = Etkinleştir
 settings-amp-model = Model
 settings-amp-untested-panel-has-only-been = Test edilmemiş: bu panel yalnızca bir Hardrock-500 ile test edildi. Bu model için metre sınırları Hardrock-500'den ölçeklenmiştir ve yanlış olabilir. Amplifikatörün kendi ekranını izleyin.
@@ -558,13 +558,13 @@ settings-controls-none = — yok —
 
 settings-general-system-default = Sistem varsayılanı
 settings-general-remote-access = Uzaktan erişim
-settings-general-what-remote-client-browser-page = Uzak bir istemcinin — tarayıcı sayfasının ya da --connect ile başlatılmış başka bir sdroxide'ın — bu istasyonun işletmesine izin vermeden önce sağlaması gerekenler. Sunucu modunda (--server) geçerlidir; bir sonraki oturum açmada değişiklik, yeniden başlatmadan alınır.
+settings-general-what-remote-client-browser-page = Uzak bir istemcinin — tarayıcı sayfasının ya da --connect ile başlatılmış başka bir sdrcrow'ın — bu istasyonun işletmesine izin vermeden önce sağlaması gerekenler. Sunucu modunda (--server) geçerlidir; bir sonraki oturum açmada değişiklik, yeniden başlatmadan alınır.
 settings-general-username = Kullanıcı adı
 settings-general-password = Parola
 settings-general-clients-must-give-password-leaving = İstemciler parolayı vermelidir. Kullanıcı adını boş bırakmak sorun değildir.
 settings-general-clients-must-sign = İstemciler oturum açmalıdır.
 settings-general-empty-anyone-who-can-reach = ⚠ Boş: sunucunun bağlantı noktasına erişebilen herkes, çağrı işaretinizle bu radyoyu işletebilir. Bağlantı noktasını yönlendirmeden önce bir parola ayarlayın.
-settings-general-stored-clear-config-toml-like = sdroxide'ın tuttuğu diğer parolalar gibi config.toml içinde açık olarak saklanır.
+settings-general-stored-clear-config-toml-like = sdrcrow'ın tuttuğu diğer parolalar gibi config.toml içinde açık olarak saklanır.
 settings-general-receive-audio-gain = Alma ses kazancı
 settings-general-t-0-db = 0 dB
 settings-general-extra-gain-everything-radio-sends =
@@ -578,9 +578,9 @@ settings-general-settings-are-machine-radio-attached = Ayarlar, radyonun bağlı
 settings-general-export = DIŞA AKTAR…
 settings-general-write-every-setting-station-radios = Bu istasyondaki her ayarı — radyolar, modlar, sunucular, hafızalar, bant planı — başka bir kuruluma taşıyabileceğiniz tek bir dosyaya yazın. Günlüğünüz ve kayıtlı sunucu parolaları burada kalır.
 settings-general-import = İÇE AKTAR…
-settings-general-replace-station-s-settings-ones = Bu istasyonun ayarlarını, başka bir kurulumdan dışa aktarılmış bir dosyadakilerle değiştirin. Sonrasında sdroxide'ı yeniden başlatın.
-settings-general-import-overwrites-what-here-file = İçe aktarma, buradakilerin üzerine dosya dosya yazar ve sdroxide bir sonraki başlatıldığında etkinleşir — aksi halde bellekteki ayarlar hemen üstüne geri yazılırdı. Dosyanın değinmediği her şey olduğu gibi kalır; bu yüzden tek radyolu bir istasyonun paketi buradaki ikinci bir radyoyu kaldırmaz. Günlüğünüz hiçbir zaman dosyada değildir: onu da taşımak isterseniz LOG penceresinden ADIF olarak dışa aktarın.
-settings-general-sdrcrow-settings = sdroxide ayarları
+settings-general-replace-station-s-settings-ones = Bu istasyonun ayarlarını, başka bir kurulumdan dışa aktarılmış bir dosyadakilerle değiştirin. Sonrasında sdrcrow'ı yeniden başlatın.
+settings-general-import-overwrites-what-here-file = İçe aktarma, buradakilerin üzerine dosya dosya yazar ve sdrcrow bir sonraki başlatıldığında etkinleşir — aksi halde bellekteki ayarlar hemen üstüne geri yazılırdı. Dosyanın değinmediği her şey olduğu gibi kalır; bu yüzden tek radyolu bir istasyonun paketi buradaki ikinci bir radyoyu kaldırmaz. Günlüğünüz hiçbir zaman dosyada değildir: onu da taşımak isterseniz LOG penceresinden ADIF olarak dışa aktarın.
+settings-general-sdrcrow-settings = sdrcrow ayarları
 settings-general-swr-guard = SWR koruması
 settings-general-stop-transmitting-high-swr = Yüksek SWR'de yayını durdur
 settings-general-trip = Şu değerde kes
@@ -623,7 +623,7 @@ settings-net-persist-re-connect = Kaydet ve (yeniden) bağlan
 settings-net-season = Mevsim
 settings-net-downloading = indiriliyor…
 settings-net-using-built-copy = yerleşik kopya kullanılıyor
-settings-net-your-own-stations-corrections-go = Kendi istasyonlarınız ve düzeltmeleriniz bu dosyaya gider. sdroxide onu asla yazmaz ve buradaki bir girdi, aynı ad ve frekansa sahip zamanlanmış girdinin yerini alır.
+settings-net-your-own-stations-corrections-go = Kendi istasyonlarınız ve düzeltmeleriniz bu dosyaya gider. sdrcrow onu asla yazmaz ve buradaki bir girdi, aynı ad ve frekansa sahip zamanlanmış girdinin yerini alır.
 settings-net-reload = Yeniden yükle
 settings-net-re-read-your-station-file = Düzenledikten sonra istasyon dosyanızı yeniden okuyun
 settings-net-broadcast-stations-labelled-waterfall-come = Şelalede etiketlenen yayın istasyonları, bu derlemeye gömülü listeden gelir. Onları düzenlemek masaüstü uygulamasını gerektirir.
@@ -637,11 +637,11 @@ settings-controls-last-midi = Son ileti: { $message }  değer { $value }
 settings-general-exported = { $note } dışa aktarıldı — kaydedileceği yeri seçin.
 settings-general-export-failed = Dışa aktarma başarısız: { $error }
 settings-general-import-failed = İçe aktarma başarısız: { $error }
-settings-general-imported = { $summary } — kullanmak için sdroxide'ı yeniden başlatın.
+settings-general-imported = { $summary } — kullanmak için sdrcrow'ı yeniden başlatın.
 settings-general-import-skipped = { $path } atlandı: { $why }
 settings-general-swr-tripped = ⚠ Şu anda { $swr }:1 değerinde kesildi — yayın kilitli.
 settings-net-call-grid-set-on-general = { $call } / { $grid } — Genel sekmesinde ayarlandı
-settings-net-reporting-as = { $call } / { $grid } olarak bildiriliyor — SDRoxide { $version }
+settings-net-reporting-as = { $call } / { $grid } olarak bildiriliyor — SDRCrow { $version }
 settings-net-schedule-download-failed = ⚠ İndirme başarısız: { $error }. Yerleşik program kullanılıyor.
 settings-net-test-service = { $service } testi
 
@@ -703,7 +703,7 @@ settings-profiles-profile-captures-whole-working-setup = Bir profil, bütün ça
 settings-profiles-save-current-setup = Geçerli kurulumu kaydet
 settings-profiles-profile-name = profil adı
 settings-profiles-save = Kaydet
-settings-profiles-applies-whatever-sdrcrow-attached-dials = sdroxide'ın bağlı olduğu her şeye uygulanır: skalalar ve VFO'lar, mod ve filtreler, seviyeler, kazançlar, sürüş, antenler, dijital kimlik ve bant yığınları.
+settings-profiles-applies-whatever-sdrcrow-attached-dials = sdrcrow'ın bağlı olduğu her şeye uygulanır: skalalar ve VFO'lar, mod ve filtreler, seviyeler, kazançlar, sürüş, antenler, dijital kimlik ve bant yığınları.
 settings-profiles-no-profiles-saved-yet-name = Henüz kayıtlı profil yok — yukarıya bir ad yazın ve Kaydet'e basın.
 settings-profiles-saved-profiles = Kayıtlı profiller
 settings-profiles-apply = Uygula
@@ -756,7 +756,7 @@ settings-relay-if-will-not-answer = Yanıt vermezse
 settings-relay-switch-exists-protect-receiver-not = Var olma amacı bir alıcıyı korumak olan bir anahtar, sessizce korumayı bırakıyorsa değmez — bu yüzden reddetmek varsayılandır. Gevşek bir USB kablosunun yarışmanızı bitirdiği durumun daha kötü sonuç olduğu yerde diğerini seçin.
 settings-relay-order-timings-longest-lead-closes = Sıra zamanlamalardır: en uzun öncü önce kapanır, en uzun tutma en son açılır. Bu yüzden anten rölesine daha uzun öncü ve daha uzun tutma verin, amplifikatöre ise her birinden daha kısa olanı — böylece anten, amplifikatör anahtarlanmadan önce her zaman değiştirilir ve amplifikatör, anten geri gelmeden önce her zaman tuşu bırakır.
 settings-relay-transmit-sense-input = Yayın algılama girişi
-settings-relay-when-transceiver-keys-itself-own = Bir telsiz kendini anahtarladığında — kendi mikrofon düğmesiyle, ayak anahtarıyla, VOX ya da keyer'ıyla — sdroxide bunu CAT üzerinden sorarak öğrenir ve bu yanıt, yayının birkaç yüz milisaniye içinde gelir. Telsizin SEND hattını, bir optik izolatör üzerinden, aynı porttaki bir el sıkışma girişine bağlarsanız, bu birkaç milisaniye içinde görülür. Metre ve yayın kilidi bununla birlikte hızlanır.
+settings-relay-when-transceiver-keys-itself-own = Bir telsiz kendini anahtarladığında — kendi mikrofon düğmesiyle, ayak anahtarıyla, VOX ya da keyer'ıyla — sdrcrow bunu CAT üzerinden sorarak öğrenir ve bu yanıt, yayının birkaç yüz milisaniye içinde gelir. Telsizin SEND hattını, bir optik izolatör üzerinden, aynı porttaki bir el sıkışma girişine bağlarsanız, bu birkaç milisaniye içinde görülür. Metre ve yayın kilidi bununla birlikte hızlanır.
 settings-relay-line = Hat
 settings-relay-transmitting = Yayında olmak
 settings-relay-high-line = yüksek hat
@@ -765,8 +765,8 @@ settings-relay-belongs-radio = Bağlı olduğu radyo
 settings-relay-which-radio-tab-sensed-transceiver = Algılanan telsizin hangi radyo sekmesinde olduğu. Tek radyolu bir istasyonda bu 1'dir ve hiçbir şey buna bağlı değildir.
 settings-relay-needs-serial-port-handshake-lines = Bir seri bağlantı noktası gerektirir — el sıkışma hatları onun üzerindedir.
 settings-relay-wiring-only-fail-safe-survives = Bu programdan sağ kurtulan tek emniyet, kablolamadır.
-settings-relay-choose-tx-closes-so-de = “TX closes” seçin; böylece kart çekildiğinde, bilgisayar kapalıyken ya da sdroxide çalışmazken istediğiniz durum *enerjisiz* kontak olsun. Enerjisiz olmanın topraklı anlamına gelecek şekilde kablolandığında, ölü bir röle SDR'yi sağır bırakır — rahatsız edici ama güvenli. Diğer yönde kablolandığında ölü bir röle ve tek bir yayın, ölü bir ön uç demektir. Arkasında gerçek bir amplifikatör varsa ilkini alın.
-settings-relay-cannot-protect-first-instant-over = Bu, radyodan başlattığınız bir yayının ilk anını koruyamaz. Telsizi sdroxide'dan anahtarlarsanız kontaklar her zaman RF'nin önüne geçer; yukarıdaki algılama girişini kablolarsanız birkaç milisaniye içinde takip ederler. Gerçekten korunmaya değer bir ön uç için RF algılamalı bir donanım T/R anahtarı da kullanın — bir bilgisayardaki hiçbir program tek başına yeterli bir çözüm olamaz.
+settings-relay-choose-tx-closes-so-de = “TX closes” seçin; böylece kart çekildiğinde, bilgisayar kapalıyken ya da sdrcrow çalışmazken istediğiniz durum *enerjisiz* kontak olsun. Enerjisiz olmanın topraklı anlamına gelecek şekilde kablolandığında, ölü bir röle SDR'yi sağır bırakır — rahatsız edici ama güvenli. Diğer yönde kablolandığında ölü bir röle ve tek bir yayın, ölü bir ön uç demektir. Arkasında gerçek bir amplifikatör varsa ilkini alın.
+settings-relay-cannot-protect-first-instant-over = Bu, radyodan başlattığınız bir yayının ilk anını koruyamaz. Telsizi sdrcrow'dan anahtarlarsanız kontaklar her zaman RF'nin önüne geçer; yukarıdaki algılama girişini kablolarsanız birkaç milisaniye içinde takip ederler. Gerçekten korunmaya değer bir ön uç için RF algılamalı bir donanım T/R anahtarı da kullanın — bir bilgisayardaki hiçbir program tek başına yeterli bir çözüm olamaz.
 settings-relay-contacts-transmit = YAYINDA kontaklar
 settings-relay-not-open = Açık değil.
 settings-relay-status-unknown-press-apply = Durum bilinmiyor — UYGULA'ya basın.
@@ -785,15 +785,15 @@ settings-relay-persist-re-open-switch = Kaydet ve anahtarı (yeniden) aç
 ## Settings window, Remote (src/app/settings/remote.rs)
 
 settings-remote-connect-server = Bir sunucuya bağlan
-settings-remote-drive-sdrcrow-running-somewhere-else = Başka bir yerde çalışan bir sdroxide'ı — istasyon makinesini, uzak bir siteyi — ağ üzerinden yönetin. Orada --server ile başlatın ve adresini buraya girin. Radyo, çözücüler ve günlük o makinede kalır; bu ekran şelaleyi ve sesi alır, kullandığınız hoparlör ve mikrofon de bunlardır.
+settings-remote-drive-sdrcrow-running-somewhere-else = Başka bir yerde çalışan bir sdrcrow'ı — istasyon makinesini, uzak bir siteyi — ağ üzerinden yönetin. Orada --server ile başlatın ve adresini buraya girin. Radyo, çözücüler ve günlük o makinede kalır; bu ekran şelaleyi ve sesi alır, kullandığınız hoparlör ve mikrofon de bunlardır.
 settings-remote-address = Adres
 settings-remote-host-name-ip = ana makine adı ya da IP
-settings-remote-machine-running-sdrcrow-server-host = sdroxide --server çalıştıran makine: bir ana makine adı, bir IPv4 ya da IPv6 adresi ya da sunucu bir ters vekilin arkasındaysa tam bir ws:// (ya da wss://) URL'si — bir URL yazıldığı gibi kullanılır ve aşağıdaki bağlantı noktasını ve anahtarı yok sayar.
+settings-remote-machine-running-sdrcrow-server-host = sdrcrow --server çalıştıran makine: bir ana makine adı, bir IPv4 ya da IPv6 adresi ya da sunucu bir ters vekilin arkasındaysa tam bir ws:// (ya da wss://) URL'si — bir URL yazıldığı gibi kullanılır ve aşağıdaki bağlantı noktasını ve anahtarı yok sayar.
 settings-remote-port = Bağlantı noktası
 settings-remote-port-server-listens-server-port = Sunucunun dinlediği bağlantı noktası — config.toml içindeki server_port. --port verilmediyse 4950.
 settings-remote-secure = Güvenli
 settings-remote-wss-tls = wss:// (TLS)
-settings-remote-tick-where-server-sits-behind = Sunucu, HTTPS'i onun yerine sonlandıran bir şeyin arkasındaysa bunu işaretleyin — 443 numaralı bağlantı noktasındaki bir ters vekil; bir istasyona açık internet üzerinden ulaşmanın olağan yolu budur. sdroxide'ın kendi sunucusu düz ws:// konuşur ve bunu istemez.
+settings-remote-tick-where-server-sits-behind = Sunucu, HTTPS'i onun yerine sonlandıran bir şeyin arkasındaysa bunu işaretleyin — 443 numaralı bağlantı noktasındaki bir ters vekil; bir istasyona açık internet üzerinden ulaşmanın olağan yolu budur. sdrcrow'ın kendi sunucusu düz ws:// konuşur ve bunu istemez.
 settings-remote-connect = {" "}BAĞLAN{" "}
 settings-remote-open-station-radio-tab-own = Bu istasyonu kendi radyo sekmesi olarak aç
 settings-remote-client-cannot-hold-second-connection = Bu istemci ikinci bir bağlantı tutamaz.
@@ -804,7 +804,7 @@ settings-remote-client-cannot-hold-second-connection = Bu istemci ikinci bir ba�
 
 settings-servers-wsjt-x-udp-broadcast = WSJT-X UDP yayını
 settings-servers-waiting-station-s-wsjt-x = İstasyonun WSJT-X yayın yapılandırması bekleniyor…
-settings-servers-sends-decodes-station-status-logged = Çözümlemeleri, istasyon durumunu ve günlüğe yazılan QSO'ları WSJT-X'in yaptığı gibi gönderir; böylece GridTracker, JTAlert, N1MM+ ve Log4OM sdroxide ile değişmeden çalışır. Yalnızca çıkış — bu soketteki hiçbir şey radyoya dokunamaz.
+settings-servers-sends-decodes-station-status-logged = Çözümlemeleri, istasyon durumunu ve günlüğe yazılan QSO'ları WSJT-X'in yaptığı gibi gönderir; böylece GridTracker, JTAlert, N1MM+ ve Log4OM sdrcrow ile değişmeden çalışır. Yalnızca çıkış — bu soketteki hiçbir şey radyoya dokunamaz.
 settings-servers-enable = Etkinleştir
 settings-servers-send = Gönderilecek adres
 settings-servers-t-127-0-0-1-reaches = 127.0.0.1 bu makinedeki istemcilere ulaşır; bir LAN adresi ya da çok noktalı yayın grubu (224.0.0.1) diğerlerine ulaşır
@@ -868,7 +868,7 @@ settings-tle-fetch-track-listing = Bu listeyi al ve izle
 settings-tle-remove-subscription = Bu aboneliği kaldır
 settings-tle-orbits = Yörüngeler
 settings-tle-which-satellites-listing-get-orbit = Bu listedeki hangi uyduların bir yörünge halkası ve etiketi alacağı. Bütün bir grup “küratörlü” ister: aynı anda doksan halka okunmaz, hiç olmaması ise doksan adsız nokta bırakır.
-settings-tle-nothing-listing-sdrcrow-s-curated = Bu listedeki hiçbir şey sdroxide'ın küratörlü listesinde değil — o liste on amatör uydudur, bu yüzden bu tam olarak “hiçbiri” gibi davranırdı.
+settings-tle-nothing-listing-sdrcrow-s-curated = Bu listedeki hiçbir şey sdrcrow'ın küratörlü listesinde değil — o liste on amatör uydudur, bu yüzden bu tam olarak “hiçbiri” gibi davranırdı.
 settings-tle-all-satellites = bütün uydular
 settings-tle-catalogue-numbers-keep-comma-separated = Tutulacak katalog numaraları, virgülle ayrılmış. Boş bırakılırsa listenin taşıdığı her şey izlenir.
 settings-tle-not-fetched-yet = henüz alınmadı
@@ -1023,22 +1023,22 @@ settings-radio-which-socket-back-radio-using =
 
     Applies immediately, and it is the radio's setting rather than a copy kept here: the socket the radio is on is read back when the session opens.
 
-    The choice is remembered per band. Switch to the beam on 2 m and the wire on 40, and each comes back the next time the dial crosses into that band — and the next time sdroxide starts. A memory channel stored here carries its socket too.
+    The choice is remembered per band. Switch to the beam on 2 m and the wire on 40, and each comes back the next time the dial crosses into that band — and the next time sdrcrow starts. A memory channel stored here carries its socket too.
 settings-radio-receive-antenna = Alma anteni
 settings-radio-radio-s-separate-receiving-antenna =
     Radyonun ayrı alma anteni — arkadaki RX ANT — alma yoluna ya da alma yolundan çıkarılır. Kendi ayarı; radyonun RX ANT düğmesiyle aynı.
 
     The aerial on the main socket stays on transmit either way: this is an extra input for receiving, a loop or a beverage, not a choice of socket.
 
-    Unlike the antenna above, this is *not* remembered here. The radio holds it per band itself, so sdroxide reads it back after every band change and shows what the radio says; ticking this box is the only thing that moves it.
+    Unlike the antenna above, this is *not* remembered here. The radio holds it per band itself, so sdrcrow reads it back after every band change and shows what the radio says; ticking this box is the only thing that moves it.
 settings-radio-receive-path = Alma yolunda
 settings-radio-radio-power = Radyo gücü
 settings-radio-switch-radio-itself-off-back =
-    Radyonun kendisini kontrol bağlantısı üzerinden kapatıp yeniden açın. Programdaki tek gerçek açma/kapatma budur — sdroxide'ın kendi LINK anahtarı değildir; o yalnızca sdroxide'ın tarafını kapatır ve radyo çalışmaya devam eder.
+    Radyonun kendisini kontrol bağlantısı üzerinden kapatıp yeniden açın. Programdaki tek gerçek açma/kapatma budur — sdrcrow'ın kendi LINK anahtarı değildir; o yalnızca sdrcrow'ın tarafını kapatır ve radyo çalışmaya devam eder.
 
-    For the switch back on to reach anything, the radio's control end has to stay awake while it is off. Over the network that is what Network Control does. Over a serial cable it is the radio's CI-V port, which stays powered from the mains supply on a set that is switched off at the front rather than unplugged; sdroxide sends the wake-up run Icom's own documentation asks for in front of the power-on.
+    For the switch back on to reach anything, the radio's control end has to stay awake while it is off. Over the network that is what Network Control does. Over a serial cable it is the radio's CI-V port, which stays powered from the mains supply on a set that is switched off at the front rather than unplugged; sdrcrow sends the wake-up run Icom's own documentation asks for in front of the power-on.
 
-    Switching off ends the audio and the meters — there is no radio behind them — and sdroxide keeps the control link open so the switch back on has somewhere to go.
+    Switching off ends the audio and the meters — there is no radio behind them — and sdrcrow keeps the control link open so the switch back on has somewhere to go.
 settings-radio-on = Açık
 settings-radio-off = Kapalı
 settings-radio-waiting-configuration-machine-radio-attached = Radyonun bağlı olduğu makinenin yapılandırması bekleniyor.
@@ -1109,24 +1109,24 @@ settings-radio-how-transmit-keyed = Yayının nasıl anahtarlandığı.
 settings-radio-how-transmit-keyed-network-link = Yayının nasıl anahtarlandığı. Bir ağ bağlantısının denetim hatları yoktur, bu yüzden DTR ve RTS burada hiçbir şeyi anahtarlamaz — servisten telsizi anahtarlamasını isteyen CAT'i ya da VOX'u kullanın.
 settings-radio-mode-control = Mod denetimi
 settings-radio-digimode-mode = Dijital mod modu
-settings-radio-what-put-radio-mode-sdroxide =
-    sdroxide'ın ses kartı üzerinden modüle ettiği bir mod için telsizin neye alınacağı. “DIGI”, telsizin DATA/PKT konumunu seçer; bu, yayın sesini USB ya da ACC girişinden alır ve mikrofon yolunun konuşma işlemesini dışarıda bırakır. “USB”, düz yan bantta bırakır — SSB'yi veri girişinden modüle etmek üzere zaten ayarlanmış ya da hiç DATA konumu olmayan bir radyo için.
+settings-radio-what-put-radio-mode-sdrcrow =
+    sdrcrow'ın ses kartı üzerinden modüle ettiği bir mod için telsizin neye alınacağı. “DIGI”, telsizin DATA/PKT konumunu seçer; bu, yayın sesini USB ya da ACC girişinden alır ve mikrofon yolunun konuşma işlemesini dışarıda bırakır. “USB”, düz yan bantta bırakır — SSB'yi veri girişinden modüle etmek üzere zaten ayarlanmış ya da hiç DATA konumu olmayan bir radyo için.
 
     It covers every digital mode — FT8, FT4, PSK, RTTY, SSTV and the rest — and CW sent as "Sound card", and it overrides Mode control for them. SSTV is the one whose sideband follows the band, so there it means the DATA position on that sideband: USB-D above 40 m, LSB-D at and below it. SSTV-FM is not part of it — an FM carrier has no sideband to choose.
 settings-radio-cw-keying = CW anahtarlama
 settings-radio-how-cw-panel-s-keyer =
     CW panelinin keyer'ı nasıl yayın yapar. “Rig keyer”, radyoyu CW'ye alır ve gönderilecek metni kendi keyer'ına verir. Panelin WPM'inden ayarlanan telsizin keyer hızını kullanır ve Yaesu'da keyer hafıza 1 üzerinden gönderir; orada ne saklıysa üzerine yazar.
 
-    It needs break-in on at the radio, which sdroxide turns on itself with each message on Icom, Yaesu and Kenwood — a rig with break-in off takes the message and transmits nothing. It is left on afterwards, and a full break-in is never turned down to semi.
+    It needs break-in on at the radio, which sdrcrow turns on itself with each message on Icom, Yaesu and Kenwood — a rig with break-in off takes the message and transmits nothing. It is left on afterwards, and a full break-in is never turned down to semi.
 
     "Sound card" sends the keyed sidetone as audio instead (MCW), a tone at dial + pitch — and because a rig in CW would ignore its sound card entirely, selecting CW then follows the Digimode mode setting (USB, DATA, or Radio controlled) instead of switching the rig to CW. Pick "Radio controlled" there for rigs whose data position can't be commanded over CAT (a Xiegu's U-D) and park the rig on it yourself, as for FT8.
 settings-radio-poll-rate = Sorgulama hızı
 settings-radio-how-often-radio-asked-what =
-    Radyoya ne yaptığının sorulma sıklığı — skalası, modu ve metreleri. Bu, kontrol bağlantısının radyodan sdroxide'a giden yarısıdır: telsizin kendi VFO düğmesini çevirin ya da ön panelden modunu değiştirin; okuma, bant ve panadaptör bir sorgulama içinde izler.
+    Radyoya ne yaptığının sorulma sıklığı — skalası, modu ve metreleri. Bu, kontrol bağlantısının radyodan sdrcrow'a giden yarısıdır: telsizin kendi VFO düğmesini çevirin ya da ön panelden modunu değiştirin; okuma, bant ve panadaptör bir sorgulama içinde izler.
 
     It is also the whole of the control traffic this end generates, and on a modern Icom that traffic is not free: the CI-V port and the sound card sit behind one USB hub inside the radio, so frames asked for here are bus time the audio does not get — heard as dropouts that look like a DSP fault and are not one. The default of 2 Hz is half a second behind the knob and quiet enough to stay out of the audio's way. Raise it where the control port is its own device (a separate USB-serial adapter, a network rigctld); lower it if the radio's audio breaks up.
 
-    An Icom with CI-V Transceive switched on in its own menu needs none of this for the dial: it reports the knob the instant it moves, and sdroxide stands the dial poll down as soon as it sees it do so — and picks it back up again if the radio ever moves without saying so.
+    An Icom with CI-V Transceive switched on in its own menu needs none of this for the dial: it reports the knob the instant it moves, and sdrcrow stands the dial poll down as soon as it sees it do so — and picks it back up again if the radio ever moves without saying so.
 
     The rate is the dial's. The mode rides along with only every fourth poll, since it is a setting that changes a few times in an evening rather than one that follows a knob.
 settings-radio-send-command = Gönderme komutu
@@ -1135,7 +1135,7 @@ settings-radio-which-transceiver-generation-keys-rig =
 
     "TS-2000 style (TX;)" — TS-480, TS-570, TS-870, TS-2000: the ordinary send, on the main band.
 
-    "TS-590 style (TX1;)" — TS-590S/SG, TS-890, TS-990: DATA SEND, which keys with the ACC2/USB audio input live. On these rigs the plain send selects the microphone instead and mutes the audio sdroxide transmits.
+    "TS-590 style (TX1;)" — TS-590S/SG, TS-890, TS-990: DATA SEND, which keys with the ACC2/USB audio input live. On these rigs the plain send selects the microphone instead and mutes the audio sdrcrow transmits.
 
     Set wrong, a TS-590 transmits silence — but a TS-2000 transmits on the sub-band, which is another band entirely.
 settings-radio-radio = Radyo
@@ -1148,7 +1148,7 @@ settings-radio-transmit-input = Yayın girişi
 settings-radio-where-radio-takes-transmit-audio =
     Telsizin yayın sesini nereden aldığı — telsizin TI komutu; ön panelde menü 32 “TX IN”. Bağlantı noktası açıldığında etkinleştirilir.
 
-    "USB audio" is what makes this interface work: the FDM-DUO transmits what sdroxide puts into its USB sound card. A radio left on "Microphone" sends the room instead, and nothing on screen says so.
+    "USB audio" is what makes this interface work: the FDM-DUO transmits what sdrcrow puts into its USB sound card. A radio left on "Microphone" sends the room instead, and nothing on screen says so.
 
     "Auto" lets the rig choose — the microphone for a PTT press on the microphone, the USB port for a CAT or RTS key-down.
 
@@ -1179,10 +1179,10 @@ settings-radio-baud-rate-ignored-port-usb = Baud hızı yok sayılır — bağla
 settings-radio-qmx-serves-own-virtual-com =
     Bir QMX, kendi sanal COM bağlantı noktalarını USB üzerinden sunar; bu yüzden yukarıda ayarlanan hızın iki uçta da bir etkisi yoktur. En fazla üçünü sunar; telsiz hiçbir şeye yanıt vermiyorsa en olası neden yanlış olanıdır.
 
-    One thing does matter about the port: a carriage return sent to it switches the radio into terminal mode for the rest of the session. sdroxide never sends one — but a terminal program left open on the same port will, and CAT stops working the moment it does.
+    One thing does matter about the port: a carriage return sent to it switches the radio into terminal mode for the rest of the session. sdrcrow never sends one — but a terminal program left open on the same port will, and CAT stops working the moment it does.
 settings-radio-i-q-mode-switched-radio = I/Q modu telsizde açılır
 settings-radio-radio-s-sound-card-carries =
-    Telsizin ses kartı, ya demodüle edilmiş sesi ya da ADC'sinin gördüğü ham I/Q'yu taşır; sdroxide, bağlantı noktası açıldığında yukarıdaki Ses biçiminin istediğini etkinleştirir (telsizin Q9 komutu, “IQ mode” menü girdisi).
+    Telsizin ses kartı, ya demodüle edilmiş sesi ya da ADC'sinin gördüğü ham I/Q'yu taşır; sdrcrow, bağlantı noktası açıldığında yukarıdaki Ses biçiminin istediğini etkinleştirir (telsizin Q9 komutu, “IQ mode” menü girdisi).
 
     The centre offset and sample rate above have been set to what a QMX needs: its receiver is a superhet with a 12 kHz I.F., so the synthesiser sits 12 kHz below the dial and everything on the card is 12 kHz above the middle of the span. The card runs at 48 kHz, which makes the panadapter 48 kHz wide.
 
@@ -1193,11 +1193,11 @@ settings-radio-rs-hfiq-5-w-hf = RS-HFIQ (5 W HF telsiz)
 settings-radio-hobbypcb-s-rs-hfiq-there =
     HobbyPCB'nin RS-HFIQ'su. Burada seçilecek bir şey yoktur: profil, telsizin komut kümesinin tamamıdır ve yazılım sürümü, bağlantı noktası açıldığında günlüğe yazılır.
 
-    The control link carries two things and no more — where to put the oscillator, and whether to transmit. There is no mode, power, filter, squelch or meter command, because the radio has none of them. Everything else is sdroxide's: what comes off the sound card is complex baseband centred on the dial, so the mode, the filter and the modulation all happen on this side.
+    The control link carries two things and no more — where to put the oscillator, and whether to transmit. There is no mode, power, filter, squelch or meter command, because the radio has none of them. Everything else is sdrcrow's: what comes off the sound card is complex baseband centred on the dial, so the mode, the filter and the modulation all happen on this side.
 
     The frequency command covers 3–30 MHz. Ask for anything outside that and the radio refuses it and stays where it is; the log says so.
 
-    CW is keyed as audio through the transmit chain — this radio has no keyer that takes text. (It has an internal CW generator; sdroxide never uses it, on the firmware's own advice.)
+    CW is keyed as audio through the transmit chain — this radio has no keyer that takes text. (It has an internal CW generator; sdrcrow never uses it, on the firmware's own advice.)
 settings-radio-sound-format-baud-ptt-are = Ses biçimi, baud ve PTT telsizinkidir, ayar değil
 settings-radio-all-three-have-been-filled =
     Üçü de doldurulmuştur ve hiçbiri bir tercih değildir:
@@ -1226,7 +1226,7 @@ settings-radio-which-icom-two-things-ci =
 
     The transceiver address below is filled in from it: every model ships with a different one, and a frame sent to the wrong address is simply ignored — a radio that answers nothing, with no error anywhere to say why.
 
-    It also decides whether sdroxide can select DATA mode. On CI-V, USB and USB-DATA are the same mode byte and a separate command tells them apart; without it a digital-mode over goes out through the microphone input, with the rig's speech processing and SSB filter in the path.
+    It also decides whether sdrcrow can select DATA mode. On CI-V, USB and USB-DATA are the same mode byte and a separate command tells them apart; without it a digital-mode over goes out through the microphone input, with the rig's speech processing and SSB filter in the path.
 
     "Other" leaves the address to you and sends no DATA-mode command at all.
 settings-radio-radio-id-hex = Radyo kimliği (hex)
@@ -1274,7 +1274,7 @@ settings-radio-frequency-correction = Frekans düzeltme
 settings-radio-crystal-tcxo-error-ppm-applied = Kristal/TCXO hatası ppm cinsinden, RX ve TX'e uygulanır. Hemen etkinleşir.
 settings-radio-ppm = {" "}ppm
 settings-radio-transmit-buffer = Yayın arabelleği
-settings-radio-how-far-ahead-real-time = sdroxide yavaşlayıp eşleşmeden önce, yayın sesi gerçek zamandan ne kadar ileride ağ üzerinden karta beslenir. Kartın kendisi böyle bir arabellek tutmaz — bu yalnızca sdroxide'ın kendi payını genişletir. Düşük varsayılan (doğrudan kablolu bağlantı için doğru), bir WiFi bağlantısında ya da bir VPN'de jitter'a karşı yeterli pay sağlamaz ve yayınlanan ses ya da PTT takılır; bu durumda yükseltin. Yüksek değer yayın gecikmesi maliyetidir. APPLY ile etkinleşir ve kartla yeniden bağlanır.
+settings-radio-how-far-ahead-real-time = sdrcrow yavaşlayıp eşleşmeden önce, yayın sesi gerçek zamandan ne kadar ileride ağ üzerinden karta beslenir. Kartın kendisi böyle bir arabellek tutmaz — bu yalnızca sdrcrow'ın kendi payını genişletir. Düşük varsayılan (doğrudan kablolu bağlantı için doğru), bir WiFi bağlantısında ya da bir VPN'de jitter'a karşı yeterli pay sağlamaz ve yayınlanan ses ya da PTT takılır; bu durumda yükseltin. Yüksek değer yayın gecikmesi maliyetidir. APPLY ile etkinleşir ve kartla yeniden bağlanır.
 settings-radio-puresignal = PureSignal
 settings-radio-adaptive-predistortion-linearise-transmitter-sample = Uyarlamalı ön bozma: verici, gerçekten yaydığının bir örneğinden doğrusallaştırılır; aynı gücde yirmi küsur desibel daha az intermodülasyon için. Alıcı geri besleme yoludur — kart, bir yayın boyunca almaya devam eder — bu yüzden yönlü bir kuplaj ve bir zayıflatıcı, amplifikatör çıkışının bir örneğini, yayında T/R anahtarının almadığı bir girişe koymalıdır. Bir Hermes-Lite 2'de bu, IO kartının PureSignal jakı demektir ve yukarıdaki alma girişi buna ayarlanır; bunu içermeyen bir kartta, bir ANAN'ın RX portu ya da kuplajı yayın süresince devreye sokan harici bir röle. Okunan, bu alıcıdır — ikinci bir ADC'li bir kart, kendi yazılımı onu nasıl yönlendirirse yönlendirsin, RX2'yi geri besleme tapı olarak kullanamaz. Hiçbir şey kuplaj yapılmadığında döngü hiç kilitlenmez ve verici tam olacağı gibi bırakılır. Uygula / yeniden bağlan ile etkinleşir ve yalnızca vericinin sahibi olan radyo için (DDC1).
 settings-radio-correct-transmitter-receiver-s-own = Vericiyi alıcının kendi geri beslemesinden düzelt
@@ -1473,7 +1473,7 @@ settings-radio-how-much-band-receiver-s =
     The whole band is the default and is what makes the strip a thing to tune by; the panadapter below it is the ~12 kHz of I/Q. Applies immediately.
 settings-radio-receiver-agc = Alıcı AGC
 settings-radio-receiver-s-agc-which-far =
-    Alıcının AGC'si, bağlantının uzak tarafındadır ve I/Q'dan önce gelir — bu yüzden sdroxide'ın yaptığı her şeyden önce devreye girer.
+    Alıcının AGC'si, bağlantının uzak tarafındadır ve I/Q'dan önce gelir — bu yüzden sdrcrow'ın yaptığı her şeyden önce devreye girer.
 
     On by default, unlike every local SDR here, because the measured alternative was worse: on a live receiver the manual gain was not monotonic across its range and its top end clipped the I/Q at full scale, while the AGC held about -24 dBFS with 7 dB of headroom.
 
@@ -1487,7 +1487,7 @@ settings-radio-iq-sample-rate = IQ örnekleme hızı
 settings-radio-receiver = Alıcı
 settings-radio-rig-two-receivers-sunsdr2dx-can = İki alıcılı bir telsiz (SunSDR2DX) tek bir bağlantıdan iki radyo sekmesi sunabilir — bu radyoyu RX1'de, başka bir radyoyu RX2'de çalıştırın. Verici RX1 radyosuna aittir.
 settings-radio-stream-delay = Akış gecikmesi
-settings-radio-how-long-rig-s-iq = sdroxide yeni bir merkeze taşıdıktan sonra telsizin IQ'sunun ona ulaşması ne kadar sürer. Bu, ağ değil telsizin kendi DSP hattıdır — bu makinedeki bir sunucunun da bir tane vardır — ve panadaptör tam uzaklaştırılmış halde sürüklenirken, bu kadar yanlış olmak, en yeni şelale satırlarını geçmişe göre yanlara, hatanın sürükleme hızıyla çarpımı kadar kaydırır. Çok yüksek olması, çok düşük olmasıyla tam aynı kadar yerinden eder, yalnızca ters yönde. `cargo run --release -p sdrcrow-tci --example retune_latency` ile ölçün; varsayılan, 192 kHz'de ExpertSDR3 üzerinde bir SunSDR2DX'tir.
+settings-radio-how-long-rig-s-iq = sdrcrow yeni bir merkeze taşıdıktan sonra telsizin IQ'sunun ona ulaşması ne kadar sürer. Bu, ağ değil telsizin kendi DSP hattıdır — bu makinedeki bir sunucunun da bir tane vardır — ve panadaptör tam uzaklaştırılmış halde sürüklenirken, bu kadar yanlış olmak, en yeni şelale satırlarını geçmişe göre yanlara, hatanın sürükleme hızıyla çarpımı kadar kaydırır. Çok yüksek olması, çok düşük olmasıyla tam aynı kadar yerinden eder, yalnızca ters yönde. `cargo run --release -p sdrcrow-tci --example retune_latency` ile ölçün; varsayılan, 192 kHz'de ExpertSDR3 üzerinde bir SunSDR2DX'tir.
 settings-radio-wideband-iq-receive-audio-transmit = Geniş bant IQ alma, ses yayını. Yeniden başlatmadan geçmek için “Apply / reconnect”e basın.
 settings-radio-radio-address = Radyo adresi
 settings-radio-address-shown-radio-under-set = Radyoda SET > Network altında gösterilen adres. Orada Network Control açık olmalı ve radyoda bir ağ kullanıcı adı ile parola ayarlanmış olmalıdır.
@@ -1500,17 +1500,17 @@ settings-radio-receive = Alma kaynağı
 settings-radio-audio-sample-rate = Ses örnekleme hızı
 settings-radio-t-12-khz-if-needs-48000 = 12 kHz IF, 48000 Hz akışı gerektirir — bu hızda radyonun demodüle edilmiş sesi kullanılır.
 settings-radio-if-spectrum = IF spektrumu
-settings-radio-which-way-round-radio-s = Radyonun 12 kHz IF'inin hangi yönde çalıştığı. “Automatic”, modelin ne yaptığı bilinen şeyi kullanır — IC-7760'ta ters, diğer her Icom'da normal. SSB yanlış yan bantta çıkıyorsa elle ayarlayın: ele veren şey, bant LSB çalışırken USB seçmek zorunda kalmanızdır; radyonun kendi mod göstergesi ise sdroxide ile baştan sona aynı fikirdedir.
+settings-radio-which-way-round-radio-s = Radyonun 12 kHz IF'inin hangi yönde çalıştığı. “Automatic”, modelin ne yaptığı bilinen şeyi kullanır — IC-7760'ta ters, diğer her Icom'da normal. SSB yanlış yan bantta çıkıyorsa elle ayarlayın: ele veren şey, bant LSB çalışırken USB seçmek zorunda kalmanızdır; radyonun kendi mod göstergesi ise sdrcrow ile baştan sona aynı fikirdedir.
 settings-radio-normal = Normal
 settings-radio-mirrored = Ters
 settings-radio-displayed-bandwidth = Gösterilen bant genişliği
 settings-radio-width-audio-band-panadapter-cat = CAT telsizinde olduğu gibi ses bandı panadaptörünün genişliği. Dijital modlarda ve radyonun ekranı kapalıyken kullanılır; aksi halde panadaptör ekrandır ve Ekran aralığı genişliğini ayarlar.
 settings-radio-how-cw-panel-s-keyer-2 = CW panelinin keyer'ının nasıl yayın yaptığı. “Rig keyer”, radyoyu CW'ye alır ve gönderilecek metni kendi keyer'ına verir (CI-V 0x17). “Sound card”, anahtarlanan yan sesi bunun yerine LAN üzerinden ses olarak gönderir (MCW), skalanın artı perdede bir tonu — ve CW'deki bir telsiz modülatör girişini yok sayacağı için CW seçmek, radyoyu düz USB'de tutar; dijital modların bindiği aynı mod.
 settings-radio-how-much-audio-radio-holds = Radyonun modüle etmeden önce tuttuğu ses miktarı. Daha fazlası kötü bir ağa dayanır, yayın gecikmesi pahasına.
-settings-radio-streams-radio-s-own-475 = Radyonun kendi 475 kutulu taramasını akıtır. AF'de bu panadaptördür — radyonun gönderdiği ses, filtresinden geçen şeydir, bandın bir resmi değildir — ve 12 kHz IF'de bunun üstündeki tüm bant şelalesidir. Her iki durumda da sdroxide'ın DSP'si değil, radyonun resmidir: bunu hesaplayacak bir I/Q yoktur.
+settings-radio-streams-radio-s-own-475 = Radyonun kendi 475 kutulu taramasını akıtır. AF'de bu panadaptördür — radyonun gönderdiği ses, filtresinden geçen şeydir, bandın bir resmi değildir — ve 12 kHz IF'de bunun üstündeki tüm bant şelalesidir. Her iki durumda da sdrcrow'ın DSP'si değil, radyonun resmidir: bunu hesaplayacak bir I/Q yoktur.
 settings-radio-how-wide-sweep-only-wide = Ne kadar geniş taranacağı. Bir Icom'un sahip olduğu tek geniş görünüm budur ve radyo, kendi ekranında en son seçilen aralığı tutar — genellikle birkaç kHz, bu yüzden şerit altındaki panadaptörden daha geniş gelemez. Burada bir aralık ayarlamak, ekranı ortadan-merkez moduna da alır; böylece skalayı izler. Telsizin kendi ekranını da değiştirir; “As set on the radio” onu olduğu gibi bırakır.
 settings-radio-switch-modulation-input-lan = Modülasyon girişini LAN'a geçir
-settings-radio-transmit-audio-only-heard-when = Yayın sesi, yalnızca radyonun MOD girişi LAN'a ayarlıysa duyulur. sdroxide, menü numaralandırmasını bildiği bir modelde bunu yazabilir; başka herhangi birinde bunu söyler ve menüyü olduğu gibi bırakır. Bu bir ödünçtür: orada tutulan her şey önce okunur ve oturum sona erdiğinde geri konur; böylece sonradan tek başına kullanılan bir telsiz hâlâ kendi mikrofonunu duyar.
+settings-radio-transmit-audio-only-heard-when = Yayın sesi, yalnızca radyonun MOD girişi LAN'a ayarlıysa duyulur. sdrcrow, menü numaralandırmasını bildiği bir modelde bunu yazabilir; başka herhangi birinde bunu söyler ve menüyü olduğu gibi bırakır. Bu bir ödünçtür: orada tutulan her şey önce okunur ve oturum sona erdiğinde geri konur; böylece sonradan tek başına kullanılan bir telsiz hâlâ kendi mikrofonunu duyar.
 settings-radio-copy-diagnostic-report = Tanı raporunu kopyala
 settings-radio-control-audio-radio-s-own = Kontrol, ses ve radyonun kendi ekranı tek bir ağ bağlantısı üzerinden — seri kablo ve ses kartı yok. Yeniden başlatmadan geçmek için “Apply / reconnect”e basın.
 settings-radio-testing = Test ediliyor…
@@ -1521,17 +1521,17 @@ settings-radio-no-radios-press-discover = radyo yok — Keşfet'e basın
 settings-radio-address = Adres
 settings-radio-overrides-selection-above-usb-cable = Yukarıdaki seçimi geçersiz kılar. USB kablosu Pluto'yu bir seri bağlantı noktası değil bir ağ adaptörü olarak sunar; bu yüzden radyo masanızda olsa bile bu bir IP adresidir.
 settings-radio-pluto-revision-c-pluto-unlocked = Bir Pluto+ ya da 2R2T'ye kilitlenmiş bir revizyon-C Pluto, tek bir kutudan iki radyo sekmesi sunabilir — bu radyo RX1'de, başka biri RX2'de, her biri kendi anteninde. İki zincir tek osilatörü paylaşır; bu yüzden herhangi bir radyoyu yeniden ayarlamak ikisini de hareket ettirir; RX2'nin kazandırdığı şey aynı spektrumda ikinci bir anten (çeşitlilik), ikinci bir bant değildir. Verici RX1 radyosuna aittir. Standart 1R1T bir Pluto, bağlandığında RX2'yi reddeder.
-settings-radio-width-spectrum-sdrcrow-receives-ad9361 = sdroxide'ın aldığı spektrumun genişliği. AD9361 61,44 Msps'ye ulaşır; USB ağ bağlantısı ulaşmaz ve bu liste ona göre ölçeklenmiştir. En düşük hızlar AD9361'e yüklenmiş bir filtre yapılandırması gerektirir, sdroxide bunu yapmaz — standart bir Pluto onları bunun yerine yaklaşık 2,084 Msps'de çalıştırır ve bağlandığında bunu söyler. Uygula ile etkinleşir.
+settings-radio-width-spectrum-sdrcrow-receives-ad9361 = sdrcrow'ın aldığı spektrumun genişliği. AD9361 61,44 Msps'ye ulaşır; USB ağ bağlantısı ulaşmaz ve bu liste ona göre ölçeklenmiştir. En düşük hızlar AD9361'e yüklenmiş bir filtre yapılandırması gerektirir, sdrcrow bunu yapmaz — standart bir Pluto onları bunun yerine yaklaşık 2,084 Msps'de çalıştırır ve bağlandığında bunu söyler. Uygula ile etkinleşir.
 settings-radio-more-than-usb-2-will = {"  "}(USB 2'nin taşıyabileceğinden fazla)
 settings-radio-stock-pluto-runs-2-084 = {"  "}(standart bir Pluto 2.084'te çalışır)
 settings-radio-analog-filter = Analog filtre
 settings-radio-ad9361-s-baseband-filter-leave = AD9361'in taban bant filtresi. Otomatik için 0'da bırakın; bu, örnekleme hızının dokuzda dokuzuna açar — kasıtlı olarak geniş, çünkü alıcı, sinyalleri DC tepesinden uzak tutmak için osilatörünü aralığın dörtte biri kadar skaladan uzağa park eder ve dar bir filtre tam da onları taşıdığı kısmı keserdi. Uygula ile etkinleşir.
 settings-radio-ad9361-has-four-modes-not = AD9361'in açık/kapalı bir anahtarı değil, dört modu vardır. Yavaş atak SSB ve CW'ye uygundur; hızlı atak patlamalı sinyallere; elle ise ölçüm ve zayıf sinyal dijital modları içindir. Hemen uygulanır.
 settings-radio-rx-gain = RX kazancı
-settings-radio-applies-immediately-no-reconnect-ignored = Hemen uygulanır — yeniden bağlanmadan. AGC elle ayarlanmadıkça yok sayılır; bu, sdroxide'ın değil AD9361'in kendi davranışıdır.
+settings-radio-applies-immediately-no-reconnect-ignored = Hemen uygulanır — yeniden bağlanmadan. AGC elle ayarlanmadıkça yok sayılır; bu, sdrcrow'ın değil AD9361'in kendi davranışıdır.
 settings-radio-tx-gain = TX kazancı
 settings-radio-negative-because-ad9361-expresses-transmit = AD9361 yayın seviyesini zayıflatma olarak ifade ettiği için negatif: 0 dB tam çıkıştır. Hemen uygulanır. Bu değer bağlanırken uygulanmadan önce verici en sessiz konuma getirilir; böylece önceki programın bıraktığı hiçbir şey canlı olmaz.
-settings-radio-reference-error-parts-per-million = Milyonda kısım cinsinden referans hatası. RUST_LOG=sdrcrow_pluto=debug ile çalıştırın; günlük yaklaşık 20 saniye sonra ölçülen saat hatasını yazar — girilecek sayı budur. sdroxide tarafından uygulanır, radyonun kendi kalıcı ayarına yazılmaz. Hemen uygulanır.
+settings-radio-reference-error-parts-per-million = Milyonda kısım cinsinden referans hatası. RUST_LOG=sdrcrow_pluto=debug ile çalıştırın; günlük yaklaşık 20 saniye sonra ölçülen saat hatasını yazar — girilecek sayı budur. sdrcrow tarafından uygulanır, radyonun kendi kalıcı ayarına yazılmaz. Hemen uygulanır.
 settings-radio-full-duplex = Tam çift yön
 settings-radio-keep-receiving-while-transmitting = Yayın yaparken almaya devam et
 settings-radio-leave-off-pluto-reached-over =
@@ -1544,7 +1544,7 @@ settings-radio-leave-off-pluto-reached-over =
     Takes effect on Apply.
 settings-radio-duplex = Çift yön
 settings-radio-whether-ad9361-runs-both-directions =
-    AD9361'in iki yönü aynı anda mı (FDD — bir Pluto'nun açılış biçimi ve sdroxide'ın onu hep bıraktığı durum) yoksa tek tek mi (TDD) çalıştırdığı.
+    AD9361'in iki yönü aynı anda mı (FDD — bir Pluto'nun açılış biçimi ve sdrcrow'ın onu hep bıraktığı durum) yoksa tek tek mi (TDD) çalıştırdığı.
 
     Leave this on FDD unless you want the PTT pins below — TDD is what those key from, and it rules out Full duplex above. Takes effect on Apply.
 settings-radio-ptt-pins = PTT pimleri
@@ -1571,14 +1571,14 @@ settings-radio-wideband-iq-receive-transmit-half = Geniş bant IQ alma ve yayın
 settings-radio-flexradio-announces-itself-local-network = Bir FlexRadio, yerel ağda yaklaşık saniyede bir kendini duyurur. Bir yönlendirici ya da VPN üzerinden erişilen bir radyo size hiç yayın yapmaz — onun yerine aşağıya adresini girin.
 settings-radio-another-gui-client-has-radio = Başka bir GUI istemcisi bu radyoya sahip ve multiFLEX kapalı. O istemciyi bağlantıdan çıkarın ya da radyoda multiFLEX'i açın.
 settings-radio-overrides-selection-above-use-radio = Yukarıdaki seçimi geçersiz kılar. Başka bir alt ağdaki, bir VPN arkasındaki ya da standart dışı bir bağlantı noktasındaki bir radyo için bunu kullanın.
-settings-radio-width-spectrum-sdrcrow-receives-192 = sdroxide'ın aldığı spektrumun genişliği. 192 kHz, bir DAX IQ akışı için radyonun maksimumudur ve bu arayüzün gösterebileceği en geniş aralıktır.
+settings-radio-width-spectrum-sdrcrow-receives-192 = sdrcrow'ın aldığı spektrumun genişliği. 192 kHz, bir DAX IQ akışı için radyonun maksimumudur ve bu arayüzün gösterebileceği en geniş aralıktır.
 settings-radio-t-192-khz-widest-dax-iq = 192 kHz, bir FLEX'in göndereceği en geniş DAX IQ akışıdır ve radyo panadaptörün aralığını ona bağlar — yani tüm aralık budur ve buradaki hiçbir ayar onu genişletmez.
 settings-radio-dax-iq-channel = DAX IQ kanalı
 settings-radio-radio-has-four-change-only = Radyonun dört tane vardır. Bunu yalnızca ağdaki başka bir şey zaten kanal 1'i kullanıyorsa değiştirin — radyo bir kanalı iki kez reddeder.
 settings-radio-station-name = İstasyon adı
-settings-radio-shown-against-session-radio-s = Radyonun istemci listesinde bu oturuma karşı gösterilir. Radyo bir istemciyi bununla da hatırlar, bu yüzden yeniden adlandırmak radyonun sdroxide'ı yeni biri gibi ele almasına yol açar.
+settings-radio-shown-against-session-radio-s = Radyonun istemci listesinde bu oturuma karşı gösterilir. Radyo bir istemciyi bununla da hatırlar, bu yüzden yeniden adlandırmak radyonun sdrcrow'ı yeni biri gibi ele almasına yol açar.
 settings-radio-gui-client-id = GUI istemci kimliği
-settings-radio-identity-radio-restores-session-s = Radyonun bu oturumun dilimlerini ve panadaptörlerini geri yüklediği kimlik. Boş bırakılırsa istasyon adından türetilir — kararlıdır, ama varsayılan adı tutan her sdroxide'da aynıdır ve radyo bir çiftlemeyi, önceki istemciyi düşürerek çözer. sdroxide bunu ağda fark eder ve tek oturumluk bir kimliğe geçer, bu da geri yüklemeye mal olur; kendi UUID'nizi buraya koyarak bunu koruyun.
+settings-radio-identity-radio-restores-session-s = Radyonun bu oturumun dilimlerini ve panadaptörlerini geri yüklediği kimlik. Boş bırakılırsa istasyon adından türetilir — kararlıdır, ama varsayılan adı tutan her sdrcrow'da aynıdır ve radyo bir çiftlemeyi, önceki istemciyi düşürerek çözer. sdrcrow bunu ağda fark eder ve tek oturumluk bir kimliğe geçer, bu da geri yüklemeye mal olur; kendi UUID'nizi buraya koyarak bunu koruyun.
 settings-radio-optional-e-g-uuid-your = isteğe bağlı, örn. kendi UUID'niz
 settings-radio-mirror-radio-s-i-q =
     Radyonun I/Q'sunu panadaptörün merkezi etrafında aynalar. Varsayılan olarak kapalıdır; bir FLEX-6600 bu şekilde doğrulandı.
@@ -1596,7 +1596,7 @@ settings-radio-ask-every-installed-soapysdr-module = Kurulu her SoapySDR modül�
 settings-radio-not-enumerated-yet-press-rescan = Henüz listelenmedi — Yeniden tara'ya basın.
 settings-radio-no-soapysdr-devices-found-check = SoapySDR aygıtı bulunamadı. Radyonuzun modülünün kurulu olduğunu ve aygıta erişebileceğinizi denetleyin.
 settings-radio-not-radio = radyo değil
-settings-radio-sound-card-listed-above-if = Yukarıda bir ses kartı, bir SDR imiş gibi listelenmiş. Her frekansı kabul eder ve yok sayar; bu yüzden açıldığında bant yerine ses kartının girişini gösterir. sdroxide bunları kendiliğinden seçmez — ama birini adlandıran bir device_args satırı yine de uygulanır.
+settings-radio-sound-card-listed-above-if = Yukarıda bir ses kartı, bir SDR imiş gibi listelenmiş. Her frekansı kabul eder ve yok sayar; bu yüzden açıldığında bant yerine ses kartının girişini gösterir. sdrcrow bunları kendiliğinden seçmez — ama birini adlandıran bir device_args satırı yine de uygulanır.
 settings-radio-which-one-opens-set-device = Hangisinin açılacağı --device ya da config.toml içindeki device_args ile ayarlanır; ikisi de yoksa listelenen ilk radyo kazanır.
 settings-radio-no-device = aygıt yok
 settings-radio-rig-has-no-software-adjustable = Bu telsizin yazılımla ayarlanabilir kazancı yoktur.
@@ -1648,7 +1648,7 @@ settings-radio-no-devices-press-rescan = aygıt yok — Yeniden tara'ya basın
 settings-radio-six-rates-are-six-different =
     Altı hız, bir yazmacın değil altı farklı FPGA görüntüsüdür — bu yüzden ELAD'ın protokolünde hiçbir şey aralarından seçim yapmaz ve bu ayarın ne anlama geldiği modele bağlıdır.
 
-    FDM-S1 / FDM-S2: a command. Their FPGA is loaded by the computer at every power-up, and sdroxide runs ELAD's own elad-firmware loader to put this rate's image in. Without that loader installed a sampler sends no samples at all, and sdroxide says so on screen.
+    FDM-S1 / FDM-S2: a command. Their FPGA is loaded by the computer at every power-up, and sdrcrow runs ELAD's own elad-firmware loader to put this rate's image in. Without that loader installed a sampler sends no samples at all, and sdrcrow says so on screen.
 
     FDM-DUO: not a command. The radio boots its own FPGA and arrives at whatever rate it powered up in or FDM-SW2 last left it in (192 kHz on a fresh one), and this only says how the stream is READ. Get it wrong and the panadapter is simply the wrong width, with every frequency inside it scaled to match.
 
@@ -1667,7 +1667,7 @@ settings-radio-how-transmit-keyed-cat-sends = Yayının nasıl anahtarlandığı
 settings-radio-where-radio-takes-transmit-audio-2 =
     Radyonun yayın sesini nereden aldığı — telsizin TI komutu; ön panelde menü 32 “TX IN”. Bağlantı noktası açıldığında etkinleştirilir.
 
-    "USB audio" is what makes transmit work here: the FDM-DUO sends what sdroxide puts into its USB sound card. A radio left on "Microphone" sends the room instead, and nothing on screen says so.
+    "USB audio" is what makes transmit work here: the FDM-DUO sends what sdrcrow puts into its USB sound card. A radio left on "Microphone" sends the room instead, and nothing on screen says so.
 settings-radio-which-two-sockets-back-receiver-2 =
     Alıcının arkadaki iki soketten hangisini dinlediği — telsizin AN komutu; ön panelde menü 31 “ANTENNAS” ve ekranındaki “ANT 1 2” göstergesi.
 
@@ -1706,7 +1706,7 @@ settings-radio-not-yet-verified-against-real-3 = Henüz gerçek donanımda doğr
 settings-radio-no-airspy-r2-mini-found = Airspy R2 ya da Mini bulunamadı — Yeniden tara'ya basın
 settings-radio-read-receiver = bu alıcıdan okunur
 settings-radio-r2-mini-offer-different-rates = bir R2 ve bir Mini farklı hızlar sunar ve biri açılana dek birbirinden ayırt edilemez
-settings-radio-rate-you-get-receiver-s = Bu, elde ettiğiniz hızdır. Alıcının ADC'si bunun iki katında çalışır — gerçek bir sinyali sayısallaştırır ve sdroxide ondan ana bilgisayarda karmaşık taban bandı üretir.
+settings-radio-rate-you-get-receiver-s = Bu, elde ettiğiniz hızdır. Alıcının ADC'si bunun iki katında çalışır — gerçek bir sinyali sayısallaştırır ve sdrcrow ondan ana bilgisayarda karmaşık taban bandı üretir.
 settings-radio-gain-curve = Kazanç eğrisi
 settings-radio-step-along-curve-above-not = Yukarıdaki eğri boyunca bir adım, bir dB rakamı değil — tuner'ın LNA'sı, karıştırıcısı ve VGA'sı birlikte hareket eder ve her adımın değeri eğriye ve banda bağlıdır. 0 sessiz uçtur.
 settings-radio-tuner-agc = Tuner AGC
@@ -1732,7 +1732,7 @@ settings-radio-antenna-sma-only-socket-bias = Anten SMA'sı — arkasında bias 
 settings-radio-cable-socket-no-bias-tee = Bir kablo soketi. Burada bias tee yoktur; donanım bunu yalnızca ANT'a koyar.
 settings-radio-powers-active-antenna-preamp-down-2 = Aktif bir anteni ya da ön yükselteci koaksiyel kablodan besler. Yalnızca ANT soketinin bunu yapabilen bir devresi vardır — iki kablo portu düz girişlerdir.
 settings-radio-third-less-usb-traffic-leave-2 = USB trafiğinin üçte biri kadar daha az. Açık bırakın: bu bir USB 2.0 aygıtıdır ve en yüksek hız, paketlenmemiş 48'e karşı 36 MB/s'dir. Yeniden bağlanınca uygulanır.
-settings-radio-one-these-boards-1d50-60a1 = Bu kartlardan biri 1d50:60a1 üzerinde; HydraSDR'nin prototiplerinin Airspy R2 ve Mini ile paylaştığı USB kimliği. sdroxide, açtıktan sonra yazılımı denetler ve yanlış arabirim seçilmişse her iki yönde de bunu söyler.
+settings-radio-one-these-boards-1d50-60a1 = Bu kartlardan biri 1d50:60a1 üzerinde; HydraSDR'nin prototiplerinin Airspy R2 ve Mini ile paylaştığı USB kimliği. sdrcrow, açtıktan sonra yazılımı denetler ve yanlış arabirim seçilmişse her iki yönde de bunu söyler.
 settings-radio-receive-only-24-1800-mhz-2 = Yalnızca alma, 24–1800 MHz. SoapySDR ya da libhydrasdr gerekmez. Alıcı, örnekleme hızı ve paketleme Uygula ile etkinleşir; diğer her şey değiştirdikçe uygulanır.
 settings-radio-re-list-fobos-sdrs-no = Fobos SDR'leri yeniden listele. Hiçbir aygıt açılmaz, bu yüzden alım sırasında basmak güvenlidir.
 settings-radio-no-fobos-sdr-found-press = Fobos SDR bulunamadı — Yeniden tara'ya basın
@@ -2013,7 +2013,7 @@ topbar-waiting-signal = bir sinyal bekleniyor
 topbar-record-spectrum = SPEKTRUMU KAYDET
 topbar-i-q-wav = ● I/Q WAV
 topbar-i-q-wav-2 = I/Q WAV
-topbar-raw-spectrum-receiver-delivering-stereo = Alıcının verdiği ham spektrum, SDR#, SDRuno, HDSDR ve SDRangel'in açtığı stereo 32 bit kayan nokta WAV olarak (4 GB'ın üstünde RF64) — sdroxide'ın kendisi de --file ile oynatır. Büyüktür: örnek başına 8 bayt.
+topbar-raw-spectrum-receiver-delivering-stereo = Alıcının verdiği ham spektrum, SDR#, SDRuno, HDSDR ve SDRangel'in açtığı stereo 32 bit kayan nokta WAV olarak (4 GB'ın üstünde RF64) — sdrcrow'ın kendisi de --file ile oynatır. Büyüktür: örnek başına 8 bayt.
 topbar-radio-hands-over-demodulated-audio = Bu radyo demodüle edilmiş ses verir, bu yüzden kaydedilecek I/Q yoktur.
 topbar-what-capture-costs-sample-rate = Bu örnekleme hızında bir kaydın maliyeti
 topbar-engine = MOTOR
@@ -2034,9 +2034,9 @@ topbar-which-socket-back-radio-receiving =
 topbar-radio-s-separate-receiving-antenna =
     Radyonun ayrı alma anteni, alma yoluna ya da alma yolundan çıkarılmış — kendi RX ANT ayarı. Ana soketteki anten her iki durumda da yayında kalır.
 
-    The radio remembers this per band itself, so sdroxide reads it back after every band change rather than putting back what it last saw: clicking here is the only thing that moves it.
+    The radio remembers this per band itself, so sdrcrow reads it back after every band change rather than putting back what it last saw: clicking here is the only thing that moves it.
 topbar-radio-s-own-power-switch =
-    Radyonun kendi güç anahtarı, kontrol bağlantısı üzerinden; programdaki tek gerçek açma/kapatma budur — sdroxide'ın LINK anahtarı değildir, o yalnızca sdroxide'ın tarafını kapatır ve radyo çalışmaya devam eder.
+    Radyonun kendi güç anahtarı, kontrol bağlantısı üzerinden; programdaki tek gerçek açma/kapatma budur — sdrcrow'ın LINK anahtarı değildir, o yalnızca sdrcrow'ın tarafını kapatır ve radyo çalışmaya devam eder.
 
     For ON to reach anything the radio's control end has to stay awake while it is off: Network Control over the LAN, or a CI-V port still fed from the mains on a set switched off at the front.
 topbar-switch-radio = Radyoyu aç
@@ -2172,7 +2172,7 @@ settings-radio-icom-scope-hint =
 
     The sweeps share the radio's internal USB bus with its own sound card. If received audio starts to drop out with the scope on, this box is the first thing to try turning off.
 settings-radio-rx-tx-words = { $rx } / TX { $tx }
-settings-radio-soapy-native = Aşağıdaki donanım sdroxide tarafından doğrudan desteklenir: { $names }. Yukarıda bu arabirimi seçmek size kendi ayarlarını verir — SoapySDR'nin ifade edemediği kazanç katları, filtreler ve çentikler — ve bir SoapySDR modülü gerektirmez.
+settings-radio-soapy-native = Aşağıdaki donanım sdrcrow tarafından doğrudan desteklenir: { $names }. Yukarıda bu arabirimi seçmek size kendi ayarlarını verir — SoapySDR'nin ifade edemediği kazanç katları, filtreler ve çentikler — ve bir SoapySDR modülü gerektirmez.
 settings-radio-rx888-width-hint = Panadaptörün bir anda gösterdiği sayısallaştırılmış spektrumun ne kadarı. Tüm DSP zinciri bu genişlikte çalışır, bu yüzden daha geniş olması orantılı olarak daha fazla CPU demektir — 1/2, şelalede tüm bandtır ve ciddi miktarda aritmetik. VHF geçişinin ({ $crossover } MHz) üstünde panadaptör antene değil tuner'ın IF'ine bakar; bu, 8 MHz genişliğindedir ve { $if_centre } MHz'e park edilmiştir — bu yüzden { $widest } değerinden geniş hiçbir şey üzerine ortalanamaz ve fazla genişlik, daha fazla spektrum değil sinyalin yanında ölü spektrumdur.
 settings-radio-sdrplay-serial-missing = { $serial } seri numarası, SDRplay servisinin bildirdiği alıcılar arasında yok. Listelenen alıcılardan birini seçin ya da bunu yeniden takıp Yeniden tara'ya basın.
 settings-radio-hdr-filter-hint =
@@ -2265,7 +2265,7 @@ topbar-drive-cal-band = { $band } { $trim } dB kalibre edilmiş; bu yüzden ayn�
        *[more] daha fazla
     } verir.
 topbar-drive-hover =
-    Verici ne kadar sürülüyor. sdroxide'ın kendisinin modüle ettiği bir radyoda, modüle edilmiş örnekleri ölçekler; kendi güç denetimi olan bir telsizde ise telsize istenen, nominal gücün kesridir.
+    Verici ne kadar sürülüyor. sdrcrow'ın kendisinin modüle ettiği bir radyoda, modüle edilmiş örnekleri ölçekler; kendi güç denetimi olan bir telsizde ise telsize istenen, nominal gücün kesridir.
 
     { $trim }
 
@@ -2649,9 +2649,9 @@ setup-my-grid = Lokatörüm
 setup-station-call = İstasyon çağrısı
 setup-ssid-oe3jjs-10-packet-station = Bir SSID ile — OE3JJS-10. Bir paket istasyonu geleneksel olarak operatörden farklı bir SSID kullanır ve bu ayarlanana dek hiçbir şey yayınlanmaz.
 setup-speed = Hız
-setup-t-9600-needs-radio-s-data = 9600, radyonun veri portunu gerektirir. Bir mikrofon ve hoparlör yolu her iki uçta da onu yok eder — bu sdroxide'ın değil radyonun sorunudur.
+setup-t-9600-needs-radio-s-data = 9600, radyonun veri portunu gerektirir. Bir mikrofon ve hoparlör yolu her iki uçta da onu yok eder — bu sdrcrow'ın değil radyonun sorunudur.
 setup-tx-delay = Yayın gecikmesi
-setup-flags-sent-before-frame-so = Bir çerçeveden önce gönderilen bayraklar; böylece uzak uç bizi duyabilir ve saatini kilitleyebilir. Bir CAT telsizinde yalnızca sdroxide, havaya çıkmak için 165–240 ms harcar ve telsizin kendi yayına hazır olma süresi buna eklenir.
+setup-flags-sent-before-frame-so = Bir çerçeveden önce gönderilen bayraklar; böylece uzak uç bizi duyabilir ve saatini kilitleyebilir. Bir CAT telsizinde yalnızca sdrcrow, havaya çıkmak için 165–240 ms harcar ve telsizin kendi yayına hazır olma süresi buna eklenir.
 setup-packet-length = Paket uzunluğu
 setup-bytes = {" "}bayt
 setup-most-single-frame-carries-shorter = Tek bir çerçevenin taşıdığı en fazla miktar. Daha kısa çerçeveler sınırda bir yolda hayatta kalır — yalnızca vurulan çerçeve yeniden gönderilir — ama daha fazla ek yük getirir. HF'de 128, yolun sağlam olduğu yerde 256.
@@ -2698,7 +2698,7 @@ setup-first-goes-out-one-interval = İlki, hemen değil şimdiden bir aralık so
 setup-messages = İletiler
 setup-acknowledge = Onayla
 setup-answer-messages-addressed-you-acknowledgement = Size gönderilen iletilere yanıt verin. Bir onay, bu istasyonun istenmeden yaptığı bir yayındır; bu yüzden yalnızca alan bir kurulum bunu kapatmalıdır — ve işaret de ulaşılabilir olduğunu iddia etmeyi bırakır.
-setup-flags-sent-ahead-every-frame = Her çerçevenin önüne gönderilen bayraklar; böylece uzak ucun modemi taşıyıcıyı duyar ve veri başlamadan saatini kilitler. Yayın tuşuna basmakla ışımanın arasındaki her şeyden daha uzun sürmelidir: sdroxide tek başına bir CAT telsizinde bunun 165–240 ms'ini harcar ve ses ağ üzerinden alan bir telsiz buna daha fazla tampon ekler. Çok az olursa uzak uç hiç kilitlenmez — yayın oradadır ve hiçbir şey onu çözmez.
+setup-flags-sent-ahead-every-frame = Her çerçevenin önüne gönderilen bayraklar; böylece uzak ucun modemi taşıyıcıyı duyar ve veri başlamadan saatini kilitler. Yayın tuşuna basmakla ışımanın arasındaki her şeyden daha uzun sürmelidir: sdrcrow tek başına bir CAT telsizinde bunun 165–240 ms'ini harcar ve ses ağ üzerinden alan bir telsiz buna daha fazla tampon ekler. Çok az olursa uzak uç hiç kilitlenmez — yayın oradadır ve hiçbir şey onu çözmez.
 setup-shared-packet-mode = paket modu ile paylaşılır
 setup-keep-stations = İstasyonları tut
 setup-how-long-station-stays-map = Bir istasyonun en son duyulduktan sonra haritada ne kadar kaldığı. Ayrıca haritanın solmasının ölçüldüğü değer; bu yüzden kısa bir pencere yalnızca canlı olanı gösterir.
@@ -2834,7 +2834,7 @@ sstv-chunks-received-lit-still-missing = Alınan parçalar (yanan) ve hâlâ eks
 sstv-sstv = SSTV
 sstv-auto = Otomatik
 sstv-signal = Sinyal
-sstv-station-sending-mode-sdrcrow-does = Bir istasyon, sdroxide'ın sahip olmadığı bir modda yayın yapıyor. Sinyal ve ayar iyi — bunun için yalnızca bir çözücü yok. Sizin tarafınızda düzeltilecek bir şey yok.
+sstv-station-sending-mode-sdrcrow-does = Bir istasyon, sdrcrow'ın sahip olmadığı bir modda yayın yapıyor. Sinyal ve ayar iyi — bunun için yalnızca bir çözücü yok. Sizin tarafınızda düzeltilecek bir şey yok.
 sstv-listening = dinleniyor…
 sstv-callsign-last-station-sent-fsk = Son istasyonun resminden sonra bir FSK kimliği olarak gönderdiği çağrı işareti.
 sstv-tx-slant = YAYIN eğimi
@@ -3076,7 +3076,7 @@ sstv-older-load-more = { $n } daha eski — daha fazlasını yükle
 sstv-delete-picture-from = Bu resmi { $place } sil
 sstv-rifp-profile = { $profile } · yaklaşık { $khz } kHz kaplar · skala kanal merkezidir
 sstv-rifp-too-wide = ⚠ { $profile } yaklaşık { $khz } kHz kaplar — dar bantlı bir segment için çok geniş
-sstv-rifp-no-frequency = RIFP bir frekans atamaz ve sdroxide, hangi yere ayarlarsanız orada yayınlar. { $khz } kHz'lik bir kanal yalnızca geniş bant ya da FM işletimine izin verilen yerlerde sığar — { $segments } — ve dar bantlı bir segmentte değil, en az HF'de. Bunların içinde bile kendi lisans koşullarınız daha dar olabilir. Operatör sizsiniz; kendi kurallarınızı denetleyin.
+sstv-rifp-no-frequency = RIFP bir frekans atamaz ve sdrcrow, hangi yere ayarlarsanız orada yayınlar. { $khz } kHz'lik bir kanal yalnızca geniş bant ya da FM işletimine izin verilen yerlerde sığar — { $segments } — ve dar bantlı bir segmentte değil, en az HF'de. Bunların içinde bile kendi lisans koşullarınız daha dar olabilir. Operatör sizsiniz; kendi kurallarınızı denetleyin.
 sstv-rifp-tx-frame = ● YAYIN karesi { $frame }/{ $frames } · { $secs } sn kaldı
 sstv-rifp-sent-as = { $encoding } olarak gönderildi · { $octets } oktet
 sstv-rifp-rx-stats = kareler { $frames } · bozuk { $bad } · resimler { $pictures }
@@ -3117,7 +3117,7 @@ decodes-dupe = KOPYA
 decodes-reply = YANIT
 decodes-queued-click-remove = Sıraya alındı — kaldırmak için tıklayın
 decodes-work-station-after-current-one = Bu istasyonla, şu anki istasyondan sonra çalışın
-decodes-qsos-worked-since-sdrcrow-was = sdroxide başlatıldığından beri çalışılan QSO'lar
+decodes-qsos-worked-since-sdrcrow-was = sdrcrow başlatıldığından beri çalışılan QSO'lar
 decodes-qso-complete = ✓ QSO TAMAMLANDI
 decodes-tx = ● TX
 decodes-dxpedition-mode-transmit-frequency-held = DXpedition modu. Yayın frekansı, Fox yanıt verene dek geçiş bandının Fox'un yarısının dışında (1000 Hz'in altında) tutulur.
@@ -3287,7 +3287,7 @@ aprs-busy = MEŞGUL
 aprs-stations-heard-still-inside-window = APRS Kurulumu'nda ayarlanan pencere içinde hâlâ duyulan istasyonlar ve şu anda kanalda başka bir istasyon olup olmadığı. Meşgulken hiçbir şey anahtarlanmaz.
 aprs-tx = ● TX
 aprs-over-progress-frames-waiting-channel = Devam eden yayın, kanalın boşalmasını bekleyen çerçeveler ya da bir sonraki planlanmış işarete kadar geçen süre.
-aprs-audio-reaching-modem-flat-means = Modeme ulaşan ses. Düz, hiçbir şeyin gelmediği anlamına gelir — radyonun veri çıkışının sdroxide'ın dinlediği çıkış olduğunu denetleyin. Modem bir taşıyıcı duyduğunda yeşil yanar.
+aprs-audio-reaching-modem-flat-means = Modeme ulaşan ses. Düz, hiçbir şeyin gelmediği anlamına gelir — radyonun veri çıkışının sdrcrow'ın dinlediği çıkış olduğunu denetleyin. Modem bir taşıyıcı duyduğunda yeşil yanar.
 
 ## vdl2 (src/app/panels/vdl2.rs)
 
@@ -3320,7 +3320,7 @@ vdl2-forget-station-after = Bir istasyonu şundan sonra unut
 vdl2-nothing-heard = ondan hiçbir şey duyulmadan
 vdl2-show-unread-payloads = Okunmamış yükleri göster
 vdl2-hex = onaltılık olarak
-vdl2-frames-carrying-x-25-clnp = X.25, CLNP ya da bunların üstündeki veri bağlantısı uygulamalarını taşıyan çerçeveler. SDRoxide bunları adlandırır ve baytları okumak yerine gösterir; bunları gizlemek, trafiğin ne kadarının bu olduğunu gizlemek olur.
+vdl2-frames-carrying-x-25-clnp = X.25, CLNP ya da bunların üstündeki veri bağlantısı uygulamalarını taşıyan çerçeveler. SDRCrow bunları adlandırır ve baytları okumak yerine gösterir; bunları gizlemek, trafiğin ne kadarının bu olduğunu gizlemek olur.
 vdl2-registration = Tescil
 vdl2-flight = Uçuş
 vdl2-label = Etiket
@@ -3440,7 +3440,7 @@ ais-dgnss = {" "}(DGNSS)
 ais-first-heard = ilk duyuldu
 ais-center = ORTALA
 ais-put-vessel-middle-chart = Bu gemiyi haritanın ortasına koyun
-ais-last-message-station-nmea-sentences = Bu istasyondan gelen son ileti, bir alıcının kabloya koyacağı NMEA cümleleri olarak. sdroxide'ın ondan ne yaptığını denetlemek için herhangi başka bir AIS çözücüsüne yapıştırın.
+ais-last-message-station-nmea-sentences = Bu istasyondan gelen son ileti, bir alıcının kabloya koyacağı NMEA cümleleri olarak. sdrcrow'ın ondan ne yaptığını denetlemek için herhangi başka bir AIS çözücüsüne yapıştırın.
 ais-ais-setup = AIS Kurulumu
 ais-channels = Kanallar
 ais-drop-chart-after = Haritadan şundan sonra düşür
@@ -3662,7 +3662,7 @@ adsb-icao = ICAO
 drm-waiting-receiver = alıcı bekleniyor…
 drm-not-drm-set-mode-drm = DRM'de değil. Dijital bir kısa dalga yayınında modu DRM'e ayarlayın — skala bir yan banda değil kanalın merkezine gelir.
 drm-no-drm-signal-locked-decoder = Hiçbir DRM sinyali kilitlenmedi. Çözücünün temiz bir taşıyıcıda birkaç saniyeye ihtiyacı vardır: DRM, okunabilmeden önce 400 ms ya da 2 sn boyunca serpiştirir.
-drm-station-s-audio-codec-not = Bu istasyonun ses kodeki burada çözülmüyor. xHE-AAC, sistemde libfdk-aac gerektirir — içine derlenemez, çünkü lisansı ile bu programınkiler bağdaşmaz. Kurun (Debian/Ubuntu: libfdk-aac2, Arch: libfdk-aac, macOS: brew install fdk-aac, Windows: sdroxide.exe yanında libfdk-aac-2.dll) ve yeniden başlatın. Bu ekrandaki diğer her şey normal çözülüyor.
+drm-station-s-audio-codec-not = Bu istasyonun ses kodeki burada çözülmüyor. xHE-AAC, sistemde libfdk-aac gerektirir — içine derlenemez, çünkü lisansı ile bu programınkiler bağdaşmaz. Kurun (Debian/Ubuntu: libfdk-aac2, Arch: libfdk-aac, macOS: brew install fdk-aac, Windows: sdrcrow.exe yanında libfdk-aac-2.dll) ve yeniden başlatın. Bu ekrandaki diğer her şey normal çözülüyor.
 drm-quality = KALİTE
 drm-last-minute = son dakika
 drm-waiting-locked-signal = kilitli bir sinyal bekleniyor
@@ -3983,16 +3983,16 @@ ism-decoding = ÇÖZÜLÜYOR
 ism-needs-wideband-iq-source-cat = Geniş bant bir IQ kaynağı gerektirir; bir CAT telsizi yalnızca ses gönderir
 ism-how-far-burst-must-stand = Bir patlamanın, çözülmeden önce kanalın kendi gürültü tabanının ne kadar üstünde durması gerektiği
 ism-give-each-band-width-normally = Her banda normalde ihtiyaç duyduğu genişliği verin — 315, 345 ve 433 MHz'deki OOK bantları için bir megahertzin dörtte biri, 868 ve 915 için tam bir megahertz.
-ism-several-hundred-more-device-decoders = rtl_433 projesinden, içine derlenmiş birkaç yüz aygıt çözücüsü daha. sdroxide'ın kendi çözücülerinin hiç ulaşamadığı 433 MHz OOK aygıtlarını okur. İkisi de bir aygıtı okuyabildiğinde, rtl_433 bu çeşitlerin çok daha fazlasını bilir ve devralır.
+ism-several-hundred-more-device-decoders = rtl_433 projesinden, içine derlenmiş birkaç yüz aygıt çözücüsü daha. sdrcrow'ın kendi çözücülerinin hiç ulaşamadığı 433 MHz OOK aygıtlarını okur. İkisi de bir aygıtı okuyabildiğinde, rtl_433 bu çeşitlerin çok daha fazlasını bilir ve devralır.
 ism-t-1-your-own = 1 sizinki
 ism-device-decoders-registered-how-many = Kayıtlı aygıt çözücüleri, kaçının rtl433_flex.conf dosyanızdan geldiği ve başladığından beri kaç yayının çözüldüğü.
 ism-reload-decoders = ÇÖZÜCÜLERİ YENİDEN YÜKLE
 ism-re-read-rtl433-flex-conf = Düzenledikten sonra rtl433_flex.conf dosyasını yeniden okuyun. Duyulmuş aygıtlar listede kalır.
-ism-rtl-433-knows-more-variants = rtl_433, bunların çeşitlerini sdroxide'ın kendi çözücülerinden daha fazla bilir; bu yüzden burada dinlerken bunları okur. Başka bir bant seçin, sdroxide'ın kendi çözücüleri yeniden devralır.
+ism-rtl-433-knows-more-variants = rtl_433, bunların çeşitlerini sdrcrow'ın kendi çözücülerinden daha fazla bilir; bu yüzden burada dinlerken bunları okur. Başka bir bant seçin, sdrcrow'ın kendi çözücüleri yeniden devralır.
 ism-decoder-your-rtl433-flex-conf = rtl433_flex.conf dosyanızdaki bir çözücü reddedildi. Diğerleri yine yüklendi. Satırı düzeltin, sonra YENİDEN YÜKLE'ye basın.
 ism-waiting-decoder = çözücü bekleniyor…
 ism-where-decoder-actually-listening-follows = Çözücünün gerçekte nerede dinlediği. Bu, VFO'yu değil alıcının donanım merkezini izler — geniş bir ön uçta ikisi çok uzakta olabilir ve hangi kanalların ulaşılabilir olduğuna karar veren pencere odur.
-ism-transmissions-gate-opened-how-many = Kapının açıldığı yayınlar ve kaçının geçerli bir çerçeve ürettiği. Birçok patlama ve hiç çözüm yok, bandın sdroxide'ın henüz okuyamadığı aygıtlarla meşgul olduğu anlamına gelir. Hiç yoksa, hiçbir şeyin eşiğe ulaşmadığı anlamına gelir — onu düşürün ya da skalanın bantta olduğunu denetleyin.
+ism-transmissions-gate-opened-how-many = Kapının açıldığı yayınlar ve kaçının geçerli bir çerçeve ürettiği. Birçok patlama ve hiç çözüm yok, bandın sdrcrow'ın henüz okuyamadığı aygıtlarla meşgul olduğu anlamına gelir. Hiç yoksa, hiçbir şeyin eşiğe ulaşmadığı anlamına gelir — onu düşürün ya da skalanın bantta olduğunu denetleyin.
 ism-nothing-heard-yet = henüz hiçbir şey duyulmadı
 ism-click-tune-receiver =
 
@@ -4078,7 +4078,7 @@ rade-callsign-station-put-end-over =
 rade-stop-talking = KONUŞMAYI DURDUR
 rade-talk-ptt = KONUŞ (PTT)
 rade-open-close-rade-over-modem = Bir RADE yayını açın ya da kapatın. Modem, ilk çerçeve gitmeden önce yaklaşık 120 ms konuşmaya ihtiyaç duyar ve durduğunuzda bir over sonu çerçevesi gönderir; bu yüzden yayın, düğmenin biraz ötesinde sürer.
-rade-rade-v1-occupies-roughly-1060 = RADE V1, geçiş bandının yaklaşık 1060–1880 Hz'ini kaplar — üst yan bant, ya da RADE'in telefon pratiği yaptığı ve sdroxide'ın sizin için değiştirdiği 160, 80 ve 40 m'de alt yan bant. Sinyali şelaledeki gölgeli bandın içine koyun; modem onu oradan bulur.
+rade-rade-v1-occupies-roughly-1060 = RADE V1, geçiş bandının yaklaşık 1060–1880 Hz'ini kaplar — üst yan bant, ya da RADE'in telefon pratiği yaptığı ve sdrcrow'ın sizin için değiştirdiği 160, 80 ve 40 m'de alt yan bant. Sinyali şelaledeki gölgeli bandın içine koyun; modem onu oradan bulur.
 
 ## frame (src/app/frame.rs)
 
@@ -4103,7 +4103,7 @@ smeter-radio-reports-no-forward-power =
 smeter-no-swr-radio-has-no =
 
 
-    No SWR: this radio has no bridge to measure it with, and sdroxide will not invent one — it can only show what the radio itself reports. A rig with an SWR meter (over CAT, TCI or a LAN link) and an HPSDR board both fill this in; a plain SDR transmitter cannot.
+    No SWR: this radio has no bridge to measure it with, and sdrcrow will not invent one — it can only show what the radio itself reports. A rig with an SWR meter (over CAT, TCI or a LAN link) and an HPSDR board both fill this in; a plain SDR transmitter cannot.
 smeter-no-signal-report-yet-receiver = Henüz sinyal raporu yok — alıcı bir metre okuması vermedi.
 smeter-s9-73-dbm-each-s =
 
@@ -4209,7 +4209,7 @@ help-previous-match-shift-enter-shift = Önceki eşleşme (Shift+Enter, Shift+F3
 help-next-match-enter-f3 = Sonraki eşleşme (Enter, F3)
 help-no-matches = eşleşme yok
 help-clear-search-esc = Aramayı temizle (Esc)
-help-sdrcrow-manual = SDROXIDE KILAVUZU
+help-sdrcrow-manual = SDRCROW KILAVUZU
 help-contents = İÇİNDEKİLER
 
 ## aismap (src/ais_map.rs)
@@ -4229,7 +4229,7 @@ specview-hounds = HOUNDS
 
 spectrum-window-has-no-gpu-renderer = Bu pencerenin GPU çizicisi yok, bu yüzden şelale standart genişliğinde kalır.
 spectrum-machine-drawing-without-gpu-every = Bu makine bir GPU olmadan çiziyor — şelalenin her sütunu işlemcinin işi ve zaten bunu radyoyla paylaşıyor.
-spectrum-window-renders-through-opengl-which = Bu pencere, sdroxide'ın uyumluluk yolu olan OpenGL üzerinden çizer — bir Raspberry Pi, eski bir grafik çipi ya da WebGPU'suz bir tarayıcı. Orada daha geniş bir şelale kare hızına değmez.
+spectrum-window-renders-through-opengl-which = Bu pencere, sdrcrow'ın uyumluluk yolu olan OpenGL üzerinden çizer — bir Raspberry Pi, eski bir grafik çipi ya da WebGPU'suz bir tarayıcı. Orada daha geniş bir şelale kare hızına değmez.
 spectrum-wider-than-renderer-can-draw = Bu çizicinin çizebileceğinden geniş.
 
 ## macros (src/app/panels/macros.rs)
@@ -4304,7 +4304,7 @@ worldmap-double-click-reframe = YENİDEN ÇERÇEVELEMEK İÇİN ÇİFT TIKLAYIN
 
 ## duopower (src/app/duo_power.rs)
 
-duopower-sets-fdm-duo-s-own = FDM-DUO'nun kendi güç ayarını (menü 34 TX POWER) belirler. Sürüş ve Ayar, bunun içinde gücü ayarlar; SDRoxide her bağlandığında ayarı yeniden gönderir.
+duopower-sets-fdm-duo-s-own = FDM-DUO'nun kendi güç ayarını (menü 34 TX POWER) belirler. Sürüş ve Ayar, bunun içinde gücü ayarlar; SDRCrow her bağlandığında ayarı yeniden gönderir.
 
 ## Band conditions window: a peak date.
 
@@ -4667,7 +4667,7 @@ vdl2-characters = { $parity_errors } karakter
 vdl2-parameter-sdrcrow-does-not-read = { $unknown } { $unknown ->
         [one] parametre
        *[other] parametre
-    } SDRoxide okumaz — yukarıda tanımlayıcı ve baytlar olarak gösterilir
+    } SDRCrow okumaz — yukarıda tanımlayıcı ve baytlar olarak gösterilir
 
 ## wefax: messages with values (src/app/panels/wefax.rs)
 
@@ -5093,7 +5093,7 @@ hpsdr-io-rx-input-io-board-pure-signal = IO kartı J9, yayında PureSignal
 hydra-sdr-gain-linearity = Doğrusallık (güçlü sinyal işlemede en iyi)
 hydra-sdr-gain-sensitivity = Hassasiyet (zayıf sinyalde en iyi)
 icom-rx-source-af = AF — radyo demodüle eder
-icom-rx-source-if12k = 12 kHz IF — sdroxide demodüle eder
+icom-rx-source-if12k = 12 kHz IF — sdrcrow demodüle eder
 icom-scope-span-radio = Radyoda ayarlandığı gibi
 icom-scope-span-khz2-5 = 5 kHz (±2,5k)
 icom-scope-span-khz5 = 10 kHz (±5k)
@@ -5620,7 +5620,7 @@ settings-general-default = VARSAYILAN
 
 settings-general-default-hint = Varsayılana dön — müzik klasörünüz veya sistemde yoksa yapılandırma dizini
 
-settings-general-recordings-dir-note = Ses kayıtlarının, zamanlanmış kayıtların ve ham I/Q yakalamalarının yazıldığı yer. Varsayılan: müzik klasörünüzün sdroxide alt klasörü, sistem müzik klasörü sunmuyorsa yapılandırma dizininin recordings klasörü.
+settings-general-recordings-dir-note = Ses kayıtlarının, zamanlanmış kayıtların ve ham I/Q yakalamalarının yazıldığı yer. Varsayılan: müzik klasörünüzün sdrcrow alt klasörü, sistem müzik klasörü sunmuyorsa yapılandırma dizininin recordings klasörü.
 
 setup-suffix-cq = { " " }cq
 
@@ -6597,7 +6597,7 @@ decodes-muted-caps = SUSTURULDU
 
 decodes-muted-hint = Bu oturum için susturuldu — yeniden duymak için tıklayın
 
-decodes-ignore-hint = Bu istasyonu oturumun geri kalanında yok say: çözüm listesinden çıkar, uyarı sesi vermeyi bırakır ve otomatik moda asla önerilmez. Onun adına hiçbir şey gönderilmez veya yüklenmez ve sdroxide'ı yeniden başlatmak onu geri getirir.
+decodes-ignore-hint = Bu istasyonu oturumun geri kalanında yok say: çözüm listesinden çıkar, uyarı sesi vermeyi bırakır ve otomatik moda asla önerilmez. Onun adına hiçbir şey gönderilmez veya yüklenmez ve sdrcrow'ı yeniden başlatmak onu geri getirir.
 
 decodes-qso-complete-hint = Bağlantı tamamlandı ve yerel günlükte. Diğer istasyon kendi mesajını tekrarlarsa son mesaj yeniden gönderilebilsin diye burada birkaç dakika tutulur — başka bir borç kalmadı.
 
@@ -6730,7 +6730,7 @@ settings-radio-rx-only-n = Yalnızca RX{ $n }
 settings-radio-ng-level = nG seviyesi
 
 settings-radio-ng-level-hint =
-    nG, 2.00x yazılımında olmayan iki komut ekler ve bunların ayarlanabileceği tek yer burasıdır: nG ikisine de yanıt vermez ve ikisini de saklamaz, bu yüzden sdroxide bağlantı her açıldığında bunları yeniden gönderir.
+    nG, 2.00x yazılımında olmayan iki komut ekler ve bunların ayarlanabileceği tek yer burasıdır: nG ikisine de yanıt vermez ve ikisini de saklamaz, bu yüzden sdrcrow bağlantı her açıldığında bunları yeniden gönderir.
 
     Ses, radyonun USB akışına gönderdiği seviyedir. nG bu sesi VOL ve AGC'den sonra alır, bu yüzden çok az veya çok fazla gören bir çözücüyü düzeltmek için doğru yer burasıdır — bilgisayarın karıştırıcısı değil.
 
@@ -6744,7 +6744,7 @@ settings-radio-speaker = Hoparlör
 
 settings-radio-on-while-streaming = Akış sırasında açık
 
-settings-radio-ng-speaker-hint = Kapalı, akış sırasında radyonun kendi hoparlörünü kapatır (`UA2;`), böylece ses yalnızca sdroxide'da duyulur. 2.00x'te böyle bir biçim yoktu.
+settings-radio-ng-speaker-hint = Kapalı, akış sırasında radyonun kendi hoparlörünü kapatır (`UA2;`), böylece ses yalnızca sdrcrow'da duyulur. 2.00x'te böyle bir biçim yoktu.
 
 settings-radio-ng-agc-auto = Otomatik (veri modlarında DIGI)
 
@@ -6784,7 +6784,7 @@ settings-radio-atsmini-vol = SES
 
 settings-radio-atsmini-step = ADIM
 
-settings-radio-atsmini-sent-at-once = Radyoya hemen gönderilir. SES, alıcının kendi ses düzeyidir (düğmesi ve Si4732'nin), sdroxide'ın AF kaydırıcısı değil.
+settings-radio-atsmini-sent-at-once = Radyoya hemen gönderilir. SES, alıcının kendi ses düzeyidir (düğmesi ve Si4732'nin), sdrcrow'ın AF kaydırıcısı değil.
 
 settings-radio-refresh = Yenile
 
@@ -6796,7 +6796,7 @@ settings-radio-no-slots-stored = Alıcıda kayıtlı yuva yok.
 
 settings-radio-press-refresh-slots = Alıcının hafıza yuvalarını okumak için Yenile'ye basın.
 
-settings-radio-icomnet-receive-hint = AF: radyo demodüle eder ve sdroxide ses bandını gösterir. 12 kHz IF: radyo bunun yerine DRM ara frekansını gönderir ve sdroxide demodüle eder; bu, yaklaşık ±12 kHz üzerinde kendi filtrelerini, gürültü azaltmayı ve çözücüleri devreye sokar. Her iki durumda da geniş şelale radyonun kendi skopudur — hiçbir Icom I/Q çıkarmaz.
+settings-radio-icomnet-receive-hint = AF: radyo demodüle eder ve sdrcrow ses bandını gösterir. 12 kHz IF: radyo bunun yerine DRM ara frekansını gönderir ve sdrcrow demodüle eder; bu, yaklaşık ±12 kHz üzerinde kendi filtrelerini, gürültü azaltmayı ve çözücüleri devreye sokar. Her iki durumda da geniş şelale radyonun kendi skopudur — hiçbir Icom I/Q çıkarmaz.
 
 settings-radio-copy-icom-session-hint = Bu radyonun son oturumunu — el sıkışmasını ve CI-V izini — bir hata raporu için panoya (veya bir sayfanın kopyalamasına izin vermeyen tarayıcıda bir dosyaya) kopyalar. İstasyonun değil, bu radyonun: LAN'da iki Icom varsa her sekme kendi adresi hakkında yanıt verir.
 
@@ -6815,7 +6815,7 @@ settings-radio-rx888-dab-rate-hint = DAB/DAB+ çözmek istiyorsanız 80.0 Msps v
 settings-radio-pluto-both-chains-hint = Her iki antende dinlemek için: aynı adreste ikinci bir radyo ekleyin ve onu RX2 yapın. Her iki radyo aynı frekansı paylaşır.
 
 settings-radio-duplex-tdd-hint =
-    AD9361'in her iki yönde birden çalışıp çalışmadığı (FDD, bir Pluto'nun açılış biçimi ve sdroxide'ın hep bıraktığı durum) veya birer birer (TDD).
+    AD9361'in her iki yönde birden çalışıp çalışmadığı (FDD, bir Pluto'nun açılış biçimi ve sdrcrow'ın hep bıraktığı durum) veya birer birer (TDD).
 
     Aşağıdaki PTT pinlerini istemiyorsanız FDD'de bırakın — TDD bunların anahtarlandığı moddur ve yukarıdaki Tam dupleksi dışlar. Uygula'da yürürlüğe girer.
 
@@ -7328,7 +7328,7 @@ frame-listening-controls = Dinleme kontrolleri
 
 frame-listening-controls-hint = Gönderim kontrollerini gizler ve bu telsizi dinleme ekranına geçirir (Ayarlar → Telsiz). Hiçbir şey yeniden ayarlanmaz ve çözücü çalışmaya devam eder.
 
-frame-update-available = SDR Oxide Brown { $tag } mevcut — şu an { $version } sürümündesiniz.
+frame-update-available = SDRCrow { $tag } mevcut — şu an { $version } sürümündesiniz.
 
 frame-download = İndir
 
@@ -7617,7 +7617,7 @@ cwkey-grab-failed = padel münhasıran alınamadı — kontakları başka pencer
 ignore-muted-hover =
     Bu oturum için sessize alınanlar: { $names }.
 
-    Sessize alınan bir istasyon çözüm listesinden çıkar, uyarıları çaldırmaz, sesli okunmaz ve otomatik moda yanıtlanacak biri olarak asla önerilmez. Adına hiçbir şey iletilmez veya yüklenmez ve liste sdroxide kapanınca unutulur — saklanan bir kopya yoktur, bu yüzden bir akşamlık dinlemeden sonra hiçbir şey gizli kalmaz.
+    Sessize alınan bir istasyon çözüm listesinden çıkar, uyarıları çaldırmaz, sesli okunmaz ve otomatik moda yanıtlanacak biri olarak asla önerilmez. Adına hiçbir şey iletilmez veya yüklenmez ve liste sdrcrow kapanınca unutulur — saklanan bir kopya yoktur, bu yüzden bir akşamlık dinlemeden sonra hiçbir şey gizli kalmaz.
 
     Hepsinin sesini açmak için tıklayın veya satırlarından herhangi birindeki − düğmesine basın.
 
@@ -7772,7 +7772,7 @@ settings-ui-sound-welcome-browser-only = yalnızca tarayıcı — kurulu program
 settings-ui-profile-screen = Ekran profilinizi izler
 
 settings-ui-profile-screen-hint =
-    `sdroxide --server` uzak istemcisi olduğunuzda, bu ekranın *görünümü* — tema, düzen, şelale ve spektrum, yazı tipleri, Basit UI, harita katmanları, panadaptörün kendi görünümü — oturum açtığınız profille birlikte saklanır; böylece varsayılanlardan başlamak yerine her makinede geri gelir.
+    `sdrcrow --server` uzak istemcisi olduğunuzda, bu ekranın *görünümü* — tema, düzen, şelale ve spektrum, yazı tipleri, Basit UI, harita katmanları, panadaptörün kendi görünümü — oturum açtığınız profille birlikte saklanır; böylece varsayılanlardan başlamak yerine her makinede geri gelir.
 
     { "**" }Sunucuda saklanır ve oturum açıkken siz çalıştıkça kaydedilir** — basılacak bir şey yoktur. Bu kasıtlıdır: tarayıcı depolamasına güvenilemez, çünkü `persist()` her tarayıcıda farklı davranır ve orada tutulan bir oturumu o aygıtta olmayan kimse sıfırlayamaz. Sunucudaki profil, istasyon operatörünün geri koyabileceği bir dosyadır.
 
@@ -8575,7 +8575,7 @@ settings-xvtr-drive-hint =
 
     Sürüş ayarınız bunun altında tutulur, taşınmaz; böylece HF'de kullandığınız sayı kadran banttan ayrıldığında geri gelir.
 
-settings-brown-build-note = sdroxide'ın Brown derlemesi: upstream'in programı, artı 11 m vatandaş bandı, kısa dalga dinleme ve çözme. Bu bantlar ve araçlar eklenmiş sıradan bir amatör istasyon olarak çalışır.
+settings-brown-build-note = sdrcrow'ın Brown derlemesi: upstream'in programı, artı 11 m vatandaş bandı, kısa dalga dinleme ve çözme. Bu bantlar ve araçlar eklenmiş sıradan bir amatör istasyon olarak çalışır.
 
 settings-gain-by-band = Ön uç kazancını bant başına hatırla
 
@@ -8721,7 +8721,7 @@ settings-log11dx-api-url = API URL
 
 settings-log11dx-api-token = API belirteci
 
-settings-log11dx-note = İkisi de LOG11DX profil sayfanızdan gelir. Kendi WSJT-X köprüsü gerekmez: sdroxide QSO'yu kaydeder ve doğrudan oraya gönderir. Site belirteci maskeler, bu yüzden oluşturduğunuzda kopyalayın — diğer kimlik bilgileri gibi net.json'da saklanır.
+settings-log11dx-note = İkisi de LOG11DX profil sayfanızdan gelir. Kendi WSJT-X köprüsü gerekmez: sdrcrow QSO'yu kaydeder ve doğrudan oraya gönderir. Site belirteci maskeler, bu yüzden oluşturduğunuzda kopyalayın — diğer kimlik bilgileri gibi net.json'da saklanır.
 
 settings-pan-attached-note =
     Spektrumu, şelalesi ve onlardan okunan her şey o telsizin sekmesindedir; bu yüzden kendisinin hiçbiri yoktur. Yukarıdaki arayüz ayarları yine bu telsizindir ve yine geçerlidir — onları değiştirdikten sonra Uygula / yeniden bağlan'a basın ve iki telsiz birlikte yeniden ayağa kalkar.
@@ -8935,7 +8935,7 @@ aircraft-online-switch-on-hover = Çevrimiçi: tür, işletmeci, rota ve fotoğr
 
 aircraft-online-switch-off-hover = Çevrimdışı: istasyondan hiçbir şey dışarı çıkmaz. Tür, işletmeci, rota ve fotoğraf (adsbdb ve Planespotters), havalimanı resimleri (Wikipedia) ve havalimanı hava durumunu (Open-Meteo) açmak için tıklayın.
 
-aircraft-switch-held = istasyon operatörü bunu SDROXIDE_AIRCRAFT_ONLINE ile sabitlemiş
+aircraft-switch-held = istasyon operatörü bunu SDRCROW_AIRCRAFT_ONLINE ile sabitlemiş
 
 adsbmap-airport-photo-credit = Fotoğraf: Wikipedia
 
@@ -9315,9 +9315,9 @@ settings-general-band-plan-reset = YERLEŞİK IARU'YA DÖN
 
 settings-general-band-plan-reset-hint = Yerleşik IARU tablolarını yeniden kullanır. TX ve RX bant listelerinin ardından yeniden kontrol edilip onaylanması gerekir.
 
-settings-general-band-plan-folder = Planlar, telsizin bağlı olduğu makinedeki { $path } içindeki dosyalardır; ekleyip silebilirsiniz. Bir bandı lisansınıza daraltın, sdroxide dışında yayın yapmayı reddeder. Frekanslar MHz cinsindendir. Bu bölgesel tahsistir, lisansınız değil: kendi koşullarınız daha dar olabilir ve ulusal planlar bir bölge içinde farklılık gösterir.
+settings-general-band-plan-folder = Planlar, telsizin bağlı olduğu makinedeki { $path } içindeki dosyalardır; ekleyip silebilirsiniz. Bir bandı lisansınıza daraltın, sdrcrow dışında yayın yapmayı reddeder. Frekanslar MHz cinsindendir. Bu bölgesel tahsistir, lisansınız değil: kendi koşullarınız daha dar olabilir ve ulusal planlar bir bölge içinde farklılık gösterir.
 
-settings-general-band-plan-station-folder = Planlar telsizin bağlı olduğu makinede saklanır. Bir bandı lisansınıza daraltın, sdroxide dışında yayın yapmayı reddeder. Bu bölgesel tahsistir, lisansınız değil: kendi koşullarınız daha dar olabilir ve ulusal planlar bir bölge içinde farklılık gösterir.
+settings-general-band-plan-station-folder = Planlar telsizin bağlı olduğu makinede saklanır. Bir bandı lisansınıza daraltın, sdrcrow dışında yayın yapmayı reddeder. Bu bölgesel tahsistir, lisansınız değil: kendi koşullarınız daha dar olabilir ve ulusal planlar bir bölge içinde farklılık gösterir.
 
 settings-general-band-plan-manager = Bant planı yöneticisi
 

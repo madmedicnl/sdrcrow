@@ -3,7 +3,7 @@
 //! This is the audible-alarm side of `Settings → UI → Voice announcements`,
 //! aimed the other way: those read out what *changed*; these ring when a
 //! *decode matters*, which is unmissable by design — the whole point is to
-//! reach the operator when they are not looking at sdroxide.
+//! reach the operator when they are not looking at sdrcrow.
 
 use crate::i18n::{Tr, tr};
 use eframe::egui::{self, Color32, RichText};

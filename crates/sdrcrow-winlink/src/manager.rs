@@ -62,7 +62,7 @@ enum Done {
 ///
 /// Without this, a worker that panics leaves `busy` set for ever: the status
 /// line keeps saying "calling …", `connect` refuses with "a session is already
-/// running", and nothing short of restarting sdroxide gets the operator out of
+/// running", and nothing short of restarting sdrcrow gets the operator out of
 /// it. Reported from the field, and the reason this is a guard rather than two
 /// statements at the end of the closure.
 struct SessionGuard {

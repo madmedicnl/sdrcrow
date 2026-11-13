@@ -60,7 +60,7 @@ impl Default for IcomNetOptions {
             control_port: 50_001,
             username: String::new(),
             password: String::new(),
-            client_name: "sdroxide".into(),
+            client_name: "sdrcrow".into(),
             rx_sample_rate: 48_000,
             tx_sample_rate: 48_000,
             tx_buffer_ms: 150,
@@ -1053,7 +1053,7 @@ pub fn test_connection(opts: IcomNetOptions) -> Result<String, String> {
     );
     if i.model.lan_mod_input.is_none() {
         out.push_str(
-            "\n\nThis model is not in the menu table, so sdroxide cannot switch \
+            "\n\nThis model is not in the menu table, so sdrcrow cannot switch \
              the modulation input to LAN for you — set it on the radio.",
         );
     }

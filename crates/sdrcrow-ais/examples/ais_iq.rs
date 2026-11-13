@@ -3,7 +3,7 @@
 //!
 //! ```text
 //! cargo run --release -p sdrcrow-ais --example ais_iq -- /tmp/sea.iq
-//! sdroxide --file /tmp/sea.iq --rate 240000 --freq 162000000 --mode AIS
+//! sdrcrow --file /tmp/sea.iq --rate 240000 --freq 162000000 --mode AIS
 //! ```
 //!
 //! Interleaved little-endian `f32` pairs (CF32) at 240 kHz, which is what
@@ -197,7 +197,7 @@ fn main() {
     out.flush().expect("flush");
     println!(
         "wrote {path}: {SECONDS:.0} s of {} ships, a base station and a buoy at {} sps\n\
-         try it with:\n  sdroxide --file {path} --rate {} --freq {} --mode AIS",
+         try it with:\n  sdrcrow --file {path} --rate {} --freq {} --mode AIS",
         ships.len(),
         RATE,
         RATE,

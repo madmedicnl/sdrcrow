@@ -1,7 +1,7 @@
 //! What the solar-system 3D view takes from the main window.
 //!
 //! The 3D view runs in its own viewport with its own state (see
-//! [`crate::solar3d`]) and cannot borrow [`SdroxideApp`], so the traffic layer
+//! [`crate::solar3d`]) and cannot borrow [`SdrcrowApp`], so the traffic layer
 //! it draws — who is being heard on the digital modes right now — is built
 //! here each frame and handed over by value.
 //!
@@ -16,9 +16,9 @@ use eframe::egui;
 #[cfg(not(target_arch = "wasm32"))]
 use crate::time::now_unix;
 
-use crate::app::{SdroxideApp, persist};
+use crate::app::{SdrcrowApp, persist};
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// The FT8/FT4 activity to plot on the 3D globe: the same decoded stations
     /// the flat map shows, plus the station being worked.
     ///

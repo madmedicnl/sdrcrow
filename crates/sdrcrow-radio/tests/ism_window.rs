@@ -151,7 +151,7 @@ fn a_band_change_re_sizes_the_window_without_a_restart() {
     let root = std::env::temp_dir().join(format!("sdrcrow-ism-window-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     // The lanes below the speaker — the skimmers, the ISM window, the IQ
     // recorder — are fed from the same pass as the main receiver, so an engine
@@ -233,7 +233,7 @@ fn a_band_change_re_sizes_the_window_without_a_restart() {
     if let Some(t) = thread {
         let _ = t.join();
     }
-    unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+    unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
 }
 
 /// Issue #310: a front end wide enough for both lanes is given both.
@@ -252,7 +252,7 @@ fn one_window_serves_both_lanes_when_the_front_end_has_room() {
     let root = std::env::temp_dir().join(format!("sdrcrow-ism-310-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     let (producer, _consumer) = rtrb::RingBuffer::<f32>::new(48_000);
     let center = Arc::new(Mutex::new(PLUTO_LO));
@@ -312,7 +312,7 @@ fn one_window_serves_both_lanes_when_the_front_end_has_room() {
     if let Some(t) = thread {
         let _ = t.join();
     }
-    unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+    unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
 }
 
 /// Issue #310 again, after the first fix: the band button has to tune for the
@@ -330,7 +330,7 @@ fn the_band_button_tunes_for_the_window_not_for_the_dial() {
     let root = std::env::temp_dir().join(format!("sdrcrow-ism-310b-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     // A 2.5 Msps zero-IF front end: the plan needs 1.88 MHz, so the window is
     // the undecimated stream and cannot be slid off the LO at all.
@@ -398,5 +398,5 @@ fn the_band_button_tunes_for_the_window_not_for_the_dial() {
     if let Some(t) = thread {
         let _ = t.join();
     }
-    unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+    unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
 }

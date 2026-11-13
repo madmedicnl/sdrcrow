@@ -1,6 +1,6 @@
 //! The PipeWire side of the device list.
 //!
-//! **Why this exists.** sdroxide asks ALSA for its sound devices, and ALSA
+//! **Why this exists.** sdrcrow asks ALSA for its sound devices, and ALSA
 //! cannot see a PipeWire graph. It exposes a *bridge* — a `pipewire` and a
 //! `pulse` PCM — and nothing behind it. So a Bluetooth microphone, a virtual
 //! sink, a loopback or anything else a listener has arranged in a patchbay **can
@@ -17,7 +17,7 @@
 //!
 //! 1. **By name through the bridge** — `pulse:<node>`, which the ALSA `pulse`
 //!    plugin resolves. This is what makes a node *pickable*: the operator chooses
-//!    `bluez_input.…` and sdroxide opens that node, rather than the node being
+//!    `bluez_input.…` and sdrcrow opens that node, rather than the node being
 //!    made the system default for everything so that one program can reach it.
 //! 2. **The graph itself**, through `wpctl`, when the bridge will not take it.
 //!
@@ -271,7 +271,7 @@ mod hardware {
     #[test]
     #[ignore = "needs a Bluetooth microphone connected"]
     fn a_connected_bluetooth_microphone_is_listed_and_can_be_picked() {
-        let name = std::env::var("SDROXIDE_BT_MIC").unwrap_or_else(|_| {
+        let name = std::env::var("SDRCROW_BT_MIC").unwrap_or_else(|_| {
             "bluez_input.54:7A:52:00:3B:17".to_string()
         });
         let listed = extra_device_names(false);

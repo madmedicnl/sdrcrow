@@ -7,7 +7,7 @@
 //!
 //! Only the logging half exists here. N1MM broadcasts several message types;
 //! this sends `contactinfo` and nothing else, because that is the one that says
-//! "a contact happened" and the rest describe a contest database sdroxide does
+//! "a contact happened" and the rest describe a contest database sdrcrow does
 //! not have.
 //!
 //! # The two fields that are not what they look like
@@ -22,7 +22,7 @@
 //!   form every reader handles.
 //!
 //! Everything else is either the contact as ADIF has it or a contest field
-//! sdroxide has no equivalent for, sent empty. Empty is deliberate and not a
+//! sdrcrow has no equivalent for, sent empty. Empty is deliberate and not a
 //! gap to fill later: `section`, `prec` and `ck` mean whatever a particular
 //! contest's rules say they mean, so inventing values would be inventing
 //! claims about a contest that was not being worked.
@@ -65,7 +65,7 @@ impl N1mmUdp {
             let _ = sock.set_multicast_ttl_v4(2);
         }
         let station = if cfg.station.trim().is_empty() {
-            "SDROXIDE".to_string()
+            "SDRCROW".to_string()
         } else {
             cfg.station.trim().to_string()
         };
@@ -97,12 +97,12 @@ pub fn contactinfo(q: &QsoRecord, station: &str) -> String {
     let el = |name: &str, value: &str| format!("  <{name}>{}</{name}>\n", escape(value));
     let mode = q.mode.to_ascii_uppercase();
     let stamp = timestamp(q.start_utc);
-    // N1MM has one frequency per direction and sdroxide logs one for the
+    // N1MM has one frequency per direction and sdrcrow logs one for the
     // contact, so both carry it. Tens of hertz — see the module note.
     let tens = format!("{}", (q.freq_hz / 10.0).round().max(0.0) as u64);
     let mut out = String::with_capacity(1024);
     out.push_str("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<contactinfo>\n");
-    // "N1MM", not "sdroxide": the readers of this packet dispatch on it, the
+    // "N1MM", not "sdrcrow": the readers of this packet dispatch on it, the
     // same reason `WsjtxConfig::id` defaults to "WSJT-X".
     out.push_str(&el("app", "N1MM"));
     out.push_str(&el(
@@ -128,7 +128,7 @@ pub fn contactinfo(q: &QsoRecord, station: &str) -> String {
     out.push_str(&el("rcvnr", &q.srx.unwrap_or(0).to_string()));
     out.push_str(&el("gridsquare", q.grid.as_deref().unwrap_or("")));
     out.push_str(&el("exchange1", q.srx_string.trim()));
-    // The contest fields sdroxide has no equivalent for — see the module note
+    // The contest fields sdrcrow has no equivalent for — see the module note
     // on why they are empty rather than guessed at.
     out.push_str(&el("section", ""));
     out.push_str(&el("comment", q.comment.trim()));
@@ -150,7 +150,7 @@ pub fn contactinfo(q: &QsoRecord, station: &str) -> String {
     out.push_str(&el("RoverLocation", ""));
     out.push_str(&el("RadioInterfaced", "1"));
     out.push_str(&el("NetworkedCompNr", "0"));
-    // This *is* the station the contact was logged on — sdroxide is not
+    // This *is* the station the contact was logged on — sdrcrow is not
     // forwarding somebody else's record.
     out.push_str(&el("IsOriginal", "True"));
     out.push_str(&el("NetBiosName", station));
@@ -159,7 +159,7 @@ pub fn contactinfo(q: &QsoRecord, station: &str) -> String {
     out.push_str(&el("ID", &id(q)));
     out.push_str(&el("IsClaimedQso", "1"));
     // In a `contactinfo` these are the same as `timestamp` and `call`; they
-    // differ only in the `contactreplace` packet, which sdroxide never sends.
+    // differ only in the `contactreplace` packet, which sdrcrow never sends.
     out.push_str(&el("oldtimestamp", &stamp));
     out.push_str(&el("oldcall", q.call.trim()));
     out.push_str(&el("SentExchange", q.stx_string.trim()));

@@ -504,7 +504,7 @@ fn start_command(run: bool) -> [u8; 64] {
 /// been superseded — Apply/reconnect opened a replacement while this one was
 /// still running — must not send the stop command: the radio is already
 /// streaming to its successor, and stopping it here is what used to leave the
-/// board dead until sdroxide was restarted.
+/// board dead until sdrcrow was restarted.
 fn stop_stream(socket: &UdpSocket, dest: SocketAddr, radio: IpAddr, conn_id: u64, why: &str) {
     if crate::net::owns_connection(radio, conn_id) {
         tracing::info!("HPSDR P1: {why}; stopping the radio's stream");

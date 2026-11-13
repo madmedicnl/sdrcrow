@@ -104,7 +104,7 @@ pub struct Enumeration {
 /// distinction `--probe` needs between "no library" and "no devices".
 pub fn try_list() -> Result<Enumeration> {
     // Its own trace, in its own slot: a scan that finds nothing is the report
-    // for "sdroxide does not see my board", and it must not overwrite the
+    // for "sdrcrow does not see my board", and it must not overwrite the
     // record of a session that did open one.
     let t = Trace::new();
     trace::remember_probe(&t);

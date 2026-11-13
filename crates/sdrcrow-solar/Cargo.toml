@@ -3,7 +3,7 @@ name = "sdrcrow-solar"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "Solar-system ephemeris and space-weather data (DONKI, NOAA SWPC, SDO imagery) for sdroxide"
+description = "Solar-system ephemeris and space-weather data (DONKI, NOAA SWPC, SDO imagery) for sdrcrow"
 
 [dependencies]
 sdrcrow-types.workspace = true

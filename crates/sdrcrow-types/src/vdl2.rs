@@ -380,7 +380,7 @@ pub struct Vdl2Xid {
     pub frequencies: Vec<f64>,
     /// Parameters whose identifier this decoder does not know. Shown as a count
     /// so an operator can tell "nothing else was sent" from "there was more and
-    /// sdroxide could not read it".
+    /// sdrcrow could not read it".
     pub unknown: u16,
 }
 

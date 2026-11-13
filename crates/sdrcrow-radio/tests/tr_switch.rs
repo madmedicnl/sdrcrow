@@ -153,7 +153,7 @@ fn caps() -> DeviceCaps {
 }
 
 /// The engine writes `session.json` and reads `relay.json`, and
-/// `SDROXIDE_CONFIG_DIR` is process-global — so without this the test would
+/// `SDRCROW_CONFIG_DIR` is process-global — so without this the test would
 /// read the operator's real T/R switch configuration and try to open their
 /// serial port.
 fn isolate_config() {
@@ -162,7 +162,7 @@ fn isolate_config() {
         let root = std::env::temp_dir().join(format!("sdrcrow-tr-switch-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
         std::fs::create_dir_all(&root).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
     });
 }
 

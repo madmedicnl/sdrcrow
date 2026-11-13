@@ -14,7 +14,7 @@ use crate::chrome::StyledCombo;
 
 /// The built-in TCI *server*: this app acting as a TCI rig for third-party
 /// clients (WSJT-X's TCI rig type, JTDX, MSHV, skimmers). Distinct from the TCI
-/// *client* section on the Radio tab, which connects sdroxide to another rig.
+/// *client* section on the Radio tab, which connects sdrcrow to another rig.
 
 /// An action's name in the interface's language.
 fn action_label(a: sdrcrow_types::Action) -> String {

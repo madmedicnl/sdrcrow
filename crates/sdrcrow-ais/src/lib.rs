@@ -47,7 +47,7 @@
 //! offset wrong in the same way in both halves agrees with itself. **No part of
 //! this decoder has been run against a recording of real AIS traffic.** The
 //! `!AIVDM` sentence on every row in the panel is the answer to that — it is a
-//! form every other AIS tool in the world accepts, so what sdroxide made of a
+//! form every other AIS tool in the world accepts, so what sdrcrow made of a
 //! transmission can be compared against what anything else makes of the same
 //! one.
 //!

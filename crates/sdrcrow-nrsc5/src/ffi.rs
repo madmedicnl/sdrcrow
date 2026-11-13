@@ -1,6 +1,6 @@
 //! `libnrsc5`, found with dlopen at run time.
 //!
-//! Nothing of nrsc5 is compiled into sdroxide (issue #488, following the
+//! Nothing of nrsc5 is compiled into sdrcrow (issue #488, following the
 //! decision in #437). HD Radio's audio is HDC, iBiquity's proprietary codec,
 //! and the only faad2 that decodes it is nrsc5's patched copy — which upstream's
 //! shared library carries inside itself, exporting nothing but the `nrsc5_*`
@@ -36,7 +36,7 @@ use tracing::{info, warn};
 
 /// The environment variable naming a `libnrsc5` to try before the usual
 /// places — one built somewhere of its own, or a second one to compare.
-pub const LIB_ENV: &str = "SDROXIDE_NRSC5_LIB";
+pub const LIB_ENV: &str = "SDRCROW_NRSC5_LIB";
 
 /// Opaque receiver handle, from the C library's point of view.
 #[repr(C)]
@@ -71,7 +71,7 @@ pub(crate) struct Api {
 
 /// The loaded library, or the sentence saying why there is none.
 ///
-/// Loaded once per process, on first use. A library installed while sdroxide
+/// Loaded once per process, on first use. A library installed while sdrcrow
 /// runs is picked up at the next start, which the sentence says.
 pub(crate) fn api() -> Result<&'static Api, &'static str> {
     static API: OnceLock<Result<Api, String>> = OnceLock::new();
@@ -132,9 +132,9 @@ impl Api {
                 Ok(lib) => {
                     let api = unsafe { Api::from_lib(lib) }.map_err(|missing| {
                         let why = format!(
-                            "The nrsc5 library sdroxide found ({}) has no {missing}, so it is \
+                            "The nrsc5 library sdrcrow found ({}) has no {missing}, so it is \
                              not a build of nrsc5 that HD Radio can use. Install nrsc5 3.1 or \
-                             newer, then restart sdroxide.",
+                             newer, then restart sdrcrow.",
                             name.to_string_lossy()
                         );
                         warn!("{why}");
@@ -154,8 +154,8 @@ impl Api {
         info!(last = %last, "no libnrsc5; HD Radio is unavailable");
         Err(format!(
             "HD Radio needs nrsc5's decoder library ({LIB_FILE}), which is not installed on this \
-             machine. sdroxide loads it at run time rather than building it in: install nrsc5 \
-             from your distribution or from github.com/theori-io/nrsc5, then restart sdroxide."
+             machine. sdrcrow loads it at run time rather than building it in: install nrsc5 \
+             from your distribution or from github.com/theori-io/nrsc5, then restart sdrcrow."
         ))
     }
 

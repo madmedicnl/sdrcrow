@@ -55,7 +55,7 @@
                 b[i] = 0.4 * Math.sin((2 * Math.PI * 700 * (phase * 960 + i)) / 48000);
             }
             phase++;
-            window.sdroxideAudio.pushPcm(b);
+            window.sdrcrowAudio.pushPcm(b);
         }, 20);
     }
 
@@ -89,7 +89,7 @@
             contexts: window.__contexts.length,
             states: window.__contexts.map(state),
             sinks: window.__sinkCalls.map((c) => c.id),
-            health: window.sdroxideAudio.health ? window.sdroxideAudio.health() : null,
+            health: window.sdrcrowAudio.health ? window.sdrcrowAudio.health() : null,
         };
     }
 
@@ -159,7 +159,7 @@
                 "setSinkId exists but the default sink was never asked for: " + JSON.stringify(snapshot())
             );
         }
-        const h = window.sdroxideAudio.health ? window.sdroxideAudio.health() : null;
+        const h = window.sdrcrowAudio.health ? window.sdrcrowAudio.health() : null;
         if (!h || !("sink" in h)) {
             return finish(false, "health() does not report the output device: " + JSON.stringify(h));
         }

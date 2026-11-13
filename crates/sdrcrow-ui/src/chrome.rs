@@ -927,7 +927,7 @@ pub fn red_panel<R>(ui: &mut Ui, add: impl FnOnce(&mut Ui) -> R) -> R {
 /// [`slider_vertical`], which reads the same measurement as a height.
 /// **A row's y painted beside it, for one instrumented run.**
 ///
-/// Set `SDROXIDE_SETTINGS_TRACE=1` and every widget in this file draws its own
+/// Set `SDRCROW_SETTINGS_TRACE=1` and every widget in this file draws its own
 /// top edge as a number to its right, and the settings page draws a ruled scale
 /// down its left margin. That turns "two rows overlap" — which four pages have
 /// reported and no harness here reproduces — into **numbers in a screenshot**:
@@ -943,7 +943,7 @@ pub fn trace_on() -> bool {
         return true;
     }
     static ON: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
-    *ON.get_or_init(|| std::env::var("SDROXIDE_SETTINGS_TRACE").is_ok_and(|v| v != "0"))
+    *ON.get_or_init(|| std::env::var("SDRCROW_SETTINGS_TRACE").is_ok_and(|v| v != "0"))
 }
 
 /// The same switch, for a client with no environment to read — the browser.
@@ -1872,7 +1872,7 @@ pub fn chip_draggable(ui: &mut Ui, selected: bool, text: impl Into<RichText>) ->
     chip_impl(ui, selected, text.into(), None, Sense::click_and_drag(), None)
 }
 
-/// What sdroxide's own link to a radio does, in the one place all three of its
+/// What sdrcrow's own link to a radio does, in the one place all three of its
 /// homes read it from: the frequency box, the tab strip and the settings
 /// roster.
 ///
@@ -1886,13 +1886,13 @@ pub fn chip_draggable(ui: &mut Ui, selected: bool, text: impl Into<RichText>) ->
 /// beside a radio is read as the radio's, whatever the hover text says. On/off
 /// now belongs to one control in the whole program — **PWR**, which really does
 /// throw the set's own switch over the control link.
-pub const LINK_CLOSE_TIP: &str = "Close sdroxide's link to this radio. This is sdroxide's \
+pub const LINK_CLOSE_TIP: &str = "Close sdrcrow's link to this radio. This is sdrcrow's \
      switch, not the rig's: the radio itself stays powered — its own switch is PWR. What is \
      let go of is this end — the device released, a CAT port closed, a network session hung \
      up — so the radio can neither receive nor transmit here. Its settings are kept.";
 
 /// The other half of [`LINK_CLOSE_TIP`].
-pub const LINK_OPEN_TIP: &str = "Open sdroxide's link to this radio again, where it was left. \
+pub const LINK_OPEN_TIP: &str = "Open sdrcrow's link to this radio again, where it was left. \
      This does not power the radio: that is PWR.";
 
 /// A chip carrying two interlocking rings — a link — instead of a label, at an
@@ -1903,7 +1903,7 @@ pub const LINK_OPEN_TIP: &str = "Open sdroxide's link to this radio again, where
 /// under every chrome style.
 ///
 /// It used to be the IEC power symbol (⏻), and that was the trouble: this is
-/// sdroxide's link to the radio, and the mains symbol is the single strongest
+/// sdrcrow's link to the radio, and the mains symbol is the single strongest
 /// argument that it is the radio's own switch. See [`LINK_CLOSE_TIP`].
 pub fn chip_link(ui: &mut Ui, selected: bool, size: egui::Vec2) -> Response {
     let resp = chip_impl(ui, selected, RichText::new(""), None, Sense::click(), Some(size));
@@ -1925,7 +1925,7 @@ pub fn chip_link(ui: &mut Ui, selected: bool, size: egui::Vec2) -> Response {
 
 /// The **LINK** chip with the power mark (⏻) in front of it, at `size` points
 /// of text: lit while the link is open, plain while it is closed, as
-/// [`chip`] is. The word stays LINK — what it switches is still sdroxide's
+/// [`chip`] is. The word stays LINK — what it switches is still sdrcrow's
 /// link, see [`LINK_CLOSE_TIP`] — and the mark is there so the chip reads as
 /// the switch at a glance. Painted rather than typed for the reason
 /// [`chip_link`] gives; the label carries leading spaces that keep the room

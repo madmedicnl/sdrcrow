@@ -9,7 +9,7 @@ use crate::i18n::{Tr, tr};
 use eframe::egui::{self, Color32, ComboBox, DragValue, RichText, Slider};
 use sdrcrow_types::{Command, Direction};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::app::settings::enum_combo;
 use crate::chrome::StyledCombo;
 
@@ -499,7 +499,7 @@ pub(in crate::app) fn settings_cat_tab(
             ui.end_row();
 
             ui.label(tr!("settings-radio-digimode-mode")).on_hover_text(
-                tr!("settings-radio-what-put-radio-mode-sdroxide"),
+                tr!("settings-radio-what-put-radio-mode-sdrcrow"),
             );
             enum_combo(ui, "digimode", &mut cfg.cat.digi_mode, &DigiMode::ALL, DigiMode::tr);
             ui.end_row();
@@ -2489,7 +2489,7 @@ pub(in crate::app) fn settings_tci_tab(
             // How far the rig's IQ runs behind the `dds:` that moved it. The
             // panadapter labels each frame with the centre its *samples* were taken
             // at, and this is the only number that says which centre that was — so
-            // it belongs to the rig, not to sdroxide, and the default is a
+            // it belongs to the rig, not to sdrcrow, and the default is a
             // measurement of one particular rig rather than a constant.
             ui.label(tr!("settings-radio-stream-delay"));
             crate::chrome::slider(
@@ -3341,7 +3341,7 @@ pub(in crate::app) fn settings_smartsdr_tab(
 /// install (PothosSDR ships every module) the winner can be the sound card, and
 /// nothing on screen says so. A driver with a native interface is called out
 /// too, because reaching an RSP or a dongle through SoapySDR gives up every
-/// model-specific control sdroxide has for it.
+/// model-specific control sdrcrow has for it.
 pub(in crate::app) fn settings_soapy_devices(
     ui: &mut egui::Ui,
     devices: Option<&[sdrcrow_types::SoapyDeviceInfo]>,
@@ -3441,7 +3441,7 @@ pub(in crate::app) fn settings_soapy_devices(
     );
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// SoapySDR RX/TX gains + antenna (empty for a CAT rig).
     pub(in crate::app) fn settings_device_tab(&self, ui: &mut egui::Ui, cmds: &mut Vec<Command>) {
         let Some(caps) = &self.caps else {

@@ -53,7 +53,7 @@
                 b[i] = 0.4 * Math.sin((2 * Math.PI * 700 * (phase * 960 + i)) / 48000);
             }
             phase++;
-            window.sdroxideAudio.pushPcm(b);
+            window.sdrcrowAudio.pushPcm(b);
         }, 20);
     }
 
@@ -75,7 +75,7 @@
     }
 
     function snapshot() {
-        const h = window.sdroxideAudio.health ? window.sdroxideAudio.health() : null;
+        const h = window.sdrcrowAudio.health ? window.sdrcrowAudio.health() : null;
         return {
             contexts: window.__contexts.length,
             states: window.__contexts.map(state),
@@ -137,8 +137,8 @@
         if (!(fresh.currentTime > c0)) {
             return finish(false, "a new context was made but it is not rendering");
         }
-        if (window.sdroxideAudio.health) {
-            const h = window.sdroxideAudio.health();
+        if (window.sdrcrowAudio.health) {
+            const h = window.sdrcrowAudio.health();
             if (h.state !== "running" || (h.renderAgoMs >= 0 && h.renderAgoMs > 1000)) {
                 return finish(false, "audio is rendering but health() says " + JSON.stringify(h));
             }

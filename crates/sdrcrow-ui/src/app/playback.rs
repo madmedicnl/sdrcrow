@@ -116,7 +116,7 @@ fn matches(file: &RecordingFile, find: &str) -> bool {
     [file.name.as_str(), &when, &what].iter().any(|s| s.to_ascii_lowercase().contains(&find))
 }
 
-impl super::SdroxideApp {
+impl super::SdrcrowApp {
     /// Ask the station for its recordings when the window has just opened.
     pub(in crate::app) fn poll_playback_list(&mut self, cmds: &mut Vec<Command>) {
         if self.playback.show && !self.playback.asked {

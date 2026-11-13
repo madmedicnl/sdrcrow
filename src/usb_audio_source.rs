@@ -212,7 +212,7 @@ impl UsbAudioSource {
              — this machine is not emptying a {:.0} Hz card fast enough. The panadapter will \
              look fine and the demodulated audio will break up. This card is fixed at 48 kHz, \
              so there is no rate to lower — look instead at what else on this machine is \
-             keeping sdroxide off the CPU.",
+             keeping sdrcrow off the CPU.",
             window.as_secs_f64(),
             lost as f64 * 1000.0 / self.in_rate,
             self.in_rate,

@@ -187,7 +187,7 @@ pub enum Mode {
     ///
     /// SITOR-B (ITU-R M.625 collective B-mode): 100 baud FSK, 170 Hz shift, a
     /// seven-bit constant-ratio alphabet and time diversity instead of a
-    /// checksum. Receive only, and not because sdroxide could not key it — the
+    /// checksum. Receive only, and not because sdrcrow could not key it — the
     /// service is a coast station's, and an amateur transmitting on it would be
     /// putting false safety information on a distress-adjacent frequency.
     ///
@@ -229,7 +229,7 @@ pub enum Mode {
     /// so nothing downstream needs to know there are two of them.
     ///
     /// Receive only. Independent-sideband transmit is a linear-amplifier
-    /// arrangement with two modulators, and no radio sdroxide drives has one.
+    /// arrangement with two modulators, and no radio sdrcrow drives has one.
     /// Appended for the same reason as [`Mode::Hell`] (issue #280).
     Isb,
     /// AIS — the Automatic Identification System every ship of any size
@@ -1163,7 +1163,7 @@ impl Mode {
         // would be putting false safety information on a distress-adjacent
         // channel.
         // ISB is receive-only by capability: transmitting it wants two
-        // modulators driving one linear amplifier, and no radio sdroxide
+        // modulators driving one linear amplifier, and no radio sdrcrow
         // drives is wired that way.
         matches!(
             self,

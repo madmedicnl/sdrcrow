@@ -153,7 +153,7 @@ struct Cli {
     #[arg(long)]
     server: bool,
 
-    /// Connect as a native remote client to a running sdroxide server
+    /// Connect as a native remote client to a running sdrcrow server
     /// (e.g. "host:4950" or a full ws:// URL)
     ///
     /// A bare address reaches the station's first radio. To reach one of its
@@ -1753,7 +1753,7 @@ fn open_soapy_source(
         "SoapySDR support is not compiled into this build — open Settings → Radio and pick a \
          built-in interface (HackRF, RTL-SDR, Airspy, AirspyHF+, SDRplay, RX-888, LimeSDR, \
          PlutoSDR, HPSDR, a CAT rig, a network radio…), or install the SoapySDR build of \
-         sdroxide"
+         sdrcrow"
     )
 }
 
@@ -2252,7 +2252,7 @@ fn open_fobos_source(
 /// 5.4 GHz, from `libfobos`'s header comment on the low-level chip-tuning
 /// call this backend never makes directly) — the chip's bound, not a
 /// measured receiver-wide figure, so treated as approximate rather than
-/// pinned. **Partially confirmed live**: sdroxide's own default startup
+/// pinned. **Partially confirmed live**: sdrcrow's own default startup
 /// frequency (14.2 MHz, nothing to do with this backend) landed below this
 /// floor on a real run, and `fobos_rx_set_frequency` genuinely refused it
 /// (`FOBOS_ERR_UNSUPPORTED`) rather than silently mistuning — consistent
@@ -3028,7 +3028,7 @@ fn smartsdr_caps(model: &str, label: String) -> DeviceCaps {
 /// greyed out the 70 cm button on a rig that has the band, and a 54 MHz
 /// transmit ceiling refused to key a 2 m rig that was hearing the band
 /// perfectly well. What holds a licensed operator in bounds is the
-/// amateur-band gate — region-aware, and 3 cm is the highest band sdroxide's
+/// amateur-band gate — region-aware, and 3 cm is the highest band sdrcrow's
 /// table knows — plus the rig's own refusal. An operator who wants a firmer
 /// limit than that can state one in Settings.
 fn cat_caps(radio: &RadioConfig) -> DeviceCaps {
@@ -3096,7 +3096,7 @@ mod tests {
     use super::*;
 
     fn cli(oob: bool) -> Cli {
-        let mut c = Cli::parse_from(["sdroxide"]);
+        let mut c = Cli::parse_from(["sdrcrow"]);
         c.oob_tx = oob;
         c
     }
@@ -3120,13 +3120,13 @@ mod tests {
     /// The flag is opt-in on the command line and nowhere else.
     #[test]
     fn the_flag_is_off_unless_asked_for() {
-        assert!(!Cli::parse_from(["sdroxide"]).oob_tx);
-        assert!(Cli::parse_from(["sdroxide", "--oob-tx"]).oob_tx);
+        assert!(!Cli::parse_from(["sdrcrow"]).oob_tx);
+        assert!(Cli::parse_from(["sdrcrow", "--oob-tx"]).oob_tx);
         assert!(Settings::default().tx_ham_only, "the shipped default is locked");
     }
 
     /// A SunSDR2 DX hears 2 m and transmits on it, and it took an override in
-    /// Settings to make sdroxide agree — the published transmit envelope
+    /// Settings to make sdrcrow agree — the published transmit envelope
     /// stopped at 6 m. Both halves of the band matter: the HF/6 m block is what
     /// every TCI rig has, and 2 m is what the VHF ones add.
     #[test]
@@ -3247,7 +3247,7 @@ mod tests {
     /// the frequency and mode the radio was left on, not on a fixed default.
     #[test]
     fn a_bare_start_comes_up_where_the_last_session_ended() {
-        let mut c = Cli::parse_from(["sdroxide"]);
+        let mut c = Cli::parse_from(["sdrcrow"]);
         let mode = c.apply_session(session(7_074_000.0, sdrcrow_types::Mode::Ft8));
         assert_eq!(c.center_hz(), 7_074_000.0);
         assert_eq!(mode, Some(sdrcrow_types::Mode::Ft8));
@@ -3263,7 +3263,7 @@ mod tests {
             active_vfo: sdrcrow_types::Vfo::B,
             ..session(14_200_000.0, sdrcrow_types::Mode::Usb)
         };
-        let mut c = Cli::parse_from(["sdroxide"]);
+        let mut c = Cli::parse_from(["sdrcrow"]);
         c.apply_session(left_on_b);
         assert_eq!(c.center_hz(), 7_100_000.0);
     }
@@ -3272,18 +3272,18 @@ mod tests {
     /// survive the restore, and only what it left out may be filled in.
     #[test]
     fn the_command_line_outranks_the_remembered_session() {
-        let mut both = Cli::parse_from(["sdroxide", "--freq", "50150000", "--mode", "cw"]);
+        let mut both = Cli::parse_from(["sdrcrow", "--freq", "50150000", "--mode", "cw"]);
         both.apply_session(session(7_074_000.0, sdrcrow_types::Mode::Ft8));
         assert_eq!(both.center_hz(), 50_150_000.0);
         assert_eq!(both.mode, Some(sdrcrow_types::Mode::Cw));
 
         // Each half is independent — naming one must not discard the other.
-        let mut freq_only = Cli::parse_from(["sdroxide", "--freq", "50150000"]);
+        let mut freq_only = Cli::parse_from(["sdrcrow", "--freq", "50150000"]);
         freq_only.apply_session(session(7_074_000.0, sdrcrow_types::Mode::Ft8));
         assert_eq!(freq_only.center_hz(), 50_150_000.0);
         assert_eq!(freq_only.mode, Some(sdrcrow_types::Mode::Ft8), "the mode is still restored");
 
-        let mut mode_only = Cli::parse_from(["sdroxide", "--mode", "cw"]);
+        let mut mode_only = Cli::parse_from(["sdrcrow", "--mode", "cw"]);
         mode_only.apply_session(session(7_074_000.0, sdrcrow_types::Mode::Ft8));
         assert_eq!(mode_only.center_hz(), 7_074_000.0, "the frequency is still restored");
         assert_eq!(mode_only.mode, Some(sdrcrow_types::Mode::Cw));
@@ -3311,9 +3311,9 @@ mod tests {
         std::fs::write(root.join("radio-1/radio.json"), r#"{"backend":"None"}"#).unwrap();
         // SAFETY: single-threaded within this test; no other test in this
         // binary reads the variable.
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
-        let cli = secondary_cli(&Cli::parse_from(["sdroxide"]));
+        let cli = secondary_cli(&Cli::parse_from(["sdrcrow"]));
         let mut factory = reopen_factory_for(&cli, sdrcrow_config::Store::radio(1), 1);
 
         // Switched off: an answer, not a refusal — a refusal would leave the
@@ -3335,14 +3335,14 @@ mod tests {
         // is reported as one, leaving whatever is running running.
         assert!(factory(14_200_000.0).is_err(), "no longer coming back from off");
 
-        unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+        unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
         let _ = std::fs::remove_dir_all(&root);
     }
 
     #[test]
     fn a_run_that_skips_the_restore_keeps_the_old_default() {
-        assert_eq!(Cli::parse_from(["sdroxide"]).center_hz(), 14_200_000.0);
-        assert_eq!(Cli::parse_from(["sdroxide", "--freq", "50150000"]).center_hz(), 50_150_000.0);
+        assert_eq!(Cli::parse_from(["sdrcrow"]).center_hz(), 14_200_000.0);
+        assert_eq!(Cli::parse_from(["sdrcrow", "--freq", "50150000"]).center_hz(), 50_150_000.0);
     }
 
     /// **A TCI server that carries only the radio's audio is an audio-band rig.**

@@ -87,7 +87,7 @@ impl RifpProfile {
 
     /// The same for `region`.
     ///
-    /// RIFP assigns no frequency and sdroxide will transmit it wherever it is
+    /// RIFP assigns no frequency and sdrcrow will transmit it wherever it is
     /// tuned; this is only what the panel uses to decide whether to say
     /// something. It is deliberately a short list of the places wideband or FM
     /// operation is generally allowed — the amateur allocations differ by

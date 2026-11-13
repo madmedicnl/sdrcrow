@@ -49,7 +49,7 @@ fn the_lanes_a_previous_session_left_on_are_running_again() {
     let root = std::env::temp_dir().join(format!("sdrcrow-lane-restore-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     // What a previous session left behind.
     let hfdl_wanted = HfdlSettings { enabled: true, frequency_hz: 5_451_000.0 };
@@ -100,5 +100,5 @@ fn the_lanes_a_previous_session_left_on_are_running_again() {
     assert_eq!(qo100.park_hi_hz, 9_000.0, "and with its parking window forgotten");
 
     let _ = std::fs::remove_dir_all(&root);
-    unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+    unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
 }

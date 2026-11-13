@@ -60,7 +60,7 @@ fn dial_after_seen(cmds: Vec<Command>) -> ((f64, f64, Mode), bool) {
         let root = std::env::temp_dir().join(format!("sdrcrow-dab-return-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
         std::fs::create_dir_all(&root).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
     });
     let caps = DeviceCaps {
         driver: "mock".into(),

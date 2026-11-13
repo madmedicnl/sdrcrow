@@ -1,6 +1,6 @@
 //! The transmit-audio level an operator sets survives the session (issue #186).
 //!
-//! Its own test binary, and deliberately so. `SDROXIDE_CONFIG_DIR` is
+//! Its own test binary, and deliberately so. `SDRCROW_CONFIG_DIR` is
 //! process-global, this is the one test here that reads `digi.json` back rather
 //! than measuring what reached the radio, and every engine in a process shares
 //! that file — so run beside `digi_tx_level.rs` it would be asserting against a
@@ -71,7 +71,7 @@ fn a_level_the_operator_set_is_on_disk_after_the_session() {
         std::env::temp_dir().join(format!("sdrcrow-tx-level-persist-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     // Nothing set yet: every mode is on its carrier default.
     let before = sdrcrow_config::load_digi_config();

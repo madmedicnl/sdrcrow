@@ -132,7 +132,7 @@ fn a_radio_on_its_own_plan_does_not_touch_another_and_is_not_touched() {
     let root = std::env::temp_dir().join(format!("sdrcrow-per-radio-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     let mut a = Radio::start(1);
     let mut b = Radio::start(2);

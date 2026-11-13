@@ -1,4 +1,4 @@
-//! The sdroxide GUI: an egui app that talks to any [`sdrcrow_types::RadioController`].
+//! The sdrcrow GUI: an egui app that talks to any [`sdrcrow_types::RadioController`].
 //!
 //! Compiles native and for wasm32. All custom wgpu rendering that the browser
 //! build shares is written to WebGL2 downlevel limits (fragment-only, sampled
@@ -98,7 +98,7 @@ mod widgets;
 /// that reimplemented it would be testing itself.
 pub use widgets::worldmap::ground_image;
 
-pub use app::SdroxideApp;
+pub use app::SdrcrowApp;
 // The browser's debug hooks, beside the app itself: `?trace=1` numbers every
 // settings row's y, `?tab=radio` opens that page. See `chrome::trace_on` and
 // `app::set_open_settings_tab`.
@@ -117,7 +117,7 @@ pub use solar3d::SolarApp;
 /// wgpu version (project rule).
 pub use eframe::egui_wgpu;
 
-/// The wgpu setup every sdroxide window opens with.
+/// The wgpu setup every sdrcrow window opens with.
 ///
 /// eframe's default asks the device for `wgpu::Limits::default()` — the WebGPU
 /// baseline — on every backend but GL. Real GPUs are allowed to sit *below*
@@ -146,7 +146,7 @@ pub fn wgpu_options() -> egui_wgpu::WgpuConfiguration {
     let mut setup = egui_wgpu::WgpuSetupCreateNew::without_display_handle();
     setup.device_descriptor =
         std::sync::Arc::new(|adapter: &wgpu::Adapter| wgpu::DeviceDescriptor {
-            label: Some("sdroxide"),
+            label: Some("sdrcrow"),
             required_limits: adapter.limits(),
             ..Default::default()
         });
@@ -279,7 +279,7 @@ const RENDERER_PANIC_MARKS: [&str; 6] =
 /// refused panics outright, and once a wgpu device has reported a validation
 /// error every allocation after it can be refused. On the machine that reported
 /// it — an Intel HD 530 under Mesa — that was an hour into a session and there
-/// is nothing sdroxide can do to prevent it, but there is a second renderer on
+/// is nothing sdrcrow can do to prevent it, but there is a second renderer on
 /// the same GPU that does not do it (issue #219).
 #[cfg(not(target_arch = "wasm32"))]
 pub fn install_renderer_panic_note() {
@@ -300,7 +300,7 @@ pub fn install_renderer_panic_note() {
             let _ = std::fs::write(
                 &path,
                 format!(
-                    "sdroxide {} died in the graphics driver.\n\nat {at}\n{msg}\n\n                     Delete this file to use the default renderer again.\n",
+                    "sdrcrow {} died in the graphics driver.\n\nat {at}\n{msg}\n\n                     Delete this file to use the default renderer again.\n",
                     sdrcrow_version::VERSION,
                 ),
             );
@@ -309,7 +309,7 @@ pub fn install_renderer_panic_note() {
     }));
 }
 
-/// Whether a panic came from the graphics driver rather than from sdroxide.
+/// Whether a panic came from the graphics driver rather than from sdrcrow.
 ///
 /// Matched on both the location and the message: the failure this exists for
 /// (issue #219) is raised in `egui-wgpu`'s renderer, and the message names the
@@ -342,7 +342,7 @@ fn fallback_backends(configured: egui_wgpu::wgpu::Backends) -> Option<egui_wgpu:
         return None;
     }
     eprintln!(
-        "sdroxide: the last session ended inside the graphics driver, so this window renders \n         through OpenGL instead. Delete {} to go back to the default renderer, or set \n         WGPU_BACKEND to choose one yourself.",
+        "sdrcrow: the last session ended inside the graphics driver, so this window renders \n         through OpenGL instead. Delete {} to go back to the default renderer, or set \n         WGPU_BACKEND to choose one yourself.",
         path.display()
     );
     Some(wgpu::Backends::GL)
@@ -355,7 +355,7 @@ fn fallback_backends(configured: egui_wgpu::wgpu::Backends) -> Option<egui_wgpu:
 /// Vulkan adds there is a second, thinner-tested path through the vendor's
 /// installable client driver — and on Intel's (`igvk64.dll`) that path faults
 /// on sight of the window: an access violation inside the driver, before
-/// sdroxide has drawn anything, killing the process rather than failing an
+/// sdrcrow has drawn anything, killing the process rather than failing an
 /// adapter request the way a refusal would (issue #242, reported on 1.6.1 by
 /// two operators after eframe moved from wgpu 26 to wgpu 30 — the same machine
 /// was steady on 1.6.0). A crash in a driver is not something this side can
@@ -384,11 +384,11 @@ fn windows_backends(configured: egui_wgpu::wgpu::Backends) -> Option<egui_wgpu::
     }
     match graphics_backend() {
         GraphicsBackend::Gl if configured.contains(wgpu::Backends::GL) => {
-            eprintln!("sdroxide: graphics: OpenGL, as chosen in Settings > UI.");
+            eprintln!("sdrcrow: graphics: OpenGL, as chosen in Settings > UI.");
             return Some(wgpu::Backends::GL);
         }
         GraphicsBackend::Dx12 if configured.contains(wgpu::Backends::DX12) => {
-            eprintln!("sdroxide: graphics: DirectX 12, as chosen in Settings > UI.");
+            eprintln!("sdrcrow: graphics: DirectX 12, as chosen in Settings > UI.");
             return Some(wgpu::Backends::DX12);
         }
         _ => {}
@@ -414,7 +414,7 @@ fn windows_backends(configured: egui_wgpu::wgpu::Backends) -> Option<egui_wgpu::
                 .collect();
         if let Some(gpu) = old_amd_dx12(&adapters) {
             eprintln!(
-                "sdroxide: graphics: {} ({}) is on a DirectX 12 driver too old to draw the \
+                "sdrcrow: graphics: {} ({}) is on a DirectX 12 driver too old to draw the \
                  waterfall (issue #559), so this window renders through OpenGL instead. \
                  Choose DirectX 12 in Settings > UI, or set WGPU_BACKEND=dx12, to override.",
                 gpu.name, gpu.driver
@@ -608,7 +608,7 @@ fn v3dv_backends(configured: egui_wgpu::wgpu::Backends) -> Option<egui_wgpu::wgp
         return None;
     }
     eprintln!(
-        "sdroxide: the Raspberry Pi's V3D through Mesa's Vulkan driver (V3DV) flickers, \
+        "sdrcrow: the Raspberry Pi's V3D through Mesa's Vulkan driver (V3DV) flickers, \
          so this window renders through OpenGL ES instead. \
          Set WGPU_BACKEND=vulkan to use Vulkan anyway — about one core cheaper, and it \
          may not flicker on your compositor."
@@ -631,7 +631,7 @@ mod renderer_fallback_tests {
         assert!(is_renderer_panic("src/lib.rs:1:1", "wgpu-hal: device lost"));
     }
 
-    /// …and one of ours is not. A panic in sdroxide must not put the operator
+    /// …and one of ours is not. A panic in sdrcrow must not put the operator
     /// on a slower renderer for every session after it.
     #[test]
     fn our_own_panics_leave_the_renderer_alone() {
@@ -791,14 +791,14 @@ mod v3dv_tests {
 ///
 /// This is what window managers show in the taskbar/dock and in alt-tab; the
 /// desktop-menu entry gets its icon from the installed hicolor theme instead
-/// (see `packaging/`). Both come from `packaging/icons/sdroxide-brown.svg`.
+/// (see `packaging/`). Both come from `packaging/icons/sdrcrow-256.png`.
 
 /// The main window's title: the program and its version, then what it is
 /// connected to. The version is there so a screenshot says which build it came
 /// from (#664).
 /// `FLAVOR`, not upstream's hard-coded name: **the version in the title is
-/// exactly what tells two sdroxide installs apart**, and a title that said
-/// "sdroxide" while carrying upstream's spelling would defeat the whole point.
+/// exactly what tells two sdrcrow installs apart**, and a title that said
+/// "sdrcrow" while carrying upstream's spelling would defeat the whole point.
 ///
 /// `VERSION`, not `CARGO_PKG_VERSION`: the crate version is `2.2.0` for every
 /// build of this line, so a title carrying it names no build at all — and would
@@ -834,10 +834,10 @@ pub fn set_window_title(ctx: &eframe::egui::Context, title: &str) {
 ///
 /// This is what window managers show in the taskbar/dock and in alt-tab; the
 /// desktop-menu entry gets its icon from the installed hicolor theme instead
-/// (see `packaging/`). Both come from `packaging/icons/sdroxide.svg`.
+/// (see `packaging/`). Both come from `packaging/icons/sdrcrow-256.png`.
 #[cfg(not(target_arch = "wasm32"))]
 pub fn app_icon() -> eframe::egui::IconData {
-    const PNG: &[u8] = include_bytes!("../../../packaging/icons/sdroxide-brown-256.png");
+    const PNG: &[u8] = include_bytes!("../../../packaging/icons/sdrcrow-256.png");
     // Decoding a 256x256 PNG once at startup; a failure here would only cost
     // the icon, so fall back to no icon rather than refusing to open a window.
     match image::load_from_memory_with_format(PNG, image::ImageFormat::Png) {
@@ -847,7 +847,7 @@ pub fn app_icon() -> eframe::egui::IconData {
             eframe::egui::IconData { rgba: rgba.into_raw(), width, height }
         }
         Err(e) => {
-            eprintln!("sdroxide: decoding the app icon: {e}");
+            eprintln!("sdrcrow: decoding the app icon: {e}");
             eframe::egui::IconData::default()
         }
     }

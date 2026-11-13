@@ -136,7 +136,7 @@ fn caps_for(id: u32) -> Option<ModelCaps> {
     // *written as text* by `KM`, played by `KY6`..`KYA`. The two are not
     // interchangeable, and playing the wrong one is silent: the rig transmits
     // whatever the operator once recorded on that channel, or nothing at all if
-    // they never recorded anything, while sdroxide's panel colours the text as
+    // they never recorded anything, while sdrcrow's panel colours the text as
     // sent.
     //
     // The FT-710 is the single model of the family that inverts this and plays
@@ -254,13 +254,13 @@ impl Yaesu {
                 self.caps = c;
             }
             None => warn!(
-                "Yaesu CAT: rig reports model ID {id:04}, which sdroxide has no filter table for \
+                "Yaesu CAT: rig reports model ID {id:04}, which sdrcrow has no filter table for \
                  — the width control will not reach the radio"
             ),
         }
     }
 
-    /// The rig's own RIT, XIT and split, switched off. sdroxide carries all
+    /// The rig's own RIT, XIT and split, switched off. sdrcrow carries all
     /// three on the dial, so anything the radio is still holding would add to
     /// ours unseen.
     fn offsets(&self) -> Vec<Vec<u8>> {
@@ -405,7 +405,7 @@ fn mode_digit(m: Mode) -> char {
 /// RTTY-L/RTTY-U/DATA-FM positions map onto app modes that would be commanded
 /// back as a *different* digit, and the two would then take turns correcting
 /// each other. `None` leaves the app's mode alone, which is the right answer
-/// for a rig position sdroxide has no equivalent of.
+/// for a rig position sdrcrow has no equivalent of.
 fn mode_from_digit(d: char) -> Option<Mode> {
     Some(match d.to_ascii_uppercase() {
         '1' => Mode::Lsb,
@@ -536,7 +536,7 @@ impl Protocol for Yaesu {
 
     /// `TX;` read back. The reply's digit distinguishes *who* keyed the rig —
     /// its own PTT/mic from a CAT key-down — but this is only ever asked while
-    /// sdroxide is not keying, so anything non-zero is the operator's hand and
+    /// sdrcrow is not keying, so anything non-zero is the operator's hand and
     /// the distinction is not relied on. Which numeral means which is the one
     /// part of this the manuals state inconsistently.
     fn tx_state_requests(&self) -> Vec<Vec<u8>> {
@@ -557,7 +557,7 @@ impl Protocol for Yaesu {
     }
 
     fn rx_telemetry_requests(&self) -> Vec<Vec<u8>> {
-        // `SM0` — the main receiver's S-meter. `SM1` is the sub, which sdroxide
+        // `SM0` — the main receiver's S-meter. `SM1` is the sub, which sdrcrow
         // does not receive on.
         vec![b"SM0;".to_vec()]
     }
@@ -744,7 +744,7 @@ mod tests {
     /// `TX;` read back. Only "is it transmitting" is taken from it: which
     /// non-zero numeral means the mic and which means CAT is stated
     /// inconsistently across the manuals, and this is only ever asked while
-    /// sdroxide is not keying, so both mean the operator.
+    /// sdrcrow is not keying, so both mean the operator.
     #[test]
     fn the_transmit_read_treats_every_non_zero_as_on_the_air() {
         let mut y = Yaesu::new();

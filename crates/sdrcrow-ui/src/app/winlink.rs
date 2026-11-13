@@ -108,7 +108,7 @@ impl MailUi {
     }
 }
 
-impl crate::app::SdroxideApp {
+impl crate::app::SdrcrowApp {
     pub(in crate::app) fn mail_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         // Opening the window is itself a reason to (re)list: the mailbox may
         // have changed since it was last closed, and on the very first open

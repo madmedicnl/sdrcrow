@@ -5,7 +5,7 @@
 //! county, national societies publish their machine lists in it, and the marine
 //! and PMR channel tables circulate as it too. That makes it the one format
 //! worth reading here — an operator who wants their local repeaters in
-//! sdroxide already has the file (issue #234).
+//! sdrcrow already has the file (issue #234).
 //!
 //! ⚠️ Transcribed from CHIRP's own `chirp/chirp_common.py` (the `Memory` fields
 //! and the `TONE_MODES` / `DUPLEX_MODES` tables) and from files it exports, not
@@ -15,7 +15,7 @@
 //! guessed at, because the first line of a headerless list is a real channel
 //! and mistaking it for a header would silently drop it.
 //!
-//! What is deliberately not carried: `Skip` (sdroxide's scanner has its own
+//! What is deliberately not carried: `Skip` (sdrcrow's scanner has its own
 //! idea of what to skip), `Power` (a channel does not set the transmitter's
 //! power here), `TStep`, and the D-STAR columns. A memory here is a frequency,
 //! a mode, the repeater set-up and a name.
@@ -57,7 +57,7 @@ const COLUMNS: &[&str] = &[
 
 /// The CHIRP mode name for one of ours, and the reverse.
 ///
-/// Only the modes both programs have. Everything sdroxide can do that a
+/// Only the modes both programs have. Everything sdrcrow can do that a
 /// handheld cannot — every digital mode, SSTV, the decoders — exports as the
 /// sideband or the FM channel it actually rides on, because that is what the
 /// column means to the program reading it: `Mode` in a CHIRP file is the
@@ -71,7 +71,7 @@ fn mode_name(m: Mode) -> &'static str {
         Mode::Lsb | Mode::Digl => "LSB",
         Mode::Cw => "CW",
         Mode::Nfm => "FM",
-        // Everything else in sdroxide rides a sideband or an FM carrier, and
+        // Everything else in sdrcrow rides a sideband or an FM carrier, and
         // the FM ones are all `Mode::Nfm` and were caught above.
         _ => "USB",
     }
@@ -133,7 +133,7 @@ fn quote_csv(s: &str) -> String {
 }
 
 /// A CTCSS frequency as CHIRP writes it (`88.5`) in the tenths of a hertz the
-/// rest of sdroxide keeps it in, snapped to the standard table.
+/// rest of sdrcrow keeps it in, snapped to the standard table.
 ///
 /// Snapped rather than taken as read: the tone that goes out is generated from
 /// [`CTCSS_TONES`], so a file naming a tone that is not in it has to resolve to
@@ -200,7 +200,7 @@ pub fn chirp_csv_to_filed_memories(text: &str) -> (Vec<(MemoryChannel, Option<St
 
         // The shift. "split" carries the whole transmit frequency in `Offset`
         // rather than a magnitude, so it is turned into the direction and
-        // distance the rest of sdroxide works in — and a split that is not a
+        // distance the rest of sdrcrow works in — and a split that is not a
         // shift at all (a transmit frequency below zero, or half a band away)
         // falls back to simplex rather than to a transmitter somewhere else.
         let offset = mhz(get(at("Offset"))).unwrap_or(0.0);
@@ -216,7 +216,7 @@ pub fn chirp_csv_to_filed_memories(text: &str) -> (Vec<(MemoryChannel, Option<St
                 }
             }
             // "off" is a receive-only channel — CHIRP's way of saying the radio
-            // must not transmit here. sdroxide has no such flag on a memory, so
+            // must not transmit here. sdrcrow has no such flag on a memory, so
             // it reads as simplex; the transmit rails are what actually keep an
             // operator off a frequency they may not use.
             _ => (Shift::Simplex, offset),
@@ -227,7 +227,7 @@ pub fn chirp_csv_to_filed_memories(text: &str) -> (Vec<(MemoryChannel, Option<St
         // columns is in force: "Tone" transmits `rToneFreq` and squelches on
         // nothing, "TSQL" transmits and receives `cToneFreq`. Only the
         // transmit half is a memory's business here — the receive tone squelch
-        // is a receiver setting in sdroxide, not a channel one.
+        // is a receiver setting in sdrcrow, not a channel one.
         let default = RepeaterState::default();
         let (tone, ctcss_tenths_v, dcs_code, dcs_invert) =
             match get(at("Tone")).to_ascii_uppercase() {
@@ -495,7 +495,7 @@ Location,Name,Frequency,Duplex,Offset,Tone,rToneFreq,cToneFreq,DtcsCode,DtcsPola
         assert_eq!((up.shift, up.offset_hz), (Shift::Plus, 600_000));
     }
 
-    /// What sdroxide writes, CHIRP's reader — and this one — must be able to
+    /// What sdrcrow writes, CHIRP's reader — and this one — must be able to
     /// read back unchanged.
     /// HD Radio is stored as the FM broadcast it rides on, not as a sideband.
     #[test]

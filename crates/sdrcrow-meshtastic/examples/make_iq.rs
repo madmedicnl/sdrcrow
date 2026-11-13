@@ -24,7 +24,7 @@ fn main() {
         eprintln!("usage: make_iq OUT.cf32 [TEXT]");
         std::process::exit(2);
     };
-    let text = args.next().unwrap_or_else(|| "Hello from sdroxide".to_string());
+    let text = args.next().unwrap_or_else(|| "Hello from sdrcrow".to_string());
 
     let p = DEFAULT_PRESET;
     let header = Header {

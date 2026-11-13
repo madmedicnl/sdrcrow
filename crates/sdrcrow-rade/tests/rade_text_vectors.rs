@@ -1,4 +1,4 @@
-//! Golden vectors proving sdroxide's `rade_text` port is interoperable with
+//! Golden vectors proving sdrcrow's `rade_text` port is interoperable with
 //! FreeDV GUI, which is the whole point of the codec: a callsign we transmit
 //! has to be the one another FreeDV station decodes, and vice versa.
 //!

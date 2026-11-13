@@ -13,7 +13,7 @@ crossbeam-channel.workspace = true
 rtrb.workspace = true
 thiserror.workspace = true
 tracing.workspace = true
-# Discovery has to share UDP 4992 with SmartSDR (and with a second sdroxide
+# Discovery has to share UDP 4992 with SmartSDR (and with a second sdrcrow
 # window), which needs SO_REUSEADDR/SO_REUSEPORT set before the bind — something
 # `std::net` cannot express.
 # `all` gates the platform-specific setters, of which `set_reuse_port` is one.

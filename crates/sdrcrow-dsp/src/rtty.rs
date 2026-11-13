@@ -856,18 +856,18 @@ mod tests {
     }
     /// What the decoder makes of a real transmission.
     ///
-    /// `SDROXIDE_RTTY_SAMPLE` is a mono 8 kHz WAV of an RTTY signal;
-    /// `SDROXIDE_RTTY_CENTRE` (default 1700 Hz), `_BAUD` (45.45) and `_SHIFT`
+    /// `SDRCROW_RTTY_SAMPLE` is a mono 8 kHz WAV of an RTTY signal;
+    /// `SDRCROW_RTTY_CENTRE` (default 1700 Hz), `_BAUD` (45.45) and `_SHIFT`
     /// (170 Hz) describe it, and `_TEXT` asserts on the result when set.
     ///
     /// Run it with
-    /// `SDROXIDE_RTTY_SAMPLE=... cargo test -p sdrcrow-dsp --release --lib \\
+    /// `SDRCROW_RTTY_SAMPLE=... cargo test -p sdrcrow-dsp --release --lib \\
     ///   -- --ignored --nocapture an_off_air_capture_decodes`.
     #[test]
     #[ignore]
     fn an_off_air_capture_decodes() {
-        let Ok(path) = std::env::var("SDROXIDE_RTTY_SAMPLE") else {
-            eprintln!("SDROXIDE_RTTY_SAMPLE unset; skipping");
+        let Ok(path) = std::env::var("SDRCROW_RTTY_SAMPLE") else {
+            eprintln!("SDRCROW_RTTY_SAMPLE unset; skipping");
             return;
         };
         let mut reader = hound::WavReader::open(&path).expect("open the sample WAV");
@@ -877,11 +877,11 @@ mod tests {
         let audio: Vec<f32> =
             reader.samples::<i16>().map(|s| s.expect("sample") as f32 / 32_768.0).collect();
         let num = |k: &str, d: f64| std::env::var(k).ok().and_then(|v| v.parse().ok()).unwrap_or(d);
-        let centre = num("SDROXIDE_RTTY_CENTRE", 1700.0);
-        let baud = num("SDROXIDE_RTTY_BAUD", 45.45);
-        let shift = num("SDROXIDE_RTTY_SHIFT", 170.0);
+        let centre = num("SDRCROW_RTTY_CENTRE", 1700.0);
+        let baud = num("SDRCROW_RTTY_BAUD", 45.45);
+        let shift = num("SDRCROW_RTTY_SHIFT", 170.0);
         let mut rx = RttyRx::new(8000.0, centre, baud, shift);
-        if std::env::var("SDROXIDE_RTTY_REVERSE").is_ok() {
+        if std::env::var("SDRCROW_RTTY_REVERSE").is_ok() {
             rx.set_reverse(true);
         }
         let mut out = String::new();
@@ -892,7 +892,7 @@ mod tests {
             "decoded {} chars at {baud} baud, {shift} Hz shift, {centre} Hz: {out:?}",
             out.len()
         );
-        if let Ok(want) = std::env::var("SDROXIDE_RTTY_TEXT") {
+        if let Ok(want) = std::env::var("SDRCROW_RTTY_TEXT") {
             for w in want.split_whitespace() {
                 assert!(out.contains(w), "off-air RTTY did not recover {w:?}: {out:?}");
             }

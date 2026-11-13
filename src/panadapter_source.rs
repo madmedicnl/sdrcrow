@@ -309,7 +309,7 @@ impl PanadapterSource {
 
     /// How far above our dial the transceiver's own VFO has to sit, in Hz.
     ///
-    /// Zero everywhere but CW, and there it is the sidetone pitch. sdroxide's
+    /// Zero everywhere but CW, and there it is the sidetone pitch. sdrcrow's
     /// CW dial is a zero-beat: the note being copied sits a pitch above it,
     /// which is what [`Mode::on_air_hz`] answers and where the receiver's
     /// passband is centred. A transceiver put in CW makes its own carrier on
@@ -775,7 +775,7 @@ impl IqSource for PanadapterSource {
         self.ctrl.set_sat_split_on(on);
     }
 
-    /// sdroxide's A/B onto the transceiver's, and the dial with it — the
+    /// sdrcrow's A/B onto the transceiver's, and the dial with it — the
     /// transceiver is now on that VFO, and the next `set_dial` must not be
     /// skipped as a frequency it is already on.
     fn select_vfo(&mut self, vfo: sdrcrow_types::Vfo, hz: f64) {
@@ -1298,7 +1298,7 @@ mod tests {
     /// the mute is then the only thing that can silence a receiver listening to
     /// its own station's transmitter. So it follows the operator's own MUTE ON
     /// TRANSMIT and nothing else: the blanking above says what happens to an
-    /// over *sdroxide* keys and has no bearing on this one (issue #244).
+    /// over *sdrcrow* keys and has no bearing on this one (issue #244).
     #[test]
     fn a_rig_driven_over_is_muted_by_the_mute_alone() {
         for blank in [true, false] {

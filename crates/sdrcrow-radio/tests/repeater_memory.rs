@@ -7,7 +7,7 @@
 //! get wrong — a plainly simplex memory taking the shift back *off* rather than
 //! leaving the last repeater's shift standing on a simplex channel.
 //!
-//! One test function on purpose: `SDROXIDE_CONFIG_DIR` is process-global, and
+//! One test function on purpose: `SDRCROW_CONFIG_DIR` is process-global, and
 //! this one writes a real `memories.json` under it.
 
 use std::time::{Duration, Instant};
@@ -100,7 +100,7 @@ fn a_memory_carries_its_repeater_setup_both_ways() {
     let root = std::env::temp_dir().join(format!("sdrcrow-repeater-mem-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     let mut h = start_engine(
         Box::new(Rig { center: RPT_HZ }),
@@ -201,6 +201,6 @@ fn a_memory_carries_its_repeater_setup_both_ways() {
     // it is the *recall* that reads it as simplex.
     assert_eq!(saved[1].repeater, None);
 
-    unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+    unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
     let _ = std::fs::remove_dir_all(&root);
 }

@@ -9,7 +9,7 @@ use eframe::egui::{self, RichText};
 use sdrcrow_types::Band;
 use sdrcrow_types::Command;
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 
 /// A six-character Maidenhead locator, in the alphabet the EU VHF contest
 /// layout allows — the sub-square letters run A..X, not A..Y.
@@ -28,7 +28,7 @@ fn is_grid6(g: &str) -> bool {
         && (b'A'..=b'X').contains(&b[5])
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Own-call / grid / message-template editor (and RTTY parameters).
     pub(in crate::app) fn digi_settings_window(
         &mut self,

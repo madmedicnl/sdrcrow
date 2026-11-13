@@ -13,7 +13,7 @@
 use eframe::egui::{self, RichText};
 use sdrcrow_types::{Command, JobAction, Mode, RecordingJob, RecordingKind, RxId, Vfo};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::i18n::tr;
 use crate::app::persist::persist_recording_jobs;
 use crate::app::util::{date_str, parse_utc, time_str};
@@ -58,7 +58,7 @@ impl Default for JobsUi {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Start and stop scheduled recordings. Runs once a frame.
     pub(in crate::app) fn poll_recording_jobs(&mut self, cmds: &mut Vec<Command>) {
         let now = now_unix().max(0) as u64;

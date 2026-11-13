@@ -1,4 +1,4 @@
-//! WebSocket wire protocol between the sdroxide server and remote clients.
+//! WebSocket wire protocol between the sdrcrow server and remote clients.
 //!
 //! Framing: every binary WS message is `[PROTO_VERSION_BYTE][postcard bytes]`.
 //! The version byte is a fast sanity check; the real version negotiation
@@ -786,7 +786,7 @@ use sdrcrow_types::{
 /// [`sdrcrow_types::RadioState`] gained `rig_squelch`, the radio's *own*
 /// squelch threshold as a `0..1` fraction of its scale, and
 /// [`sdrcrow_types::Command`] gained `SetRigSquelch` to move it. A rig that
-/// hands sdroxide audio it has already gated has the only squelch that can
+/// hands sdrcrow audio it has already gated has the only squelch that can
 /// open — `Command::SetSquelch` is a threshold on what got through — so the
 /// SQL control follows [`sdrcrow_types::DeviceCaps::commands_squelch`], also
 /// new here, to whichever of the two the front end actually has.
@@ -1218,7 +1218,7 @@ use sdrcrow_types::{
 /// v137: the receiving antenna. [`sdrcrow_types::DeviceCaps`] gains
 /// `has_rx_antenna` and [`sdrcrow_types::RadioState`] gains `rx_antenna` — an
 /// Icom's `0x12` reply carries that connector's in/out flag behind the socket,
-/// and sdroxide had been writing the byte as zero on every antenna command,
+/// and sdrcrow had been writing the byte as zero on every antenna command,
 /// switching an operator's receive aerial out of circuit on every band change
 /// (issue #229). Both fields sit at their struct's tail, and both structs ride
 /// whole inside `ServerMsg::Capabilities`, `ServerMsg::CapabilitiesUpdated` and
@@ -3282,7 +3282,7 @@ mod tests {
         let ask_list = Command::ListRecordings;
         assert_eq!(decode::<Command>(&encode(&ask_list).unwrap()).unwrap(), ask_list);
         let listing = ServerMsg::Recordings(sdrcrow_types::RecordingListing {
-            dir: "/home/op/Music/sdroxide".into(),
+            dir: "/home/op/Music/sdrcrow".into(),
             files: vec![sdrcrow_types::RecordingFile {
                 name: "sdrcrow_2026-10-06_10-00-05Z_14.230000MHz_SSTV.mp3".into(),
                 bytes: 1_234_567,
@@ -3560,7 +3560,7 @@ mod tests {
                     thumb: vec![0x89, 0x50, 0x4e, 0x47],
                     rifp: None,
                 }],
-                dir: "/home/op/Pictures/sdroxide/wefax".into(),
+                dir: "/home/op/Pictures/sdrcrow/wefax".into(),
             }),
             ServerMsg::ImageFile {
                 kind: ImageKind::Sstv,
@@ -4353,10 +4353,10 @@ mod tests {
             },
             // Two neighbouring enums that are *not* at their defaults: the
             // scope span decides how wide the radio sweeps, and the receive
-            // source decides whether sdroxide demodulates at all.
+            // source decides whether sdrcrow demodulates at all.
             icomnet: sdrcrow_types::IcomNetConfig {
                 address: "ic705.local".into(),
-                username: "sdroxide".into(),
+                username: "sdrcrow".into(),
                 password: "hunter2".into(),
                 rx_source: sdrcrow_types::IcomRxSource::If12k,
                 scope_span: sdrcrow_types::IcomScopeSpan::Khz500,

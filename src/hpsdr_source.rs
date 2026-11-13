@@ -652,7 +652,7 @@ impl IqSource for HpsdrSource {
     /// `HpsdrBoard::open` and never revisited — so a live connection outliving
     /// its last radio made an Apply that changed any of them do nothing at
     /// all. That is the half of issue #135 the reporter saw on a Hermes-Lite 2:
-    /// a new sample rate only took effect after restarting sdroxide.
+    /// a new sample rate only took effect after restarting sdrcrow.
     ///
     /// Dropping the last `Arc` runs the connection's teardown before this
     /// returns, so the replacement opens against a board that has already been

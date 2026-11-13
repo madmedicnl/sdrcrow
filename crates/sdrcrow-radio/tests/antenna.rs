@@ -522,9 +522,9 @@ fn the_operator_can_still_move_a_cabled_front_end() {
 /// into the receive path while the aerial on the main socket stays on transmit.
 ///
 /// Nothing like the sockets above, and it is the difference that matters. The
-/// radio holds this setting itself, per band, and answers for it — so sdroxide
+/// radio holds this setting itself, per band, and answers for it — so sdrcrow
 /// reads it and adopts it, and writes it only when the operator clicks. Every
-/// write sdroxide *does* make carries the value it last read, because on an
+/// write sdrcrow *does* make carries the value it last read, because on an
 /// IC-7300MK2 the same command carries both and a zero there means "out of
 /// circuit" (issue #229).
 struct RxAntRig {
@@ -625,7 +625,7 @@ fn the_receiving_antenna_is_published_only_where_the_radio_has_one() {
 }
 
 /// The end-to-end case the issue was about: a band change must *ask* the radio
-/// what its receiving antenna is set to, never assert one. sdroxide had been
+/// what its receiving antenna is set to, never assert one. sdrcrow had been
 /// writing the byte as zero on every band change, which switched the operator's
 /// receive aerial out of circuit each time they changed band.
 #[test]

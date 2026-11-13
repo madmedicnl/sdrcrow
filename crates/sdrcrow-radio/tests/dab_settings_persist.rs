@@ -103,7 +103,7 @@ fn what_a_scan_found_survives_a_restart() {
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).expect("scratch dir");
     // SAFETY: this is the only test in this binary; nothing races the setter.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
     let tci_off = sdrcrow_types::TciServerConfig { enabled: false, ..Default::default() };
     sdrcrow_config::Store::radio(0).save_tci_server_config(&tci_off).unwrap();
 

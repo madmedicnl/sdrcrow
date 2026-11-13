@@ -128,7 +128,7 @@ fn a_cw_pitch_survives_a_trip_through_another_mode() {
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
     // SAFETY: no engine exists yet in this process.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     let center = Arc::new(Mutex::new(DIAL_CW));
     let cfg = EngineConfig { tx_ham_only: false, ..Default::default() };

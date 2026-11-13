@@ -48,7 +48,7 @@ use tracing::debug;
 /// Hamlib's own name for a mode.
 ///
 /// Deliberately not the same table as `sdrcrow-rigctld`'s: that one answers
-/// for sdroxide *as* a radio, this one drives someone else's. The digital modes
+/// for sdrcrow *as* a radio, this one drives someone else's. The digital modes
 /// all go out as `PKTUSB`, which is what tells a rig to take its audio from the
 /// data input rather than the microphone.
 fn mode_name(m: Mode) -> &'static str {
@@ -123,7 +123,7 @@ fn mode_name(m: Mode) -> &'static str {
 /// Deliberately not the inverse of [`mode_name`] over its whole range, on the
 /// same principle as every other profile here: a rig position that would be
 /// commanded back as something *else* yields `None`, or the two sides spend the
-/// session correcting each other. Two cases matter. `RTTY`, because sdroxide's
+/// session correcting each other. Two cases matter. `RTTY`, because sdrcrow's
 /// RTTY is its own modem in a data sideband and would go back out as `PKTUSB`;
 /// and `AMS`, because synchronous AM is this side's own detector riding on the
 /// rig's plain AM — the rig is commanded to `AM` either way, so following its
@@ -234,7 +234,7 @@ impl Rigctld {
             }
             // Hamlib's PTT is an enum, not a flag: 0 is receive and the values
             // above it name *which* input keyed the rig. Only the zero matters
-            // here — this is asked for solely while sdroxide is not keying, so
+            // here — this is asked for solely while sdrcrow is not keying, so
             // anything else is the operator's own hand.
             Block::Ptt => {
                 if let Ok(n) = v.parse::<i32>() {
@@ -264,7 +264,7 @@ impl Protocol for Rigctld {
 
     fn set_mode(&mut self, m: Mode) -> Vec<u8> {
         // Passband 0 is Hamlib's "leave the filter alone" — the rig's own
-        // default for the mode. sdroxide's filter width reaches the radio
+        // default for the mode. sdrcrow's filter width reaches the radio
         // through `set_filter` on the native profiles and not at all here, so
         // there is nothing to say about it and every reason not to guess.
         cmd(&format!("M {} 0", mode_name(m)))
@@ -297,7 +297,7 @@ impl Protocol for Rigctld {
     }
 
     fn clear_offsets(&self) -> Vec<Vec<u8>> {
-        // sdroxide carries RIT, XIT and split on the dial itself, so anything
+        // sdrcrow carries RIT, XIT and split on the dial itself, so anything
         // the radio is still holding would add to ours unseen. Split off names
         // the receive VFO as the transmit one, which is what "off" means here.
         vec![cmd("J 0"), cmd("Z 0"), cmd("S 0 VFOA")]
@@ -531,7 +531,7 @@ mod tests {
     fn a_level_nobody_asked_for_moves_no_meter() {
         let mut r = Rigctld::new();
         // A daemon answering something else — a leftover from a command given
-        // up on, or one sdroxide never sends — must not land on a meter.
+        // up on, or one sdrcrow never sends — must not land on a meter.
         assert!(parse_str(&mut r, "get_level: ALC\nLevel Value: 3\nRPRT 0\n").is_empty());
         assert!(parse_str(&mut r, "get_vfo:\nVFO: VFOA\nRPRT 0\n").is_empty());
         // And a value with no block open at all is read past rather than
@@ -555,7 +555,7 @@ mod tests {
     #[test]
     fn only_the_positions_that_round_trip_are_followed() {
         let mut r = Rigctld::new();
-        // RTTY: sdroxide's is its own modem in a data sideband, and would be
+        // RTTY: sdrcrow's is its own modem in a data sideband, and would be
         // commanded back as PKTUSB — so the two would take turns correcting
         // each other.
         assert!(parse_str(&mut r, "get_mode:\nMode: RTTY\nPassband: 300\nRPRT 0\n").is_empty());

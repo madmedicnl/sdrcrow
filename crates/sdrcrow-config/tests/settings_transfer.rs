@@ -1,7 +1,7 @@
 //! Carrying a station's settings to another installation, and what a bundle
 //! from somewhere else is allowed to do when it gets there (issue #356).
 //!
-//! One test in the binary, because `SDROXIDE_CONFIG_DIR` is process-global and
+//! One test in the binary, because `SDRCROW_CONFIG_DIR` is process-global and
 //! setting it from a `#[test]` that shares a binary with others would race them
 //! — the same rule `quarantine.rs` next door follows.
 
@@ -18,7 +18,7 @@ fn settings_travel_between_stations_and_a_bundle_cannot_write_outside_the_config
     fs::create_dir_all(&to).expect("scratch dir");
     let at = |dir: &std::path::Path| {
         // SAFETY: this is the only test in this binary; nothing races the setter.
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", dir) };
     };
 
     // ── The station being copied from ──
@@ -65,7 +65,7 @@ fn settings_travel_between_stations_and_a_bundle_cannot_write_outside_the_config
     //
     // Every path here is somebody else's string, and none of them may reach the
     // filesystem. `escaped` is the one that would matter: two directories above
-    // the config directory is the home directory on every platform sdroxide
+    // the config directory is the home directory on every platform sdrcrow
     // runs on.
     let escaped = root.join("escaped.toml");
     let hostile = format!(
@@ -91,7 +91,7 @@ fn settings_travel_between_stations_and_a_bundle_cannot_write_outside_the_config
     assert!(!to.join("run.sh").exists());
     assert!(!to.join("qso_log.json").exists());
 
-    // A file that is not a bundle at all, or is from a newer sdroxide than can
+    // A file that is not a bundle at all, or is from a newer sdrcrow than can
     // read it, is refused outright rather than half-applied.
     assert!(transfer::import("not json at all").is_err());
     let with = |kind: &str, format: u32| {
@@ -104,5 +104,5 @@ fn settings_travel_between_stations_and_a_bundle_cannot_write_outside_the_config
     assert!(transfer::import(&with("sdrcrow-settings", 99)).is_err());
     assert!(transfer::import(&with("sdrcrow-settings", 1)).is_ok());
 
-    unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+    unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
 }

@@ -58,7 +58,7 @@ pub const LOADER: &str = "elad-firmware";
 
 /// An environment variable naming the loader, for an installation that put it
 /// somewhere else — or for a build of it under another name.
-pub const LOADER_ENV: &str = "SDROXIDE_ELAD_FIRMWARE";
+pub const LOADER_ENV: &str = "SDRCROW_ELAD_FIRMWARE";
 
 /// Where the loader is looked for, in order.
 ///
@@ -220,10 +220,10 @@ impl Run {
             Ok(c) => c,
             Err(e) => {
                 let w = format!(
-                    "sdroxide could not run ELAD's FPGA loader {} ({e}). Until the \
+                    "sdrcrow could not run ELAD's FPGA loader {} ({e}). Until the \
                      image is loaded the receiver answers every command and sends no \
                      samples at all — make the loader executable, or run \
-                     `{LOADER} + {}` yourself before starting sdroxide",
+                     `{LOADER} + {}` yourself before starting sdrcrow",
                     self.loader.display(),
                     self.code,
                 );
@@ -317,7 +317,7 @@ pub fn status_line() -> String {
 fn missing_loader(model: Model) -> String {
     format!(
         "the {}'s FPGA is not loaded at power-up, and until it is the receiver \
-         answers every command and sends no samples at all. sdroxide can load it \
+         answers every command and sends no samples at all. sdrcrow can load it \
          for you but could not find ELAD's `{LOADER}` — download it from ELAD's \
          Linux area (eladit.com → Download → SDR/Linux), copy it to \
          /usr/local/bin/{LOADER}, and make it executable. Take the \
@@ -349,7 +349,7 @@ fn hint_for(model: Model, loaded: bool) -> String {
             return format!(
                 "the {} has not delivered a single sample, although its FPGA was \
                  programmed at this open. The device is answering every command \
-                 and producing nothing, which is past anything sdroxide can tell \
+                 and producing nothing, which is past anything sdrcrow can tell \
                  apart from here — please send Settings → Radio → Copy diagnostic \
                  report to the issue tracker",
                 model.name(),
@@ -361,7 +361,7 @@ fn hint_for(model: Model, loaded: bool) -> String {
              the start of the stream, with no down-converter in it to produce one. \
              Install ELAD's `{LOADER}` loader (eladit.com → Download → SDR/Linux) \
              as /usr/local/bin/{LOADER} — the \"intel\" build, which is the \
-             64-bit one — and sdroxide will run it at every open",
+             64-bit one — and sdrcrow will run it at every open",
             model.name(),
         )
     } else {

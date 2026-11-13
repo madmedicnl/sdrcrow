@@ -10,7 +10,7 @@
 //! The band table and the two port rules are transcribed from LimeSuite's own
 //! `FreqToBand`, `RxPortCheck` and `TxPortCheck` (`src/limeRFE/RFE_Device.cpp`).
 //! Deliberately the same numbers rather than better ones: a LimeRFE configured
-//! by sdroxide and one configured by LimeSuiteGUI should put the same filters
+//! by sdrcrow and one configured by LimeSuiteGUI should put the same filters
 //! in circuit, and a disagreement would show up as "it works in their software"
 //! with nothing to point at.
 

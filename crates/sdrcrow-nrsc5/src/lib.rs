@@ -8,7 +8,7 @@
 //! nrsc5 is not built in: `src/ffi.rs` finds its shared library at run time,
 //! and [`unavailable_reason`] is the sentence to show where there is none. That
 //! is also what keeps its HDC audio codec — a patched faad2 the library carries
-//! inside itself — out of sdroxide, and out of the way of the stock faad2 the
+//! inside itself — out of sdrcrow, and out of the way of the stock faad2 the
 //! DRM receiver links (issue #488).
 //!
 //! [`HdReceiver`] is a thin binding on purpose. Opened on a pipe, the C library

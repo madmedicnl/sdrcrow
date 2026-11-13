@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Headless install of SDR Oxide Brown — Linux, macOS and Windows.
+"""Headless install of SDRCrow — Linux, macOS and Windows.
 
 The same job as `install.sh`, in Python so a club can hand out one script for
 every machine it owns. Put it beside what it should install and run it:
@@ -37,8 +37,8 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-PROGRAM = "sdroxide"
-CONFIG_NAME = "sdroxide-brown"
+PROGRAM = "sdrcrow"
+CONFIG_NAME = "sdrcrow-brown"
 HERE = Path(__file__).resolve().parent
 
 # The package shapes this understands, most specific first. A `.deb` is Linux,
@@ -117,18 +117,18 @@ class Installer:
     def config_dir(self) -> Path:
         """The directory the program itself uses.
 
-        It is `directories::ProjectDirs::from("org", "sdroxide", "sdroxide")`
+        It is `directories::ProjectDirs::from("org", "sdrcrow", "sdrcrow")`
         with `-brown` appended to the last component — see
         `sdrcrow_config::config_dir`. Getting this wrong is the one mistake
         that silently does nothing: the program would not read what was
         written.
         """
         if self.system == "Darwin":
-            base = Path.home() / "Library" / "Application Support" / "org.sdroxide.sdroxide"
+            base = Path.home() / "Library" / "Application Support" / "org.sdrcrow.sdrcrow"
         elif self.system == "Windows":
-            base = Path(os.environ.get("APPDATA", Path.home())) / "sdroxide" / "sdroxide" / "config"
+            base = Path(os.environ.get("APPDATA", Path.home())) / "sdrcrow" / "sdrcrow" / "config"
         else:
-            base = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "sdroxide"
+            base = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "sdrcrow"
         return base.with_name(base.name + "-brown")
 
     # ── running things ─────────────────────────────────────────────────────
@@ -199,7 +199,7 @@ class Installer:
 
     def windows_dir(self) -> Path:
         base = Path(os.environ.get("LOCALAPPDATA", Path.home())) / "Programs"
-        return base / "SDR Oxide Brown"
+        return base / "SDRCrow"
 
     def _unzip(self, archive: Path, target: Path) -> None:
         import zipfile
@@ -214,7 +214,7 @@ class Installer:
 
     def install_dmg(self, root: list[str]) -> None:
         """macOS: mount, copy the app, unmount."""
-        mount = Path("/Volumes/SDR Oxide Brown")
+        mount = Path("/Volumes/SDRCrow")
         self.run(*root, "hdiutil", "attach", str(self.package), "-nobrowse", "-mountpoint", str(mount))
         try:
             apps = list(mount.glob("*.app"))
@@ -227,7 +227,7 @@ class Installer:
     def install_tarball(self, root: list[str]) -> None:
         """Linux: unpack under /opt and link the binary; anywhere else: ~/Applications."""
         if self.system == "Linux":
-            target = Path("/opt/sdroxide")
+            target = Path("/opt/sdrcrow")
             say(f"  unpacking into {target}")
             self.run(*root, "mkdir", "-p", str(target))
             # `tarfile` rather than `tar`, so this works in a minimal image with
@@ -337,10 +337,10 @@ class Installer:
             warn("a systemd unit is a Linux thing; nothing to do here")
             return
         root = self.sudo()
-        unit = Path("/etc/systemd/system/sdroxide.service")
+        unit = Path("/etc/systemd/system/sdrcrow.service")
         text = (
             "[Unit]\n"
-            "Description=SDR Oxide Brown (headless station)\n"
+            "Description=SDRCrow (headless station)\n"
             "After=network-online.target\n\n"
             "[Service]\n"
             "Type=simple\n"
@@ -360,11 +360,11 @@ class Installer:
             self.run(*root, "install", "-Dm644", tmp_path, str(unit))
             os.unlink(tmp_path)
         self.run(*root, "systemctl", "daemon-reload")
-        self.run(*root, "systemctl", "enable", "--now", "sdroxide")
+        self.run(*root, "systemctl", "enable", "--now", "sdrcrow")
 
     def go(self) -> None:
         config_dir = self.config_dir()
-        say("SDR Oxide Brown — headless install")
+        say("SDRCrow — headless install")
         step(f"package:      {self.package.name}")
         step(f"config:       {self.config_src if self.config_src else '<none given - built-in defaults>'}")
         step(f"for user:     {self.user}  ({config_dir})")
@@ -421,7 +421,7 @@ def _default_user() -> str:
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(
         prog="install.py",
-        description="Headless install of SDR Oxide Brown. Nothing is asked; "
+        description="Headless install of SDRCrow. Nothing is asked; "
         "everything comes from this directory.",
         epilog="The configuration is copied, and an existing one is moved aside "
         "first as <config>-<date>.bak, so a failed run never costs a station "
@@ -433,7 +433,7 @@ def main(argv: list[str]) -> int:
     parser.add_argument(
         "--server-unit",
         action="store_true",
-        help="also install and enable a systemd unit running 'sdroxide --server'",
+        help="also install and enable a systemd unit running 'sdrcrow --server'",
     )
     parser.add_argument("--dry-run", action="store_true", help="print what would be done, change nothing")
     parser.add_argument("--verbose", action="store_true", help="print every command as it runs")

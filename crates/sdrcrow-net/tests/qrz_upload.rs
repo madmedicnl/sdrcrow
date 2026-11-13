@@ -30,7 +30,7 @@ fn qrz_insert_then_delete() {
         start_utc: 1_700_000_000, // 2023-11-14, fixed so it's easy to spot/remove
         end_utc: 1_700_000_000,
         my_call: my_call.clone(),
-        comment: "sdroxide upload test — safe to delete".into(),
+        comment: "sdrcrow upload test — safe to delete".into(),
         ..Default::default()
     };
     let adif = qso_log_to_adif(std::slice::from_ref(&rec));

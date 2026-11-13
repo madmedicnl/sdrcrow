@@ -1,4 +1,4 @@
-// AudioWorklet processors for the sdroxide web client.
+// AudioWorklet processors for the sdrcrow web client.
 
 // **Three units live in this file, and confusing them is what the first
 // reader did.**

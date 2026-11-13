@@ -23,7 +23,7 @@ static thread_local CSdrxRing* tls_ring = nullptr;
 CSdrxRing* sdrx_current_ring() { return tls_ring; }
 void sdrx_set_current_ring(CSdrxRing* r) { tls_ring = r; }
 
-const char* CSoundInSdrx::SDRX_DEVICE = "sdroxide";
+const char* CSoundInSdrx::SDRX_DEVICE = "sdrcrow";
 
 /* Nothing may unwind out of this file.
  *
@@ -38,7 +38,7 @@ const char* CSoundInSdrx::SDRX_DEVICE = "sdroxide";
  * shortwave broadcast is exactly the sort of input that produces them.
  *
  * The reason is kept in a thread-local so the worker can log what happened,
- * which is the difference between a user reporting "sdroxide vanished" and
+ * which is the difference between a user reporting "sdrcrow vanished" and
  * reporting a decode that stopped. */
 static thread_local std::string tls_error;
 

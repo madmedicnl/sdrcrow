@@ -17,7 +17,7 @@
 //!
 //! A FLEX will hand out either finished FFT bins plus demodulated audio (what
 //! SmartSDR itself renders) or raw complex baseband over a DAX IQ stream.
-//! sdroxide has its own DDC, demodulators, waterfall, skimmer and digital
+//! sdrcrow has its own DDC, demodulators, waterfall, skimmer and digital
 //! modes; feeding them radio-side FFT bins would leave all of that unused and
 //! limit reception to whatever the radio already decided to demodulate. So the
 //! IQ stream is the data path, exactly as for TCI and HPSDR, and the radio's own
@@ -53,7 +53,7 @@ const PING_INTERVAL: Duration = Duration::from_secs(5);
 /// evicts somebody, so reading it half-arrived is worse than not reading it.
 const CLIENT_LIST_GRACE: Duration = Duration::from_millis(150);
 
-/// DAX IQ channel we claim. Channel 1 of 4; a second sdroxide against the same
+/// DAX IQ channel we claim. Channel 1 of 4; a second sdrcrow against the same
 /// radio would need a different one, which is why it is a field on the config
 /// rather than a constant here.
 pub const DEFAULT_IQ_CHANNEL: u32 = 1;
@@ -120,7 +120,7 @@ impl Default for ConnectOptions {
             address: String::new(),
             iq_rate_hz: 192_000.0,
             iq_channel: DEFAULT_IQ_CHANNEL,
-            station: "sdroxide".into(),
+            station: "sdrcrow".into(),
             client_id: String::new(),
             transient_identity: false,
             network_mtu: DEFAULT_NETWORK_MTU,
@@ -318,11 +318,11 @@ impl FlexHandle {
         // showed `R1|10000002|unknown client program` going unremarked for the
         // whole session.
         let prog = wire
-            .try_request(&mut reader, &mut deferred, "client program sdroxide")?
+            .try_request(&mut reader, &mut deferred, "client program sdrcrow")?
             .unwrap_or(Reply { code: 0, body: String::new() });
         if prog.code != 0 {
             trace.note(format!(
-                "the radio did not recognise `client program sdroxide` \
+                "the radio did not recognise `client program sdrcrow` \
                  (0x{:08X}{}) — continuing",
                 prog.code,
                 if prog.body.trim().is_empty() {
@@ -337,9 +337,9 @@ impl FlexHandle {
         //
         // `client gui <id>` does not fail when another client already holds the
         // id: the radio silently evicts them, hands us their slices, and reports
-        // `duplicate_client_id=1` to everybody. Between two sdroxide sessions —
+        // `duplicate_client_id=1` to everybody. Between two sdrcrow sessions —
         // which, with an id derived from a station name that defaults to
-        // "sdroxide", is every pair of them — that is not an eviction but a
+        // "sdrcrow", is every pair of them — that is not an eviction but a
         // fight, each reconnect throwing the other off. One subscription turns
         // it into a choice.
         //
@@ -615,7 +615,7 @@ impl FlexHandle {
     /// the same GUI client id.
     ///
     /// Worth asking before reconnecting: the same id would lose the same fight,
-    /// and two sdroxide sessions doing that to each other never converges. The
+    /// and two sdrcrow sessions doing that to each other never converges. The
     /// caller's answer is [`ConnectOptions::transient_identity`].
     pub fn evicted_for_duplicate_id(&self) -> bool {
         self.evicted.load(Ordering::Relaxed)
@@ -922,7 +922,7 @@ fn describe_gui_failure(code: u32, body: &str) -> String {
 ///
 /// The radio remembers a GUI client by this id and restores its slices and
 /// panadapters on reconnect, so it must not change between runs. Deriving it
-/// from the station name gives that for free — but *only* that. Two sdroxide
+/// from the station name gives that for free — but *only* that. Two sdrcrow
 /// installations that never renamed their station derive the same id, and so do
 /// two sessions of one installation, and the radio resolves a duplicate id by
 /// evicting whoever held it first.
@@ -949,7 +949,7 @@ pub fn gui_client_id(station: &str) -> String {
 /// us it evicted *us* over one.
 ///
 /// Seeded from the wall clock, this process and this connection's handle, so two
-/// sdroxide windows starting together still differ.
+/// sdrcrow windows starting together still differ.
 fn transient_client_id(handle: u32) -> String {
     use std::sync::atomic::AtomicU64;
     static SEQ: AtomicU64 = AtomicU64::new(0);
@@ -1029,7 +1029,7 @@ fn live_holder_of(lines: &[Line], id: &str, ours: u32) -> Option<(u32, String)> 
 ///
 /// Bound **only** when `client udpport` was refused or went unanswered, never as
 /// insurance. 4991 is SmartSDR's own receiving port on this machine: squatting
-/// on it for the length of every sdroxide session would stop the operator
+/// on it for the length of every sdrcrow session would stop the operator
 /// starting SmartSDR alongside us, which on a multiFLEX radio is something
 /// people do on purpose. When the radio has accepted the port we asked for there
 /// is nothing here to win, so nothing is taken.
@@ -1076,7 +1076,7 @@ const PAN_SETTLE: Duration = Duration::from_millis(200);
 /// the range — and it hands out no more, so a client that creates one every
 /// time it connects and cannot always remove it again eventually finds the
 /// radio saying no (issue #309, `0x50000009` on a 6400). Two things make that
-/// likelier than it sounds. sdroxide registers as a *GUI* client under a stable
+/// likelier than it sounds. sdrcrow registers as a *GUI* client under a stable
 /// id, and a radio restores a GUI client's panadapters when that id comes back
 /// — so last session's is waiting for us on this one. And the teardown that
 /// removes ours cannot run at all if the process was killed, the network
@@ -1192,7 +1192,7 @@ fn configure_pan(wire: &mut Wire, pan_id: &str, iq_rate_hz: f64) -> Result<(), F
     // The radio speaks MHz here, as it does for every frequency in the protocol.
     wire.send(&format!("display pan set {pan_id} bandwidth={:.6}", iq_rate_hz / 1e6))?;
     // A panadapter with no pixel geometry has no FFT to compute. We never read
-    // its bins — sdroxide does its own — but the radio treats an unsized pan as
+    // its bins — sdrcrow does its own — but the radio treats an unsized pan as
     // one to skip, and a skipped pan is not a pan a DAX IQ stream follows.
     wire.send(&format!("display pan set {pan_id} xpixels=1024 ypixels=700"))?;
     Ok(())
@@ -1512,7 +1512,7 @@ impl ControlThread {
                     let hz = f * 1e6;
                     let ours = self.cmd_at.is_some_and(|t| t.elapsed() < ECHO_WINDOW);
                     // `center` is still 0 for the first status of a session, so
-                    // this path also does the initial adoption: sdroxide opens
+                    // this path also does the initial adoption: sdrcrow opens
                     // on whatever the radio is already tuned to, rather than
                     // yanking a running station off frequency to whatever was
                     // in its own config.
@@ -1597,7 +1597,7 @@ impl ControlThread {
             // `client 0x… disconnected … duplicate_client_id=1` — somebody
             // registered our GUI client id and the radio handed them our
             // session. Recorded rather than merely logged: reconnecting under
-            // the same id would lose the same fight, and between two sdroxide
+            // the same id would lose the same fight, and between two sdrcrow
             // sessions that loop never ends.
             Some("client") => {
                 let Some(handle) = words.next().and_then(p::parse_hex_id) else { return };
@@ -1621,10 +1621,10 @@ impl ControlThread {
     }
 }
 
-/// Map an sdroxide mode to the radio's spelling.
+/// Map an sdrcrow mode to the radio's spelling.
 ///
 /// Only the radio's *filter and sideband* are being set here — the digital
-/// modes are demodulated in sdroxide from the IQ, so every one of them asks the
+/// modes are demodulated in sdrcrow from the IQ, so every one of them asks the
 /// radio for DIGU/DIGL, exactly as the TCI backend does. Nothing about the
 /// radio's own decoding is engaged.
 fn mode_to_flex(m: Mode) -> &'static str {
@@ -1859,7 +1859,7 @@ impl DataThread {
                     "no UDP from the radio after {:.0}s. The control link is fine, so the \
                      radio's VITA-49 is not reaching this machine: a host firewall on this \
                      computer is the usual cause (SmartSDR gets a rule installed for it and \
-                     sdroxide does not), then a VPN, then an MTU smaller than the one the \
+                     sdrcrow does not), then a VPN, then an MTU smaller than the one the \
                      radio was given.",
                     SILENCE_VERDICT.as_secs_f64()
                 ));
@@ -2186,7 +2186,7 @@ mod tests {
         // FM collapses: the radio has one FM, we have two.
         assert_eq!(flex_to_mode(mode_to_flex(Mode::Nfm)), Some(Mode::Nfm));
         assert_eq!(mode_to_flex(Mode::Wfm), "FM");
-        // Every sdroxide digital mode asks the radio only for a sideband —
+        // Every sdrcrow digital mode asks the radio only for a sideband —
         // the decoding is ours, from the IQ.
         assert_eq!(mode_to_flex(Mode::Ft8), "DIGU");
         assert_eq!(mode_to_flex(Mode::Rtty), "DIGU");

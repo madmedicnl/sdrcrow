@@ -8,7 +8,7 @@
 
 use sdrcrow_types::ProgramsState;
 
-use super::SdroxideApp;
+use super::SdrcrowApp;
 
 /// Where the state is read and written: the station this client is connected to.
 pub(in crate::app) fn programs_url(peer_url: &str) -> Option<String> {
@@ -148,7 +148,7 @@ impl ProgramsSync {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// What the window holds now, as the station keeps it.
     pub(in crate::app) fn programs_state(&self) -> ProgramsState {
         ProgramsState {

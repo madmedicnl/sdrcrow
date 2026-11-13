@@ -65,7 +65,7 @@ impl Block {
 }
 
 /// Every USB id librtlsdr knows about. Transcribed in full: a missing entry
-/// means "sdroxide doesn't see my dongle" for whoever owns that stick.
+/// means "sdrcrow doesn't see my dongle" for whoever owns that stick.
 ///
 /// The first two cover the overwhelming majority in practice, including every
 /// RTL-SDR Blog V3 and V4.

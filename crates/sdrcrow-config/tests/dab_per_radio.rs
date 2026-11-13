@@ -1,6 +1,6 @@
 //! Each radio keeps its own DAB channel list.
 //!
-//! One test per file on purpose: `SDROXIDE_CONFIG_DIR` is process-global, and
+//! One test per file on purpose: `SDRCROW_CONFIG_DIR` is process-global, and
 //! setting it from a `#[test]` that shares a binary with others would race them.
 
 use sdrcrow_config::Store;
@@ -19,7 +19,7 @@ fn one_radios_dab_channels_are_not_anothers() {
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).expect("scratch dir");
     // SAFETY: this is the only test in this binary; nothing races the setter.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     let (first, second) = (Store::radio(0), Store::radio(2));
 

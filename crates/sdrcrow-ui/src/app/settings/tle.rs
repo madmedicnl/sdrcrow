@@ -110,7 +110,7 @@ fn settings_tle_subscriptions(ui: &mut egui::Ui, io: &mut SettingsIo) {
                         .strong(),
                 )
                 .on_hover_text(tr!("settings-tle-which-satellites-listing-get-orbit"));
-                // The middle position keys off sdroxide's own curated list,
+                // The middle position keys off sdrcrow's own curated list,
                 // which is ten *amateur* satellites — so for a weather or GNSS
                 // listing it would behave exactly like "none". Greyed out once
                 // a fetch has proved this listing has none of them, rather than

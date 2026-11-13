@@ -117,7 +117,7 @@ pub(in crate::app) fn classic_column_width(window_w: f32) -> Option<(f32, f32)> 
     Some((CLASSIC_MIN_W, max))
 }
 
-impl super::SdroxideApp {
+impl super::SdrcrowApp {
     /// The column: a heading, then a scroll area of sections, each folding away.
     ///
     /// `egui::CollapsingHeader` rather than a hand-rolled fold, because it is

@@ -8,7 +8,7 @@
 //!
 //! The panadapter's own settings — its detail, the spectrum's reaction and the
 //! waterfall's scroll speed — used to be here and are now on the SPEC popup,
-//! beside the picture they change (`SdroxideApp::panadapter_controls`). They
+//! beside the picture they change (`SdrcrowApp::panadapter_controls`). They
 //! are still the same [`sdrcrow_types::UiSettings`] fields, written and
 //! persisted the same way.
 
@@ -92,7 +92,7 @@ pub(in crate::app) fn settings_ui_tab(
     // Said here because this is where they used to be, and where an operator
     // who remembers them will come looking. They moved to the panadapter's own
     // button, beside the picture they change — see
-    // `SdroxideApp::panadapter_controls`.
+    // `SdrcrowApp::panadapter_controls`.
     super::note_at(
         ui,
         &tr!("settings-ui-moved-note"),

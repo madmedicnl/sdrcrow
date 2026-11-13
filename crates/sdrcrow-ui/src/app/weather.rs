@@ -17,7 +17,7 @@
 use crate::i18n::tr;
 use eframe::egui::{self, RichText};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::theme::gray;
 
 /// Whether the window is open. Session-only: a stored report read on another
@@ -27,7 +27,7 @@ pub struct WeatherWindow {
     pub show: bool,
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Open it from the RTTY panel — and from anywhere else that decodes text,
     /// since the report does not care which mode brought it in.
     pub(in crate::app) fn weather_window(&mut self, ctx: &egui::Context) {

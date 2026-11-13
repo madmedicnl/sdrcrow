@@ -3,7 +3,7 @@
 //! read and write exactly this format with `--iq-output` / `--iq-input`).
 //!
 //! It drives the *real* modulator and demodulator the engine uses, so what this
-//! writes is what sdroxide transmits, and what it decodes is what sdroxide
+//! writes is what sdrcrow transmits, and what it decodes is what sdrcrow
 //! would decode off the air.
 //!
 //! ```text
@@ -57,10 +57,10 @@ fn send(args: &[String]) -> Result<(), Box<dyn std::error::Error>> {
     let img = image::open(&args[2])?.to_rgb8();
     let (w, h) = (img.width() as u16, img.height() as u16);
     let cfg = DigiConfig {
-        my_call: std::env::var("RIFP_CALL").unwrap_or_else(|_| "SDROXIDE".into()),
+        my_call: std::env::var("RIFP_CALL").unwrap_or_else(|_| "SDRCROW".into()),
         rifp_encoding: encoding_from(args.get(4)),
         rifp_bits_per_pixel: args.get(5).and_then(|b| b.parse().ok()).unwrap_or(4),
-        rifp_content_hint: "sdroxide interop".into(),
+        rifp_content_hint: "sdrcrow interop".into(),
         ..DigiConfig::default()
     };
 

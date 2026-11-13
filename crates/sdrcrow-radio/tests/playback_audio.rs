@@ -102,7 +102,7 @@ fn a_stereo_recording_reaches_the_speaker_whole_and_in_stereo() {
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(dir.join("recordings")).unwrap();
     // SAFETY: the only test in this binary, and no engine exists yet.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) }
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) }
     write_stereo_wav(&dir.join("recordings").join(NAME), 6.0);
 
     // The speaker: a ring drained as fast as it fills, as a sound card would,

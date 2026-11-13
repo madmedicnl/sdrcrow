@@ -126,7 +126,7 @@ fn isolate_config(name: &str) {
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
     // The variable is process-global; unset means the operator's live config.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 }
 
 fn engine(radial_deg: f64, with_ident: bool, audio_mode: bool) -> sdrcrow_radio::EngineHandles {

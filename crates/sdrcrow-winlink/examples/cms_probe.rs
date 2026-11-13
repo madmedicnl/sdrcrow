@@ -35,12 +35,12 @@ fn main() {
     let send = std::env::args().any(|a| a == "--send");
     // Production refuses client names it does not know, and says so, naming
     // cms-z.winlink.org as the host for everyone else. Override to develop
-    // against that until "sdroxide" is a registered client type.
+    // against that until "sdrcrow" is a registered client type.
     let address = std::env::var("WINLINK_CMS").unwrap_or_else(|_| CMS_ADDRESS.into());
     // Some implementations announce themselves as a known client to get in.
     // Kept as an explicit, off-by-default knob rather than a silent default:
     // claiming to be somebody else's client is not ours to do quietly.
-    let app_name = std::env::var("WINLINK_APP_NAME").unwrap_or_else(|_| "sdroxide".into());
+    let app_name = std::env::var("WINLINK_APP_NAME").unwrap_or_else(|_| "sdrcrow".into());
 
     // `--mailbox <dir>`: drive the manager, which is what the engine uses.
     let args: Vec<String> = std::env::args().collect();
@@ -121,9 +121,9 @@ fn test_message(callsign: &str) -> Message {
         from: callsign.to_string(),
         to: vec![callsign.to_string()],
         cc: vec![],
-        subject: "sdroxide test".into(),
+        subject: "sdrcrow test".into(),
         mbo: callsign.to_string(),
-        body: "Sent by sdroxide's Winlink client over the CMS telnet gateway.\r\n".into(),
+        body: "Sent by sdrcrow's Winlink client over the CMS telnet gateway.\r\n".into(),
         attachments: vec![],
     }
 }
@@ -158,8 +158,8 @@ fn run_via_manager(
     if send {
         let draft = sdrcrow_types::MailDraft {
             to: vec![callsign.to_string()],
-            subject: "sdroxide test".into(),
-            body: "Sent by sdroxide's Winlink client.\r\n".into(),
+            subject: "sdrcrow test".into(),
+            body: "Sent by sdrcrow's Winlink client.\r\n".into(),
             ..Default::default()
         };
         println!("filed {} in the outbox", mgr.compose(&draft).expect("composing"));

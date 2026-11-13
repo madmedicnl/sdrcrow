@@ -277,7 +277,7 @@ fn surface_plot(
     }
 }
 
-impl super::SdroxideApp {
+impl super::SdrcrowApp {
     pub(in crate::app) fn antenna_window(&mut self, ctx: &egui::Context) {
         if !self.show_antenna {
             return;

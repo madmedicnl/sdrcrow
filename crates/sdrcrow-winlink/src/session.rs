@@ -482,7 +482,7 @@ mod tests {
             callsign: "OE3JJS".into(),
             password: "TESTPASS".into(),
             locator: "JN88".into(),
-            app_name: "sdroxide".into(),
+            app_name: "sdrcrow".into(),
             app_version: "1.2.0".into(),
             ..Default::default()
         }

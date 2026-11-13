@@ -16134,7 +16134,7 @@ real question:
   configuration at all: the program makes `~/.config/sdrcrow` on its
   first run. That directory — settings, the station roster, the logbook, the
   reception log, memories, recordings, the solar cache — is the other half of a
-  complete removal. `SDROXIDE_CONFIG_DIR` puts it elsewhere if you have set that.
+  complete removal. `SDRCROW_CONFIG_DIR` puts it elsewhere if you have set that.
 - **The portable tarball** adds nothing outside the folder you unpacked it into,
   except `~/.local/share/applications/sdrcrow.desktop` and its icon if you ran
   `install-desktop-entry.sh`; `./install-desktop-entry.sh --uninstall` removes
@@ -17369,7 +17369,7 @@ That copy happens **once**, and only while this build's directory does not exist
 From then on each build reads and writes its own files, so a setting you change
 in one is not carried into the other — not the spot filters, not the zoom, not
 the band plan. If a setting really does follow you from one build to the other,
-something has made the two share a directory: `SDROXIDE_CONFIG_DIR` names the
+something has made the two share a directory: `SDRCROW_CONFIG_DIR` names the
 directory outright ([§9.5](#95-removing-an-installation-completely)), so two
 installations given the same value *are* one installation as far as the settings
 are concerned. That is a useful way to run a second profile on purpose, and it is

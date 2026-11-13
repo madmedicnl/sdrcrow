@@ -13,11 +13,11 @@
 use eframe::egui::{self, RichText};
 use sdrcrow_types::{Command, Mode, UvPacketFrame, UvPacketStatus};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::i18n::tr;
 use crate::theme;
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn uvpacket_panel(
         &mut self,
         ui: &mut egui::Ui,

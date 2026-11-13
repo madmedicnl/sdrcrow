@@ -50,7 +50,7 @@ impl IqSource for MockSource {
 /// Two reasons. An engine reads (and seeds) `bandplan.json` and the region as
 /// it starts, so without this the tests run against whatever the operator has
 /// installed — and the frequencies asserted below are the built-in plan's. And
-/// `SDROXIDE_CONFIG_DIR` unset means the *live* directory, which no test may
+/// `SDRCROW_CONFIG_DIR` unset means the *live* directory, which no test may
 /// write to.
 fn isolate_config() {
     static ONCE: std::sync::Once = std::sync::Once::new();
@@ -59,7 +59,7 @@ fn isolate_config() {
             std::env::temp_dir().join(format!("sdrcrow-mode-convention-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
         std::fs::create_dir_all(&root).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
     });
 }
 

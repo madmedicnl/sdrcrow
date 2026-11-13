@@ -1,6 +1,6 @@
 //! Decoding the EU VHF contest exchange in FT8 (issue #223).
 //!
-//! Every other layout in the 77-bit family reaches sdroxide through mfsk-core's
+//! Every other layout in the 77-bit family reaches sdrcrow through mfsk-core's
 //! own FT8 decoder. This one cannot, and the reason is structural rather than a
 //! setting: that decoder finishes each candidate with
 //!

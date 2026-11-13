@@ -15,7 +15,7 @@ use crate::i18n::tr;
 use eframe::egui::{self, Color32, RichText};
 use sdrcrow_types::{Command, DrmChannel, DrmStatus, DrmSync, Mode};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 
 /// How many status snapshots the quality history keeps. The engine sends four
 /// a second, so this is about a minute — long enough to watch a fade come and
@@ -74,7 +74,7 @@ fn error_ink(err: f32) -> Color32 {
     Color32::from_rgb(r as u8, g as u8, b as u8)
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn on_drm(&mut self, data: DrmStatus) {
         // Only while locked: the figures mean nothing otherwise, and plotting
         // the zeros a dropout leaves would draw a cliff that says "the signal

@@ -4,7 +4,7 @@
 # address at the top of the host. That is only right where the client is served
 # from the root: behind a reverse proxy it commonly is not — an operator with a
 # Tailscale certificate gets no subdomains, so the natural home is
-# `https://host/sdroxide/` — and the bundle then 404s while the page itself
+# `https://host/sdrcrow/` — and the bundle then 404s while the page itself
 # loads, which reads as the client being broken rather than misaddressed
 # (issue #241).
 #

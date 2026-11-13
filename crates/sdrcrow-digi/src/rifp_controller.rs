@@ -705,7 +705,7 @@ fn picture_stem(call: &str) -> String {
         .filter(|c| c.is_ascii_alphanumeric() || *c == '-')
         .take(16)
         .collect();
-    if cleaned.is_empty() { "sdroxide".into() } else { cleaned }
+    if cleaned.is_empty() { "sdrcrow".into() } else { cleaned }
 }
 
 fn file_suffix(encoding: RifpEncoding) -> &'static str {

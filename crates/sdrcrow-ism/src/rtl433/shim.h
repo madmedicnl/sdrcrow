@@ -8,8 +8,8 @@
  * it, feed it and destroy it from one thread.
  */
 
-#ifndef SDROXIDE_RTL433_SHIM_H_
-#define SDROXIDE_RTL433_SHIM_H_
+#ifndef SDRCROW_RTL433_SHIM_H_
+#define SDRCROW_RTL433_SHIM_H_
 
 #include <stdint.h>
 
@@ -84,4 +84,4 @@ void sdrx_rtl433_set_log_handler(sdrx_rtl433_log_cb cb, void *user);
 /* The vendored rtl_433 version string, e.g. "25.12-353-g8fa6364c". */
 const char *sdrx_rtl433_version(void);
 
-#endif /* SDROXIDE_RTL433_SHIM_H_ */
+#endif /* SDRCROW_RTL433_SHIM_H_ */

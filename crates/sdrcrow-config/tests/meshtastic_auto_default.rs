@@ -2,7 +2,7 @@
 //! which preset a network runs. A `meshtastic.json` written while the default
 //! was LongFast is moved to Auto once; a later deliberate LongFast is kept.
 //!
-//! One test in the binary: `SDROXIDE_CONFIG_DIR` is process-global.
+//! One test in the binary: `SDRCROW_CONFIG_DIR` is process-global.
 
 use std::fs;
 
@@ -12,7 +12,7 @@ fn an_old_long_fast_default_becomes_auto_once() {
     let _ = fs::remove_dir_all(&dir);
     fs::create_dir_all(&dir).expect("scratch dir");
     // SAFETY: the only test in this binary; nothing races the setter.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
     // A file from before: LongFast, never chosen by anybody.
     fs::write(

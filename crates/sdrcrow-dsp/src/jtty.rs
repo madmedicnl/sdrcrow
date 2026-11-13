@@ -2,12 +2,12 @@
 // (https://github.com/WSJTX/wsjtx), tag v3.2.0-rc1, files under lib/jtty/.
 // WSJT-X is free software, licensed under the GNU General Public License
 // version 3 or later. This file is distributed under the same terms as the
-// rest of sdroxide (GPL-3.0-or-later).
+// rest of sdrcrow (GPL-3.0-or-later).
 //
 // JTTY was designed by the WSJT development team (Joe Taylor K1JT, Steve
 // Franke K9AN, Bill Somerville G4WJS and others). The forward-error-correction
 // profile, the source grammar and the receive shape below are theirs; the Rust
-// translation and the circular Viterbi decoder are sdroxide's.
+// translation and the circular Viterbi decoder are sdrcrow's.
 
 //! JTTY — the WSJT-X 3.2 RTTY-like asynchronous text mode.
 //!
@@ -42,7 +42,7 @@
 //! # Why this is not mfsk-core
 //!
 //! JTTY is not in mfsk-core and not on WSJT-X's `master`; it lives only in the
-//! v3.2 release branch. So this is sdroxide's own decoder, like FSK441.
+//! v3.2 release branch. So this is sdrcrow's own decoder, like FSK441.
 
 /// The decoder's working sample rate. The reference runs its DSP at 6 kHz —
 /// 31.25 baud is exactly 192 samples a symbol — and hands the receiver 12 kHz

@@ -1,4 +1,4 @@
-//! Decode an SSTV WAV with sdroxide's own receiver and write the picture out
+//! Decode an SSTV WAV with sdrcrow's own receiver and write the picture out
 //! as a binary PPM, for cross-checking against an independent encoder.
 //!
 //! Usage: `sstv_decode input.wav output.ppm`

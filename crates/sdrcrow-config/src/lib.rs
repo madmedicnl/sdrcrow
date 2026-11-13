@@ -1,5 +1,5 @@
 //! Settings and radio-data persistence under the user config directory
-//! (`~/.config/sdroxide/` on Linux).
+//! (`~/.config/sdrcrow/` on Linux).
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -46,7 +46,7 @@ fn push_load_alert(msg: String) {
 /// It used to be treated as the third case instead — an absent file — which is
 /// the ordinary first-run one, so it degraded to the defaults in silence. A
 /// `memories.json` that a backup or antivirus tool had open for the moment
-/// sdroxide read it therefore came up as an empty list, said nothing, and the
+/// sdrcrow read it therefore came up as an empty list, said nothing, and the
 /// next memory the operator stored wrote that empty list back over every
 /// channel they had. Nothing was quarantined, because nothing had failed to
 /// parse.
@@ -121,10 +121,10 @@ fn read_config_text(dir: &Path, file: &str) -> FileText {
             warn!("cannot read {file}: {e}; running on defaults and refusing to overwrite it");
             if mark_unreadable(&path) {
                 push_load_alert(format!(
-                    "{file} is there but could not be read ({e}), so sdroxide has started on \
+                    "{file} is there but could not be read ({e}), so sdrcrow has started on \
                      the defaults for it. Nothing will be written to it while that lasts, so \
                      what it holds is safe: close whatever else has the file open (a backup or \
-                     antivirus tool, another copy of sdroxide) and start again. {}",
+                     antivirus tool, another copy of sdrcrow) and start again. {}",
                     where_to_look(file)
                 ));
             }
@@ -232,14 +232,14 @@ pub struct Settings {
     /// Preferred audio input (microphone) device name; `None` = system default.
     pub audio_input: Option<String>,
     /// The ITU / IARU region this station is in, which decides every band edge
-    /// and sub-segment sdroxide draws and enforces.
+    /// and sub-segment sdrcrow draws and enforces.
     ///
     /// A property of the *station*, not of the screen: it is where the antenna
     /// is, so it belongs in `config.toml` next to `tx_ham_only` and travels to
     /// remote clients in the [`sdrcrow_types::StationConfig`] bundle rather
     /// than being read off each client's own disk.
     ///
-    /// Region 1 by default, which is the band plan every sdroxide before this
+    /// Region 1 by default, which is the band plan every sdrcrow before this
     /// setting had.
     pub region: sdrcrow_types::Region,
     /// Which country's CB channels the station works. A plain value beside
@@ -266,7 +266,7 @@ pub struct Settings {
     /// confirmation of every radio's band lists.
     pub band_plan: Option<String>,
     /// Where audio recordings and raw I/Q captures are written, or `None` for
-    /// the default (the user's music folder, `<Music>/sdroxide`, or the config
+    /// the default (the user's music folder, `<Music>/sdrcrow`, or the config
     /// directory's `recordings` when the platform has no music folder).
     ///
     /// A plain path on **this** machine, so it is deliberately *not* a station
@@ -296,7 +296,7 @@ pub struct Settings {
     ///
     /// A table for the same reason.
     pub alerts: sdrcrow_types::AlertSettings,
-    /// The sdroxide server this screen dials from Settings → Remote — the
+    /// The sdrcrow server this screen dials from Settings → Remote — the
     /// counterpart of `remote_access` above, and client-side like `[ui]` and
     /// `[speech]`: it is where *this* machine goes, not who may come here.
     ///
@@ -451,7 +451,7 @@ const RTL433_FLEX_SEED: &str = "\
 # its own conf files, so a spec published by somebody else pastes in unchanged:
 #   https://github.com/merbanan/rtl_433/tree/master/conf
 #
-# sdroxide reads this file when the ISM decoder starts. After editing it, press
+# sdrcrow reads this file when the ISM decoder starts. After editing it, press
 # RELOAD DECODERS in the ISM window — the devices already heard stay in the list.
 # This file is never rewritten, so anything you put here stays as you wrote it.
 #
@@ -551,7 +551,7 @@ pub fn save_alerts_settings(alerts: &sdrcrow_types::AlertSettings) -> Result<(),
 /// A *client*-side file, like `input.json`: it is what this machine types into
 /// somebody else's server, not what this machine demands of anyone. Written
 /// only when the sign-in dialog's "remember" box is ticked, and holding the
-/// password in the clear — same as every other credential sdroxide stores, and
+/// password in the clear — same as every other credential sdrcrow stores, and
 /// noted as such in the manual and in the dialog itself.
 pub fn load_remote_login() -> Option<sdrcrow_types::RemoteAccess> {
     let login: sdrcrow_types::RemoteAccess = load_json("remote_login.json");
@@ -710,15 +710,12 @@ fn copy_tree(from: &std::path::Path, to: &std::path::Path) -> Result<usize, Conf
 pub fn config_dir() -> Result<PathBuf, ConfigError> {
     // The override exists for the integration tests, which must not write the
     // operator's real configuration, and works as a profile switch for anyone
-    // who wants two independent installations.
-    // `SDRCROW_CONFIG_DIR` first, `SDROXIDE_CONFIG_DIR` still honoured so the
-    // existing test harness and any script that sets it keep working.
-    for var in ["SDRCROW_CONFIG_DIR", "SDROXIDE_CONFIG_DIR"] {
-        if let Some(dir) = std::env::var_os(var)
-            && !dir.is_empty()
-        {
-            return Ok(PathBuf::from(dir));
-        }
+    // who wants two independent installations. One name, and it is this
+    // program's own: the old build's variable is not read here.
+    if let Some(dir) = std::env::var_os("SDRCROW_CONFIG_DIR")
+        && !dir.is_empty()
+    {
+        return Ok(PathBuf::from(dir));
     }
     sdrcrow_config_dir()
 }
@@ -755,7 +752,7 @@ impl Store {
 
     /// The scope for radio `id`. Id 0 is the legacy root — the radio every
     /// existing installation already has — so its files stay exactly where a
-    /// single-radio sdroxide reads and writes them.
+    /// single-radio sdrcrow reads and writes them.
     pub fn radio(id: u32) -> Store {
         Store { scope: (id != 0).then_some(id) }
     }
@@ -1244,7 +1241,7 @@ pub fn rename_radio(id: u32, name: &str) -> Result<(), ConfigError> {
     save_radios(&roster)
 }
 
-/// Directory for a mode's received pictures (`~/.config/sdroxide/<kind>_rx`),
+/// Directory for a mode's received pictures (`~/.config/sdrcrow/<kind>_rx`),
 /// created on demand.
 ///
 /// One store per mode rather than one for everything: an SSTV picture and a
@@ -1259,8 +1256,8 @@ pub fn image_rx_dir(kind: &str) -> Result<PathBuf, ConfigError> {
 }
 
 /// Directory for received weather-fax charts, created on demand: the user's
-/// pictures directory (`<Pictures>/sdroxide/wefax`), or the config directory
-/// (`~/.config/sdroxide/wefax_rx`) when the platform exposes no pictures folder.
+/// pictures directory (`<Pictures>/sdrcrow/wefax`), or the config directory
+/// (`~/.config/sdrcrow/wefax_rx`) when the platform exposes no pictures folder.
 ///
 /// Charts go where pictures go, unlike every other store here, because that is
 /// what they are for. A weather chart is printed, mailed, dropped into a
@@ -1271,7 +1268,7 @@ pub fn wefax_rx_dir() -> Result<PathBuf, ConfigError> {
     let dir = match directories::UserDirs::new()
         .and_then(|u| u.picture_dir().map(std::path::Path::to_path_buf))
     {
-        Some(pictures) => pictures.join("sdroxide").join("wefax"),
+        Some(pictures) => pictures.join("sdrcrow").join("wefax"),
         None => config_dir()?.join("wefax_rx"),
     };
     fs::create_dir_all(&dir)?;
@@ -1290,7 +1287,7 @@ pub fn wefax_legacy_rx_dir() -> Option<PathBuf> {
 }
 
 /// Directory for the operator's transmit-image slots
-/// (`~/.config/sdroxide/sstv_tx`), created on demand.
+/// (`~/.config/sdrcrow/sstv_tx`), created on demand.
 pub fn sstv_tx_dir() -> Result<PathBuf, ConfigError> {
     let dir = config_dir()?.join("sstv_tx");
     fs::create_dir_all(&dir)?;
@@ -1298,7 +1295,7 @@ pub fn sstv_tx_dir() -> Result<PathBuf, ConfigError> {
 }
 
 /// Directory for the voice keyer's recorded messages
-/// (`~/.config/sdroxide/voice`), created on demand. One 48 kHz mono WAV per
+/// (`~/.config/sdrcrow/voice`), created on demand. One 48 kHz mono WAV per
 /// slot, so a message can be edited or replaced with any audio editor.
 pub fn voice_dir() -> Result<PathBuf, ConfigError> {
     let dir = config_dir()?.join("voice");
@@ -1307,7 +1304,7 @@ pub fn voice_dir() -> Result<PathBuf, ConfigError> {
 }
 
 /// Directory for operator-supplied speech voices
-/// (`~/.config/sdroxide/speech_voices`), created on demand. One Piper voice per
+/// (`~/.config/sdrcrow/speech_voices`), created on demand. One Piper voice per
 /// `.onnx` + `.onnx.json` pair.
 ///
 /// Deliberately not [`voice_dir`], which is the voice *keyer*'s recordings —
@@ -1320,7 +1317,7 @@ pub fn speech_voice_dir() -> Result<PathBuf, ConfigError> {
 }
 
 /// Directory for cached solar imagery and space-weather JSON
-/// (`~/.config/sdroxide/solar`), created on demand.
+/// (`~/.config/sdrcrow/solar`), created on demand.
 ///
 /// The 3D solar view loads this before its first network request, so the window
 /// opens with the last-known data and stays useful with no connection at all.
@@ -1334,10 +1331,10 @@ pub fn solar_cache_dir() -> Result<PathBuf, ConfigError> {
 /// tab shows and what [`recordings_dir`] then makes.
 ///
 /// `Settings::recordings_dir` wins when it is set; otherwise the user's
-/// music/audio directory (`<Music>/sdroxide`), or the config directory
-/// (`~/.config/sdroxide/recordings`) when the platform exposes no music folder.
+/// music/audio directory (`<Music>/sdrcrow`), or the config directory
+/// (`~/.config/sdrcrow/recordings`) when the platform exposes no music folder.
 pub fn recordings_dir_path() -> Result<PathBuf, ConfigError> {
-    // An isolated configuration is isolated: `SDROXIDE_CONFIG_DIR` is how a
+    // An isolated configuration is isolated: `SDRCROW_CONFIG_DIR` is how a
     // test, a second station or a throwaway session says "keep everything
     // here", and a recording written into the operator's real music folder
     // from one of those is the one file that escapes. It also wins over the
@@ -1345,7 +1342,7 @@ pub fn recordings_dir_path() -> Result<PathBuf, ConfigError> {
     // Checked here rather than inside `config_dir` because the two answer
     // different questions — that one is where settings live, and it has an
     // isolated form already.
-    if std::env::var_os("SDROXIDE_CONFIG_DIR").is_some() {
+    if std::env::var_os("SDRCROW_CONFIG_DIR").is_some() {
         return Ok(config_dir()?.join("recordings"));
     }
     let music =
@@ -1355,7 +1352,7 @@ pub fn recordings_dir_path() -> Result<PathBuf, ConfigError> {
 
 /// The choice itself, split out so it can be tested without a config directory
 /// or the environment: the setting if one is set and non-empty, else the music
-/// folder's `sdroxide`, else the config directory's `recordings`.
+/// folder's `sdrcrow`, else the config directory's `recordings`.
 fn pick_recordings_dir(
     custom: Option<&std::path::Path>,
     music: Option<PathBuf>,
@@ -1364,7 +1361,7 @@ fn pick_recordings_dir(
         return Ok(c.to_path_buf());
     }
     match music {
-        Some(music) => Ok(music.join("sdroxide")),
+        Some(music) => Ok(music.join("sdrcrow")),
         None => Ok(config_dir()?.join("recordings")),
     }
 }
@@ -2054,7 +2051,7 @@ pub fn save_memories(memories: &[sdrcrow_types::MemoryChannel]) -> Result<(), Co
 /// The frequencies the operator has added to the digital modes' own tables.
 ///
 /// Its own file for the same reason the memory list has one: it is a list the
-/// operator builds as they use the radio, and it must survive an sdroxide that
+/// operator builds as they use the radio, and it must survive an sdrcrow that
 /// knows nothing about it — a version without the feature leaves the file
 /// alone rather than writing an empty one over it.
 pub fn load_digi_presets() -> Vec<sdrcrow_types::DigiPreset> {
@@ -2462,7 +2459,7 @@ pub fn load_input_settings() -> sdrcrow_types::InputSettings {
 /// quarantines a file it cannot read at all, which is the right answer there.
 ///
 /// Split out from [`load_input_settings`] so it can be exercised on a string.
-/// Setting `SDROXIDE_CONFIG_DIR` to test it would be two tests in one binary
+/// Setting `SDRCROW_CONFIG_DIR` to test it would be two tests in one binary
 /// racing on a process-global, and the one already there says in its own SAFETY
 /// note that nothing else reads the variable.
 fn parse_input_settings(text: &str) -> sdrcrow_types::InputSettings {
@@ -2625,7 +2622,7 @@ pub fn save_ptt_inputs_config(cfg: &sdrcrow_types::PttInputsConfig) -> Result<()
 //   2. the hand-kept longwave and standard-time entries, merged in by
 //      `sdrcrow_types::broadcast::merge` because EiBi covers neither;
 //   3. `broadcast_stations.json`, the operator's own additions and corrections,
-//      which is never written by sdroxide.
+//      which is never written by sdrcrow.
 //
 // This is the arrangement `sdrcrow-solar`'s satellite frequencies already use —
 // a built-in table plus user overrides — rather than seeding a copy of everything
@@ -2924,7 +2921,7 @@ pub fn load_broadcast_overrides() -> Vec<sdrcrow_types::BroadcastStation> {
 /// out-of-date transmissions.
 ///
 /// Generated copies are recognised by the `source` or `updated` keys, which only
-/// sdroxide's own table generators ever set, and nothing hand-written would
+/// sdrcrow's own table generators ever set, and nothing hand-written would
 /// carry them. So this never touches a file an operator actually wrote, and it
 /// is kept as `.bak` either way.
 fn retire_seeded_broadcast_list(path: &std::path::Path) {
@@ -2947,7 +2944,7 @@ fn retire_seeded_broadcast_list(path: &std::path::Path) {
 }
 
 // There is deliberately no writer for `broadcast_stations.json`. It is the one
-// file here that belongs entirely to the operator, and "sdroxide never writes
+// file here that belongs entirely to the operator, and "sdrcrow never writes
 // it" is a contract the manual states — shipping a save function would be an
 // invitation to break it, and would give `retire_seeded_broadcast_list` a case
 // it cannot distinguish from a stale seeded copy.
@@ -3124,7 +3121,7 @@ pub fn cached_broadcast_sources() -> Vec<(sdrcrow_types::ScheduleSource, Option<
         .map(|source| {
             let here = if source == S::Aoki {
                 // Aoki publishes under its own season name (e.g. xta26). Look for any
-                // cached aoki-*.txt, not just the one for the current sdroxide season.
+                // cached aoki-*.txt, not just the one for the current sdrcrow season.
                 !aoki_cached_seasons().is_empty()
                     || broadcast_cache_path_for(&season, source)
                         .map(|p| p.exists())
@@ -3149,7 +3146,7 @@ pub fn cached_broadcast_sources() -> Vec<(sdrcrow_types::ScheduleSource, Option<
 ///
 /// Three shapes are accepted, because a listener's list comes from wherever they
 /// kept it and asking them to convert it first is the thing that stops them: the
-/// sdroxide JSON, a CSV of `frequency,name…`, and a plain text list. **Frequency
+/// sdrcrow JSON, a CSV of `frequency,name…`, and a plain text list. **Frequency
 /// may carry any unit** — kHz or MHz — and where none is written the **number**
 /// decides, by the same rule the schedule files are read by.
 pub fn import_broadcast_stations(path: &std::path::Path) -> Result<usize, String> {
@@ -3181,7 +3178,7 @@ pub fn import_broadcast_stations(path: &std::path::Path) -> Result<usize, String
         }
     }
     let n = all.len();
-    // `BroadcastStations` carries provenance for tables *sdroxide* generated; a
+    // `BroadcastStations` carries provenance for tables *sdrcrow* generated; a
     // listener's own list is not one, so those fields stay empty rather than
     // stamped with a source `retire_seeded_broadcast_list` would then have to
     // reason about.
@@ -3697,7 +3694,7 @@ pub fn broadcast_schedule_due_for(source: sdrcrow_types::ScheduleSource) -> bool
     }
 }
 
-/// The season sdroxide is currently using, and whether it came from the network.
+/// The season sdrcrow is currently using, and whether it came from the network.
 pub fn broadcast_schedule_status() -> (String, bool) {
     let season = sdrcrow_types::broadcast::season_file(now_unix());
     let cached = broadcast_cache_path(&season).map(|p| p.exists()).unwrap_or(false);
@@ -3722,7 +3719,7 @@ pub fn latest_release_tag() -> Result<String, String> {
     let agent: ureq::Agent = ureq::Agent::config_builder()
         .timeout_connect(Some(std::time::Duration::from_secs(10)))
         .timeout_global(Some(std::time::Duration::from_secs(20)))
-        .user_agent(concat!("sdroxide/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("sdrcrow/", env!("CARGO_PKG_VERSION")))
         .build()
         .into();
     let mut resp = agent
@@ -3772,7 +3769,7 @@ pub fn fetch_broadcast_schedule_from(
     let agent: ureq::Agent = ureq::Agent::config_builder()
         .timeout_connect(Some(std::time::Duration::from_secs(15)))
         .timeout_global(Some(std::time::Duration::from_secs(120)))
-        .user_agent(concat!("sdroxide/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("sdrcrow/", env!("CARGO_PKG_VERSION")))
         .build()
         .into();
     let url = match source {
@@ -3894,14 +3891,14 @@ pub fn save_voice_names(names: &[String]) -> Result<(), ConfigError> {
 ///
 /// ```sh
 /// curl -o /tmp/ncb24.zip https://www1.s2.starcat.ne.jp/ndxc/pc/nc/ncb24.zip
-/// SDROXIDE_AOKI_ZIP=/tmp/ncb24.zip \
+/// SDRCROW_AOKI_ZIP=/tmp/ncb24.zip \
 ///   cargo test -p sdrcrow-config --release -- --ignored --nocapture a_published
 /// ```
 #[test]
 #[ignore = "needs Aoki's published zip; see the doc comment for the URL"]
 fn a_published_aoki_zip_yields_its_schedule() {
-    let Ok(p) = std::env::var("SDROXIDE_AOKI_ZIP") else {
-        panic!("set SDROXIDE_AOKI_ZIP to a downloaded ncbXX.zip");
+    let Ok(p) = std::env::var("SDRCROW_AOKI_ZIP") else {
+        panic!("set SDRCROW_AOKI_ZIP to a downloaded ncbXX.zip");
     };
     let bytes = std::fs::read(&p).expect("the zip");
 
@@ -4924,7 +4921,7 @@ mod tests {
     #[test]
     fn a_seeded_copy_of_a_shipped_schedule_is_retired_not_used() {
         let path = scratch("retire");
-        // What an older sdroxide wrote: a generated table, marked with `source`.
+        // What an older sdrcrow wrote: a generated table, marked with `source`.
         fs::write(
             &path,
             r#"{"version":2,"source":"EiBi A26","stations":[
@@ -5182,7 +5179,7 @@ mod tests {
         fs::create_dir_all(&root).expect("scratch dir");
         // SAFETY: single-threaded within this test; no other test in this
         // binary reads the variable.
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
         // Radio 0 is the legacy installation: its files stay at the root.
         assert_eq!(Store::radio(0).dir().unwrap(), root);
@@ -5439,11 +5436,11 @@ mod tests {
         assert!(root.join("filter_presets.json").exists());
         assert_eq!(load_filter_presets(), vec![preset]);
 
-        unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+        unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
     }
 
     /// The recordings-directory choice: the setting wins, an empty one is "no
-    /// setting", and without either the music folder's `sdroxide` is the home.
+    /// setting", and without either the music folder's `sdrcrow` is the home.
     #[test]
     fn a_configured_recordings_dir_wins_over_the_music_folder() {
         let music = || Some(PathBuf::from("/home/u/Music"));
@@ -5453,12 +5450,12 @@ mod tests {
         );
         assert_eq!(
             pick_recordings_dir(Some(std::path::Path::new("")), music()).unwrap(),
-            PathBuf::from("/home/u/Music/sdroxide"),
+            PathBuf::from("/home/u/Music/sdrcrow"),
             "an empty path is 'no setting', not the filesystem root"
         );
         assert_eq!(
             pick_recordings_dir(None, music()).unwrap(),
-            PathBuf::from("/home/u/Music/sdroxide")
+            PathBuf::from("/home/u/Music/sdrcrow")
         );
     }
 

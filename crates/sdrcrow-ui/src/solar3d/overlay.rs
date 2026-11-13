@@ -1,6 +1,6 @@
 //! The egui chrome drawn inside the solar-system window: a wrapping top bar of
 //! captioned modules over the 3D scene, styled with the app's own
-//! [`crate::chrome`] widgets so the second window reads as part of sdroxide.
+//! [`crate::chrome`] widgets so the second window reads as part of sdrcrow.
 
 use crate::i18n::tr;
 use eframe::egui::{self, RichText};
@@ -2958,7 +2958,7 @@ mod tests {
     /// Renders the two time readouts over the sky colour to a PNG, so the
     /// order and the backdrop can be looked at rather than only asserted:
     ///
-    /// `TZ=Europe/Paris SDROXIDE_CLOCK_PNG=/tmp/clock.png cargo test -p
+    /// `TZ=Europe/Paris SDRCROW_CLOCK_PNG=/tmp/clock.png cargo test -p
     /// sdrcrow-ui --release --lib -- --ignored the_clock_renders`
     ///
     /// A small software rasteriser over egui's own tessellation — the panels
@@ -2967,7 +2967,7 @@ mod tests {
     #[test]
     #[ignore = "writes a PNG; run by hand"]
     fn the_clock_renders() {
-        let Ok(path) = std::env::var("SDROXIDE_CLOCK_PNG") else { return };
+        let Ok(path) = std::env::var("SDRCROW_CLOCK_PNG") else { return };
         let (w, h) = (1000usize, 320usize);
         let ppp = 2.0f32;
         let view =

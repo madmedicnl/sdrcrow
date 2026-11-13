@@ -4,7 +4,7 @@
 //! earn a place here and nothing else does:
 //!
 //! - words CMUdict does not have, which would otherwise fall through to letter
-//!   rules — the NATO alphabet, `wefax`, `sdroxide`;
+//!   rules — the NATO alphabet, `wefax`, `sdrcrow`;
 //! - words CMUdict has but pronounces as something else — `juliett` is not
 //!   "Juliet", and an operator says "ritty", not "R T T Y".
 //!
@@ -88,7 +88,7 @@ pub const LEXICON: &[(&str, &str)] = &[
     ("sideband", "sˈaɪdband"),
     ("passband", "pˈasband"),
     ("waterfall", "wˈɔːtɚfɔːl"),
-    ("sdroxide", "ˌɛsdiːˈɑːɹɒksaɪd"),
+    ("sdrcrow", "ˌɛsdiːˈɑːɹɒksaɪd"),
 ];
 
 #[cfg(test)]

@@ -426,7 +426,7 @@ pub(in crate::app) fn from_morse(code: &str) -> String {
 
 // ─── The window ───────────────────────────────────────────────────────────────
 
-impl super::SdroxideApp {
+impl super::SdrcrowApp {
     pub(in crate::app) fn morse_window(&mut self, ctx: &egui::Context) {
         if !self.morse.show {
             return;

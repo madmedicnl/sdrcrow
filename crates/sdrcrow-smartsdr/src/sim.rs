@@ -546,7 +546,7 @@ impl Session {
                 self.reply(seq, 0, wanted);
                 let h = self.handle;
                 self.status(&format!(
-                    "client 0x{h:08X} connected local_ptt=1 client_id={wanted} program=sdroxide"
+                    "client 0x{h:08X} connected local_ptt=1 client_id={wanted} program=sdrcrow"
                 ));
                 self.send_radio_status();
                 self.send_meter_defs();

@@ -8,7 +8,7 @@ use eframe::egui;
 use sdrcrow_aircraft_history::export::Format;
 use sdrcrow_types::{AdsbAircraft, RadioController, RadioEvent};
 
-use super::SdroxideApp;
+use super::SdrcrowApp;
 
 struct NoStation;
 
@@ -35,13 +35,13 @@ fn texts(shapes: &[egui::epaint::ClippedShape]) -> String {
     out
 }
 
-fn app() -> (egui::Context, SdroxideApp) {
+fn app() -> (egui::Context, SdrcrowApp) {
     let dir = std::env::temp_dir().join(format!("sdrcrow-export-frame-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
     let ctx = egui::Context::default();
-    let app = SdroxideApp::new_tab(&ctx, None, None, Box::new(NoStation), 0, true);
+    let app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(NoStation), 0, true);
     (ctx, app)
 }
 
@@ -107,7 +107,7 @@ fn pressed_with_no_station_the_file_is_made_from_the_cards_held_and_says_why() {
 
 fn frame(
     ctx: &egui::Context,
-    app: &mut SdroxideApp,
+    app: &mut SdrcrowApp,
     t: f64,
     events: Vec<egui::Event>,
 ) -> egui::FullOutput {

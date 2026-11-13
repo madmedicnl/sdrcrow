@@ -3,7 +3,7 @@
 //!
 //! ```text
 //! cargo run --release -p sdrcrow-vdl2 --example vdl2_iq -- /tmp/vdl2.iq
-//! sdroxide --file /tmp/vdl2.iq --rate 2400000 --freq 136825000 --mode VDL2
+//! sdrcrow --file /tmp/vdl2.iq --rate 2400000 --freq 136825000 --mode VDL2
 //! ```
 //!
 //! Interleaved little-endian `f32` — what `--file` reads and what an RTL-SDR
@@ -169,7 +169,7 @@ fn main() {
         RATE / 1e6,
         VDL2_PLAN_CENTER_HZ / 1e6
     );
-    println!("  sdroxide --file {path} --rate {} --freq 136825000 --mode VDL2", RATE as u64);
+    println!("  sdrcrow --file {path} --rate {} --freq 136825000 --mode VDL2", RATE as u64);
 }
 
 /// Modulate one frame onto one channel of the plan.

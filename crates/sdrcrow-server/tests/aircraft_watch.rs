@@ -29,7 +29,7 @@ fn isolated_config() {
         // SAFETY: first thing every test here does, before any thread of ours
         // reads the environment.
         unsafe {
-            std::env::set_var("SDROXIDE_CONFIG_DIR", &dir);
+            std::env::set_var("SDRCROW_CONFIG_DIR", &dir);
         }
     });
 }

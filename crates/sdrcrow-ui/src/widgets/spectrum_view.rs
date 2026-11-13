@@ -537,7 +537,7 @@ pub struct WfTuning {
     /// and the scroll speed unchanged. Never below 1.
     pub row_scale: f32,
     /// Columns the history texture should hold, from the client's own reading
-    /// of this machine and this screen — see `SdroxideApp::panadapter_bins`.
+    /// of this machine and this screen — see `SdrcrowApp::panadapter_bins`.
     pub tex_w: u32,
     /// Wall-clock UTC seconds, for the minute-boundary time labels.
     pub now_unix: f64,
@@ -1406,7 +1406,7 @@ pub struct AudioCursor {
     /// transmit tone would slide every time the engine moved it.
     ///
     /// The app applies the same rule to the re-centring that follows a retune
-    /// — see `SdroxideApp::panadapter_focus_hz`, where it is written out — so
+    /// — see `SdrcrowApp::panadapter_focus_hz`, where it is written out — so
     /// the two paths agree about where the middle of the window is.
     pub center_on_cursor: bool,
     /// Signed offset from the dial to centre the window on, when the mode
@@ -2396,7 +2396,7 @@ pub fn show_ext(
     if ui.data(|d| d.get_temp::<(f64, f64)>(view_log_id)) != Some((lo_now, hi_now)) {
         ui.data_mut(|d| d.insert_temp(view_log_id, (lo_now, hi_now)));
         tracing::debug!(
-            target: "sdroxide::panadapter",
+            target: "sdrcrow::panadapter",
             dev_center,
             dev_span,
             view_lo = lo_now,

@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 /// WSJT-X UDP broadcast configuration (`wsjtx.json`).
 ///
-/// This is sdroxide *being* WSJT-X for the logging ecosystem: GridTracker,
+/// This is sdrcrow *being* WSJT-X for the logging ecosystem: GridTracker,
 /// JTAlert, N1MM+ and Log4OM all learn about decodes and contacts from the
 /// datagrams WSJT-X sends to UDP 2237. It complements [`crate::RigctldConfig`]
 /// and [`crate::TciServerConfig`], which offer control surfaces — this one is
@@ -19,7 +19,7 @@ pub struct WsjtxConfig {
     /// 2237 is the port every client defaults to.
     pub port: u16,
     /// The name clients see. Some loggers only accept traffic identifying
-    /// itself as `WSJT-X`, which is why that — and not `sdroxide` — is the
+    /// itself as `WSJT-X`, which is why that — and not `sdrcrow` — is the
     /// default.
     pub id: String,
     /// The N1MM+ contactinfo broadcast, which is a second dialect of the same
@@ -90,7 +90,7 @@ impl Default for N1mmConfig {
             enabled: false,
             host: "127.0.0.1".into(),
             port: 12_060,
-            station: "SDROXIDE".into(),
+            station: "SDRCROW".into(),
         }
     }
 }

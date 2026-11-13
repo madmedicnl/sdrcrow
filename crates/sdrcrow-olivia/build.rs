@@ -24,7 +24,7 @@ fn main() {
     if target_is_windows_gnu() {
         // MinGW links libstdc++/winpthread as DLLs by default, and those exist
         // only on a box with MSYS2 or PothosSDR on PATH. Link them statically
-        // (see crates/sdrcrow-drm/build.rs) so sdroxide.exe starts on a plain
+        // (see crates/sdrcrow-drm/build.rs) so sdrcrow.exe starts on a plain
         // Windows install.
         build.cpp_link_stdlib(None::<&str>);
     }

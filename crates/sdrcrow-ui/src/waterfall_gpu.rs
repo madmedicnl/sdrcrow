@@ -335,7 +335,7 @@ const AUTO_MAX_TEX_W: u32 = 4096;
 /// else here is a reason to want less than that.
 ///
 /// Every rule below is a *cap*, so the answer is the smallest of them, and the
-/// floor is [`DEFAULT_TEX_W`] — what sdroxide has always drawn. No machine can
+/// floor is [`DEFAULT_TEX_W`] — what sdrcrow has always drawn. No machine can
 /// come out of this worse off than it went in.
 pub fn auto_display_bins(class: DisplayClass, panadapter_px: u32) -> u32 {
     // What the screen is actually asking for. Rounded up, so a 3840-pixel

@@ -113,7 +113,7 @@ async fn every_radio_in_the_roster_is_served_and_separately_addressable() {
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).expect("scratch config dir");
     // SAFETY: set before anything reads it, and this binary holds one test.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     tokio::spawn(serve(ServerParams {
         radios: vec![

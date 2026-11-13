@@ -58,7 +58,7 @@
 //!   never falls, and the quieter ear stays within about 1 dB of the mono.
 //! * **The pan law is bounded.** `sin(N(ω−θ))` never exceeds 1, whatever
 //!   arrives, so audio outside the passband — a rig's hiss above a CW filter
-//!   whose width sdroxide only *assumes* — cannot be run away with. The worst
+//!   whose width sdrcrow only *assumes* — cannot be run away with. The worst
 //!   case is one ear at √3 (+4.8 dB), which the clamp on the way out catches.
 //!
 //! Latency is [`Binaural::latency`] samples, a few milliseconds: the Hilbert
@@ -299,7 +299,7 @@ mod tests {
     use super::*;
 
     const RATE: f64 = 48_000.0;
-    /// The CW passband sdroxide opens on: 500 Hz centred on a 700 Hz sidetone.
+    /// The CW passband sdrcrow opens on: 500 Hz centred on a 700 Hz sidetone.
     const LO: f32 = 450.0;
     const HI: f32 = 950.0;
     /// A whole number of cycles at every frequency measured below (all are
@@ -472,7 +472,7 @@ mod tests {
     /// note — which is exactly why SSB needed no new arithmetic.
     #[test]
     fn a_voice_passband_is_spread_end_to_end() {
-        // The 2.7 kHz SSB filter sdroxide opens on.
+        // The 2.7 kHz SSB filter sdrcrow opens on.
         let (lo, hi) = (150.0f32, 2850.0f32);
         let (ild, ipd, _) = measure(1500.0, lo, hi);
         assert!(ild.abs() < 0.5, "level difference {ild} dB in the middle of the voice");

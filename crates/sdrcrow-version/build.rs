@@ -6,10 +6,10 @@
 //! - **A release**, cut from a tag. `CARGO_PKG_VERSION` stays plain semver
 //!   (`2.2.0`) and this fork tags fourth-point releases off it
 //!   (`v2.2.3.5_brown`), so the crate version is *not* what the operator
-//!   installed. CI passes the tag's own version in `SDROXIDE_RELEASE` — that is
+//!   installed. CI passes the tag's own version in `SDRCROW_RELEASE` — that is
 //!   issue #354, where Settings said `2.2.0` to someone running `2.2.3.5`.
 //! - **A build that is not a release**, which says which build it is and which
-//!   commit it came from: CI sets `SDROXIDE_BUILD` to `nightly.20261031.abc12`,
+//!   commit it came from: CI sets `SDRCROW_BUILD` to `nightly.20261031.abc12`,
 //!   and a bug report then names the build rather than the release it was cut
 //!   from.
 //!
@@ -29,8 +29,8 @@ fn main() {
     println!("cargo:rerun-if-changed=src/compose.rs");
     // Without these cargo has no reason to believe anything changed between two
     // builds of the same commit, and the second would keep the first's stamp.
-    println!("cargo:rerun-if-env-changed=SDROXIDE_BUILD");
-    println!("cargo:rerun-if-env-changed=SDROXIDE_RELEASE");
+    println!("cargo:rerun-if-env-changed=SDRCROW_BUILD");
+    println!("cargo:rerun-if-env-changed=SDRCROW_RELEASE");
 
     let base = std::env::var("CARGO_PKG_VERSION").unwrap();
     // The values are interpolated into a `cargo:` directive, which is parsed a
@@ -40,8 +40,8 @@ fn main() {
     let clean = |raw: String| -> String {
         raw.chars().filter(|c| c.is_ascii_alphanumeric() || matches!(c, '.' | '-' | '_')).collect()
     };
-    let release = clean(std::env::var("SDROXIDE_RELEASE").unwrap_or_default());
-    let stamp = clean(std::env::var("SDROXIDE_BUILD").unwrap_or_default());
+    let release = clean(std::env::var("SDRCROW_RELEASE").unwrap_or_default());
+    let stamp = clean(std::env::var("SDRCROW_BUILD").unwrap_or_default());
 
     let version = compose_version(&base, &release, &stamp);
     println!("cargo:rustc-env=SDRCROW_VERSION={version}");

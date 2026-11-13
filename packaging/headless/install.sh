@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Headless install of SDR Oxide Brown: the package, the device rules and a
+# Headless install of SDRCrow: the package, the device rules and a
 # station's configuration — with **nothing asked**. Put this script beside what
 # it should install and run it:
 #
@@ -7,7 +7,7 @@
 #   ├── install.sh                 ← this file
 #   ├── install.py                 (same job, macOS and Windows as well)
 #   ├── sdrcrow-2.0.13.1-linux-x86_64.deb     ← the package, any of the shapes below
-#   └── config/                    ← a copy of a *configured* ~/.config/sdroxide-brown
+#   └── config/                    ← a copy of a *configured* ~/.config/sdrcrow-brown
 #
 # It is written for the club's software manager: configure one machine properly,
 # copy its config directory here, and every other machine is one command with no
@@ -23,8 +23,8 @@
 
 set -euo pipefail
 
-PROGRAM="sdroxide"
-CONFIG_NAME="sdroxide-brown"
+PROGRAM="sdrcrow"
+CONFIG_NAME="sdrcrow-brown"
 DRY_RUN=0
 VERBOSE=0
 TARGET_USER=""
@@ -51,7 +51,7 @@ run() {
 
 usage() {
     cat <<'USAGE'
-Headless install of SDR Oxide Brown. Nothing is asked; everything is taken
+Headless install of SDRCrow. Nothing is asked; everything is taken
 from this directory.
 
   --package PATH   the package to install (default: the first sdrcrow-* file
@@ -62,7 +62,7 @@ from this directory.
   --user NAME      whose configuration to replace (default: the user who ran
                    sudo, or the current user)
   --server-unit    also install and enable a systemd unit running
-                   `sdroxide --server` (a headless station; off by default)
+                   `sdrcrow --server` (a headless station; off by default)
   --dry-run        print what would be done and change nothing
   --verbose        print every command as it runs
   --help           this text
@@ -116,14 +116,14 @@ fi
 HOME_DIR="$(getent passwd "$TARGET_USER" | cut -d: -f6)"
 [ -n "$HOME_DIR" ] || die "no such user: $TARGET_USER"
 
-# `directories::ProjectDirs::from("org", "sdroxide", "sdroxide")` puts the config
-# in `$XDG_CONFIG_HOME/sdroxide` (usually `~/.config/sdroxide`), and this fork
+# `directories::ProjectDirs::from("org", "sdrcrow", "sdrcrow")` puts the config
+# in `$XDG_CONFIG_HOME/sdrcrow` (usually `~/.config/sdrcrow`), and this fork
 # appends `-brown` to the last component. The program's own `migrate_shared_config_once`
 # does the same, so a copy made anywhere else is simply not found.
 CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME_DIR/.config}"
 CONFIG_DIR="$CONFIG_HOME/$CONFIG_NAME"
 
-say "SDR Oxide Brown — headless install"
+say "SDRCrow — headless install"
 step "package:      $(basename -- "$PACKAGE")"
 step "config:       ${CONFIG_SRC:-<none given - the program will use its built-in defaults>}"
 step "for user:     $TARGET_USER  ($CONFIG_DIR)"
@@ -159,10 +159,10 @@ case "$PACKAGE" in
     *.tar.gz)
         # The release tarball: unpack under /opt and link the binary, so an
         # uninstall is one directory.
-        run mkdir -p /opt/sdroxide
-        run tar -xzf "$PACKAGE" -C /opt/sdroxide --strip-components=1
-        if [ -x /opt/sdroxide/sdroxide ] || [ -x "/opt/sdroxide/$(basename -- "${PACKAGE%.tar.gz}")/sdroxide" ]; then
-            BIN="$(find /opt/sdroxide -maxdepth 2 -type f -name "$PROGRAM" -perm -u+x | head -1)"
+        run mkdir -p /opt/sdrcrow
+        run tar -xzf "$PACKAGE" -C /opt/sdrcrow --strip-components=1
+        if [ -x /opt/sdrcrow/sdrcrow ] || [ -x "/opt/sdrcrow/$(basename -- "${PACKAGE%.tar.gz}")/sdrcrow" ]; then
+            BIN="$(find /opt/sdrcrow -maxdepth 2 -type f -name "$PROGRAM" -perm -u+x | head -1)"
             [ -n "$BIN" ] && run ln -sf "$BIN" "/usr/local/bin/$PROGRAM"
         fi
         ;;
@@ -224,10 +224,10 @@ fi
 if [ "$SERVER_UNIT" = 1 ]; then
     say
     say "4. The server unit"
-    UNIT=/etc/systemd/system/sdroxide.service
+    UNIT=/etc/systemd/system/sdrcrow.service
     run tee "$UNIT" >/dev/null <<UNIT_EOF
 [Unit]
-Description=SDR Oxide Brown (headless station)
+Description=SDRCrow (headless station)
 After=network-online.target
 
 [Service]
@@ -241,7 +241,7 @@ RestartSec=5
 WantedBy=multi-user.target
 UNIT_EOF
     run systemctl daemon-reload
-    run systemctl enable --now sdroxide
+    run systemctl enable --now sdrcrow
     step "serving on the port in $CONFIG_DIR/net.json (4950 unless changed)"
 fi
 

@@ -2,7 +2,7 @@
 name = "sdrcrow-kiss"
 version.workspace = true
 edition.workspace = true
-description = "KISS TNC server: sdroxide's modem, over a socket"
+description = "KISS TNC server: sdrcrow's modem, over a socket"
 
 [dependencies]
 sdrcrow-ax25.workspace = true

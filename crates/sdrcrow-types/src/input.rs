@@ -534,7 +534,7 @@ impl KeyBinding {
         }
     }
 
-    /// The shipped defaults. These reproduce the shortcuts sdroxide had before
+    /// The shipped defaults. These reproduce the shortcuts sdrcrow had before
     /// bindings were configurable, so an operator who never opens the editor
     /// sees no change.
     ///
@@ -1153,7 +1153,7 @@ mod tests {
     }
 
     /// The no-regression contract: the shipped bindings must be exactly the
-    /// shortcuts sdroxide had before they became configurable.
+    /// shortcuts sdrcrow had before they became configurable.
     #[test]
     fn defaults_reproduce_the_legacy_shortcuts() {
         let d = KeyBinding::defaults();

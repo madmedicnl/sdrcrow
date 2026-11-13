@@ -22,8 +22,8 @@ use sdrcrow_types::{Band, Command, DeviceCaps, Mode, RadioEvent, RxId, Vfo, Wsjt
 /// Point the whole process's configuration at a scratch directory, once.
 ///
 /// Without this an engine built from `EngineConfig::default()` reads and writes
-/// the **operator's own** `~/.config/sdroxide` — `sdrcrow_config::config_dir`
-/// keeps `SDROXIDE_CONFIG_DIR` for exactly this reason. It is not merely
+/// the **operator's own** `~/.config/sdrcrow` — `sdrcrow_config::config_dir`
+/// keeps `SDRCROW_CONFIG_DIR` for exactly this reason. It is not merely
 /// impolite: `Command::SetWsjtxConfig` is persisted, so a run of these tests
 /// used to leave the operator's real `wsjtx.json` switched **on** and pointed at
 /// the ephemeral port this test bound and then closed. The next run's engine
@@ -47,7 +47,7 @@ fn isolate_config() {
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).expect("scratch config directory");
         // SAFETY: no engine exists yet in any test — see the note above.
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) }
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) }
     });
 }
 

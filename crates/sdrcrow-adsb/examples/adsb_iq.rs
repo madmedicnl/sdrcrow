@@ -3,7 +3,7 @@
 //!
 //! ```text
 //! cargo run --release -p sdrcrow-adsb --example adsb_iq -- /tmp/sky.iq
-//! sdroxide --file /tmp/sky.iq --rate 2400000 --freq 1090000000 --mode ADS-B
+//! sdrcrow --file /tmp/sky.iq --rate 2400000 --freq 1090000000 --mode ADS-B
 //! ```
 //!
 //! Interleaved little-endian `f32` pairs (CF32) at 2.4 Msps, which is what
@@ -169,7 +169,7 @@ fn main() {
         RATE / 1e6,
         planes.len()
     );
-    println!("  sdroxide --file {path} --rate {} --freq 1090000000", RATE as u64);
+    println!("  sdrcrow --file {path} --rate {} --freq 1090000000", RATE as u64);
     for p in &planes {
         println!(
             "  {:06X} {}  {:>6} ft  {:>3} kt  track {:>3}°  {:.0} dBFS",

@@ -240,7 +240,7 @@ fn block_b(gtype: u16, version_b: bool, rest: u16) -> u16 {
     (gtype << 12) | (u16::from(version_b) << 11) | (TP << 10) | (PTY << 5) | rest
 }
 
-const PS: &[u8; 8] = b"SDROXIDE";
+const PS: &[u8; 8] = b"SDRCROW ";
 const RT: &str = "THE PILOTS - THIRD HARMONIC";
 /// Where the artist and title sit inside [`RT`], for the RadioText+ tags.
 const RT_ARTIST: (usize, usize) = (0, 10);
@@ -376,7 +376,7 @@ fn a_broadcast_station_gives_up_its_name_and_text() {
 
     assert!(data.sync, "block sync was never confirmed");
     assert_eq!(data.pi, Some(PI));
-    assert_eq!(data.ps.as_deref(), Some("SDROXIDE"));
+    assert_eq!(data.ps.as_deref(), Some("SDRCROW"));
     assert_eq!(data.radiotext.as_deref(), Some(RT));
     assert_eq!(data.pty, Some(PTY as u8));
     assert!(data.tp, "traffic programme flag");
@@ -426,7 +426,7 @@ fn the_subcarrier_decodes_in_either_phase_against_the_pilot() {
         let data = decode_nominal(240_000.0, &st);
         assert!(data.sync);
         assert_eq!(data.pi, Some(PI));
-        assert_eq!(data.ps.as_deref(), Some("SDROXIDE"));
+        assert_eq!(data.ps.as_deref(), Some("SDRCROW"));
     }
 }
 
@@ -439,7 +439,7 @@ fn a_mono_station_with_no_pilot_still_decodes() {
     let data = decode_nominal(240_000.0, &st);
     assert!(data.sync, "no sync without a pilot to lean on");
     assert_eq!(data.pi, Some(PI));
-    assert_eq!(data.ps.as_deref(), Some("SDROXIDE"));
+    assert_eq!(data.ps.as_deref(), Some("SDRCROW"));
 }
 
 #[test]
@@ -451,7 +451,7 @@ fn every_channel_rate_the_wfm_path_produces_decodes() {
         let data = decode_nominal(rate, &Station::default());
         assert!(data.sync, "no sync at {rate} Hz");
         assert_eq!(data.pi, Some(PI), "wrong station at {rate} Hz");
-        assert_eq!(data.ps.as_deref(), Some("SDROXIDE"), "no name at {rate} Hz");
+        assert_eq!(data.ps.as_deref(), Some("SDRCROW"), "no name at {rate} Hz");
     }
 }
 
@@ -467,7 +467,7 @@ fn a_weakly_injected_subcarrier_still_decodes() {
         let data = decode_nominal(240_000.0, &st);
         assert!(data.sync, "no sync at {:.1} % injection", injection * 100.0);
         assert_eq!(data.pi, Some(PI));
-        assert_eq!(data.ps.as_deref(), Some("SDROXIDE"));
+        assert_eq!(data.ps.as_deref(), Some("SDRCROW"));
     }
 }
 
@@ -481,7 +481,7 @@ fn an_unshaped_encoder_is_survivable() {
     let data = decode_nominal(240_000.0, &st);
     assert!(data.sync);
     assert_eq!(data.pi, Some(PI));
-    assert_eq!(data.ps.as_deref(), Some("SDROXIDE"));
+    assert_eq!(data.ps.as_deref(), Some("SDRCROW"));
     assert_eq!(data.radiotext.as_deref(), Some(RT));
 }
 
@@ -562,7 +562,7 @@ fn a_retune_does_not_leave_the_previous_station_on_screen() {
             latest = Some(d);
         }
     }
-    assert_eq!(latest.and_then(|d| d.ps), Some("SDROXIDE".to_string()));
+    assert_eq!(latest.and_then(|d| d.ps), Some("SDRCROW".to_string()));
 
     // The engine says so on a retune; the demod cannot see one for itself.
     demod.reset_rds();
@@ -629,7 +629,7 @@ fn the_station_survives_being_fed_one_sample_at_a_time() {
     }
     let data = latest.expect("a snapshot");
     assert_eq!(data.pi, Some(PI));
-    assert_eq!(data.ps.as_deref(), Some("SDROXIDE"));
+    assert_eq!(data.ps.as_deref(), Some("SDRCROW"));
 }
 
 /// Run `iq` through `demod` and keep the last snapshot it produced.
@@ -673,7 +673,7 @@ fn a_retune_from_empty_dial_still_decodes_a_medium_station() {
         let ber = data.stats.block_error_rate();
         assert!(data.sync, "no sync at bit phase {eighth}/8: {ber:.3} of blocks bad");
         assert_eq!(data.pi, Some(PI), "wrong identity at bit phase {eighth}/8");
-        assert_eq!(data.ps.as_deref(), Some("SDROXIDE"), "no name at bit phase {eighth}/8");
+        assert_eq!(data.ps.as_deref(), Some("SDRCROW"), "no name at bit phase {eighth}/8");
         assert!(ber < 0.1, "{ber:.3} of blocks bad at bit phase {eighth}/8");
     }
 }
@@ -701,7 +701,7 @@ fn a_retune_hands_the_next_station_a_fresh_decoder() {
     demod.reset_rds();
     let data = run_on(&mut demod, &second).expect("a snapshot from the second station");
     assert!(data.sync, "no sync: {:.3} of blocks bad", data.stats.block_error_rate());
-    assert_eq!(data.ps.as_deref(), Some("SDROXIDE"));
+    assert_eq!(data.ps.as_deref(), Some("SDRCROW"));
     assert!(data.stats.block_error_rate() < 0.1, "{:.3}", data.stats.block_error_rate());
 }
 
@@ -717,5 +717,5 @@ fn a_decoder_left_without_sync_finds_a_station_that_arrives_later() {
     run_on(&mut demod, &dead_air(rate));
     let data = run_on(&mut demod, &station).expect("a snapshot from the station");
     assert!(data.sync, "no sync: {:.3} of blocks bad", data.stats.block_error_rate());
-    assert_eq!(data.ps.as_deref(), Some("SDROXIDE"));
+    assert_eq!(data.ps.as_deref(), Some("SDRCROW"));
 }

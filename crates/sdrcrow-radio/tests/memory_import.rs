@@ -6,7 +6,7 @@
 //! the channels arrive, the engine — not the sender — decides their ids, and a
 //! second import of the same list adds nothing.
 //!
-//! One test function on purpose: `SDROXIDE_CONFIG_DIR` is process-global, and
+//! One test function on purpose: `SDRCROW_CONFIG_DIR` is process-global, and
 //! this one writes a real `memories.json` under it.
 
 use std::sync::{Arc, Mutex};
@@ -85,7 +85,7 @@ fn a_channel_list_is_imported_once_however_often_it_is_offered() {
     let root = std::env::temp_dir().join(format!("sdrcrow-memory-import-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     let center = Arc::new(Mutex::new(145_500_000.0));
     let mut h = start_engine(

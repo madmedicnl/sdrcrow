@@ -144,7 +144,7 @@ fn put_u32_be(buf: &mut [u8], off: usize, v: u32) {
 /// and `0x00` is what makes this one a General packet: `0x02` is discovery,
 /// `0x03`/`0x04` erase and program, `0x06` sets the radio's IP. A board that
 /// reads anything else there has been handed a packet of a type it does not
-/// know and drops the whole thing — which is what sdroxide used to send
+/// know and drops the whole thing — which is what sdrcrow used to send
 /// whenever it meant "run", so the port table, the phase-word mode bit, the
 /// watchdog and the PA/Alex switches never reached the radio at all. An ANAN
 /// G2 (Saturn) answered that by configuring its DDCs and streaming nothing
@@ -293,7 +293,7 @@ const HP_OC: usize = 1401;
 
 /// The byte before [`HP_OC`]: on an ANAN-7000 / G2 (Saturn) it carries the
 /// XVTR-out relay (bit 0) and the built-in speaker-amplifier mute (bit 1), and
-/// on every other board it is reserved. sdroxide drives neither, so it stays
+/// on every other board it is reserved. sdrcrow drives neither, so it stays
 /// zero — named here only so the next reader can see at a glance that 1400 is
 /// a real field and not spare room, which is why writing the OC word into it
 /// switched nothing instead of failing.
@@ -423,7 +423,7 @@ fn bpf_bit(hz: f64) -> u32 {
 /// Protocol 2 has no equivalent of Protocol 1's "let the gateware pick the
 /// filters" mode: on Protocol 2 the host states them or they are not stated,
 /// and an all-zero word is a board with every relay released — no transmit
-/// path, no antenna, no filter. sdroxide sent exactly that until this audit.
+/// path, no antenna, no filter. sdrcrow sent exactly that until this audit.
 ///
 /// The "Jan 2023 protocol update" is why `alex1` carries the transmit bits even
 /// while receiving: the upper half of `alex1` is the *would-be transmit* state,
@@ -444,7 +444,7 @@ pub fn alex_words(class: AlexClass, rx_hz: f64, tx_hz: f64, ptt: bool) -> (u32, 
     alex1 |= alex::TX_RELAY;
 
     // Receive filters. On the two-chain boards the second chain has no receiver
-    // of its own here — sdroxide drives one ADC — so it is bypassed, and
+    // of its own here — sdrcrow drives one ADC — so it is bypassed, and
     // grounded for the length of an over.
     match class {
         AlexClass::Classic => alex0 |= hpf_bit(rx_hz),
@@ -1307,7 +1307,7 @@ mod tests {
 
     /// The open-collector byte, which Protocol 2 never used to send at all —
     /// so a Protocol 2 station could not switch a filter board, an antenna
-    /// relay or an amplifier's band decoder from sdroxide however the filter
+    /// relay or an amplifier's band decoder from sdrcrow however the filter
     /// board setting was left (issue #296).
     ///
     /// Same convention as Protocol 1's C2: seven outputs in bits 7..1, bit 0
@@ -1335,7 +1335,7 @@ mod tests {
     }
 
     /// Byte 4 of a 60-byte datagram to port 1024 is the packet *type*, and
-    /// `0x00` is what makes one a General packet. Issue #281: sdroxide put a
+    /// `0x00` is what makes one a General packet. Issue #281: sdrcrow put a
     /// run bit there, the radio saw a packet type it did not know and dropped
     /// every one — port table, phase-word mode bit, watchdog and PA/Alex
     /// switches with it.

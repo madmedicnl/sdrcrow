@@ -40,7 +40,7 @@ hound = "3"
 tempfile = "3"
 
 # ── Standalone RF-less test tools (build with --features tools) ──
-# monitor and channel are not part of sdroxide itself; these are the bench
+# monitor and channel are not part of sdrcrow itself; these are the bench
 # versions for exercising the protocol without a radio. The client one is the
 # same station the ATCHAT mode drives, on a plain terminal.
 

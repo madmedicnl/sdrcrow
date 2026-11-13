@@ -39,7 +39,7 @@ const SPOTS_URL: &str = "https://www.wsprnet.org/drupal/wsprnet/spots/json";
 /// produced a spot. Other clients send `0.1_wsprd`, `1.0_multi_wspr` and so on;
 /// the convention is `<version>_<program>`.
 fn client_version() -> String {
-    format!("{}_sdroxide", env!("CARGO_PKG_VERSION"))
+    format!("{}_sdrcrow", env!("CARGO_PKG_VERSION"))
 }
 
 /// Never queue more than this. A network outage lasting hours must not turn
@@ -612,7 +612,7 @@ mod tests {
     /// explanation at all.
     #[test]
     fn a_spot_is_posted_in_the_form_every_other_client_sends() {
-        let url = build_url(POST_URL, &spot_query(&rx(), &spot(), "0.9.0_sdroxide"));
+        let url = build_url(POST_URL, &spot_query(&rx(), &spot(), "0.9.0_sdrcrow"));
         for want in [
             "function=wspr",
             "rcall=G0XYZ",
@@ -626,7 +626,7 @@ mod tests {
             "dt=0.3",
             "drift=-1",
             "mode=2",
-            "version=0.9.0_sdroxide",
+            "version=0.9.0_sdrcrow",
         ] {
             assert!(url.contains(want), "{want} missing from {url}");
         }

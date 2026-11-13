@@ -646,18 +646,18 @@ mod tests {
     /// whether the demodulator matches the air rather than its own encoder.
     ///
     /// Ignored by default: it needs a file that is not in the tree. Point
-    /// `SDROXIDE_ACARS_SAMPLE` at a WAV of demodulated AM audio at any rate —
+    /// `SDRCROW_ACARS_SAMPLE` at a WAV of demodulated AM audio at any rate —
     /// acarsdec's `test.wav` (12.5 kHz, four receivers side by side) is one.
     /// Every channel is decoded as a receiver of its own; acarsdec finds seven
     /// frames in that file, 2 + 2 + 2 + 1, and so should this.
     ///
-    /// `SDROXIDE_ACARS_SAMPLE=/path/test.wav cargo test -p sdrcrow-dsp
+    /// `SDRCROW_ACARS_SAMPLE=/path/test.wav cargo test -p sdrcrow-dsp
     /// --release -- --ignored --nocapture`
     #[test]
-    #[ignore = "needs an off-air recording; set SDROXIDE_ACARS_SAMPLE"]
+    #[ignore = "needs an off-air recording; set SDRCROW_ACARS_SAMPLE"]
     fn an_off_air_recording_decodes() {
-        let Ok(path) = std::env::var("SDROXIDE_ACARS_SAMPLE") else {
-            eprintln!("skipping: set SDROXIDE_ACARS_SAMPLE to a WAV recording");
+        let Ok(path) = std::env::var("SDRCROW_ACARS_SAMPLE") else {
+            eprintln!("skipping: set SDRCROW_ACARS_SAMPLE to a WAV recording");
             return;
         };
         let mut reader =

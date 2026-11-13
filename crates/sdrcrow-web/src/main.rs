@@ -1,18 +1,18 @@
-//! Browser client: the same `SdroxideApp` over a WebSocket
+//! Browser client: the same `SdrcrowApp` over a WebSocket
 //! `RemoteController`, with audio through a JS AudioWorklet bridge.
 
 /// The directory this page was served from, as a path ending in `/`.
 ///
 /// Every address the client builds hangs off this rather than off the root,
 /// because the page need not be at the root: behind a reverse proxy it is
-/// commonly under a prefix — `https://host/sdroxide/` on a Tailscale
+/// commonly under a prefix — `https://host/sdrcrow/` on a Tailscale
 /// certificate, where subdomains are not on offer (issue #241) — and a socket
 /// opened at `wss://host/ws` would then be asking the proxy for something it
 /// has never heard of.
 ///
 /// A path ending in `/` is already a directory. Anything else has its last
-/// segment dropped, which is a file name: `/sdroxide/index.html` was served
-/// from `/sdroxide/`. A path with no `/` at all — which a browser does not
+/// segment dropped, which is a file name: `/sdrcrow/index.html` was served
+/// from `/sdrcrow/`. A path with no `/` at all — which a browser does not
 /// produce — reads as the root.
 ///
 /// Not gated on wasm like the rest of this file, so the rule can be checked on
@@ -32,7 +32,7 @@ mod web {
     use sdrcrow_ui::{AudioBridge, MultiApp, RadioTab, RemoteController, SolarApp};
 
     // Implemented in assets/audio_bridge.js (loaded by index.html).
-    #[wasm_bindgen(js_namespace = ["window", "sdroxideAudio"])]
+    #[wasm_bindgen(js_namespace = ["window", "sdrcrowAudio"])]
     extern "C" {
         #[wasm_bindgen(js_name = pushPcm)]
         fn push_pcm(pcm: &[f32]);
@@ -76,7 +76,7 @@ mod web {
             if let Err(e) = set_mic_active(active) {
                 self.mic_active_unsupported = true;
                 web_sys::console::warn_2(
-                    &"sdroxide audio: setMicActive unavailable (stale audio_bridge.js?); \
+                    &"sdrcrow audio: setMicActive unavailable (stale audio_bridge.js?); \
                       microphone transmit will not work until the page is reloaded"
                         .into(),
                     &e,
@@ -296,13 +296,13 @@ mod tests {
     fn the_base_is_the_directory_the_page_came_from() {
         assert_eq!(page_base("/"), "/");
         assert_eq!(page_base("/index.html"), "/");
-        assert_eq!(page_base("/sdroxide/"), "/sdroxide/");
-        assert_eq!(page_base("/sdroxide/index.html"), "/sdroxide/");
+        assert_eq!(page_base("/sdrcrow/"), "/sdrcrow/");
+        assert_eq!(page_base("/sdrcrow/index.html"), "/sdrcrow/");
         assert_eq!(page_base("/shack/sdr/index.html"), "/shack/sdr/");
         // A prefix with no trailing slash is a *file* as far as the browser is
         // concerned, and it resolves relative URLs beside it — so this has to
         // agree with what the page's own `<script src>` tags will do.
-        assert_eq!(page_base("/sdroxide"), "/");
+        assert_eq!(page_base("/sdrcrow"), "/");
         // Not a shape a browser produces, but the answer is still an address.
         assert_eq!(page_base(""), "/");
     }

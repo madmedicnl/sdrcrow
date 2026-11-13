@@ -23,7 +23,7 @@ use sdrcrow_types::{
     BroadcastStation, MemoryChannel, broadcast, byte_to_unit, pty_name,
 };
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::theme;
 use crate::widgets::vu_meter::{self, VuBallistics};
 
@@ -460,7 +460,7 @@ pub(in crate::app) struct State {
     /// once a second while the panel is on screen.
     lease_at: f64,
     /// The spectrum frame, handed over by the docked layout: it holds the frame
-    /// out of `SdroxideApp::frame` while it draws, so the panel under the
+    /// out of `SdrcrowApp::frame` while it draws, so the panel under the
     /// waterfall would otherwise find nothing there.
     pub frame: Option<std::sync::Arc<sdrcrow_types::SpectrumFrame>>,
 }
@@ -588,7 +588,7 @@ fn mix(a: Color32, b: Color32, t: f32) -> Color32 {
     Color32::from_rgb(f(a.r(), b.r()), f(a.g(), b.g()), f(a.b(), b.b()))
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// The docked panel: the frame under the waterfall, then the panel in it.
     pub(in crate::app) fn radio_classic_docked(
         &mut self,

@@ -1,6 +1,6 @@
 //! What a `radio.json` that cannot be read costs the operator.
 //!
-//! One test per file on purpose: `SDROXIDE_CONFIG_DIR` is process-global, and
+//! One test per file on purpose: `SDRCROW_CONFIG_DIR` is process-global, and
 //! setting it from a `#[test]` that shares a binary with others would race them.
 
 use sdrcrow_config::Store;
@@ -26,7 +26,7 @@ fn a_quarantined_radio_config_selects_no_interface_at_all() {
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).expect("scratch dir");
     // SAFETY: this is the only test in this binary; nothing races the setter.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     // A first run has no file at all. That is not a fault and the defaults are
     // the right answer, so this path must keep working exactly as before.
@@ -77,6 +77,6 @@ fn a_quarantined_radio_config_selects_no_interface_at_all() {
     Store::radio(0).save_radio_config(&chosen).expect("save");
     assert_eq!(Store::radio(0).load_radio_config().backend, Backend::Rx888);
 
-    unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+    unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
     let _ = std::fs::remove_dir_all(&root);
 }

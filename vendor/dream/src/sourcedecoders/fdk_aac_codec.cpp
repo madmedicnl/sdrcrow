@@ -27,20 +27,20 @@
 \******************************************************************************/
 
 #include "fdk_aac_codec.h"
-#ifndef SDROXIDE_NO_AAC_ENCODER
+#ifndef SDRCROW_NO_AAC_ENCODER
 # include <fdk-aac/aacenc_lib.h>
 #endif
 #include <fdk-aac/FDK_audio.h>
 #include "src/SDC/SDC.h"
 #include <cstring>
-#ifdef SDROXIDE_FDK_DLOPEN
+#ifdef SDRCROW_FDK_DLOPEN
 # include "fdk_aac_dll.h"
 #endif
 
-#ifdef SDROXIDE_QUIET
+#ifdef SDRCROW_QUIET
 /* This file narrates every decode on stderr - the object type on open, and on
    a fading signal a line per frame for a failed fill or a bad CRC. A library
-   has no business writing to a GUI application's stderr, and sdroxide logs
+   has no business writing to a GUI application's stderr, and sdrcrow logs
    through `tracing` instead, so the stream is swallowed for this translation
    unit only. Done here rather than as thirty guards because one line is what
    has to be re-applied when Dream is next upgraded. */
@@ -57,13 +57,13 @@ static FdkNullSink fdk_null_sink;
 #endif
 
 FdkAacCodec::FdkAacCodec() :
-#ifdef SDROXIDE_NO_AAC_ENCODER
+#ifdef SDRCROW_NO_AAC_ENCODER
     hDecoder(nullptr),bUsac(false),decode_buf()
 #else
     hDecoder(nullptr), hEncoder(nullptr),bUsac(false),decode_buf()
 #endif
 {
-#ifdef SDROXIDE_FDK_DLOPEN
+#ifdef SDRCROW_FDK_DLOPEN
     /* Cheap and idempotent: the library is looked up once per process and the
        codec stays constructible either way, because CanDecode below reports
        the failure rather than this constructor. */
@@ -107,14 +107,14 @@ FdkAacCodec::DecGetVersion()
 bool
 FdkAacCodec::CanDecode(CAudioParam::EAudCod eAudioCoding)
 {
-#ifdef SDROXIDE_FDK_DLOPEN
+#ifdef SDRCROW_FDK_DLOPEN
     /* No library, no decoder. Every aacDecoder_* name below is a pointer that
        is still null in that case, so this test has to come first. */
     if (hFdkAacLib == nullptr)
         return false;
     /* Plain AAC is left to faad2 even when FDK-AAC is present. faad2 is built
        in, so it is always there, it is the path this receiver was verified on,
-       and it carries sdroxide's fix for the zero-length first SBR frame.
+       and it carries sdrcrow's fix for the zero-length first SBR frame.
        InitCodecList puts this codec ahead of AacCodec, so without this line
        FDK-AAC would quietly take over every ordinary broadcast the moment the
        operator installed it - a change nobody asked for. */
@@ -477,9 +477,9 @@ FdkAacCodec::DecUpdate(CAudioParam&)
 }
 
 
-#ifdef SDROXIDE_NO_AAC_ENCODER
+#ifdef SDRCROW_NO_AAC_ENCODER
 
-/* sdroxide never transmits DRM - it is a broadcast system with no amateur
+/* sdrcrow never transmits DRM - it is a broadcast system with no amateur
    allocation - so the encoder half is not built. That matters more than the
    code it saves: the encoder is the half of FDK-AAC the patent licensing is
    actually about, and CAudioCodec declares these pure virtual, so they have to
@@ -708,7 +708,7 @@ FdkAacCodec::EncUpdate(CAudioParam&)
 {
 }
 
-#endif // SDROXIDE_NO_AAC_ENCODER
+#endif // SDRCROW_NO_AAC_ENCODER
 
 string
 FdkAacCodec::fileName(const CParameter& Parameters) const

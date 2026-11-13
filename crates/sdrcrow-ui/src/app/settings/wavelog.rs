@@ -4,7 +4,7 @@
 //! More than the other upload tabs hold, because a Wavelog is the operator's
 //! own server rather than a public service: it can sit behind a certificate
 //! nobody vouches for, it has station locations to choose between, and it is
-//! the one service sdroxide sends a backlog to. The order on screen is the
+//! the one service sdrcrow sends a backlog to. The order on screen is the
 //! order an operator sets it up in — where it is, does it answer, where QSOs
 //! go, what is still owed.
 
@@ -14,7 +14,7 @@ use sdrcrow_types::{Command, LoginTarget, UploadTarget, WavelogStation, fingerpr
 
 use super::SettingsIo;
 use super::net::{net_row, net_secret};
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::chrome::StyledCombo;
 
 fn hint(ui: &mut egui::Ui, text: impl Into<String>) {
@@ -70,7 +70,7 @@ fn mismatch(station: &WavelogStation, call: &str, grid: &str) -> Option<String> 
     None
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// The Wavelog tab's body, below the shared auto-upload tick.
     pub(in crate::app) fn wavelog_settings(
         &self,
@@ -258,7 +258,7 @@ impl SdroxideApp {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Which locations to download, how often, and the full resync.
     fn wavelog_download_settings(
         &self,

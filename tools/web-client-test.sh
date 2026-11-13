@@ -24,8 +24,8 @@ root="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$root"
 
 dist="crates/sdrcrow-web/dist"
-config="${SDROXIDE_WEBTEST_CONFIG:-$HOME/.config/sdrcrow-webtest}"
-port="${SDROXIDE_WEBTEST_PORT:-4951}"
+config="${SDRCROW_WEBTEST_CONFIG:-$HOME/.config/sdrcrow-webtest}"
+port="${SDRCROW_WEBTEST_PORT:-4951}"
 
 echo "== building the browser client"
 (cd crates/sdrcrow-web && trunk build --release)
@@ -55,4 +55,4 @@ PY
 
 echo "== serving it on http://localhost:$port/"
 echo "   (Ctrl-C to stop; the program you are using is untouched)"
-SDROXIDE_CONFIG_DIR="$config" exec sdroxide --server --web-root "$dist" --port "$port"
+SDRCROW_CONFIG_DIR="$config" exec sdrcrow --server --web-root "$dist" --port "$port"

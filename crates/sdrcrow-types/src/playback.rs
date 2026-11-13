@@ -36,7 +36,7 @@ pub fn recording_mode_tag(mode: Mode) -> String {
 }
 
 /// Read the stamp back out of a recording's name:
-/// `sdroxide[_radioN]_YYYY-MM-DD_HH-MM-SSZ_<MHz>MHz_<MODE>.<ext>`.
+/// `sdrcrow[_radioN]_YYYY-MM-DD_HH-MM-SSZ_<MHz>MHz_<MODE>.<ext>`.
 ///
 /// Something in front of `sdrcrow_` (a download's prefix) is ignored. Returns
 /// `None` for any other name — a file somebody copied in, or one of the I/Q
@@ -46,7 +46,7 @@ pub fn recording_mode_tag(mode: Mode) -> String {
 pub fn parse_recording_name(name: &str) -> Option<RecordingStamp> {
     let stem = name.rsplit_once('.').map_or(name, |(s, _)| s);
     // Anything in front is a copy's own doing (a download prefix, "copy of").
-    let rest = &stem[stem.find("sdrcrow_")? + "sdroxide".len()..];
+    let rest = &stem[stem.find("sdrcrow_")? + "sdrcrow".len()..];
     let (radio, rest) = match rest.strip_prefix("_radio") {
         Some(r) => {
             let end = r.find('_')?;
@@ -239,7 +239,7 @@ mod tests {
         assert_eq!(s.mode, None);
         for name in [
             "capture.mp3",
-            "SDRoxide_20261006_100005Z_14200000Hz_192000sps_IQ.wav",
+            "SDRCrow_20261006_100005Z_14200000Hz_192000sps_IQ.wav",
             "sdrcrow_2026-13-06_10-00-05Z_7.040000MHz_USB.mp3",
             "sdrcrow_2026-10-06_10-00-05_7.040000MHz_USB.mp3",
             "sdrcrow_2026-10-06_10-00-05Z_7.04kHz_USB.mp3",

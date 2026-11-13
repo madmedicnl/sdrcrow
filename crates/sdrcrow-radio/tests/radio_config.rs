@@ -8,7 +8,7 @@
 //! radio what it says. Everything a remote operator can do to an interface goes
 //! through the two events asserted here.
 //!
-//! One test function on purpose: `SDROXIDE_CONFIG_DIR` is process-global, and
+//! One test function on purpose: `SDRCROW_CONFIG_DIR` is process-global, and
 //! this one writes a real `radio.json` under it.
 
 use std::time::{Duration, Instant};
@@ -93,7 +93,7 @@ fn the_interface_configuration_is_announced_and_can_be_written_through_the_engin
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
     // SAFETY: set before anything reads it, and this binary holds one test.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     // Seeded through the store the engine reads it with: a hand-written file
     // could pass this test against a shape the engine cannot load.

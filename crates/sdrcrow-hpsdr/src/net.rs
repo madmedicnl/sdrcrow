@@ -29,7 +29,7 @@ pub const TX_RATE_HZ: u32 = 48_000;
 /// offsets came from — sets `output_rate = 192000` for protocol 2 against
 /// 48000 for protocol 1.
 ///
-/// sdroxide fed the DUC at 48 kHz on both protocols until issue #440. The
+/// sdrcrow fed the DUC at 48 kHz on both protocols until issue #440. The
 /// packets were well-formed and the board accepted them, so nothing reported an
 /// error; it simply ran the transmit FIFO dry three samples in four. A carrier
 /// survives that — a tune is one sample value repeated, so starving it changes
@@ -2045,7 +2045,7 @@ mod tests {
         // opens while the old one is still live, and only then is the old one
         // dropped. If the departing connection were allowed to send the stop
         // command it would switch the radio off underneath its successor —
-        // which is what left the board dead until sdroxide was restarted.
+        // which is what left the board dead until sdrcrow was restarted.
         let radio: IpAddr = "192.0.2.53".parse().unwrap();
         let first = claim_connection(radio);
         assert!(owns_connection(radio, first), "the only connection owns the radio");

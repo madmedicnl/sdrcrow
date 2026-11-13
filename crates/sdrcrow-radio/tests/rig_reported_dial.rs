@@ -19,7 +19,7 @@
 //! exactly as `SetVfo` does — and on a radio whose window is its own, both
 //! still leave the hardware alone while the VFO stays inside the span.
 //!
-//! CW is where the two numbers stop being one. sdroxide's CW dial is a
+//! CW is where the two numbers stop being one. sdrcrow's CW dial is a
 //! zero-beat and the tone being copied sits a sidetone pitch above it, while a
 //! transceiver in CW keys its own transmitter on its VFO — so on a radio whose
 //! I/Q comes out on that VFO, the VFO belongs on the station and the dial a
@@ -105,7 +105,7 @@ impl IqSource for MockIqRig {
     fn describe(&self) -> String {
         "mock rig with an I/Q output".into()
     }
-    /// The radio in front of us owns its mode as well as its dial: sdroxide
+    /// The radio in front of us owns its mode as well as its dial: sdrcrow
     /// demodulates the I/Q, but the mode is what the rig's own IF filter, its
     /// front panel and its transmitter are all set by, so a mode chosen here has
     /// to reach it. Not `tracks_rx_mode` — nothing is imposed at connect.
@@ -345,7 +345,7 @@ fn an_sdr_still_keeps_its_window_when_the_dial_moves() {
 /// on an SDR.
 ///
 /// Field report (issue #155, a Xiegu G90 on I/Q with no CAT cable): commanding
-/// the dial anyway moved sdroxide's idea of the centre and nothing else, so
+/// the dial anyway moved sdrcrow's idea of the centre and nothing else, so
 /// every click relabelled the span around spectrum the sound card was not
 /// sending and walked the clicked station out of the receiver. What the
 /// operator saw was a frequency that would not change without a hand on the
@@ -370,7 +370,7 @@ fn a_rig_with_no_control_link_is_tuned_inside_its_span() {
     shutdown(h);
 }
 
-/// The link comes up after sdroxide did — the operator switched the radio on,
+/// The link comes up after sdrcrow did — the operator switched the radio on,
 /// or plugged the cable in. The dial is ours again from that moment, and the
 /// capabilities are re-announced so every attached UI hears about it.
 #[test]
@@ -463,7 +463,7 @@ fn settle_cw(h: &sdrcrow_radio::EngineHandles) -> (f32, sdrcrow_types::RadioStat
 /// CW on a radio that keys its own transmitter: the VFO belongs on the station,
 /// not on the dial.
 ///
-/// sdroxide's CW dial is a zero-beat and the tone being copied sits a sidetone
+/// sdrcrow's CW dial is a zero-beat and the tone being copied sits a sidetone
 /// pitch above it. An SDR is consistent about that — its keyer puts the carrier
 /// where the tone was — but a transceiver in CW makes the carrier itself, on
 /// its VFO, whether the key is a paddle in its socket or text handed to its

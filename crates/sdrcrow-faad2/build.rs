@@ -5,7 +5,7 @@
 //! untouched: see [`DRM_FILL_PATCH`]. The HD Radio decoder needs faad2's HDC
 //! variant, which upstream does not carry, and it gets it from the `libnrsc5`
 //! it loads at run time, which keeps its own patched copy private (issue #488).
-//! So the one faad2 compiled into sdroxide is the one DRM needs — and DAB+
+//! So the one faad2 compiled into sdrcrow is the one DRM needs — and DAB+
 //! decodes through it too.
 //!
 //! Dependents find the headers through `DEP_FAAD2_INCLUDE`.

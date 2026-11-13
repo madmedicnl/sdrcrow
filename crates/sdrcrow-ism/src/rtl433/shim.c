@@ -192,7 +192,7 @@ sdrx_rtl433 *sdrx_rtl433_create(uint32_t samp_rate, uint32_t center_hz,
      * thinks the noise floor is, which is the first thing worth knowing. The
      * messages reach `tracing` through the handler installed from Rust. */
     {
-        const char *v = getenv("SDROXIDE_RTL433_VERBOSITY");
+        const char *v = getenv("SDRCROW_RTL433_VERBOSITY");
         if (v) {
             h->cfg->verbosity = atoi(v);
         }

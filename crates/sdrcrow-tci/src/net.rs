@@ -4,7 +4,7 @@
 //! frequency/mode/PTT control. Mirrors the `sdrcrow-hpsdr` net thread.
 //!
 //! A TCI rig can carry several independent receivers (a SunSDR2DX reports
-//! `trx_count:2`), and sdroxide runs each as a radio of its own — so the
+//! `trx_count:2`), and sdrcrow runs each as a radio of its own — so the
 //! connection is split from the streams: [`TciDevice`] owns the WebSocket and
 //! the thread, and vends one [`TciRx`] per receiver. Streams attach and detach
 //! at runtime (a radio tab opening or closing) without disturbing the others;

@@ -9,7 +9,7 @@ use crate::i18n::tr;
 use eframe::egui::{self, RichText};
 use sdrcrow_types::Command;
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 
 /// How far off 1900 Hz the subcarrier may be before the panel offers to centre
 /// it. The same figure the readout turns yellow at.
@@ -34,7 +34,7 @@ pub(in crate::app) fn centred_dial_hz(dial_hz: f64, subcarrier_hz: f64) -> f64 {
     dial_hz + (subcarrier_hz - 1900.0).clamp(-CENTRE_MAX_STEP_HZ, CENTRE_MAX_STEP_HZ)
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// The RF Paint (Spectrum Painting) operating panel: a text-paint area and an
     /// image-paint area side by side, each with a scrolling preview waterfall and
     /// a transmit button. Transmit rides the ordinary image-transmit command

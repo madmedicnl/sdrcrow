@@ -1,4 +1,4 @@
-//! Digital-mode engines for sdroxide: the slotted FT8/FT4 and JS8 modes, the
+//! Digital-mode engines for sdrcrow: the slotted FT8/FT4 and JS8 modes, the
 //! keyboard modems, and the image and voice modes.
 //!
 //! **Licensing:** this crate links `mfsk-core` (GPL-3.0-or-later) and carries

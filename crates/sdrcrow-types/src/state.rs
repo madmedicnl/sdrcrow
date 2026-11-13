@@ -250,7 +250,7 @@ pub struct TxState {
     #[serde(default)]
     pub cessb_db: f32,
     /// The rig is transmitting under its own control (its microphone, a foot
-    /// switch, its VOX) rather than sdroxide's `ptt`. Status only, reported by
+    /// switch, its VOX) rather than sdrcrow's `ptt`. Status only, reported by
     /// a CAT rig that answers the transmit read; what a satellite lock's
     /// readout uses to show the uplink while the operator talks.
     #[serde(default)]
@@ -580,7 +580,7 @@ pub struct RadioState {
     /// The *radio's own* squelch threshold, as a `0..1` fraction of its scale —
     /// `0` open, `1` closed, the way the knob on the front panel reads.
     ///
-    /// Kept apart from [`RxState::squelch_db`], which is sdroxide's own gate on
+    /// Kept apart from [`RxState::squelch_db`], which is sdrcrow's own gate on
     /// a passband it demodulated itself. This one is a setting in the rig, and
     /// on a transceiver that hands us audio it has already gated it is the only
     /// squelch there is: the software one can close further on what got

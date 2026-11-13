@@ -845,10 +845,10 @@ fn is_root_route(path: &str) -> bool {
 /// front of it has been taken off — or `None` where there is nothing to take
 /// off, which is every request to a station reached directly.
 ///
-/// sdroxide behind a proxy on a *subpath* is an ordinary arrangement and not
+/// sdrcrow behind a proxy on a *subpath* is an ordinary arrangement and not
 /// an exotic one: a Tailscale certificate covers a host and offers no
 /// subdomains, so the only place to put a second service on it is
-/// `https://host/sdroxide/` (issue #241). Some proxies strip the prefix before
+/// `https://host/sdrcrow/` (issue #241). Some proxies strip the prefix before
 /// forwarding (Caddy's `handle_path`) and some do not (`reverse_proxy` on its
 /// own); with an unstripped prefix every request arrives naming something this
 /// server has never heard of, and the answer was a flat "not found" for the
@@ -858,10 +858,10 @@ fn is_root_route(path: &str) -> bool {
 ///
 /// * An **endpoint** is recognised by name. Anything ending in one of
 ///   [`is_root_route`]'s paths is that endpoint reached through a prefix, so
-///   the prefix is dropped: `/sdroxide/ws/1` is `/ws/1`.
+///   the prefix is dropped: `/sdrcrow/ws/1` is `/ws/1`.
 /// * Everything else is a **file**, and the client's `dist` is flat — no
 ///   subdirectories at all — so a path with a directory in it can only be a
-///   prefix, and the last segment is the file: `/sdroxide/app.wasm` is
+///   prefix, and the last segment is the file: `/sdrcrow/app.wasm` is
 ///   `/app.wasm`. A path that ends in `/` names a directory, which is the
 ///   client's own page, so it becomes `/`.
 ///
@@ -1669,7 +1669,7 @@ fn add_embedded_or_placeholder(app: Router) -> Router {
 ///
 /// A directory — the root, or anything ending in `/` — is the client's own
 /// page. So is a name with no extension: that is a reverse-proxy prefix
-/// arriving without its trailing slash (`https://host/sdroxide`), where the
+/// arriving without its trailing slash (`https://host/sdrcrow`), where the
 /// browser has not yet been given a page to resolve `./bundle.js` against.
 /// Serving it the page is what makes the address work with or without the
 /// slash, and the page's own links are relative, so the assets follow.
@@ -1690,7 +1690,7 @@ fn asset_name(path: &str) -> &str {
 #[cfg(not(feature = "embed-web"))]
 fn add_embedded_or_placeholder(app: Router) -> Router {
     app.fallback(|| async {
-        "sdroxide server is running. Build the web client with `trunk build` \
+        "sdrcrow server is running. Build the web client with `trunk build` \
          in crates/sdrcrow-web and pass --web-root, or rebuild the server \
          with the embed-web feature."
     })
@@ -1724,14 +1724,14 @@ mod proxy_prefix_tests {
     #[test]
     fn a_prefix_comes_off_the_endpoints_and_the_files() {
         let strip = |p: &str| strip_proxy_prefix(p).unwrap_or_else(|| panic!("{p} was left alone"));
-        assert_eq!(strip("/sdroxide/"), "/");
-        assert_eq!(strip("/sdroxide/index.html"), "/index.html");
-        assert_eq!(strip("/sdroxide/sdrcrow-web-abc123_bg.wasm"), "/sdrcrow-web-abc123_bg.wasm");
-        assert_eq!(strip("/sdroxide/ws"), "/ws");
-        assert_eq!(strip("/sdroxide/ws/2"), "/ws/2");
-        assert_eq!(strip("/sdroxide/solar-ws"), "/solar-ws");
-        assert_eq!(strip("/sdroxide/radios"), "/radios");
-        assert_eq!(strip("/sdroxide/aircraft-info/484006"), "/aircraft-info/484006");
+        assert_eq!(strip("/sdrcrow/"), "/");
+        assert_eq!(strip("/sdrcrow/index.html"), "/index.html");
+        assert_eq!(strip("/sdrcrow/sdrcrow-web-abc123_bg.wasm"), "/sdrcrow-web-abc123_bg.wasm");
+        assert_eq!(strip("/sdrcrow/ws"), "/ws");
+        assert_eq!(strip("/sdrcrow/ws/2"), "/ws/2");
+        assert_eq!(strip("/sdrcrow/solar-ws"), "/solar-ws");
+        assert_eq!(strip("/sdrcrow/radios"), "/radios");
+        assert_eq!(strip("/sdrcrow/aircraft-info/484006"), "/aircraft-info/484006");
         assert_eq!(strip("/shack/sdr/aircraft-info/4ca1fa"), "/aircraft-info/4ca1fa");
         // More than one level deep is the same answer: the client's dist is
         // flat, so anything above the file is somebody's routing.
@@ -1744,7 +1744,7 @@ mod proxy_prefix_tests {
     #[test]
     fn only_a_number_names_a_radio() {
         assert_eq!(strip_proxy_prefix("/ws/latest"), Some("/latest".to_string()));
-        assert_eq!(strip_proxy_prefix("/sdroxide/ws/latest"), Some("/latest".to_string()));
+        assert_eq!(strip_proxy_prefix("/sdrcrow/ws/latest"), Some("/latest".to_string()));
         // …and the real one still resolves through a prefix that is itself /ws.
         assert_eq!(strip_proxy_prefix("/ws/ws/3"), Some("/ws/3".to_string()));
     }
@@ -1757,7 +1757,7 @@ mod proxy_prefix_tests {
         assert_eq!(strip_proxy_prefix("/broadcast-schedule"), None);
         assert_eq!(strip_proxy_prefix("/broadcast-schedule/import"), None);
         assert_eq!(
-            strip_proxy_prefix("/sdroxide/broadcast-schedule/import"),
+            strip_proxy_prefix("/sdrcrow/broadcast-schedule/import"),
             Some("/broadcast-schedule/import".to_string())
         );
     }
@@ -1768,7 +1768,7 @@ mod proxy_prefix_tests {
         assert_eq!(strip_proxy_prefix("/aircraft-photo/484006"), None);
         assert_eq!(strip_proxy_prefix("/aircraft-photo"), None);
         assert_eq!(
-            strip_proxy_prefix("/sdroxide/aircraft-photo/484006"),
+            strip_proxy_prefix("/sdrcrow/aircraft-photo/484006"),
             Some("/aircraft-photo/484006".to_string())
         );
         assert_eq!(
@@ -1818,7 +1818,7 @@ mod proxy_prefix_tests {
         assert_eq!(strip_proxy_prefix("/aircraft-history"), None);
         assert_eq!(strip_proxy_prefix("/aircraft-history/484006"), None);
         assert_eq!(
-            strip_proxy_prefix("/sdroxide/aircraft-history"),
+            strip_proxy_prefix("/sdrcrow/aircraft-history"),
             Some("/aircraft-history".to_string())
         );
         assert_eq!(
@@ -1847,7 +1847,7 @@ mod cache_policy_tests {
         assert_eq!(cache_policy_for("/wake_lock.js"), "no-store");
         assert_eq!(cache_policy_for("/ws_arraybuffer.js"), "no-store");
         assert_eq!(cache_policy_for("/manifest.json"), "no-store");
-        assert_eq!(cache_policy_for("/sdroxide-brown-192.png"), "no-store");
+        assert_eq!(cache_policy_for("/sdrcrow-brown-192.png"), "no-store");
         assert_eq!(
             cache_policy_for("/sdrcrow-web-9a78ba26f0438e5a_bg.wasm"),
             "max-age=31536000, immutable"
@@ -1863,7 +1863,7 @@ mod cache_policy_tests {
     #[test]
     fn a_proxy_prefix_does_not_change_the_answer() {
         assert_eq!(
-            cache_policy_for("/sdroxide/sdrcrow-web-abc123.js"),
+            cache_policy_for("/sdrcrow/sdrcrow-web-abc123.js"),
             "max-age=31536000, immutable"
         );
         assert_eq!(cache_policy_for("/shack/sdr/index.html"), "no-store");
@@ -1876,13 +1876,13 @@ mod asset_name_tests {
 
     /// A directory is the client's page, and so is a bare prefix with no
     /// trailing slash — which is what a browser asks for when somebody types
-    /// `https://host/sdroxide` without one.
+    /// `https://host/sdrcrow` without one.
     #[test]
     fn a_directory_is_the_page() {
         assert_eq!(asset_name("/"), "index.html");
         assert_eq!(asset_name(""), "index.html");
-        assert_eq!(asset_name("/sdroxide/"), "index.html");
-        assert_eq!(asset_name("/sdroxide"), "index.html");
+        assert_eq!(asset_name("/sdrcrow/"), "index.html");
+        assert_eq!(asset_name("/sdrcrow"), "index.html");
     }
 
     /// A file asked for by name is answered by name, so a bundle that really

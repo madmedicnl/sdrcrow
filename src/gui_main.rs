@@ -99,7 +99,7 @@ pub fn run_multi(
     // A sanitized command line (radio-0 overrides stripped) for radios created
     // at runtime from the tab strip.
     factory_cli: crate::Cli,
-    // Another sdroxide found on this machine at start-up, worded for the
+    // Another sdrcrow found on this machine at start-up, worded for the
     // banner — see `crate::other_instance`.
     other_instance: Option<String>,
 ) -> Result<()> {
@@ -187,7 +187,7 @@ pub fn run_multi(
         viewport: eframe::egui::ViewportBuilder::default()
             .with_inner_size([1280.0, 800.0])
             .with_min_inner_size([800.0, 500.0])
-            // Matches StartupWMClass in packaging/linux/sdroxide.desktop, so
+            // Matches StartupWMClass in packaging/linux/sdrcrow.desktop, so
             // the window groups under the menu entry in taskbars and docks.
             .with_app_id("sdrcrow")
             .with_icon(sdrcrow_ui::app_icon())
@@ -209,7 +209,7 @@ pub fn run_multi(
         ..Default::default()
     };
     // Engine threads are joined by each controller's `shutdown()` — on tab
-    // close, and for the rest in `SdroxideApp::on_exit` — so every device
+    // close, and for the rest in `SdrcrowApp::on_exit` — so every device
     // closes before process teardown can race the C libraries' exit handlers.
     sdrcrow_ui::event_loop::run(
         "sdrcrow",
@@ -529,7 +529,7 @@ pub fn run_screenshot(
     }
 }
 
-/// Dial an sdroxide server and wrap the session as a radio tab.
+/// Dial an sdrcrow server and wrap the session as a radio tab.
 ///
 /// Used both for `--connect`, where it is the whole session, and for Settings →
 /// Remote, where it is one more tab beside the radios already open. `id` keys

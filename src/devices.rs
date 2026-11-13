@@ -187,7 +187,7 @@ fn test(t: &ProbeTest) -> Result<String, String> {
                 control_port: cfg.control_port,
                 username: cfg.username.clone(),
                 password: cfg.password.clone(),
-                client_name: "sdroxide".into(),
+                client_name: "sdrcrow".into(),
                 rx_sample_rate: cfg.sample_rate_hz,
                 tx_sample_rate: cfg.sample_rate_hz,
                 tx_buffer_ms: cfg.tx_latency_ms,

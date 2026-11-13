@@ -910,7 +910,7 @@ pub fn digi_channels(mode: crate::Mode) -> Vec<DigiChannel> {
 ///
 /// The shipped tables are what the mode's community settled on globally; this
 /// is the local net that meets on 3.585 every Tuesday, the club's own SSTV
-/// frequency, the corner of 30 m a group actually uses. sdroxide cannot know
+/// frequency, the corner of 30 m a group actually uses. sdrcrow cannot know
 /// those and should not pretend to — but having tuned one once, an operator
 /// should not have to remember the number again (issue #268).
 ///

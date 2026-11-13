@@ -7,7 +7,7 @@ use serde::Deserialize;
 
 use super::SynthError;
 
-/// The voice sdroxide ships. Others may be dropped into the speech voice
+/// The voice sdrcrow ships. Others may be dropped into the speech voice
 /// directory and named in the settings.
 pub const DEFAULT_VOICE: &str = "en_US-hfc_female-medium";
 
@@ -74,7 +74,7 @@ impl Voice {
 
 /// Every directory a voice might live in, most specific first.
 ///
-/// The list covers the three ways sdroxide is run: from a package install, from
+/// The list covers the three ways sdrcrow is run: from a package install, from
 /// a portable directory next to the executable, and from a source checkout.
 /// Operator-supplied voices come first so a hand-picked voice always wins over
 /// the shipped one.
@@ -87,13 +87,13 @@ pub fn voice_dirs(user_dir: Option<PathBuf>) -> Vec<PathBuf> {
         && let Some(bin) = exe.parent()
     {
         dirs.push(bin.join("voices"));
-        // macOS .app bundle: Contents/MacOS/sdroxide -> Contents/Resources.
+        // macOS .app bundle: Contents/MacOS/sdrcrow -> Contents/Resources.
         if let Some(contents) = bin.parent() {
             dirs.push(contents.join("Resources").join("voices"));
         }
     }
     #[cfg(target_os = "linux")]
-    dirs.push(PathBuf::from("/usr/share/sdroxide/voices"));
+    dirs.push(PathBuf::from("/usr/share/sdrcrow/voices"));
     // Running from a source checkout: crates/sdrcrow-speech/../../assets.
     // Debug builds only — a released binary must never reach into a build tree.
     if cfg!(debug_assertions) {

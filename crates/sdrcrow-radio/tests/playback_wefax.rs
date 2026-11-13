@@ -105,7 +105,7 @@ fn a_fax_recording_is_decoded_as_it_plays_and_the_live_radio_is_not_heard() {
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(dir.join("recordings")).unwrap();
     // SAFETY: the only test in this binary, and no engine exists yet.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) }
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) }
     std::fs::write(dir.join("recordings").join(NAME), recording()).unwrap();
 
     let reads = Arc::new(AtomicUsize::new(0));

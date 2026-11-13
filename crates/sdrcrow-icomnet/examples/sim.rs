@@ -1,4 +1,4 @@
-//! Run the wire-level Icom simulator, so sdroxide can be pointed at "a radio"
+//! Run the wire-level Icom simulator, so sdrcrow can be pointed at "a radio"
 //! with none in the room.
 //!
 //! Run: `cargo run -p sdrcrow-icomnet --example sim [-- --port 50001]`

@@ -1,7 +1,7 @@
 //! Workspaces survive a round trip through `workspaces.json`, and a workspace
 //! this build cannot read costs only itself.
 //!
-//! One test in the binary, because `SDROXIDE_CONFIG_DIR` is process-global.
+//! One test in the binary, because `SDRCROW_CONFIG_DIR` is process-global.
 
 use std::fs;
 
@@ -13,7 +13,7 @@ fn workspaces_round_trip_and_a_bad_row_costs_only_itself() {
     let _ = fs::remove_dir_all(&dir);
     fs::create_dir_all(&dir).expect("scratch dir");
     // SAFETY: this is the only test in this binary; nothing races the setter.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
     let mut ui = UiSettings::default();
     ui.set_detached(DetachableModule::Panadapter, true);

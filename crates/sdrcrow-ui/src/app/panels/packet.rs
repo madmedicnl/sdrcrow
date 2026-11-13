@@ -15,7 +15,7 @@ use crate::i18n::tr;
 use eframe::egui::{self, RichText};
 use sdrcrow_types::{Command, Mode, PacketLinkOwner, PacketStatus, PacketTermKind};
 
-use crate::app::{SdroxideApp, tx_gated};
+use crate::app::{SdrcrowApp, tx_gated};
 use crate::theme;
 
 /// The monitor's header row: the speed, the channel state, CLEAR RX, SAVE and
@@ -78,7 +78,7 @@ pub(super) fn packet_monitor_header(
     setup
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn packet_panel(
         &mut self,
         ui: &mut egui::Ui,

@@ -39,7 +39,7 @@ pub fn sync(want: bool) {
     let get = |t: &JsValue, k: &str| {
         js_sys::Reflect::get(t, &JsValue::from_str(k)).unwrap_or(JsValue::UNDEFINED)
     };
-    let bridge = get(&window, "sdroxideAudio");
+    let bridge = get(&window, "sdrcrowAudio");
     // A page holding a cached bridge from before this existed: nothing to
     // tell, and nothing shown that could be wrong either way.
     let Ok(f) = get(&bridge, "setSoundWelcome").dyn_into::<js_sys::Function>() else {

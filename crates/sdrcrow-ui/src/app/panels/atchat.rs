@@ -18,10 +18,10 @@ use crate::i18n::tr;
 use eframe::egui::{self, RichText};
 use sdrcrow_types::{AtChatStatus, Command};
 
-use crate::app::{SdroxideApp, tx_gated};
+use crate::app::{SdrcrowApp, tx_gated};
 use crate::theme;
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn atchat_panel(
         &mut self,
         ui: &mut egui::Ui,

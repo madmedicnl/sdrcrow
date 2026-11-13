@@ -3,7 +3,7 @@
 //! Loading a `radio.json` never ticks the band because the permission is on —
 //! a permission without the band stays refused, and the screen says why.
 //!
-//! One test in this binary on purpose: `SDROXIDE_CONFIG_DIR` is process-global.
+//! One test in this binary on purpose: `SDRCROW_CONFIG_DIR` is process-global.
 
 use sdrcrow_config::Store;
 use sdrcrow_types::Band;
@@ -14,7 +14,7 @@ fn a_cb_permission_never_ticks_the_band() {
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).expect("scratch dir");
     // SAFETY: this is the only test in this binary; nothing races the setter.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     // The operator allowed CB transmit, and the band list predates the tick.
     sdrcrow_config::save_cb_tx_allowed(true).expect("write the permission");

@@ -63,7 +63,7 @@ fn stored_zip(entries: &[(&str, &[u8])]) -> Vec<u8> {
     out
 }
 
-/// `SDROXIDE_CONFIG_DIR` is process-global: the sandboxes take turns.
+/// `SDRCROW_CONFIG_DIR` is process-global: the sandboxes take turns.
 static ONE_AT_A_TIME: std::sync::Mutex<()> = std::sync::Mutex::new(());
 
 fn one_at_a_time() -> std::sync::MutexGuard<'static, ()> {
@@ -76,7 +76,7 @@ fn sandbox(tag: &str) -> std::path::PathBuf {
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).expect("scratch dir");
     // SAFETY: one test binary, one process, set before anything reads it.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
     root
 }
 

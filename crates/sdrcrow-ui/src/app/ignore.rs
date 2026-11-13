@@ -9,7 +9,7 @@
 //! wire type and no schema. A memory list is cheaper to run and cheaper to
 //! build than a persisted one, and — the reason that matters — it cannot leave
 //! a station permanently hidden because of something pressed by accident one
-//! evening. Restarting sdroxide and hearing the band again is the reset.
+//! evening. Restarting sdrcrow and hearing the band again is the reset.
 //!
 //! The filter reads as `session_ignored ∪ (future persisted)`, so a stored list
 //! can be folded in later without touching a single call site: every consumer
@@ -27,7 +27,7 @@ use std::collections::HashSet;
 
 use sdrcrow_types::Decode;
 
-use super::SdroxideApp;
+use super::SdrcrowApp;
 
 /// The callsigns muted for this session, keyed by [`key`] rather than by the
 /// string the decoder happened to produce.
@@ -80,7 +80,7 @@ pub(in crate::app) fn retain_unignored(set: &Ignored, batch: Vec<Decode>) -> Vec
     batch.into_iter().filter(|d| !is_ignored(set, d.from.as_deref())).collect()
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Mute a station, or unmute one already muted, from a decode row's button.
     /// Returns the state it is in afterwards, so the caller could say which way
     /// the press went.

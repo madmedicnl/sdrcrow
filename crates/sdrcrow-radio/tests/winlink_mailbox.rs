@@ -99,9 +99,9 @@ fn mail_round_trips_through_the_engine() {
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).expect("scratch dir");
     // SAFETY: this is the only test in this binary; nothing races the setter.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
-    // Do not bind the TCI server port: a real sdroxide may be running.
+    // Do not bind the TCI server port: a real sdrcrow may be running.
     let tci_off = sdrcrow_types::TciServerConfig { enabled: false, ..Default::default() };
     sdrcrow_config::Store::radio(0).save_tci_server_config(&tci_off).unwrap();
 

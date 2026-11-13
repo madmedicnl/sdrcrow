@@ -79,7 +79,7 @@ pub enum Band {
     /// station's `tx_ham_only` set — the default — the transmit lockout holds
     /// here exactly as it does in general coverage. An operator entitled to
     /// transmit here turns that off, as they would to work any other allocation
-    /// sdroxide cannot check their licence for.
+    /// sdrcrow cannot check their licence for.
     ///
     /// Appended for the reason [`Band::M70`] gives; [`Band::ALL`] puts it
     /// between 12 m and 10 m, where the frequencies are.
@@ -965,7 +965,7 @@ mod tests {
     }
 
     /// Region 1 is the default, and it must still be exactly the band table
-    /// sdroxide shipped before regions existed — an installation that never
+    /// sdrcrow shipped before regions existed — an installation that never
     /// opens the setting may not find its bands moved underneath it.
     #[test]
     fn region_1_is_unchanged() {

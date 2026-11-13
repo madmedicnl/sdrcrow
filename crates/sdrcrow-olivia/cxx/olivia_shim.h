@@ -5,8 +5,8 @@
 //! receiver's parameters the way fldigi and SDR-J do, feeds it audio in the same
 //! 512-sample batches, and drains the character queue.
 
-#ifndef SDROXIDE_OLIVIA_SHIM_H
-#define SDROXIDE_OLIVIA_SHIM_H
+#ifndef SDRCROW_OLIVIA_SHIM_H
+#define SDRCROW_OLIVIA_SHIM_H
 
 #ifdef __cplusplus
 extern "C" {

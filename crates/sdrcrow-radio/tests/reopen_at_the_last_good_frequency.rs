@@ -104,13 +104,13 @@ fn caps() -> DeviceCaps {
     }
 }
 
-/// `SDROXIDE_CONFIG_DIR` is process state, and Rust runs the tests in one
+/// `SDRCROW_CONFIG_DIR` is process state, and Rust runs the tests in one
 /// binary on several threads — so two tests each setting it would race, and
 /// the loser would read the winner's session. Held for the length of a test.
 static CONFIG_DIR: Mutex<()> = Mutex::new(());
 
 /// An isolated configuration directory, so the session this writes is this
-/// test's and not the operator's. `SDROXIDE_CONFIG_DIR` is what every `Store`
+/// test's and not the operator's. `SDRCROW_CONFIG_DIR` is what every `Store`
 /// constructor reads, which is how the other persistence tests do it.
 ///
 /// Callers hold [`CONFIG_DIR`].
@@ -118,7 +118,7 @@ fn temp_root(tag: &str) -> std::path::PathBuf {
     let root = std::env::temp_dir().join(format!("sdrcrow-reopen-{tag}-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
     root
 }
 

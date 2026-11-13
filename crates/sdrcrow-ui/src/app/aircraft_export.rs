@@ -349,7 +349,7 @@ mod tests {
     #[test]
     fn a_page_where_a_table_was_asked_for_is_not_saved_as_one() {
         // A station that predates the route answers every unknown path with its page.
-        let page = "<!doctype html><html><body>sdroxide</body></html>";
+        let page = "<!doctype html><html><body>sdrcrow</body></html>";
         assert_eq!(classify(Format::Csv, Some(200), page), Err(Reason::Unknown));
         assert_eq!(classify(Format::Json, Some(200), page), Err(Reason::Unknown));
         assert_eq!(classify(Format::Csv, Some(200), ""), Err(Reason::Unknown));

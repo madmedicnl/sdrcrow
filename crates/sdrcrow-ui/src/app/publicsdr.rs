@@ -21,7 +21,7 @@
 //! A receiver that cannot be used is shown greyed with the reason rather than
 //! hidden. Two of them matter and neither is obvious from outside: a KiwiSDR
 //! whose operator has not opened any channels to non-browser apps will refuse
-//! sdroxide however many are free, and a receiver whose channels are all in use
+//! sdrcrow however many are free, and a receiver whose channels are all in use
 //! is somebody else's for the moment. Being told which is far better than a
 //! connection that fails for no visible reason.
 
@@ -33,7 +33,7 @@ use crate::theme::ThemedScroll;
 use crate::time::now_unix;
 
 use crate::app::util::fmt_age;
-use crate::app::{RadioTabRequest, SdroxideApp};
+use crate::app::{RadioTabRequest, SdrcrowApp};
 
 /// Rows drawn at once. The directories run to about eleven hundred receivers
 /// between them and every row is a handful of laid-out labels; past this the
@@ -250,7 +250,7 @@ fn entry_row(
     action
 }
 
-/// The placement rule of [`SdroxideApp::public_sdrs_docked_now`], pure so it can
+/// The placement rule of [`SdrcrowApp::public_sdrs_docked_now`], pure so it can
 /// be pinned without a frame.
 ///
 /// * `open` — the list is open; `docked` — the operator chose the dock.
@@ -410,7 +410,7 @@ fn ranked<'a>(visible: &[&'a PublicSdrEntry], query: &str) -> Vec<(&'a PublicSdr
     rows
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Everything the search and the chips let through, ranked.
     fn public_sdr_rows<'a>(
         &self,

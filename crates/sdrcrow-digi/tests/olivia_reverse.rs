@@ -5,7 +5,7 @@
 //! to *fail* when it is not. The second half is the one that matters — without
 //! it the test would pass on a decoder that ignores the setting entirely.
 //!
-//! The pair is proved against a real capture (`SDROXIDE_OLIVIA_SAMPLE`), because
+//! The pair is proved against a real capture (`SDRCROW_OLIVIA_SAMPLE`), because
 //! our own transmitter does not yet produce audio the engine can read — see
 //! `our_transmitter_is_not_yet_readable` below, which records that finding
 //! rather than asserting it is fine.
@@ -39,22 +39,22 @@ fn silence_produces_nothing() {
 
 /// The switch is the difference between reading a station and reading noise.
 ///
-/// Point `SDROXIDE_OLIVIA_SAMPLE` at a mono 8 kHz WAV of a **reversed** Olivia
+/// Point `SDRCROW_OLIVIA_SAMPLE` at a mono 8 kHz WAV of a **reversed** Olivia
 /// transmission — `~/Downloads/sounds/our-captures/olivia_16-500_cb_27415.wav`
-/// is one — and `SDROXIDE_OLIVIA_TEXT` at words it contains.
+/// is one — and `SDRCROW_OLIVIA_TEXT` at words it contains.
 ///
 /// Run it with
-/// `SDROXIDE_OLIVIA_SAMPLE=... SDROXIDE_OLIVIA_TEXT="EAGLE LANDED" \
+/// `SDRCROW_OLIVIA_SAMPLE=... SDRCROW_OLIVIA_TEXT="EAGLE LANDED" \
 ///  cargo test -p sdrcrow-digi --release --test olivia_reverse -- --ignored --nocapture`.
 #[test]
 #[ignore]
 fn the_reverse_switch_is_what_makes_this_read() {
-    let Ok(path) = std::env::var("SDROXIDE_OLIVIA_SAMPLE") else {
-        eprintln!("SDROXIDE_OLIVIA_SAMPLE unset; skipping");
+    let Ok(path) = std::env::var("SDRCROW_OLIVIA_SAMPLE") else {
+        eprintln!("SDRCROW_OLIVIA_SAMPLE unset; skipping");
         return;
     };
-    let Ok(want) = std::env::var("SDROXIDE_OLIVIA_TEXT") else {
-        eprintln!("SDROXIDE_OLIVIA_TEXT unset; skipping");
+    let Ok(want) = std::env::var("SDRCROW_OLIVIA_TEXT") else {
+        eprintln!("SDRCROW_OLIVIA_TEXT unset; skipping");
         return;
     };
     let mut reader = hound::WavReader::open(&path).expect("open the sample WAV");
@@ -65,11 +65,11 @@ fn the_reverse_switch_is_what_makes_this_read() {
         }
     };
     let centre: f64 =
-        std::env::var("SDROXIDE_OLIVIA_HZ").ok().and_then(|v| v.parse().ok()).unwrap_or(1718.0);
+        std::env::var("SDRCROW_OLIVIA_HZ").ok().and_then(|v| v.parse().ok()).unwrap_or(1718.0);
     let tones: usize =
-        std::env::var("SDROXIDE_OLIVIA_TONES").ok().and_then(|v| v.parse().ok()).unwrap_or(16);
+        std::env::var("SDRCROW_OLIVIA_TONES").ok().and_then(|v| v.parse().ok()).unwrap_or(16);
     let bw: u32 =
-        std::env::var("SDROXIDE_OLIVIA_BW").ok().and_then(|v| v.parse().ok()).unwrap_or(500);
+        std::env::var("SDRCROW_OLIVIA_BW").ok().and_then(|v| v.parse().ok()).unwrap_or(500);
 
     let reversed = decode(&audio, centre, tones, bw, true);
     eprintln!("reverse on:  {reversed:?}");

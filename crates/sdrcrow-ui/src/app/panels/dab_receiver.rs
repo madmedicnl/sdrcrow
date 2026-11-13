@@ -14,7 +14,7 @@ use super::dab::{
     dab_channel_choices, dab_clear_offered, dab_focus_service, dab_group_layout, dab_mhz,
     dab_service_extra, dab_station_rows, dab_status_is_for,
 };
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::i18n::tr;
 use crate::theme;
 
@@ -69,7 +69,7 @@ pub(in crate::app) fn station_initials(name: &str) -> String {
     s.to_uppercase()
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// The receiver face of the DAB panel, `width` wide and `avail_h` tall.
     pub(in crate::app) fn dab_receiver(
         &mut self,

@@ -1368,17 +1368,17 @@ mod tests {
     /// What the decoder makes of a real transmission, drawn as dots.
     ///
     /// Hell delivers pictures rather than text, so a capture can only be judged
-    /// by looking at it. `SDROXIDE_HELL_SAMPLE` is a mono 8 kHz WAV,
-    /// `SDROXIDE_HELL_CARRIER` the audio centre (default 1700 Hz).
+    /// by looking at it. `SDRCROW_HELL_SAMPLE` is a mono 8 kHz WAV,
+    /// `SDRCROW_HELL_CARRIER` the audio centre (default 1700 Hz).
     ///
     /// Run it with
-    /// `SDROXIDE_HELL_SAMPLE=... cargo test -p sdrcrow-dsp --release --lib \
+    /// `SDRCROW_HELL_SAMPLE=... cargo test -p sdrcrow-dsp --release --lib \
     ///   -- --ignored --nocapture an_off_air_capture_renders`.
     #[test]
     #[ignore]
     fn an_off_air_capture_renders() {
-        let Ok(path) = std::env::var("SDROXIDE_HELL_SAMPLE") else {
-            eprintln!("SDROXIDE_HELL_SAMPLE unset; skipping");
+        let Ok(path) = std::env::var("SDRCROW_HELL_SAMPLE") else {
+            eprintln!("SDRCROW_HELL_SAMPLE unset; skipping");
             return;
         };
         let mut reader = hound::WavReader::open(&path).expect("open the sample WAV");
@@ -1387,11 +1387,11 @@ mod tests {
         assert_eq!(spec.channels, 1, "the sample must be mono");
         let audio: Vec<f32> =
             reader.samples::<i16>().map(|s| s.expect("sample") as f32 / 32_768.0).collect();
-        let carrier: f64 = std::env::var("SDROXIDE_HELL_CARRIER")
+        let carrier: f64 = std::env::var("SDRCROW_HELL_CARRIER")
             .ok()
             .and_then(|v| v.parse().ok())
             .unwrap_or(1700.0);
-        let variant = match std::env::var("SDROXIDE_HELL_VARIANT").as_deref() {
+        let variant = match std::env::var("SDRCROW_HELL_VARIANT").as_deref() {
             Ok("slow") => HellVariant::Slow,
             Ok("x5") => HellVariant::X5,
             Ok("x9") => HellVariant::X9,
@@ -1402,7 +1402,7 @@ mod tests {
         };
         eprintln!("variant {variant:?}, carrier {carrier} Hz");
         let agc: f32 =
-            std::env::var("SDROXIDE_HELL_AGC").ok().and_then(|v| v.parse().ok()).unwrap_or(0.05);
+            std::env::var("SDRCROW_HELL_AGC").ok().and_then(|v| v.parse().ok()).unwrap_or(0.05);
         let mut rx = HellRx::new(8000.0, carrier, variant, agc);
         let mut px = Vec::new();
         for chunk in audio.chunks(512) {

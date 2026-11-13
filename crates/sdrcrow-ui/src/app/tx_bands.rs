@@ -10,7 +10,7 @@
 
 use sdrcrow_types::Band;
 
-use super::SdroxideApp;
+use super::SdrcrowApp;
 use crate::i18n::tr;
 
 /// Where this radio stands with its transmit band list.
@@ -68,7 +68,7 @@ pub(in crate::app) enum BandTxPill {
     Transmitting,
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// The pill, or `None` where it is hidden: a listening screen (SWL, listen
     /// mode), a receive-only radio or mode, a playback, a list nobody confirmed,
     /// or no band ticked at all.

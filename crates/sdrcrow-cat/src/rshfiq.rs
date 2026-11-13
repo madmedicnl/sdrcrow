@@ -14,7 +14,7 @@
 //! quadrature sampling detector and a quadrature modulator either side of an
 //! Si5351 that runs at four times the tuned frequency; what comes out of the
 //! sound card is complex baseband centred on the dial, and what goes into it is
-//! the same thing on the way back. So sdroxide does the demodulating, the
+//! the same thing on the way back. So sdrcrow does the demodulating, the
 //! modulating, the filtering and the mode — everything that on a Kenwood or an
 //! Icom is a CAT command — and the serial port is left with the two jobs the
 //! radio actually has: where to put the oscillator, and whether to transmit.
@@ -109,7 +109,7 @@ impl Protocol for RsHfiq {
         format!("*F{}\r", hz.round().max(0.0) as u64).into_bytes()
     }
 
-    /// Nothing to say. Every mode this radio can be worked in is one sdroxide
+    /// Nothing to say. Every mode this radio can be worked in is one sdrcrow
     /// builds out of the I/Q itself, and the sketch has no mode command at all.
     fn set_mode(&mut self, _m: Mode) -> Vec<u8> {
         Vec::new()

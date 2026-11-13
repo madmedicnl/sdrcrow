@@ -309,7 +309,7 @@ pub fn validate(spec: &str) -> Result<(), String> {
         let lower = key.to_ascii_lowercase();
         if !KEYWORDS.contains(&lower.as_str()) {
             return Err(format!(
-                "unknown keyword \"{key}\" — rtl_433 would refuse this spec and stop the program, so sdroxide is not passing it on"
+                "unknown keyword \"{key}\" — rtl_433 would refuse this spec and stop the program, so sdrcrow is not passing it on"
             ));
         }
 

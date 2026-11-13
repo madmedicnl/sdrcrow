@@ -123,10 +123,10 @@ fn two_engines_share_one_transmitter_and_one_set_of_stores() {
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).expect("scratch dir");
     // SAFETY: this is the only test in this binary; nothing races the setter.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     // Neither engine may bind the (default-enabled) TCI server port: this is
-    // a test, and the operator may have a real sdroxide running.
+    // a test, and the operator may have a real sdrcrow running.
     let tci_off = sdrcrow_types::TciServerConfig { enabled: false, ..Default::default() };
     sdrcrow_config::Store::radio(0).save_tci_server_config(&tci_off).unwrap();
     sdrcrow_config::Store::radio(1).save_tci_server_config(&tci_off).unwrap();
@@ -192,6 +192,6 @@ fn two_engines_share_one_transmitter_and_one_set_of_stores() {
 
     a.stop();
     b.stop();
-    unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+    unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
     let _ = std::fs::remove_dir_all(&root);
 }

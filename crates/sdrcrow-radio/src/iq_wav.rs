@@ -295,7 +295,7 @@ fn systemtime_fields(unix: u64) -> [u16; 8] {
 pub fn capture_name(unix: u64, center_hz: f64, rate_hz: u32) -> String {
     let t = systemtime_fields(unix);
     format!(
-        "SDRoxide_{:04}{:02}{:02}_{:02}{:02}{:02}Z_{}Hz_{}sps_IQ.wav",
+        "SDRCrow_{:04}{:02}{:02}_{:02}{:02}{:02}Z_{}Hz_{}sps_IQ.wav",
         t[0],
         t[1],
         t[3],
@@ -452,7 +452,7 @@ mod tests {
     /// write stopped at 64 bytes — two `SYSTEMTIME`s and eight `u32` fields,
     /// missing the trailing "next file name" buffer entirely. A real HDSDR
     /// capture on hand (`HDSDR_20171123_005716Z_1130kHz_RF.wav`) has one that
-    /// is 164 bytes, and a WavViewDX rejection of a real sdroxide recording
+    /// is 164 bytes, and a WavViewDX rejection of a real sdrcrow recording
     /// traced back to exactly this: this chunk's declared size told a reader
     /// stepping through it by that documented shape to keep reading 100 bytes
     /// past where the payload actually ended, into whatever chunk came next.
@@ -512,7 +512,7 @@ mod tests {
     fn the_name_carries_the_tuning() {
         // 2026-08-29T13:45:07Z
         let name = capture_name(1_788_011_107, 14_074_000.0, 2_400_000);
-        assert_eq!(name, "SDRoxide_20260829_134507Z_14074000Hz_2400000sps_IQ.wav");
+        assert_eq!(name, "SDRCrow_20260829_134507Z_14074000Hz_2400000sps_IQ.wav");
     }
 
     /// The civil date behind that name, at the boundaries it is easiest to get

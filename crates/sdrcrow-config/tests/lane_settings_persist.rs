@@ -20,11 +20,11 @@ fn isolated(name: &str) -> std::path::PathBuf {
     let dir = std::env::temp_dir().join(format!("sdrcrow-{name}-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
     dir
 }
 
-/// One test, not two: `SDROXIDE_CONFIG_DIR` is process-global, so two tests in
+/// One test, not two: `SDRCROW_CONFIG_DIR` is process-global, so two tests in
 /// one binary race each other for it — which is exactly how the first version
 /// of this file failed, with the *other* lane's directory winning.
 #[test]
@@ -62,5 +62,5 @@ fn the_two_session_only_lanes_remember_what_they_were_told() {
     assert_eq!(sdrcrow_config::load_qo100_config(), mine, "the tracker forgot what it was told");
 
     let _ = std::fs::remove_dir_all(&dir);
-    unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+    unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
 }

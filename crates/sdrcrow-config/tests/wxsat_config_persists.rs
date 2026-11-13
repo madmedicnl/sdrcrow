@@ -2,14 +2,14 @@
 //! channel come back from `wxsat.json`, and a channel outside the 137 MHz band
 //! is brought back into it where the file is read.
 //!
-//! Its own test binary, because `SDROXIDE_CONFIG_DIR` is process-global.
+//! Its own test binary, because `SDRCROW_CONFIG_DIR` is process-global.
 
 #[test]
 fn the_wxsat_lane_remembers_its_channel_and_clamps_a_stray_one() {
     let dir = std::env::temp_dir().join(format!("sdrcrow-wxsatcfg-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
     let fresh = sdrcrow_config::load_wxsat_config();
     assert!(!fresh.enabled, "a fresh configuration starts with the lane off");

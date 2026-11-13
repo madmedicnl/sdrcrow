@@ -27,7 +27,7 @@
 //! which is why the engine returns it without applying `cal_offset_db`.
 //!
 //! One honest caveat: that figure is for the receiver's own ±6 kHz passband,
-//! not for whatever filter sdroxide has in front of the demodulator. A narrow
+//! not for whatever filter sdrcrow has in front of the demodulator. A narrow
 //! CW filter here still reads the wideband level.
 //!
 //! # Receive only
@@ -239,7 +239,7 @@ impl IqSource for KiwiSdrSource {
     /// that *refused* — full, wrong password, inactivity timeout, kicked by its
     /// operator — must not be: it is working perfectly and has said no, and a
     /// client that answered that by reconnecting every fifteen seconds forever
-    /// would be the reason sdroxide got blocked.
+    /// would be the reason sdrcrow got blocked.
     ///
     /// So a refusal is allowed through exactly once. That single attempt is
     /// what carries the receiver's own words to the operator: the reconnect

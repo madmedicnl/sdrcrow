@@ -28,7 +28,7 @@ import requests
 from bs4 import BeautifulSoup
 
 INDEX = "https://cartoonman.github.io/Shoc/"
-UA = {"User-Agent": "sdroxide-brown documentation index (one-off, by hand)"}
+UA = {"User-Agent": "sdrcrow-brown documentation index (one-off, by hand)"}
 
 # The index page groups its links; keep the group so the table can be sorted the
 # way the catalogue is.

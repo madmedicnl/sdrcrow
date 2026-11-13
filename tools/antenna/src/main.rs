@@ -1,5 +1,5 @@
 //! `antenna` — the prototype's front door. The real home is a tool window in
-//! sdroxide; this is how the pieces are exercised while they are settled.
+//! sdrcrow; this is how the pieces are exercised while they are settled.
 //!
 //! ```text
 //! antenna [MHz]                     closed-form dimensions (default 27.265)

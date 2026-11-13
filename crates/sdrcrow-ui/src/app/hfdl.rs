@@ -19,7 +19,7 @@ use crate::i18n::tr;
 use eframe::egui::{self, RichText};
 use sdrcrow_types::{Command, HfdlDecode, HfdlStatus, Mode};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 
 /// The HFDL assigned-frequency plan, in kHz — the channels the ground-network
 /// stations transmit on, ARINC/AviaSat's published allocation. Riverhead's
@@ -45,7 +45,7 @@ fn add_hfdl_channel(list: &mut Vec<u32>, khz: u32) -> bool {
 
 /// The HFDL panel: run switch, channel, and the split decode log / aircraft
 /// map — docked under the waterfall like the other lane panels (ADS-B, AIS).
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn hfdl_panel(
         &mut self,
         ui: &mut egui::Ui,

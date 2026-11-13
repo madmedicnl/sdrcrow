@@ -223,7 +223,7 @@ fn encode_loop(
 /// 0.1.3 (`labs(i32::MIN)` wrapping, then indexing a lookup table with the
 /// result), fixed upstream in 0.1.4, which this crate now requires. The
 /// supervision stays regardless: the encoder is the one piece of this path
-/// that is not sdroxide's code, and a recording that stops silently is worse
+/// that is not sdrcrow's code, and a recording that stops silently is worse
 /// than one with a click in it.
 ///
 /// A WAV gets none of this on purpose — its frames are not self-contained, its

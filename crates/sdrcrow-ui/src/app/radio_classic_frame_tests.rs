@@ -6,7 +6,7 @@ use eframe::App;
 use eframe::egui;
 use sdrcrow_types::{Mode, RadioController, RadioEvent};
 
-use super::SdroxideApp;
+use super::SdrcrowApp;
 use super::frame::TW_RADIO_CLASSIC;
 
 struct NoStation;
@@ -31,19 +31,19 @@ fn texts(shapes: &[egui::epaint::ClippedShape]) -> Vec<String> {
     out
 }
 
-fn app(mode: Mode) -> (egui::Context, SdroxideApp) {
+fn app(mode: Mode) -> (egui::Context, SdrcrowApp) {
     let dir = std::env::temp_dir().join(format!("sdrcrow-rc-frame-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
     let ctx = egui::Context::default();
-    let mut app = SdroxideApp::new_tab(&ctx, None, None, Box::new(NoStation), 0, true);
+    let mut app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(NoStation), 0, true);
     app.state.rx[0].mode = mode;
     (ctx, app)
 }
 
 /// Run a few frames at 1600x900 and return the text drawn in the last one.
-fn run(ctx: &egui::Context, app: &mut SdroxideApp) -> Vec<String> {
+fn run(ctx: &egui::Context, app: &mut SdrcrowApp) -> Vec<String> {
     let base = ctx.input(|i| i.time);
     let mut last = Vec::new();
     for i in 1..6 {
@@ -155,7 +155,7 @@ fn centre_of(shapes: &[egui::epaint::ClippedShape], what: &str) -> Option<egui::
 
 fn one_frame(
     ctx: &egui::Context,
-    app: &mut SdroxideApp,
+    app: &mut SdrcrowApp,
     time: f64,
     events: Vec<egui::Event>,
 ) -> Vec<egui::epaint::ClippedShape> {
@@ -172,7 +172,7 @@ fn one_frame(
 
 /// Settle the layout, then click the middle of the first label that reads
 /// `what`; returns false when no such label is on screen.
-fn click(ctx: &egui::Context, app: &mut SdroxideApp, what: &str) -> bool {
+fn click(ctx: &egui::Context, app: &mut SdrcrowApp, what: &str) -> bool {
     run(ctx, app);
     let base = ctx.input(|i| i.time);
     let shapes = one_frame(ctx, app, base + 1.0, vec![]);
@@ -321,7 +321,7 @@ fn a_long_station_name_keeps_its_size_and_the_bracket_goes_small_under_it() {
 
 /// The Wideband row of the band menu, drawn on its own.
 fn wideband_row(
-    app: &mut SdroxideApp,
+    app: &mut SdrcrowApp,
     ctx: &egui::Context,
     radio: &mut super::top_bar::RadioChip,
 ) -> Vec<String> {
@@ -410,7 +410,7 @@ fn the_scope_waterfall_runs_three_rows_in_four_and_keeps_four_hundred() {
 type Sent = std::sync::Arc<std::sync::Mutex<Vec<sdrcrow_types::Command>>>;
 
 /// A panel on, a recorder behind it, and the receiver set to `mode`.
-fn recorded(mode: Mode) -> (egui::Context, SdroxideApp, Sent) {
+fn recorded(mode: Mode) -> (egui::Context, SdrcrowApp, Sent) {
     let sent: Sent = std::sync::Arc::default();
     let (ctx, mut app) = app(mode);
     app.ctrl = Box::new(Recorder(sent.clone()));
@@ -489,7 +489,7 @@ fn the_sql_box_toggles_the_squelch_between_open_and_the_last_threshold() {
 
 /// An app in `mode` with a recorder, RADIO still off, and a few frames run so
 /// that switching it on afterwards is a real switch-on.
-fn off_in(mode: Mode) -> (egui::Context, SdroxideApp, Sent) {
+fn off_in(mode: Mode) -> (egui::Context, SdrcrowApp, Sent) {
     let sent: Sent = std::sync::Arc::default();
     let (ctx, mut app) = app(mode);
     app.ctrl = Box::new(Recorder(sent.clone()));
@@ -631,7 +631,7 @@ fn level(db: f32) -> sdrcrow_types::AudioLevel {
 }
 
 /// Run frames with that level playing, and return the two needles.
-fn needles(app: &mut SdroxideApp, ctx: &egui::Context) -> [f32; 2] {
+fn needles(app: &mut SdrcrowApp, ctx: &egui::Context) -> [f32; 2] {
     for i in 0..40 {
         app.audio_level = Some((crate::time::now_unix_f64(), level(-20.0)));
         one_frame(ctx, app, 30.0 + f64::from(i) * 0.033, vec![]);

@@ -116,7 +116,7 @@ impl Error {
 
 /// Name the `-errno` codes `iiod` actually returns, because the number alone
 /// sends people looking in the wrong place. `-EBUSY` in particular is almost
-/// always another program (iio-oscilloscope, GNU Radio, a second sdroxide)
+/// always another program (iio-oscilloscope, GNU Radio, a second sdrcrow)
 /// still holding the buffer, not a broken device.
 fn errno_text(code: i64) -> String {
     let n = -code;
@@ -128,7 +128,7 @@ fn errno_text(code: i64) -> String {
         11 => "resource temporarily unavailable (timeout)",
         16 => {
             "device busy — another program is holding this buffer \
-               (iio-oscilloscope, GNU Radio, another sdroxide)"
+               (iio-oscilloscope, GNU Radio, another sdrcrow)"
         }
         19 => "no such device",
         22 => "invalid argument — the value is outside what the hardware accepts",

@@ -28,7 +28,7 @@ pub struct TxMeters {
     /// it". A rig that never answers an ALC read must read as **not reported**,
     /// not as a confident `0%`: the two look identical on the meter otherwise,
     /// and the operator cannot tell a transmitter that is genuinely barely
-    /// moving from one whose meter sdroxide is not reading at all (issue #600,
+    /// moving from one whose meter sdrcrow is not reading at all (issue #600,
     /// three Icom LAN users). When nothing reported one this falls back to the
     /// engine's own drive level, which is what that field used to be.
     pub alc: Option<f32>,
@@ -57,7 +57,7 @@ pub struct TxTelemetry {
     /// This is the rig saying how hard its automatic level control is working,
     /// which is the number that says whether the audio being fed to it is too
     /// hot. Nothing on this side can compute it: [`TxMeters::alc`] is what
-    /// SDRoxide SENDS, and this is what the rig does about it. On a CAT rig the
+    /// SDRCrow SENDS, and this is what the rig does about it. On a CAT rig the
     /// two are different measurements and only this one is the operator's
     /// answer to "am I overdriving it".
     pub alc: Option<f32>,

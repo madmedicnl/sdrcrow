@@ -164,7 +164,7 @@ impl Trace {
     pub fn dump(&self) -> String {
         let g = self.inner.lock().unwrap_or_else(|e| e.into_inner());
         let mut out = String::with_capacity(64 * 1024);
-        out.push_str("=== sdroxide SmartSDR session trace ===\n");
+        out.push_str("=== sdrcrow SmartSDR session trace ===\n");
         out.push_str(&format!("elapsed: {:.1} s\n", self.started.elapsed().as_secs_f64()));
         if g.dropped > 0 {
             out.push_str(&format!(
@@ -269,13 +269,13 @@ mod tests {
     #[test]
     fn dump_reports_both_directions_and_streams() {
         let t = Trace::new();
-        t.tx_line("C1|client program sdroxide\n");
+        t.tx_line("C1|client program sdrcrow\n");
         t.rx_line("R1|0|");
         t.packet(0x0400_0001, 0x02E6, 1032, 0);
         t.packet(0x0400_0001, 0x02E6, 1032, 2);
 
         let d = t.dump();
-        assert!(d.contains("→ C1|client program sdroxide"));
+        assert!(d.contains("→ C1|client program sdrcrow"));
         assert!(d.contains("← R1|0|"));
         assert!(d.contains("0x04000001"));
         assert!(d.contains("packets=2"));

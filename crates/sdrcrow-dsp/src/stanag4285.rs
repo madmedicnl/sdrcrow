@@ -3111,12 +3111,12 @@ mod tests {
     /// the tree — the capture is the operator's — so it runs only when pointed at
     /// one, exactly as the other off-air gates here do.
     ///
-    ///     SDROXIDE_S4285_SAMPLE=~/s4285-captures/6348.000kHz-20261022-045545Z.wav \
+    ///     SDRCROW_S4285_SAMPLE=~/s4285-captures/6348.000kHz-20261022-045545Z.wav \
     ///       cargo test -p sdrcrow-dsp --release -- --ignored --nocapture an_off_air_capture
     #[test]
     #[ignore]
     fn an_off_air_capture_locks_and_its_references_collapse() {
-        let path = std::env::var("SDROXIDE_S4285_SAMPLE").expect("set SDROXIDE_S4285_SAMPLE");
+        let path = std::env::var("SDRCROW_S4285_SAMPLE").expect("set SDRCROW_S4285_SAMPLE");
         let mut reader = hound::WavReader::open(&path).expect("open the wav");
         let spec = reader.spec();
         let raw: Vec<f32> = match spec.sample_format {
@@ -3164,7 +3164,7 @@ mod tests {
     #[test]
     #[ignore]
     fn the_capture_bit_stream_dump() {
-        let path = std::env::var("SDROXIDE_S4285_SAMPLE").expect("set SDROXIDE_S4285_SAMPLE");
+        let path = std::env::var("SDRCROW_S4285_SAMPLE").expect("set SDRCROW_S4285_SAMPLE");
         let mut reader = hound::WavReader::open(&path).expect("open the wav");
         let spec = reader.spec();
         let raw: Vec<f32> = match spec.sample_format {
@@ -3299,7 +3299,7 @@ mod tests {
     #[test]
     #[ignore]
     fn the_capture_chain_by_chain() {
-        let path = std::env::var("SDROXIDE_S4285_SAMPLE").expect("set SDROXIDE_S4285_SAMPLE");
+        let path = std::env::var("SDRCROW_S4285_SAMPLE").expect("set SDRCROW_S4285_SAMPLE");
         let mut reader = hound::WavReader::open(&path).expect("open the wav");
         let spec = reader.spec();
         let raw: Vec<f32> = match spec.sample_format {
@@ -3384,9 +3384,9 @@ mod tests {
     #[test]
     #[ignore]
     fn the_reference_soft_decisions_through_our_chain() {
-        let soft_path = std::env::var("SDROXIDE_S4285_REF_SOFT")
+        let soft_path = std::env::var("SDRCROW_S4285_REF_SOFT")
             .unwrap_or_else(|_| "/tmp/opencode/ref_soft.bin".into());
-        let bits_path = std::env::var("SDROXIDE_S4285_REF_BITS")
+        let bits_path = std::env::var("SDRCROW_S4285_REF_BITS")
             .unwrap_or_else(|_| "/tmp/opencode/ref_bits_clean.txt".into());
         let raw = std::fs::read(&soft_path).expect("ref soft");
         let theirs = std::fs::read_to_string(&bits_path).expect("ref bits");
@@ -3481,7 +3481,7 @@ mod tests {
     #[test]
     #[ignore]
     fn the_capture_equaliser_swept_against_text() {
-        let path = std::env::var("SDROXIDE_S4285_SAMPLE").expect("set SDROXIDE_S4285_SAMPLE");
+        let path = std::env::var("SDRCROW_S4285_SAMPLE").expect("set SDRCROW_S4285_SAMPLE");
         let mut reader = hound::WavReader::open(&path).expect("open the wav");
         let spec = reader.spec();
         let raw: Vec<f32> = match spec.sample_format {
@@ -3543,7 +3543,7 @@ mod tests {
     #[test]
     #[ignore]
     fn dump_our_soft_decisions_for_the_reference() {
-        let path = std::env::var("SDROXIDE_S4285_SAMPLE").expect("set SDROXIDE_S4285_SAMPLE");
+        let path = std::env::var("SDRCROW_S4285_SAMPLE").expect("set SDRCROW_S4285_SAMPLE");
         let mut reader = hound::WavReader::open(&path).expect("open the wav");
         let spec = reader.spec();
         let raw: Vec<f32> = match spec.sample_format {
@@ -3595,9 +3595,9 @@ mod tests {
     #[test]
     #[ignore]
     fn which_interleaver_wiring_matches_the_reference() {
-        let soft_path = std::env::var("SDROXIDE_S4285_REF_SOFT")
+        let soft_path = std::env::var("SDRCROW_S4285_REF_SOFT")
             .unwrap_or_else(|_| "/tmp/opencode/ref_soft.bin".into());
-        let bits_path = std::env::var("SDROXIDE_S4285_REF_BITS")
+        let bits_path = std::env::var("SDRCROW_S4285_REF_BITS")
             .unwrap_or_else(|_| "/tmp/opencode/ref_bits_clean.txt".into());
         let raw = std::fs::read(&soft_path).expect("ref soft");
         let theirs_txt = std::fs::read_to_string(&bits_path).expect("ref bits");
@@ -3667,7 +3667,7 @@ mod tests {
     #[test]
     #[ignore]
     fn our_symbols_beside_the_references() {
-        let path = std::env::var("SDROXIDE_S4285_SAMPLE").expect("set SDROXIDE_S4285_SAMPLE");
+        let path = std::env::var("SDRCROW_S4285_SAMPLE").expect("set SDRCROW_S4285_SAMPLE");
         let mut reader = hound::WavReader::open(&path).expect("open the wav");
         let spec = reader.spec();
         let raw: Vec<f32> = match spec.sample_format {

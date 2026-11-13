@@ -7,7 +7,7 @@ use sdrcrow_types::{
     Command, Mode, SCAN_STEPS_HZ, SQUELCH_OPEN_DB, ScanKind, ScanResume, ScannerConfig,
 };
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::chrome::StyledCombo;
 
 /// What the scan dwell becomes when the VOICE gate is switched on or off.
@@ -35,7 +35,7 @@ fn voice_dwell(on: bool, dwell: u32, prev: &mut Option<u32>) -> u32 {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn scanner_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         if !self.show_scanner {
             return;

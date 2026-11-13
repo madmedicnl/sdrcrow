@@ -7,7 +7,7 @@
 //!
 //! The dictionary is **embedded** rather than looked up on disk. `piper-plus-g2p`
 //! searches for a `cmudict_data.json` in the working directory, an environment
-//! variable and `/usr/share/piper`, none of which is a thing sdroxide can rely
+//! variable and `/usr/share/piper`, none of which is a thing sdrcrow can rely
 //! on being there; `EnglishPhonemizer::new_with_hashmap` takes the table
 //! directly, so the program carries its own. CMUdict is BSD-2-Clause, which
 //! sits inside GPL-3.0-or-later without trouble — see `assets/LICENSE-cmudict.txt`.
@@ -55,7 +55,7 @@ fn cmudict() -> &'static HashMap<String, String> {
     })
 }
 
-/// English grapheme-to-phoneme, with sdroxide's own lexicon in front of it.
+/// English grapheme-to-phoneme, with sdrcrow's own lexicon in front of it.
 pub struct Phonemes {
     en: EnglishPhonemizer,
 }

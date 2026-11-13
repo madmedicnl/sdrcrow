@@ -267,7 +267,7 @@ async fn a_signed_in_clients_screen_lands_in_its_own_profile() {
     std::fs::create_dir_all(&dir).expect("config dir");
     // SAFETY: set before any other test in this binary reads it; no other test
     // here touches the config store.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
     const PORT: u16 = 39474;
     let user = "f6kim";

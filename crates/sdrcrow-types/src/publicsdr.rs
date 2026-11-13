@@ -2,7 +2,7 @@
 //! them.
 //!
 //! Two networks, chosen because between them they cover the band and because
-//! sdroxide can drive both honestly:
+//! sdrcrow can drive both honestly:
 //!
 //! * **SpyServer** — Airspy's own server and the re-implementations that speak
 //!   its protocol, listed at `airspy.com/directory/status.json`. Full I/Q, and
@@ -84,7 +84,7 @@ pub struct PublicSdrEntry {
     pub users: u32,
     pub max_users: u32,
     /// Channels the operator has left open to non-browser clients — KiwiSDR's
-    /// `ext_api`. sdroxide *is* a non-browser client, so a receiver reporting
+    /// `ext_api`. sdrcrow *is* a non-browser client, so a receiver reporting
     /// zero here will refuse it however many channels are otherwise free.
     /// `None` where the network has no such notion.
     pub api_channels: Option<u32>,
@@ -106,7 +106,7 @@ pub struct PublicSdrEntry {
 }
 
 impl PublicSdrEntry {
-    /// Which sdroxide interface drives this receiver.
+    /// Which sdrcrow interface drives this receiver.
     pub fn backend(&self, low_bandwidth: bool) -> Backend {
         match self.network {
             // A public SpyServer can be asked for either shape. Wideband with
@@ -228,7 +228,7 @@ impl PublicSdrEntry {
             // by trying it.
             return Some(match self.device.as_str() {
                 d if d.starts_with("PhantomSDR") => {
-                    "PhantomSDR's KiwiSDR bridge sends demodulated audio, not I/Q — sdroxide \
+                    "PhantomSDR's KiwiSDR bridge sends demodulated audio, not I/Q — sdrcrow \
                      has no client for it yet"
                         .into()
                 }
@@ -566,7 +566,7 @@ struct SdrListRow {
 /// Parse `sdr-list.xyz`'s receiver list (issue #482).
 ///
 /// The list is what it says it is and needs none of the unwrapping the other
-/// two do. What it does *not* say is which of these sdroxide can drive — see
+/// two do. What it does *not* say is which of these sdrcrow can drive — see
 /// [`PublicSdrEntry::blocked_reason`], which is where that lives so the answer
 /// is in one place and can be softened one family at a time.
 ///

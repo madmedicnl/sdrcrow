@@ -2,7 +2,7 @@
 
 Its only purpose is to answer a question the Rust receiver cannot answer about
 itself: does PSK500R.wav carry the whole text? Nothing here shares code with
-sdroxide.
+sdrcrow.
 """
 import sys
 import wave

@@ -9,7 +9,7 @@ edition.workspace = true
 # the open-source `libLimeSuite`: nothing is linked at build time regardless
 # of which of those libraries is open, because the point is not licensing —
 # it's that this crate builds and ships in every variant without every
-# contributor needing the vendor library installed just to compile sdroxide,
+# contributor needing the vendor library installed just to compile sdrcrow,
 # and a machine without it gets an empty device list with an explanation
 # rather than a build failure.
 #
@@ -21,7 +21,7 @@ edition.workspace = true
 # verified for the identical direct-sampling problem, reused here rather
 # than reinvented, plus the adaptive `Diversity` filter for the dual-channel
 # combining. `FobosConfig` and `Backend::Fobos` registration live in
-# `sdrcrow-types`/the `sdroxide` binary crate, not here — this crate has no
+# `sdrcrow-types`/the `sdrcrow` binary crate, not here — this crate has no
 # dependency on either.
 [dependencies]
 thiserror.workspace = true

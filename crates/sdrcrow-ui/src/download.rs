@@ -44,7 +44,7 @@ pub fn save_as(name: &str, data: &[u8], _mime: Mime) {
         .spawn(move || {
             if let Some(path) = rfd::FileDialog::new().set_file_name(&name).save_file() {
                 if let Err(e) = std::fs::write(&path, &data) {
-                    eprintln!("sdroxide: saving {}: {e}", path.display());
+                    eprintln!("sdrcrow: saving {}: {e}", path.display());
                 }
             }
         })

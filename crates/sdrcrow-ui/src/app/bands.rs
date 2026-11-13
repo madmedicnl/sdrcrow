@@ -36,7 +36,7 @@ use eframe::egui::{self, Color32, RichText};
 use sdrcrow_solar::BandRating;
 use sdrcrow_types::Band;
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 
 /// Column headings and everything the reader is not meant to look at first —
 /// the same grey the propagation chip row uses for its scale caption.
@@ -60,7 +60,7 @@ pub(in crate::app) fn rating_color(r: BandRating) -> Option<Color32> {
 }
 
 /// How old the verdicts are, as words, or `None` if there are none.
-pub(in crate::app) fn conditions_age(app: &SdroxideApp) -> Option<String> {
+pub(in crate::app) fn conditions_age(app: &SdrcrowApp) -> Option<String> {
     let c = app.band_conditions.as_ref()?;
     if c.observed_unix <= 0 {
         return None;
@@ -69,7 +69,7 @@ pub(in crate::app) fn conditions_age(app: &SdroxideApp) -> Option<String> {
 }
 
 /// How old the WSPR activity snapshot is, as words, or `None` if there is none.
-fn activity_age(app: &SdroxideApp) -> Option<String> {
+fn activity_age(app: &SdrcrowApp) -> Option<String> {
     let a = app.band_activity.as_ref()?;
     if a.observed_unix <= 0 {
         return None;
@@ -79,7 +79,7 @@ fn activity_age(app: &SdroxideApp) -> Option<String> {
 
 /// How old the PSK Reporter activity snapshot is, as words, or `None` if there
 /// is none.
-fn psk_activity_age(app: &SdroxideApp) -> Option<String> {
+fn psk_activity_age(app: &SdrcrowApp) -> Option<String> {
     let a = app.psk_activity.as_ref()?;
     if a.observed_unix <= 0 {
         return None;
@@ -151,7 +151,7 @@ fn dim_ink_text() -> RichText {
     RichText::new("—").size(9.5).color(dim_ink())
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// The BANDS window: one row per band, forecast beside evidence.
     pub(in crate::app) fn bands_window(&mut self, ctx: &egui::Context) {
         let open = self.show_bands;

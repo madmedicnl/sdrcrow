@@ -1,9 +1,9 @@
-//! Another sdroxide already running on this machine, found at start-up.
+//! Another sdrcrow already running on this machine, found at start-up.
 //!
-//! Two sdroxide processes that open the same radio both read it: each gets a
+//! Two sdrcrow processes that open the same radio both read it: each gets a
 //! stream with holes in it, the audio breaks up, and a PlutoSDR can stop
 //! answering altogether. Nothing on either screen said why — the classic case
-//! is a `sdroxide --server` left running as a service while the desktop window
+//! is a `sdrcrow --server` left running as a service while the desktop window
 //! is opened on the same box. So the window looks, once, before it opens its
 //! radios, and says so if it finds one.
 //!
@@ -14,16 +14,16 @@
 
 use std::path::Path;
 
-/// What kind of sdroxide another process is.
+/// What kind of sdrcrow another process is.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Kind {
-    /// `sdroxide --server`: owns its radios and serves them to browsers.
+    /// `sdrcrow --server`: owns its radios and serves them to browsers.
     Server,
     /// Another desktop window.
     Window,
 }
 
-/// One other sdroxide process.
+/// One other sdrcrow process.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Instance {
     pub pid: u32,
@@ -33,7 +33,7 @@ pub struct Instance {
 }
 
 /// Read one `/proc/<pid>/cmdline` (NUL-separated arguments). `None` when the
-/// process is not sdroxide, or is an sdroxide that opens no radio.
+/// process is not sdrcrow, or is an sdrcrow that opens no radio.
 pub fn classify(pid: u32, cmdline: &[u8]) -> Option<Instance> {
     let args: Vec<String> = cmdline
         .split(|&b| b == 0)
@@ -45,7 +45,7 @@ pub fn classify(pid: u32, cmdline: &[u8]) -> Option<Instance> {
     // path merely mentions it (`/bin/sh /usr/local/bin/sdrcrow-local`, whose
     // first argument is the shell).
     let name = Path::new(program).file_name()?.to_str()?;
-    if name != "sdroxide" && name != "sdroxide.exe" {
+    if name != "sdrcrow" && name != "sdrcrow.exe" {
         return None;
     }
     let rest = &args[1..];
@@ -62,7 +62,7 @@ pub fn classify(pid: u32, cmdline: &[u8]) -> Option<Instance> {
     Some(Instance { pid, kind, command: args.join(" ") })
 }
 
-/// Every other sdroxide under `proc_root` (normally `/proc`), skipping our own
+/// Every other sdrcrow under `proc_root` (normally `/proc`), skipping our own
 /// process. Unreadable entries — a process that ended mid-scan, a `/proc`
 /// mounted with `hidepid` — are skipped rather than reported.
 pub fn scan(proc_root: &Path, own_pid: u32) -> Vec<Instance> {
@@ -80,12 +80,12 @@ pub fn scan(proc_root: &Path, own_pid: u32) -> Vec<Instance> {
     found
 }
 
-/// The warning to show, or `None` when this sdroxide is alone.
+/// The warning to show, or `None` when this sdrcrow is alone.
 pub fn warning(others: &[Instance]) -> Option<String> {
     let first = others.first()?;
     let what = match first.kind {
-        Kind::Server => "an sdroxide server",
-        Kind::Window => "another sdroxide window",
+        Kind::Server => "an sdrcrow server",
+        Kind::Window => "another sdrcrow window",
     };
     let more = match others.len() {
         1 => String::new(),
@@ -93,7 +93,7 @@ pub fn warning(others: &[Instance]) -> Option<String> {
     };
     let fix = match first.kind {
         Kind::Server => {
-            "stop it first (for a service: sudo systemctl stop sdroxide), or connect to it \
+            "stop it first (for a service: sudo systemctl stop sdrcrow), or connect to it \
              instead of opening the radio here"
         }
         Kind::Window => "close one of them",
@@ -105,7 +105,7 @@ pub fn warning(others: &[Instance]) -> Option<String> {
     ))
 }
 
-/// Look for other sdroxide processes on this machine and word the warning.
+/// Look for other sdrcrow processes on this machine and word the warning.
 pub fn check() -> Option<String> {
     if !cfg!(target_os = "linux") {
         return None;
@@ -128,31 +128,31 @@ mod tests {
 
     #[test]
     fn a_service_server_is_recognised() {
-        let i = classify(2488, &cmd(&["/usr/bin/sdroxide", "--server", "--port", "4950"]));
+        let i = classify(2488, &cmd(&["/usr/bin/sdrcrow", "--server", "--port", "4950"]));
         assert_eq!(
             i,
             Some(Instance {
                 pid: 2488,
                 kind: Kind::Server,
-                command: "/usr/bin/sdroxide --server --port 4950".into(),
+                command: "/usr/bin/sdrcrow --server --port 4950".into(),
             })
         );
     }
 
     #[test]
     fn a_second_window_is_recognised() {
-        let i = classify(2321, &cmd(&["sdroxide"])).unwrap();
+        let i = classify(2321, &cmd(&["sdrcrow"])).unwrap();
         assert_eq!(i.kind, Kind::Window);
     }
 
     #[test]
     fn launchers_clients_and_one_shot_tools_are_not_collisions() {
-        // The shell running a launcher script is not sdroxide.
+        // The shell running a launcher script is not sdrcrow.
         assert_eq!(classify(1, &cmd(&["/bin/sh", "/usr/local/bin/sdrcrow-local"])), None);
         // A remote client opens no radio of its own.
-        assert_eq!(classify(2, &cmd(&["sdroxide", "--connect", "host:4950"])), None);
-        assert_eq!(classify(3, &cmd(&["sdroxide", "--version"])), None);
-        // Nor does a program that merely has sdroxide in its name.
+        assert_eq!(classify(2, &cmd(&["sdrcrow", "--connect", "host:4950"])), None);
+        assert_eq!(classify(3, &cmd(&["sdrcrow", "--version"])), None);
+        // Nor does a program that merely has sdrcrow in its name.
         assert_eq!(classify(4, &cmd(&["/usr/bin/sdrcrow-helper", "--server"])), None);
         assert_eq!(classify(5, &[]), None);
     }
@@ -166,8 +166,8 @@ mod tests {
             std::fs::create_dir_all(&dir).unwrap();
             std::fs::write(dir.join("cmdline"), cmd(args)).unwrap();
         };
-        write("2488", &["/usr/bin/sdroxide", "--server", "--port", "4950"]);
-        write("100", &["sdroxide"]); // ourselves
+        write("2488", &["/usr/bin/sdrcrow", "--server", "--port", "4950"]);
+        write("100", &["sdrcrow"]); // ourselves
         write("7", &["/bin/bash"]);
         std::fs::create_dir_all(root.join("self")).unwrap(); // not a pid
         std::fs::create_dir_all(root.join("55")).unwrap(); // no cmdline: ended mid-scan
@@ -184,14 +184,14 @@ mod tests {
         let server = Instance {
             pid: 2488,
             kind: Kind::Server,
-            command: "/usr/bin/sdroxide --server".into(),
+            command: "/usr/bin/sdrcrow --server".into(),
         };
         let w = warning(std::slice::from_ref(&server)).unwrap();
         assert!(w.contains("PID 2488"), "{w}");
-        assert!(w.contains("sudo systemctl stop sdroxide"), "{w}");
-        let window = Instance { pid: 2321, kind: Kind::Window, command: "sdroxide".into() };
+        assert!(w.contains("sudo systemctl stop sdrcrow"), "{w}");
+        let window = Instance { pid: 2321, kind: Kind::Window, command: "sdrcrow".into() };
         let w = warning(&[window, server]).unwrap();
-        assert!(w.contains("another sdroxide window"), "{w}");
+        assert!(w.contains("another sdrcrow window"), "{w}");
         assert!(w.contains("(and 1 more)"), "{w}");
         assert!(w.contains("close one of them"), "{w}");
     }

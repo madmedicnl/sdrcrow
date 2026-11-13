@@ -2,7 +2,7 @@
  * `fftw_compat.c`. Dream reaches this by `#include <fftw3.h>`, so putting this
  * directory on the include path is all it takes — no change to Dream's source.
  *
- * FFTW itself is a build-time dependency sdroxide does not otherwise have, on
+ * FFTW itself is a build-time dependency sdrcrow does not otherwise have, on
  * three platforms; six entry points and one buffer convention are cheaper to
  * carry than that. Real FFTW would work equally well: the declarations here are
  * a subset of its own, and `tests/fftw_vectors.rs` checks the results against

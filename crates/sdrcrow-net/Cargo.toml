@@ -3,7 +3,7 @@ name = "sdrcrow-net"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "Native network-cockpit clients for sdroxide: DX cluster telnet, POTA/SOTA/PSK Reporter spot feeds, QRZ/HamQTH callsign lookup, and LoTW/eQSL/Club Log/QRZ uploads."
+description = "Native network-cockpit clients for sdrcrow: DX cluster telnet, POTA/SOTA/PSK Reporter spot feeds, QRZ/HamQTH callsign lookup, and LoTW/eQSL/Club Log/QRZ uploads."
 
 [dependencies]
 sdrcrow-types.workspace = true

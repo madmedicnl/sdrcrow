@@ -1,4 +1,4 @@
-//! Core domain vocabulary shared by every sdroxide component, native and WASM.
+//! Core domain vocabulary shared by every sdrcrow component, native and WASM.
 //!
 //! This crate must stay free of I/O, threads, and native-only dependencies:
 //! it compiles for `wasm32-unknown-unknown`.

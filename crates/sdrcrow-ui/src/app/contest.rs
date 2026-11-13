@@ -10,7 +10,7 @@
 use eframe::egui;
 use sdrcrow_types::{Command, ContestId, ContestSession, Exchange, QsoRecord};
 
-use super::SdroxideApp;
+use super::SdrcrowApp;
 use crate::i18n::tr;
 
 /// The in-progress entry: what the operator is typing for the station being
@@ -30,7 +30,7 @@ pub(in crate::app) struct ContestEntry {
     pub fields: Vec<String>,
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn contest_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         if !self.show_contest {
             return;
@@ -239,9 +239,9 @@ impl SdroxideApp {
                     &self.my_call(),
                     &self.contest_my_exchange,
                     &mine,
-                    &format!("sdroxide {}", sdrcrow_version::VERSION),
+                    &format!("sdrcrow {}", sdrcrow_version::VERSION),
                 );
-                crate::download::save("sdroxide.cab", cab.as_bytes());
+                crate::download::save("sdrcrow.cab", cab.as_bytes());
             }
         });
         ui.separator();

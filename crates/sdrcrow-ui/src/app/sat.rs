@@ -17,7 +17,7 @@ use crate::i18n::tr;
 use eframe::egui::{self, RichText};
 use sdrcrow_types::{Command, Mode, SatLockConfig, SatUplink, Vfo};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::theme;
 use crate::theme::ThemedScroll;
 
@@ -698,7 +698,7 @@ fn satellite_is_workable(
         || tle.is_some_and(|(l1, _)| pasted.contains(l1.as_str()))
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn sat_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         if !self.show_sat {
             return;

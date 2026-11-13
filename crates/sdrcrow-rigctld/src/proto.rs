@@ -676,7 +676,7 @@ fn dispatch(
 
         // ── Voice keyer ──────────────────────────────────────────────────────
         // Hamlib's `send_voice_mem` / `stop_voice_mem`. Channels are 1-based on
-        // the wire and 0-based inside sdroxide. This keys the transmitter, so it
+        // the wire and 0-based inside sdrcrow. This keys the transmitter, so it
         // obeys the same `allow_tx` gate as PTT and TUNE.
         "send_voice_mem" => {
             if !cfg.allow_tx {
@@ -764,7 +764,7 @@ fn dispatch(
         }
         "get_rig_info" => {
             let line = format!(
-                "VFO={} Freq={} Mode={} Width={} RX=1 TX={}\nSplit={} SatMode=0\nRig={} Version={} App=sdroxide\n",
+                "VFO={} Freq={} Mode={} Width={} RX=1 TX={}\nSplit={} SatMode=0\nRig={} Version={} App=sdrcrow\n",
                 vfo_name(st.active_vfo),
                 st.freq(st.active_vfo).round() as i64,
                 to_hamlib_mode(st.mode),
@@ -1045,7 +1045,7 @@ mod tests {
     #[test]
     fn backslash_is_not_a_separator() {
         assert_eq!(run("\\dump_state").0.lines().next(), Some("1"));
-        assert_eq!(run("_").0, format!("{} {}\n", "sdroxide", env!("CARGO_PKG_VERSION")));
+        assert_eq!(run("_").0, format!("{} {}\n", "sdrcrow", env!("CARGO_PKG_VERSION")));
     }
 
     /// netrigctl reads this with `sscanf("%d")`, so anything but a bare integer

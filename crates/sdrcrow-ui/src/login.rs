@@ -383,7 +383,7 @@ impl LoginForm {
     /// posting into.
     ///
     /// Public because a tab that is not on screen never draws the sign-in and
-    /// still has to be able to let itself in — see `SdroxideApp::poll_auth`.
+    /// still has to be able to let itself in — see `SdrcrowApp::poll_auth`.
     pub fn answer_without_asking(&mut self, phase: &AuthPhase) -> Option<RemoteAccess> {
         self.waiting = false;
         // Nothing goes out while the server is judging one, or where there is
@@ -906,7 +906,7 @@ pub fn sign_out(station: &str) {
 // client's own state. Browser: local storage, which the solar tab shares
 // because it shares an origin — that is what makes one sign-in do for both.
 //
-// In the clear, both of them. So is every other credential sdroxide stores (the
+// In the clear, both of them. So is every other credential sdrcrow stores (the
 // cluster login, the QRZ and eQSL passwords), the box that writes it says so,
 // and the manual says so; encrypting it would need a key kept beside it, which
 // is not an improvement worth the impression of one.

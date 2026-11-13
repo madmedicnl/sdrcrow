@@ -8,12 +8,12 @@
 //! and leaves the files in `target/digi-setup-probe-*.png` to open.
 //!
 //! ```sh
-//! SDROXIDE_PROBE=1 cargo test -p sdrcrow-ui --lib digi_setup_probe -- --nocapture
+//! SDRCROW_PROBE=1 cargo test -p sdrcrow-ui --lib digi_setup_probe -- --nocapture
 //! ```
 
 #[cfg(test)]
 mod probe {
-    use crate::app::SdroxideApp;
+    use crate::app::SdrcrowApp;
     use sdrcrow_types::UiLanguage;
 
     /// A station with no radio behind it: the dialog is drawn from the app's own
@@ -30,17 +30,17 @@ mod probe {
     /// One width, one language, one picture.
     fn shot(name: &str, language: UiLanguage, size: eframe::egui::Vec2) {
         use eframe::egui;
-        if std::env::var("SDROXIDE_PROBE").is_err() {
+        if std::env::var("SDRCROW_PROBE").is_err() {
             return;
         }
         let dir = std::env::temp_dir()
             .join(format!("sdrcrow-digi-setup-probe-{}-{name}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, Box::new(Bare), 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(Bare), 0, true);
         // On the app rather than on the loader: every frame re-applies the
         // client's own choice (`set_language(self.applied_language)`), so a call
         // to the loader alone is overwritten on the first frame.

@@ -1,5 +1,5 @@
 //! Automatic reconnect: a radio that isn't there when the engine starts — a TCI
-//! server still coming up, sdroxide launched before ExpertSDR3 — must attach by
+//! server still coming up, sdrcrow launched before ExpertSDR3 — must attach by
 //! itself, without the operator opening Settings → Radio and pressing
 //! "Apply / reconnect".
 

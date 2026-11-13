@@ -12,9 +12,9 @@ use sdrcrow_types::{Command, Mode};
 
 use crate::theme::ThemedScroll;
 
-use crate::app::{SdroxideApp, tx_gated};
+use crate::app::{SdrcrowApp, tx_gated};
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// STANAG 4285's measurements, because a lock is a number and not a lamp.
     ///
     /// Every figure here is what the receiver measured, and each says something

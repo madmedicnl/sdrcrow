@@ -24,7 +24,7 @@ import subprocess
 import sys
 
 HOME = os.path.expanduser("~")
-ROOT = os.path.join(HOME, "sdroxide")
+ROOT = os.path.join(HOME, "sdrcrow")
 OUT = os.path.join(HOME, "Downloads", "sounds", "our-captures", "fldigi")
 DECODE_ANY = [os.path.join(ROOT, "target", "release", "examples", "decode_any")]
 DECODE_OLIVIA = [os.path.join(ROOT, "target", "release", "examples", "decode_file")]

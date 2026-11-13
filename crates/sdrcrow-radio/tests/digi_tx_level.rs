@@ -25,7 +25,7 @@ const DIAL_HZ: f64 = 14_090_000.0;
 
 /// Point the whole process at a config directory of its own, once.
 ///
-/// `SDROXIDE_CONFIG_DIR` is process-global, and an engine that comes up without
+/// `SDRCROW_CONFIG_DIR` is process-global, and an engine that comes up without
 /// it reads the *operator's* live configuration — including the transmit-audio
 /// level, which is one of the two numbers this file multiplies together. A
 /// station that had turned its data input down to 40 % for FM packet failed
@@ -39,7 +39,7 @@ fn isolate_config() {
             std::env::temp_dir().join(format!("sdrcrow-digi-tx-level-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
         std::fs::create_dir_all(&root).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
     });
 }
 
@@ -447,7 +447,7 @@ fn iq_peak_of(cmds: Vec<Command>) -> f32 {
     out.peak
 }
 
-/// On a radio sdroxide modulates itself, Drive is the level — so a hundred
+/// On a radio sdrcrow modulates itself, Drive is the level — so a hundred
 /// percent of it has to be a hundred percent of the transmitter, the same as a
 /// tune at a hundred percent. The modem's headroom used to eat two thirds of
 /// the power the slider was promising, with nothing to show it.

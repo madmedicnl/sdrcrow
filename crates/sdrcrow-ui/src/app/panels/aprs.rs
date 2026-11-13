@@ -20,14 +20,14 @@ use eframe::egui::{self, RichText};
 use sdrcrow_types::{AprsEntryKind, AprsMsgState, AprsStation, AprsStatus, Command};
 
 use crate::app::util::fmt_age;
-use crate::app::{SdroxideApp, tx_gated};
+use crate::app::{SdrcrowApp, tx_gated};
 use crate::theme;
 use crate::theme::ThemedScroll;
 
 /// Longest message the format carries.
 const MSG_MAX: usize = 67;
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn aprs_panel(
         &mut self,
         ui: &mut egui::Ui,
@@ -936,7 +936,7 @@ fn paint_segments(ui: &egui::Ui, rect: egui::Rect, segs: &[(String, egui::Color3
 /// The station count and the carrier detect, in a slot of fixed width.
 ///
 /// Painted rather than laid out because the width has to be the same whether
-/// the channel is busy or clear — see [`SdroxideApp::aprs_header`].
+/// the channel is busy or clear — see [`SdrcrowApp::aprs_header`].
 fn aprs_channel_slot(ui: &mut egui::Ui, st: &AprsStatus) {
     let (rect, resp) = ui.allocate_exact_size(egui::vec2(86.0, 15.0), egui::Sense::hover());
     let mut segs = vec![(tr!("aprs-stn", stations = st.stations.len()), theme::CYAN_DIM())];

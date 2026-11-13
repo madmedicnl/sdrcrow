@@ -21,7 +21,7 @@ pub enum Error {
     )]
     ServiceDown(String),
 
-    /// Another program (or another sdroxide) holds the device.
+    /// Another program (or another sdrcrow) holds the device.
     #[error("{0} is in use by another SDRplay application")]
     InUse(String),
 

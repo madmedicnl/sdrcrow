@@ -25,7 +25,7 @@ fn fmt_hz(hz: f64) -> String {
     }
 }
 
-impl super::SdroxideApp {
+impl super::SdrcrowApp {
     pub(in crate::app) fn signal_id_window(&mut self, ctx: &egui::Context) {
         if !self.signal_id.show {
             return;

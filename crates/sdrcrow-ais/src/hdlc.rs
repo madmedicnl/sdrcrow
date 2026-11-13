@@ -389,7 +389,7 @@ mod tests {
         assert_eq!(octets_msb_first(&[true]), [0x80]);
     }
 
-    /// A real position report, from outside sdroxide, survives the air.
+    /// A real position report, from outside sdrcrow, survives the air.
     ///
     /// The sentence is the worked example in gpsd's AIVDM documentation, and
     /// the expected fields are what `gpsdecode` makes of it — not what this

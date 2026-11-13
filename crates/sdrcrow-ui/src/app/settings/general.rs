@@ -10,7 +10,7 @@ use sdrcrow_types::{
     CbPlan, Command, Region, RemoteAccess, SWR_LIMIT_MAX, SWR_LIMIT_MIN, swr_tune_limit,
 };
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::app::persist::band_plans_dir;
 use crate::chrome::StyledCombo;
 
@@ -272,7 +272,7 @@ pub(in crate::app) fn remote_access_settings(ui: &mut egui::Ui, access: &mut Rem
 /// Lives beside the sound-card pickers because that is what it is for: the AF
 /// rail on the strip tops out at unity, which can turn a radio down and never
 /// up, and a transceiver whose USB codec puts out a quiet signal is then quiet
-/// at full volume in sdroxide *and* in the operating system (issue #315). It is
+/// at full volume in sdrcrow *and* in the operating system (issue #315). It is
 /// per radio, because what it corrects is that radio's interface rather than
 /// how loudly anyone wants to listen.
 ///
@@ -322,7 +322,7 @@ pub(in crate::app) struct BandPlanUi {
     pub(in crate::app) save_name: String,
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Hand a band plan file the operator picked to the station.
     ///
     /// The text goes as it is; the station checks it, converts it if it is in

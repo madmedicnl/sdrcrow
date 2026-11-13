@@ -20,13 +20,13 @@
 //! | 33 ms | 16.5 ms |
 //! | ≤ 17 ms | *no delay at all* |
 //!
-//! The last row is the one that mattered. sdroxide's frame scheduler asks for
+//! The last row is the one that mattered. sdrcrow's frame scheduler asks for
 //! `1000 / frame_rate_fps` ms, so the default 60 fps asked for 16 ms, the
 //! subtraction floored it at zero, and the UI thread stopped being paced at
 //! all: it redrew as fast as the machine would let it, which is the definition
 //! of one saturated core. On a fast desktop that looked like a harmless 85 fps;
 //! on a thin laptop it looked like the whole application living on one core
-//! (issue: 8-core Lunar Lake, `sdroxide` pegged at 99 %).
+//! (issue: 8-core Lunar Lake, `sdrcrow` pegged at 99 %).
 //!
 //! So every place that wants a *cadence* — a meter that creeps, a waterfall
 //! that scrolls, the frame scheduler itself — goes through here, which adds

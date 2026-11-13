@@ -2,10 +2,10 @@
 """Draw the packaged APRS station icons.
 
 Every APRS station says what it *is* in two characters, and a map draws an
-icon from that pair. sdroxide ships those icons rather than fetching them, for
+icon from that pair. sdrcrow ships those icons rather than fetching them, for
 the same reason it ships the country flags: a map that only shows what stations
 are once some third party's CDN answers is a map that looks different on every
-machine, and the browser client has no business reaching past sdroxide for one.
+machine, and the browser client has no business reaching past sdrcrow for one.
 
 They are drawn here rather than sourced from an existing icon set, so there is
 no third-party artwork in the tree and no licence attached to it. This writes:
@@ -543,7 +543,7 @@ def main():
 //! They are compiled in rather than fetched, for the reason the country flags
 //! are: a map that only shows what stations *are* once some third party's CDN
 //! answers is a map that looks different on every machine, and the browser
-//! client has no business reaching past sdroxide for one. Drawn rather than
+//! client has no business reaching past sdrcrow for one. Drawn rather than
 //! sourced, so there is no third-party artwork in the tree.
 //!
 //! White on transparent, so the caller supplies the colour — the map fades a

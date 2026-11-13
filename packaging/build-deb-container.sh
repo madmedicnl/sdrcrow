@@ -28,6 +28,6 @@ echo "== cargo-deb"
 command -v cargo-deb >/dev/null || cargo install cargo-deb --locked
 echo "== package"
 mkdir -p out
-cargo deb --no-build -p sdroxide --variant soapysdr -o out/
+cargo deb --no-build -p sdrcrow --variant soapysdr -o out/
 ls -la out/
 '

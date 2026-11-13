@@ -263,7 +263,7 @@ mod tests {
 
     /// A real transmission, decoded by the vendored engine.
     ///
-    /// `SDROXIDE_OLIVIA_SAMPLE` is a mono WAV of an Olivia signal;
+    /// `SDRCROW_OLIVIA_SAMPLE` is a mono WAV of an Olivia signal;
     /// `_TONES`, `_BW`, `_HZ` and `_TEXT` describe it. The capture this was
     /// written against is `~/Downloads/sounds/our-captures/olivia_16-500_cb_27415.wav`
     /// — transmitted by fldigi through a rig's VOX and received on an RSP1, so
@@ -272,8 +272,8 @@ mod tests {
     #[ignore]
     fn an_off_air_capture_decodes() {
         // Default to the fixture that lives in the repository, so this runs
-        // without any environment set up. `SDROXIDE_OLIVIA_SAMPLE` overrides it.
-        let path = std::env::var("SDROXIDE_OLIVIA_SAMPLE").unwrap_or_else(|_| {
+        // without any environment set up. `SDRCROW_OLIVIA_SAMPLE` overrides it.
+        let path = std::env::var("SDRCROW_OLIVIA_SAMPLE").unwrap_or_else(|_| {
             concat!(env!("CARGO_MANIFEST_DIR"), "/../../samples/bench/olivia_16-500_cb_27415.wav")
                 .to_string()
         });
@@ -292,15 +292,15 @@ mod tests {
             }
         };
         let num = |k: &str, d: f64| std::env::var(k).ok().and_then(|v| v.parse().ok()).unwrap_or(d);
-        let tones = num("SDROXIDE_OLIVIA_TONES", 16.0) as usize;
-        let bw = num("SDROXIDE_OLIVIA_BW", 500.0) as u32;
+        let tones = num("SDRCROW_OLIVIA_TONES", 16.0) as usize;
+        let bw = num("SDRCROW_OLIVIA_BW", 500.0) as u32;
         // The fixture in the repository is the bench capture: 16/500, centred at
         // 1705 Hz of audio, and taken while the rig was on LSB, so it needs the
         // tone order reversed. All three are what the manifest says.
-        let builtin = std::env::var("SDROXIDE_OLIVIA_SAMPLE").is_err();
-        let hz = num("SDROXIDE_OLIVIA_HZ", if builtin { 1705.0 } else { 1500.0 });
+        let builtin = std::env::var("SDRCROW_OLIVIA_SAMPLE").is_err();
+        let hz = num("SDRCROW_OLIVIA_HZ", if builtin { 1705.0 } else { 1500.0 });
 
-        let reverse = std::env::var("SDROXIDE_OLIVIA_REVERSE").is_ok() || builtin;
+        let reverse = std::env::var("SDRCROW_OLIVIA_REVERSE").is_ok() || builtin;
         let mut rx = OliviaDecoder::new(spec.sample_rate as f64, hz, tones, bw, reverse)
             .expect("the engine allocated");
         // The engine's pipeline runs about a second behind the audio it is
@@ -312,7 +312,7 @@ mod tests {
             out.push_str(&rx.process(chunk));
         }
         eprintln!("decoded {} chars at {tones}/{bw}, centre {hz}: {out:?}", out.len());
-        if let Ok(want) = std::env::var("SDROXIDE_OLIVIA_TEXT") {
+        if let Ok(want) = std::env::var("SDRCROW_OLIVIA_TEXT") {
             for w in want.split_whitespace() {
                 assert!(out.contains(w), "did not recover {w:?}: {out:?}");
             }
@@ -329,7 +329,7 @@ mod tests {
     #[test]
     #[ignore]
     fn the_corpus_contestia_sample_decodes() {
-        let path = std::env::var("SDROXIDE_CONTESTIA_SAMPLE").unwrap_or_else(|_| {
+        let path = std::env::var("SDRCROW_CONTESTIA_SAMPLE").unwrap_or_else(|_| {
             concat!(env!("CARGO_MANIFEST_DIR"), "/../../samples/fldigi/CONTESTIA.wav").to_string()
         });
         let mut reader = hound::WavReader::open(&path).expect("open the sample WAV");

@@ -61,7 +61,7 @@ pub(in crate::app) fn tool_place_at(
     (egui::pos2(x, y), size)
 }
 
-impl super::SdroxideApp {
+impl super::SdrcrowApp {
     pub(in crate::app) fn extras_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         if !self.show_extras {
             self.extras_was_open = false;

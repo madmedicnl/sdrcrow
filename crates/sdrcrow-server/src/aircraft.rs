@@ -40,7 +40,7 @@ use crate::Station;
 pub(crate) const MAX_QUESTIONS_PER_MINUTE: usize = 30;
 
 /// The variable that holds the relay on or off whatever the window says.
-pub const ENV_SWITCH: &str = "SDROXIDE_AIRCRAFT_ONLINE";
+pub const ENV_SWITCH: &str = "SDRCROW_AIRCRAFT_ONLINE";
 
 /// What a value of [`ENV_SWITCH`] decides: `Some(true)` holds the relay on,
 /// `Some(false)` holds it off, `None` leaves it to the operator's switch in the
@@ -131,7 +131,7 @@ pub(crate) const OFF_FILE: &str = "aircraft-online.off";
 /// The header a switch request must carry. A page on another site cannot add a
 /// custom header to a request without the station's say-so (a preflight), so
 /// this keeps a stray link or form from flipping the relay.
-pub(crate) const SWITCH_HEADER: &str = "x-sdroxide";
+pub(crate) const SWITCH_HEADER: &str = "x-sdrcrow";
 
 /// How long the station keeps a thumbnail nobody has let go of: a client that
 /// vanished (tab closed, connection cut) cannot release it, so it expires. Long

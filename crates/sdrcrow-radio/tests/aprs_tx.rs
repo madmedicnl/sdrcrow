@@ -6,7 +6,7 @@
 //! stop at `DigiEngine::fill_tx_block`, and what reaches a radio is what the
 //! engine does with those blocks afterwards.
 //!
-//! ⚠️ `SetDigiConfig` makes the engine save, and `SDROXIDE_CONFIG_DIR` is
+//! ⚠️ `SetDigiConfig` makes the engine save, and `SDRCROW_CONFIG_DIR` is
 //! process-global: see [`isolate_config`]. A test here that forgets it writes
 //! its fixtures over the operator's real station settings.
 //!
@@ -142,7 +142,7 @@ fn station() -> DigiConfig {
 
 /// Point the whole process at a config directory of its own, once.
 ///
-/// `SetDigiConfig` makes the engine *save* — and `SDROXIDE_CONFIG_DIR` is
+/// `SetDigiConfig` makes the engine *save* — and `SDRCROW_CONFIG_DIR` is
 /// process-global, so a test that does not set it writes into the operator's
 /// real configuration. This one sends a digi config on every over, so without
 /// this it would overwrite a live station's callsign, position and channel
@@ -153,7 +153,7 @@ fn isolate_config() {
         let root = std::env::temp_dir().join(format!("sdrcrow-aprs-tx-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
         std::fs::create_dir_all(&root).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
     });
 }
 
@@ -287,7 +287,7 @@ fn a_message_reaches_the_rig_as_a_decodable_frame() {
         vec![
             Command::SetMode { rx: RxId::Main, mode: Mode::Aprs },
             Command::SetDigiConfig(station()),
-            Command::AprsSendMessage { to: "VK2ABC".into(), text: "hello from sdroxide".into() },
+            Command::AprsSendMessage { to: "VK2ABC".into(), text: "hello from sdrcrow".into() },
         ],
     );
     let secs = audio.len() as f32 / 48_000.0;
@@ -301,7 +301,7 @@ fn a_message_reaches_the_rig_as_a_decodable_frame() {
     match data {
         sdrcrow_aprs::AprsData::Message(m) => {
             assert_eq!(m.addressee, "VK2ABC");
-            assert_eq!(m.text, "hello from sdroxide");
+            assert_eq!(m.text, "hello from sdrcrow");
         }
         other => panic!("{other:?}"),
     }

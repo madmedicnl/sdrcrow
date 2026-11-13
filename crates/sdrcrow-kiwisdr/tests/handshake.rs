@@ -114,7 +114,7 @@ fn slow_upgrade_still_connects() {
     let server = std::thread::spawn(move || serve(&listener, STALL));
 
     let handle =
-        KiwiHandle::connect(&config(8173), "sdroxide", 14_074_000.0).expect("the session opens");
+        KiwiHandle::connect(&config(8173), "sdrcrow", 14_074_000.0).expect("the session opens");
     assert_eq!(handle.info.sample_rate_hz, 12_000.0);
     assert_eq!(handle.info.rx_chans, 8);
     drop(handle);
@@ -129,7 +129,7 @@ fn prompt_upgrade_still_connects() {
     let server = std::thread::spawn(move || serve(&listener, Duration::ZERO));
 
     let handle =
-        KiwiHandle::connect(&config(8174), "sdroxide", 14_074_000.0).expect("the session opens");
+        KiwiHandle::connect(&config(8174), "sdrcrow", 14_074_000.0).expect("the session opens");
     assert!(handle.is_alive());
     drop(handle);
     server.join().expect("server thread");
@@ -158,7 +158,7 @@ fn a_redirect_on_the_upgrade_is_followed() {
     });
     let server = std::thread::spawn(move || serve(&back, Duration::ZERO));
 
-    let handle = KiwiHandle::connect(&config(8175), "sdroxide", 14_074_000.0)
+    let handle = KiwiHandle::connect(&config(8175), "sdrcrow", 14_074_000.0)
         .expect("the redirect is followed");
     assert!(handle.is_alive());
     drop(handle);

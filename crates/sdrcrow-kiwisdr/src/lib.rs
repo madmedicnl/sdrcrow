@@ -24,7 +24,7 @@
 //! # What this crate is not
 //!
 //! It does not implement the receiver's own demodulators, its IMA-ADPCM audio
-//! compression, its compressed waterfall, or its extension channels. sdroxide
+//! compression, its compressed waterfall, or its extension channels. sdrcrow
 //! demodulates its own signal from the I/Q, and each of the compressed forms is
 //! refused by name rather than guessed at — a half-rate ADPCM stream decoded as
 //! linear bytes would draw a convincing band that was not there.
@@ -79,7 +79,7 @@ pub struct KiwiStatus {
     pub sdr_hw: String,
     pub users: u32,
     pub users_max: u32,
-    /// Channels the operator has left open to non-browser clients. sdroxide is
+    /// Channels the operator has left open to non-browser clients. sdrcrow is
     /// one, so zero here means it will be refused however many are free.
     pub ext_api: u32,
     pub min_hz: f64,
@@ -126,7 +126,7 @@ pub fn probe(address: &str, timeout: Duration) -> Result<KiwiStatus> {
     let agent: ureq::Agent = ureq::Agent::config_builder()
         .timeout_connect(Some(timeout))
         .timeout_global(Some(timeout))
-        .user_agent(concat!("sdroxide/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("sdrcrow/", env!("CARGO_PKG_VERSION")))
         .build()
         .into();
     let url = format!("http://{host}:{port}/status");
@@ -155,7 +155,7 @@ pub fn probe(address: &str, timeout: Duration) -> Result<KiwiStatus> {
 ///
 /// Says the two things an operator needs before pressing Apply: whether there
 /// is a channel free, and whether this receiver's owner allows non-browser
-/// clients at all — which is a refusal sdroxide would otherwise only discover
+/// clients at all — which is a refusal sdrcrow would otherwise only discover
 /// by being turned away.
 pub fn test_connection(address: &str, timeout: Duration) -> std::result::Result<String, String> {
     match probe(address, timeout) {
@@ -169,7 +169,7 @@ pub fn test_connection(address: &str, timeout: Duration) -> std::result::Result<
                 "the operator has taken it offline".to_string()
             } else if s.ext_api == 0 {
                 "but its operator has not enabled connections from non-browser apps, \
-                 so sdroxide will be refused"
+                 so sdrcrow will be refused"
                     .to_string()
             } else if s.users >= s.users_max && s.users_max > 0 {
                 "and every channel is in use right now".to_string()

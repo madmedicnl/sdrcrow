@@ -187,7 +187,7 @@ rtrb = "0.4"
 # HFDL (ARINC 635) decode core, vendored under `vendor/xng` — a submodule pinned
 # to one commit, so the build takes no network dependency of its own. The crates
 # are not on crates.io and are reached by path (Route A, green-lit on
-# dividebysandwich/sdroxide#497). The dependency tree is modest (rustfft,
+# dividebysandwich/sdrcrow#497). The dependency tree is modest (rustfft,
 # num-complex, chrono, serde, crc — no protobuf); `airframesio/xng` is
 # MIT/Apache-2.0 and its `PROVENANCE.md` records a clean-room derivation from
 # ICAO Annex 10 / ARINC 635.
@@ -275,7 +275,7 @@ default = ["soapy", "rtl433"]
 soapy = ["sdrcrow-radio/soapy"]
 # The several hundred ISM device decoders of the embedded rtl_433. Needs a C
 # compiler, CMake, and `git submodule update --init --recursive`. Turn off for a
-# build with only sdroxide's own ISM decoders.
+# build with only sdrcrow's own ISM decoders.
 rtl433 = ["sdrcrow-radio/rtl433"]
 # Bundle the trunk-built web client into the binary (run `trunk build
 # --release` in crates/sdrcrow-web first).
@@ -284,7 +284,7 @@ embed-web = ["sdrcrow-server/embed-web"]
 # `cargo deb` packaging (used by the release workflow with --no-build after a
 # `--features embed-web` release build).
 # Base .deb = the standard (non-SoapySDR) build: drives CAT/OpenHPSDR/TCI and
-# needs no libSoapySDR, so no SoapySDR recommendation. Package name `sdroxide`.
+# needs no libSoapySDR, so no SoapySDR recommendation. Package name `sdrcrow`.
 [package.metadata.deb]
 maintainer = "Josef Jahn <josef.jahn@gmail.com>"
 copyright = "2026, Josef Jahn"

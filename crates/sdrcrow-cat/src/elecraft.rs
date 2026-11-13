@@ -13,7 +13,7 @@
 //!   sign that anything was refused.
 //! * **`MD6` alone is not enough.** DATA carries a *sub-mode* — `DT0` DATA A,
 //!   `DT1` AFSK A, `DT2` FSK D, `DT3` PSK D — and `MD6` restores whichever was
-//!   last used on that band. Only DATA A is the sound-card path sdroxide
+//!   last used on that band. Only DATA A is the sound-card path sdrcrow
 //!   drives; landing in FSK D or PSK D hands the over to the rig's own modem,
 //!   which has nothing to send.
 //! * **`TX1;` is not a command.** Elecraft keys with a bare `TX;`. (`TX0;` is
@@ -150,7 +150,7 @@ impl Elecraft {
     /// Deliberately not the inverse of [`Self::mode_frames`] over its whole
     /// range. A rig position that would be commanded back as something else
     /// yields `None` — the two would otherwise take turns correcting each
-    /// other. That covers the three DATA sub-modes sdroxide does not drive:
+    /// other. That covers the three DATA sub-modes sdrcrow does not drive:
     /// AFSK A tunes the rig's own RTTY path, and FSK D and PSK D key the rig's
     /// internal modems, none of which is the sound card.
     fn effective_mode(&self) -> Option<Mode> {
@@ -664,7 +664,7 @@ mod tests {
             let mut e = Elecraft::new();
             assert!(
                 parse_str(&mut e, &format!("MD6;DT{sub};")).is_empty(),
-                "DT{sub} is not a mode sdroxide drives"
+                "DT{sub} is not a mode sdrcrow drives"
             );
         }
         // And a rig that leaves DATA leaves its sub-mode behind: the stale

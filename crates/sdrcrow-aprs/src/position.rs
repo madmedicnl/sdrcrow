@@ -667,12 +667,12 @@ mod tests {
     fn an_encoded_position_reads_back_as_itself() {
         let pos = AprsPosition { lat: 48.208_8, lon: 16.372_1, ambiguity: 0 };
         let sym = AprsSymbol::new('/', '-');
-        let f = encode_position(pos, sym, "sdroxide", true);
+        let f = encode_position(pos, sym, "sdrcrow", true);
         let d = crate::parse("APRS", f.as_bytes()).unwrap();
         let p = d.position().unwrap();
         assert!(p.messaging);
         assert_eq!(p.symbol, sym);
-        assert_eq!(p.comment, "sdroxide");
+        assert_eq!(p.comment, "sdrcrow");
         // The uncompressed form carries hundredths of a minute, so agreement
         // to about ten metres is all there is to agree to.
         assert!((p.pos.lat - pos.lat).abs() < 1e-4, "{} vs {}", p.pos.lat, pos.lat);

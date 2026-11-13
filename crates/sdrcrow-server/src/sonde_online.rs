@@ -154,7 +154,7 @@ fn ask_flight(address: &str) -> Result<String, String> {
         .into();
     let mut resp = agent
         .get(address)
-        .header("User-Agent", "sdroxide-brown")
+        .header("User-Agent", "sdrcrow-brown")
         .header("Accept", "application/json")
         .call()
         .map_err(|e| e.to_string())?;
@@ -232,7 +232,7 @@ fn ask_sondehub(address: &str) -> Result<String, String> {
         .into();
     let mut resp = agent
         .get(address)
-        .header("User-Agent", "sdroxide-brown")
+        .header("User-Agent", "sdrcrow-brown")
         .header("Accept", "application/json")
         .call()
         .map_err(|e| e.to_string())?;

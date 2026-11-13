@@ -87,7 +87,7 @@ fn hamqth_delete(user: &str, pass: &str, my_call: &str) -> Result<String, String
             ("p", pass),
             ("c", my_call),
             ("adif", adif.as_str()),
-            ("prg", "sdroxide"),
+            ("prg", "sdrcrow"),
             ("cmd", "delete"),
         ])
         .map_err(|e| e.to_string())?;

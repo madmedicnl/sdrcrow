@@ -97,7 +97,7 @@ fn stored_zip(name: &str, body: &[u8]) -> Vec<u8> {
     out
 }
 
-/// `SDROXIDE_CONFIG_DIR` is process-global, and tests in one binary run in
+/// `SDRCROW_CONFIG_DIR` is process-global, and tests in one binary run in
 /// parallel — so the sandboxes take turns. Without this the second test to run
 /// finds the third one's directory and every assertion that reads it is a lie.
 static ONE_AT_A_TIME: std::sync::Mutex<()> = std::sync::Mutex::new(());
@@ -113,7 +113,7 @@ fn sandbox(tag: &str) -> std::path::PathBuf {
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).expect("scratch dir");
     // SAFETY: one test binary, one process, set before anything reads it.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
     root
 }
 

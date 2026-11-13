@@ -29,7 +29,7 @@ pub(crate) enum ClientReq {
     Ignored,
 }
 
-/// Receiver index we serve. sdroxide has a single tunable VFO pair, so we
+/// Receiver index we serve. sdrcrow has a single tunable VFO pair, so we
 /// advertise one transceiver with two channels (A and B) — see the module doc.
 const RX: u32 = 0;
 
@@ -130,7 +130,7 @@ pub(crate) fn translate(cmd: &str, args: &str, state: &TciStateSnapshot) -> Opti
 
         // --- Audio --------------------------------------------------------
         "mute" => ClientReq::Cmd(Command::SetMute { rx: RxId::Main, muted: indexed_flag(&a)? }),
-        // TCI's volume is a master AF level in dB; sdroxide's is a 0..1 factor.
+        // TCI's volume is a master AF level in dB; sdrcrow's is a 0..1 factor.
         "volume" => {
             let db: f32 = a.first()?.parse().ok()?;
             ClientReq::Cmd(Command::SetVolume { rx: RxId::Main, v: db_to_volume(db) })
@@ -158,7 +158,7 @@ pub(crate) fn translate(cmd: &str, args: &str, state: &TciStateSnapshot) -> Opti
     })
 }
 
-/// TCI master volume is −60..0 dB; sdroxide's is a 0..1 amplitude factor that
+/// TCI master volume is −60..0 dB; sdrcrow's is a 0..1 amplitude factor that
 /// the engine squares. −60 dB is TCI's floor and maps to silence.
 pub(crate) fn db_to_volume(db: f32) -> f32 {
     if db <= -60.0 { 0.0 } else { 10f32.powf(db.min(0.0) / 20.0).clamp(0.0, 1.0) }
@@ -223,7 +223,7 @@ pub(crate) fn diff_lines(prev: Option<&TciStateSnapshot>, next: &TciStateSnapsho
 /// The full connect burst: identity, limits, then the state lines.
 pub(crate) fn connect_burst(device_name: &str, state: &TciStateSnapshot) -> Vec<String> {
     let mut out = vec![
-        p::protocol_line("sdroxide", super::TCI_VERSION),
+        p::protocol_line("sdrcrow", super::TCI_VERSION),
         p::device(device_name),
         p::receive_only(!state.can_tx),
         p::trx_count(1),
@@ -362,15 +362,15 @@ mod tests {
     #[test]
     fn burst_ends_with_ready() {
         let s = snap();
-        let burst = connect_burst("sdroxide", &s);
+        let burst = connect_burst("sdrcrow", &s);
         assert_eq!(burst.last().map(String::as_str), Some("ready;"));
-        assert!(burst.iter().any(|l| l == "device:sdroxide;"));
+        assert!(burst.iter().any(|l| l == "device:sdrcrow;"));
         assert!(burst.iter().any(|l| l.starts_with("modulations_list:")));
         // No wideband IQ on this snapshot, so the stream is not advertised.
         assert!(!burst.iter().any(|l| l.starts_with("iq_samplerate:")));
 
         let mut s = s;
         s.iq_rate = 192_000;
-        assert!(connect_burst("sdroxide", &s).iter().any(|l| l == "iq_samplerate:192000;"));
+        assert!(connect_burst("sdrcrow", &s).iter().any(|l| l == "iq_samplerate:192000;"));
     }
 }

@@ -8,7 +8,7 @@
 //! They are compiled in rather than fetched, for the reason the country flags
 //! are: a map that only shows what stations *are* once some third party's CDN
 //! answers is a map that looks different on every machine, and the browser
-//! client has no business reaching past sdroxide for one. Drawn rather than
+//! client has no business reaching past sdrcrow for one. Drawn rather than
 //! sourced, so there is no third-party artwork in the tree.
 //!
 //! White on transparent, so the caller supplies the colour — the map fades a

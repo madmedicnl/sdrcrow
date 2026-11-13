@@ -16,7 +16,7 @@
 //! numbers, so the synthetic band behaves like the real one.
 //!
 //! Interleaved little-endian `complex64` (two `f32`s per sample), which is what
-//! sdroxide's file source reads. The file loops, so a few seconds is plenty.
+//! sdrcrow's file source reads. The file loops, so a few seconds is plenty.
 
 use std::io::{BufWriter, Write};
 

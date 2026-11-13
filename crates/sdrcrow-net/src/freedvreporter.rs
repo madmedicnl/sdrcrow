@@ -43,7 +43,7 @@ use crate::event::{EventTx, FeedTx, NetEvent};
 use crate::socketio::{self, Frame};
 
 /// The mode string FreeDV Reporter uses for RADE V1. It is the only waveform
-/// sdroxide speaks, so it is a constant rather than derived from the radio.
+/// sdrcrow speaks, so it is a constant rather than derived from the radio.
 const MODE_STRING: &str = "RADEV1";
 
 /// The reporter protocol revision this client implements.
@@ -927,7 +927,7 @@ impl Reporter {
 
 /// What we tell the reporter we are running.
 fn software_version() -> String {
-    format!("SDRoxide {}", env!("CARGO_PKG_VERSION"))
+    format!("SDRCrow {}", env!("CARGO_PKG_VERSION"))
 }
 
 /// One `rx_report` frame. An empty `callsign` is an unidentified reception
@@ -1254,7 +1254,7 @@ mod tests {
         assert_eq!(full["grid_square"], json!("JN88dd"));
         assert_eq!(full["protocol_version"], json!(2));
         assert_eq!(full["rx_only"], json!(false));
-        assert!(full["version"].as_str().unwrap().starts_with("SDRoxide "));
+        assert!(full["version"].as_str().unwrap().starts_with("SDRCrow "));
         assert!(full.get("os").is_some());
 
         for (call, grid) in [("", "JN88dd"), ("OE1TKJ", ""), ("", "")] {
@@ -1267,7 +1267,7 @@ mod tests {
 
     #[test]
     fn software_version_is_branded() {
-        assert_eq!(software_version(), format!("SDRoxide {}", env!("CARGO_PKG_VERSION")));
+        assert_eq!(software_version(), format!("SDRCrow {}", env!("CARGO_PKG_VERSION")));
     }
 
     #[test]

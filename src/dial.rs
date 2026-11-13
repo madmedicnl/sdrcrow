@@ -2,7 +2,7 @@
 //! have to take turns on it.
 //!
 //! A CAT-controlled transceiver and a networked Icom are the same shape here:
-//! the radio tunes, sdroxide does not, so VFO, RIT, XIT and split cannot be
+//! the radio tunes, sdrcrow does not, so VFO, RIT, XIT and split cannot be
 //! software offsets the way they are on an SDR. They are all the same knob, and
 //! the rules for sharing it are an interlock rather than arithmetic — which is
 //! why this lives on its own, where it can be tested without a serial port or a

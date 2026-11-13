@@ -371,20 +371,20 @@ struct PlanFile {
 /// The self-documentation written into a freshly seeded file.
 fn readme() -> Vec<String> {
     [
-        "sdroxide band plan. Every band edge, transmit lockout, waterfall band strip \
+        "sdrcrow band plan. Every band edge, transmit lockout, waterfall band strip \
          and skimmer window follows this file.",
         "All frequencies are in MHz. Edges are inclusive; a sub-segment covers \
          [lo_mhz, hi_mhz).",
         "bands: the amateur allocations, plus the broadcast services an SWL tunes. \
          Omit a band and this region does not have it; \
-         narrow one to your own licence and sdroxide will refuse to transmit outside it \
+         narrow one to your own licence and sdrcrow will refuse to transmit outside it \
          (with tx_ham_only set, which is the default).",
         "The listening services — the broadcast bands Lw, Mw, Sw, Fm and the airbands \
          Air and Mil — are not amateur allocations, so the \
          transmit lockout holds there with the default tx_ham_only, exactly as it does \
          on 11 m (M11). Sw deliberately overlies the amateur HF bands; the operator on \
          a frequency in both is read as being on the amateur band.",
-        "A band sdroxide adds in a later version — 4 m (M4) was the first, the airbands \
+        "A band sdrcrow adds in a later version — 4 m (M4) was the first, the airbands \
          Air and Mil the latest — is not in a file written before it existed, so it is \
          filled in from the built-in tables when this file names it in no region at all. Give it \
          a row in any region and this file decides it everywhere, as it does for every other \
@@ -399,7 +399,7 @@ fn readme() -> Vec<String> {
         "Edit, save, then press RELOAD BAND PLAN on the General tab — no restart. Delete \
          this file to get the built-in IARU tables back; a fresh one is written on the \
          next reload or start.",
-        "A file sdroxide cannot parse is left exactly as it is and the built-in tables are \
+        "A file sdrcrow cannot parse is left exactly as it is and the built-in tables are \
          used for that session, so a typo costs nothing. A single row that says something \
          impossible is dropped and named in the notice bar; the rest of the file still \
          applies.",
@@ -481,7 +481,7 @@ impl std::fmt::Display for BandPlanError {
 
 impl std::error::Error for BandPlanError {}
 
-/// Bands sdroxide gained *after* `bandplan.json` became the authority.
+/// Bands sdrcrow gained *after* `bandplan.json` became the authority.
 ///
 /// Omitting a band from a region means that region does not have it — that is
 /// the file's whole contract, and it is not weakened here. But a file written
@@ -899,7 +899,7 @@ mod tests {
     use super::*;
 
     /// Round-tripping through the file form has to change nothing. If it did,
-    /// the first thing sdroxide ever wrote to `bandplan.json` would be a
+    /// the first thing sdrcrow ever wrote to `bandplan.json` would be a
     /// different band plan from the one it had just been running.
     #[test]
     fn the_defaults_survive_a_write_and_a_read() {
@@ -992,7 +992,7 @@ mod tests {
         assert!(!p.is_default());
     }
 
-    /// A file written before sdroxide had 4 m is not saying "no 4 m here" — it
+    /// A file written before sdrcrow had 4 m is not saying "no 4 m here" — it
     /// has never heard of the band. So it fills in from the built-in tables,
     /// which is what keeps every installation that already has a file from being
     /// the one place a new band never appears. Name it anywhere and the file is

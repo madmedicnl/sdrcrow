@@ -411,7 +411,7 @@ mod tests {
         Station {
             call: "AB1CD".into(),
             grid: "FN42".into(),
-            software: "sdroxide".into(),
+            software: "sdrcrow".into(),
             antenna: String::new(),
         }
     }

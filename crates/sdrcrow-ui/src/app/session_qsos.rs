@@ -9,7 +9,7 @@ use crate::i18n::tr;
 use eframe::egui::{self, RichText};
 use sdrcrow_types::{Command, QsoRecord};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::chrome;
 use crate::download;
 
@@ -66,7 +66,7 @@ impl SessionQsoSort {
     }
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn session_qsos_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         let open = self.tool_window(
             ctx,

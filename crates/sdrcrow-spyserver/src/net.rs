@@ -40,7 +40,7 @@ use crate::proto::{self, ClientSync, DeviceInfo, MessageHeader};
 
 /// What this client calls itself in the handshake. Servers log it, and some
 /// keep an allow-list of application names, so it is worth being recognisable.
-pub const CLIENT_NAME: &str = "sdroxide";
+pub const CLIENT_NAME: &str = "sdrcrow";
 
 /// How long to wait for the TCP connection itself. A server that is running
 /// answers a LAN connect in milliseconds; this length is for a host that is up

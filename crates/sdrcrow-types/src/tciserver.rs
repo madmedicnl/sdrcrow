@@ -2,9 +2,9 @@ use serde::{Deserialize, Serialize};
 
 /// Built-in TCI server configuration (`tciserver.json`).
 ///
-/// This is sdroxide *being* a TCI rig so third-party clients (WSJT-X's TCI rig
+/// This is sdrcrow *being* a TCI rig so third-party clients (WSJT-X's TCI rig
 /// type, JTDX, MSHV, skimmers) can drive it. Not to be confused with
-/// [`crate::TciConfig`], which is the client that connects sdroxide to somebody
+/// [`crate::TciConfig`], which is the client that connects sdrcrow to somebody
 /// else's rig.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
@@ -31,7 +31,7 @@ impl Default for TciServerConfig {
             enabled: true,
             bind: "127.0.0.1".into(),
             port: 50001,
-            device_name: "sdroxide".into(),
+            device_name: "sdrcrow".into(),
             allow_tx: true,
             max_clients: 8,
         }

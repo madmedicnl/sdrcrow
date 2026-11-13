@@ -23,7 +23,7 @@ fn isolate_config() -> std::path::PathBuf {
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).expect("scratch config directory");
     // SAFETY: the only test in this binary, and no engine exists yet.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) }
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) }
     dir
 }
 
@@ -140,7 +140,7 @@ fn a_recording_plays_back_and_the_radio_comes_back() {
     std::fs::create_dir_all(&rec).unwrap();
     write_wav(&rec.join(STAMPED), 8000, 3.0);
     // An I/Q capture is listed, marked; something that is not audio is not.
-    std::fs::write(rec.join("SDRoxide_20261006_100005Z_14200000Hz_192000sps_IQ.wav"), b"x")
+    std::fs::write(rec.join("SDRCrow_20261006_100005Z_14200000Hz_192000sps_IQ.wav"), b"x")
         .unwrap();
     std::fs::write(rec.join("notes.txt"), b"x").unwrap();
 
@@ -174,7 +174,7 @@ fn a_recording_plays_back_and_the_radio_comes_back() {
     assert_eq!(
         names,
         vec![
-            ("SDRoxide_20261006_100005Z_14200000Hz_192000sps_IQ.wav".to_string(), true),
+            ("SDRCrow_20261006_100005Z_14200000Hz_192000sps_IQ.wav".to_string(), true),
             (STAMPED.to_string(), false),
         ]
     );
@@ -185,7 +185,7 @@ fn a_recording_plays_back_and_the_radio_comes_back() {
         .unwrap();
     h.cmd_tx
         .send(Command::Playback(PlaybackCommand::Open {
-            name: "SDRoxide_20261006_100005Z_14200000Hz_192000sps_IQ.wav".into(),
+            name: "SDRCrow_20261006_100005Z_14200000Hz_192000sps_IQ.wav".into(),
         }))
         .unwrap();
     w.until(&h.event_rx, "two refusals", |w| w.notices.len() >= 2);
@@ -243,7 +243,7 @@ fn a_recording_plays_back_and_the_radio_comes_back() {
         w.notices.iter().any(|n| n.contains("not a file in the recordings folder"))
     });
     assert!(outside.exists(), "a delete reached outside the recordings folder");
-    for name in [STAMPED, "SDRoxide_20261006_100005Z_14200000Hz_192000sps_IQ.wav"] {
+    for name in [STAMPED, "SDRCrow_20261006_100005Z_14200000Hz_192000sps_IQ.wav"] {
         w.listing = None;
         h.cmd_tx.send(Command::Playback(PlaybackCommand::Delete { name: name.into() })).unwrap();
         w.until(&h.event_rx, "a fresh list after the delete", |w| {

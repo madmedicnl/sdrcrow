@@ -5,7 +5,7 @@
 //! ```
 //!
 //! The file is interleaved little-endian `f32` pairs (CF32) — what
-//! `sdroxide --record-iq` writes and what the `adsb_iq` example generates — at
+//! `sdrcrow --record-iq` writes and what the `adsb_iq` example generates — at
 //! 2.4 Msps unless a rate is given.
 //!
 //! This is the tool that answers the only question that matters about a decoder

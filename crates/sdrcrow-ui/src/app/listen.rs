@@ -433,7 +433,7 @@ fn khz_text(khz: f64) -> String {
 use eframe::egui::{self, RichText};
 use sdrcrow_types::Command;
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::app::swl_log::SwlEditForm;
 use crate::time::now_unix;
 
@@ -441,7 +441,7 @@ use crate::time::now_unix;
 /// geometry like every other one.
 pub(in crate::app) const LISTEN_APP_ID: &str = "swl-listen";
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Open LISTEN. A **window**, not a docked panel — `docs/internal/SWL-HANDOVER.md` §12 for
     /// why: the docked column caps near 280 pt and a map beside station info
     /// wants about 700, so docked it squeezes whatever is below it.

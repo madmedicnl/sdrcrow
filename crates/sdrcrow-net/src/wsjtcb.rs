@@ -172,7 +172,7 @@ fn body_json(spot: &Spot, station: &Station) -> String {
         s.insert("message_text".into(), spot.message.clone().into());
     }
     s.insert("timestamp_utc".into(), iso_utc(spot.when_utc).into());
-    s.insert("source".into(), "sdroxide".into());
+    s.insert("source".into(), "sdrcrow".into());
     s.insert("client_version".into(), env!("CARGO_PKG_VERSION").into());
     serde_json::json!({ "spot": serde_json::Value::Object(s) }).to_string()
 }
@@ -223,7 +223,7 @@ mod tests {
         assert_eq!(s["snr"], -12);
         assert_eq!(s["df"], 1500);
         assert_eq!(s["message_text"], "CQ 1AT106");
-        assert_eq!(s["source"], "sdroxide");
+        assert_eq!(s["source"], "sdrcrow");
         assert!(s["client_version"].as_str().is_some_and(|v| !v.is_empty()));
         // UTC, and readable as such.
         assert!(s["timestamp_utc"].as_str().unwrap().ends_with('Z'));

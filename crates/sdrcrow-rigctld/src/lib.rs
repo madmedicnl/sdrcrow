@@ -1,4 +1,4 @@
-//! The built-in **Hamlib rigctld server**: sdroxide acting as a rig for the
+//! The built-in **Hamlib rigctld server**: sdrcrow acting as a rig for the
 //! wider ham software ecosystem.
 //!
 //! WSJT-X, fldigi, JS8Call, N1MM, Log4OM, GPredict and CQRLOG all reach a

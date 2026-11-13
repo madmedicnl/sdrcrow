@@ -159,7 +159,7 @@ fn a_station_on_the_visible_part_of_a_wide_span_is_skimmed() {
     let root = std::env::temp_dir().join(format!("sdrcrow-skim-window-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     // The skimmers are fed from the same pass as the main receiver, so an engine
     // with nowhere to play audio never reaches them: hence a ring nothing reads.
@@ -203,7 +203,7 @@ fn a_station_on_the_visible_part_of_a_wide_span_is_skimmed() {
                         if let Some(t) = thread {
                             let _ = t.join();
                         }
-                        unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+                        unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
                         return;
                     }
                 }

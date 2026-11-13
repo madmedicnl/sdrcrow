@@ -24,7 +24,7 @@ use crate::i18n::tr;
 use eframe::egui::{self, RichText};
 use sdrcrow_types::{Command, Vdl2Message, Vdl2Payload, Vdl2Station, Vdl2Status};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::app::util::fmt_age;
 use crate::theme;
 use crate::theme::ThemedScroll;
@@ -42,7 +42,7 @@ pub(in crate::app) enum Vdl2Sort {
     Signal,
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn vdl2_panel(
         &mut self,
         ui: &mut egui::Ui,

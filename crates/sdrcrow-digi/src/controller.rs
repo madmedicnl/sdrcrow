@@ -791,7 +791,7 @@ impl DigiController {
             if !self.silent_reported {
                 self.silent_reported = true;
                 tracing::warn!(
-                    "{}: no receive audio is reaching the decoder — a whole {:.1} s period                      arrived empty, so nothing can decode. Check that the radio is on and                      that the audio device sdroxide is listening to is the one it is feeding.                      Said once until audio returns.",
+                    "{}: no receive audio is reaching the decoder — a whole {:.1} s period                      arrived empty, so nothing can decode. Check that the radio is on and                      that the audio device sdrcrow is listening to is the one it is feeding.                      Said once until audio returns.",
                     self.params.mode.label(),
                     self.params.slot_s,
                 );
@@ -807,7 +807,7 @@ impl DigiController {
         // readable enough to find the rest of the session in.
         if self.short_slots == 1 || self.short_slots.is_multiple_of(SHORT_SLOT_REPORT_EVERY) {
             tracing::warn!(
-                "{}: the last receive period arrived {:.1} s short of the {:.1} s it should be —                  the audio device is losing samples, which moves every tone after the gap and                  costs the whole period. Nothing will decode while this lasts. {} such period(s)                  so far; look for the audio glitch warnings above and at the device feeding                  sdroxide (a virtual audio cable is the usual one).",
+                "{}: the last receive period arrived {:.1} s short of the {:.1} s it should be —                  the audio device is losing samples, which moves every tone after the gap and                  costs the whole period. Nothing will decode while this lasts. {} such period(s)                  so far; look for the audio glitch warnings above and at the device feeding                  sdrcrow (a virtual audio cable is the usual one).",
                 self.params.mode.label(),
                 (want - got) as f64 / DECODE_RATE,
                 self.params.slot_s,

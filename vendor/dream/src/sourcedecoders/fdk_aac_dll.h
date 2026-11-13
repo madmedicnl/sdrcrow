@@ -4,17 +4,17 @@
  *  Runtime loader for the FDK-AAC *decoder*, in the shape of Dream's own
  *  opus_dll.h.
  *
- *  This file is not part of upstream Dream. sdroxide adds it because the
+ *  This file is not part of upstream Dream. sdrcrow adds it because the
  *  Fraunhofer FDK AAC licence cannot be combined with GPL-3.0-or-later: its
  *  no-fee clause and its explicit refusal of a patent grant are additional
  *  restrictions the GPL does not permit, which is why Debian ships the library
  *  in non-free. Linking it in would make the built binary undistributable, so
- *  sdroxide ships no Fraunhofer object code at all and looks the library up at
+ *  sdrcrow ships no Fraunhofer object code at all and looks the library up at
  *  run time instead. Present on the host, xHE-AAC decodes; absent, CanDecode
  *  says so and Dream falls back to its null codec exactly as it does for a
  *  missing libopus.
  *
- *  Only the seven decoder entry points are loaded. sdroxide never transmits
+ *  Only the seven decoder entry points are loaded. sdrcrow never transmits
  *  DRM, so the encoder half of fdk_aac_codec.cpp is compiled out.
  *
  *  The declarations themselves come from the real upstream headers under

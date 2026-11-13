@@ -606,13 +606,13 @@ mod tests {
     /// The whole chain against a real capture, when one is on hand: sync, FIC,
     /// the service list, then DAB+ audio through our faad2 — the path this crate
     /// exists for. Ignored, because it needs a multi-hundred-megabyte off-air
-    /// file; point `SDROXIDE_DAB_SAMPLE` at a raw cs16 capture and run with
+    /// file; point `SDRCROW_DAB_SAMPLE` at a raw cs16 capture and run with
     /// `--ignored`.
     #[test]
     #[ignore]
     fn an_off_air_capture_decodes_services_and_audio() {
         let (Ok(path), Ok(rate)) =
-            (std::env::var("SDROXIDE_DAB_SAMPLE"), std::env::var("SDROXIDE_DAB_SAMPLE_RATE"))
+            (std::env::var("SDRCROW_DAB_SAMPLE"), std::env::var("SDRCROW_DAB_SAMPLE_RATE"))
         else {
             return;
         };

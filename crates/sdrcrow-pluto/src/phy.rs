@@ -164,7 +164,7 @@ impl PlutoLimits {
             return None;
         }
         Some(format!(
-            "PlutoSDR: this firmware does not publish {} — sdroxide is assuming the \
+            "PlutoSDR: this firmware does not publish {} — sdrcrow is assuming the \
              standard AD936x figures, which may not match your board",
             self.assumed.join(", ")
         ))
@@ -395,7 +395,7 @@ impl Phy {
     /// 25 MHz / 12 = 2083333.33: its clock-chain solver accepts a rate only if
     /// `rate × 12` clears the ADC's 25 MHz floor, and 2083333 × 12 is four
     /// hertz short. So a stock Pluto refuses the rate it just asked for, and
-    /// every sdroxide sample rate at or below 2.083 Msps — which was all three
+    /// every sdrcrow sample rate at or below 2.083 Msps — which was all three
     /// of the lowest offered, including the default — died here with EINVAL
     /// before a single buffer was opened.
     ///
@@ -718,7 +718,7 @@ impl Phy {
             ),
             (Some(false), _) => "it is in TDD and nothing here drives its state machine, \
                                  because the PlutoSDR settings say FDD. Choose TDD there to have \
-                                 sdroxide drive it"
+                                 sdrcrow drive it"
                 .to_string(),
             (None, _) => "this firmware does not say whether it is in FDD or TDD, so it is left \
                           alone"

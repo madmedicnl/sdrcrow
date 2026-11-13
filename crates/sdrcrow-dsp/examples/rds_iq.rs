@@ -30,7 +30,7 @@ const AUDIO_AMP: f64 = 0.45;
 
 const PI_CODE: u16 = 0xD3C2;
 const PTY: u16 = 10;
-const PS: &[u8; 8] = b"SDROXIDE";
+const PS: &[u8; 8] = b"SDRCROW ";
 const RT: &str = "THE PILOTS - THIRD HARMONIC";
 const PTYN: &[u8; 8] = b"CHARTS  ";
 /// Where the artist and title sit inside `RT`, for the RadioText+ tags.
@@ -149,7 +149,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = std::env::args().collect();
     let Some(path) = args.get(1) else {
         eprintln!("usage: rds_iq <out.iq> [seconds]");
-        eprintln!("then:  sdroxide --file <out.iq> --rate 240000 --freq 100000000 --mode WFM");
+        eprintln!("then:  sdrcrow --file <out.iq> --rate 240000 --freq 100000000 --mode WFM");
         std::process::exit(2);
     };
     let secs: f64 = args.get(2).map_or(20.0, |s| s.parse().unwrap_or(20.0));
@@ -202,6 +202,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("  identity {PI_CODE:04X}");
     println!("  text     {RT}");
     println!();
-    println!("sdroxide --file {path} --rate 240000 --freq 100000000 --mode WFM");
+    println!("sdrcrow --file {path} --rate 240000 --freq 100000000 --mode WFM");
     Ok(())
 }

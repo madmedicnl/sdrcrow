@@ -47,7 +47,7 @@ pub const DDC_BIN_CHOICES: [usize; 5] = [256, 512, 1024, 2048, 4096];
 
 /// Clamp a configured bin count to something `WbDdc::new` accepts: a power of
 /// two, at least a usable channel, at most half the block. A config written by
-/// hand (or by an older sdroxide, where the field deserialises as zero) lands
+/// hand (or by an older sdrcrow, where the field deserialises as zero) lands
 /// on the default rather than a panic.
 pub fn sanitize_ddc_bins(bins: usize) -> usize {
     if bins == 0 {

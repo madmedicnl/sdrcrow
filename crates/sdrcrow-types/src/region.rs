@@ -33,7 +33,7 @@ use serde::{Deserialize, Serialize};
 pub enum Region {
     /// Europe, Africa, the Middle East and northern Asia.
     ///
-    /// The default because it is what every band table in sdroxide held before
+    /// The default because it is what every band table in sdrcrow held before
     /// this setting existed: an installation that never touches it keeps
     /// exactly the band plan it had.
     #[default]

@@ -14,8 +14,8 @@
  * such frames into each 120 ms modem frame.
  */
 
-#ifndef SDROXIDE_RADE_SHIM_H
-#define SDROXIDE_RADE_SHIM_H
+#ifndef SDRCROW_RADE_SHIM_H
+#define SDRCROW_RADE_SHIM_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,4 +50,4 @@ void  sdrx_voc_dec_reset(void *dec);
 }
 #endif
 
-#endif /* SDROXIDE_RADE_SHIM_H */
+#endif /* SDRCROW_RADE_SHIM_H */

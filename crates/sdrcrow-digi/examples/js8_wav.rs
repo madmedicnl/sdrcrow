@@ -1,7 +1,7 @@
 //! JS8 ↔ WAV bridge, for interoperability testing against JS8Call itself.
 //!
 //! This drives the *real* encoder the engine transmits with, so what it writes
-//! is what sdroxide puts on the air. Open the result in JS8Call (or feed it to
+//! is what sdrcrow puts on the air. Open the result in JS8Call (or feed it to
 //! `jt9`) and the message should appear exactly as given.
 //!
 //! ```text

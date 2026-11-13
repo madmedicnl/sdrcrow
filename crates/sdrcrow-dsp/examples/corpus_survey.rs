@@ -4,7 +4,7 @@
 //!
 //!     cargo run --release -p sdrcrow-dsp --example corpus_survey
 //!
-//! `SDROXIDE_CORPUS` overrides the directory. Every decodable family is tried
+//! `SDRCROW_CORPUS` overrides the directory. Every decodable family is tried
 //! with the parameters its name implies, searching the centre both polarities
 //! for the ones that need it. Picture modes are not scored here — they have
 //! their own tests.
@@ -45,7 +45,7 @@ fn score(text: &str, want: &[&str]) -> usize {
 }
 
 fn main() {
-    let root = std::env::var("SDROXIDE_CORPUS")
+    let root = std::env::var("SDRCROW_CORPUS")
         .unwrap_or_else(|_| concat!(env!("CARGO_MANIFEST_DIR"), "/../../samples/fldigi").into());
     let manifest = format!("{root}/manifest.jsonl");
     let Ok(text) = std::fs::read_to_string(&manifest) else {

@@ -703,7 +703,7 @@ fn a_frequency_below_dc_after_the_offset_is_refused() {
     assert!(format!("{err}").contains("below DC"), "the reason should say so, got {err}");
 }
 
-/// Where the operator's dial sits before they tell sdroxide about the LNB:
+/// Where the operator's dial sits before they tell sdrcrow about the LNB:
 /// on the converter's output, which is what the receiver is actually hearing.
 const IF_HZ: f64 = DOWNLINK - 55_420.0 + LNB;
 

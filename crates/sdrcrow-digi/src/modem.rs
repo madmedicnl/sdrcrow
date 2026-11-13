@@ -1,5 +1,5 @@
 //! The mfsk-core adapter: FT8/FT4 decode and encode wrapped behind stable
-//! sdroxide types. **This is the only file that touches raw mfsk-core
+//! sdrcrow types. **This is the only file that touches raw mfsk-core
 //! decode-result fields** — if the crate's field names change, only
 //! `decode_slot` needs updating.
 

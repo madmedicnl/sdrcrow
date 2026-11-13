@@ -289,7 +289,7 @@ pub fn ptt_frame(radio: u8, on: bool) -> Vec<u8> {
 ///
 /// The rig answers `1C 00 <00|01>`, which is the only way to learn about an
 /// over the operator started at the radio: CI-V pushes nothing unasked unless
-/// the transceive setting is on, and sdroxide deliberately does not rely on
+/// the transceive setting is on, and sdrcrow deliberately does not rely on
 /// that being on.
 pub fn read_ptt_frame(radio: u8) -> Vec<u8> {
     frame(radio, 0x1C, &[0x00])
@@ -316,7 +316,7 @@ pub fn read_swr_frame(radio: u8) -> Vec<u8> {
 ///
 /// ALC is the rig telling us how hard its own automatic level control is
 /// working, which is the number that says whether the audio being fed to it is
-/// too hot. Nothing on this side can compute it: the drive level SDRoxide
+/// too hot. Nothing on this side can compute it: the drive level SDRCrow
 /// measures is what it SENDS, and ALC is what the rig does about it.
 pub fn read_alc_frame(radio: u8) -> Vec<u8> {
     frame(radio, 0x15, &[0x13])
@@ -616,7 +616,7 @@ pub const ANTENNAS: [&str; 2] = ["ANT1", "ANT2"];
 ///
 /// A socket past the two this end can name — a four-socket IC-785x left on
 /// ANT3 — answers `None` rather than being rounded onto one of them: it is a
-/// real port sdroxide cannot name, and claiming the radio is on ANT1 would be a
+/// real port sdrcrow cannot name, and claiming the radio is on ANT1 would be a
 /// lie the operator could act on.
 pub fn antenna_name(socket: u8, sockets: usize) -> Option<&'static str> {
     ANTENNAS.get(usize::from(socket)).filter(|_| usize::from(socket) < sockets).copied()
@@ -637,7 +637,7 @@ pub fn antenna_name(socket: u8, sockets: usize) -> Option<&'static str> {
 ///   receiving antenna. (00=OFF, 01=ON)`, and sub-command `00` is the only one
 ///   it has: one aerial socket, and the flag is the whole control.
 ///
-/// This byte used to be pinned at `0` here, on the reasoning that sdroxide did
+/// This byte used to be pinned at `0` here, on the reasoning that sdrcrow did
 /// not offer the receive antenna and so should not touch it. That was the
 /// mistake: `0` is not "leave it alone", it is *off*, and since the socket is
 /// re-asserted on every band change the operator's receive aerial was switched
@@ -694,7 +694,7 @@ pub fn parse_antenna_reply(data: &[u8]) -> Option<AntennaReply> {
 
 /// Hand the rig's *own* RIT, ΔTX (XIT) and split back to neutral.
 ///
-/// sdroxide carries all three on the dial itself (see `AudioCatSource`), so an
+/// sdrcrow carries all three on the dial itself (see `AudioCatSource`), so an
 /// offset the rig is still holding — from a previous session, or from the
 /// operator's own RIT knob — would stack on top of ours where nothing in the
 /// software could see it. Sent once when the port opens; a rig that doesn't
@@ -720,7 +720,7 @@ pub fn clear_offsets_frames(radio: u8) -> Vec<Vec<u8>> {
 
 /// Put the rig's own repeater shift back to simplex (cmd `0x0F` sub `0x10`).
 ///
-/// The transmit shift is sdroxide's, carried on the dial like RIT, XIT and
+/// The transmit shift is sdrcrow's, carried on the dial like RIT, XIT and
 /// split (see [`clear_offsets_frames`] and `RadioState::tx_freq_hz`), so a
 /// duplex setting still standing in the radio would be added to ours at the
 /// key-down and put the over a shift away from where the operator asked for
@@ -1541,7 +1541,7 @@ mod tests {
     }
 
     /// The repeater shift the rig applies on its own has to be off, because
-    /// sdroxide carries the shift on the dial — see [`simplex_frame`]. It is
+    /// sdrcrow carries the shift on the dial — see [`simplex_frame`]. It is
     /// the *duplex* half of command `0x0F`, not the split half beside it in
     /// [`clear_offsets_frames`], and the two must not be confused: `0x0F 0x00`
     /// switches split off and leaves DUP− exactly where it was.

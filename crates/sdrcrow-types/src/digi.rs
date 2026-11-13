@@ -760,7 +760,7 @@ pub enum PacketTermKind {
     Rx,
     /// We sent it.
     Tx,
-    /// sdroxide said it: the link came up, the call was refused, the far end
+    /// sdrcrow said it: the link came up, the call was refused, the far end
     /// gave up. Not traffic, and coloured differently so it cannot be mistaken
     /// for something a BBS printed.
     Note,
@@ -904,7 +904,7 @@ impl NavtexMessage {
 
     /// Whether a ship's receiver is forbidden to reject this class. The three
     /// that cannot be switched off are the ones somebody's life may depend on,
-    /// and sdroxide does not offer to hide them either.
+    /// and sdrcrow does not offer to hide them either.
     #[must_use]
     pub fn is_mandatory(&self) -> bool {
         matches!(self.kind, 'A' | 'B' | 'D')
@@ -918,7 +918,7 @@ impl NavtexMessage {
     /// a clock reading, so this reads the body rather than the header. It is a
     /// convenience for the reader — a warning is nearly always read against
     /// when it was issued, and picking the figure out of a column of positions
-    /// by eye is the tedious part — not a synchronisation source: sdroxide
+    /// by eye is the tedious part — not a synchronisation source: sdrcrow
     /// never sets the system clock from it (issue #212).
     ///
     /// Only a four-digit time that is *marked* as a time counts — followed by
@@ -2412,7 +2412,7 @@ pub struct DigiConfig {
     ///
     /// Placeholders, substituted when the picture is composed:
     /// `{call}` — the operator callsign, uppercased; `{grid}` — the locator;
-    /// `{version}` — the running sdroxide version, without a leading `v`.
+    /// `{version}` — the running sdrcrow version, without a leading `v`.
     /// An unknown `{…}` is left alone rather than swallowed, so a typo shows
     /// up in the preview instead of silently printing nothing.
     #[serde(default = "sstv_default_banner_left")]
@@ -2910,7 +2910,7 @@ pub struct DigiConfig {
     /// `_ssb` is **drive into the modulator**, and what keeps a data signal
     /// clean: the usual adjustment is to bring it down until the rig's ALC is
     /// barely moving, then set the power at the radio. On these backends it is
-    /// the only level sdroxide has — `TxState::drive` reaches the rig's *power*
+    /// the only level sdrcrow has — `TxState::drive` reaches the rig's *power*
     /// register there, not its audio — so this is the knob that stands between
     /// a constant-envelope mode and a splattery signal.
     ///
@@ -3412,7 +3412,7 @@ fn sstv_default_banner_left() -> String {
 /// Default for [`DigiConfig::sstv_banner_right`] — the program and its version,
 /// as the banner has always printed them.
 fn sstv_default_banner_right() -> String {
-    "SDRoxide v{version}".into()
+    "SDRCrow v{version}".into()
 }
 
 /// Default for [`DigiConfig::sstv_banner_fill`] — the historic red.
@@ -3753,7 +3753,7 @@ pub fn fmt_report(db: i16) -> String {
 /// widest region that has it, so a frequency inside any region's allocation
 /// lands on the right name.
 ///
-/// Above 3 cm the answer is the empty string: sdroxide has no 1.2 cm band or
+/// Above 3 cm the answer is the empty string: sdrcrow has no 1.2 cm band or
 /// anything beyond, and naming a 24 GHz contact `3cm` would put a false
 /// statement in a log file. An empty band field is one the importer derives from
 /// the frequency, which is the truthful outcome.
@@ -3881,7 +3881,7 @@ pub(crate) fn adif_field(name: &str, value: &str) -> String {
 /// Windows logging software can refuse a file with bare LF endings.
 pub fn qso_log_to_adif(records: &[QsoRecord]) -> String {
     let mut out = String::from(
-        "ADIF export from sdroxide\r\n<ADIF_VER:5>3.1.8\r\n<PROGRAMID:8>sdroxide\r\n<EOH>\r\n",
+        "ADIF export from sdrcrow\r\n<ADIF_VER:5>3.1.8\r\n<PROGRAMID:8>sdrcrow\r\n<EOH>\r\n",
     );
     for r in records {
         out.push_str(&qso_to_adif_record(r));
@@ -4081,7 +4081,7 @@ fn adif_value(adif: &str, start: usize, len: usize) -> (String, usize) {
 /// (everything before `<EOH>`) are dropped; a trailing record with no `<EOR>`
 /// is still returned, because some exporters omit it.
 ///
-/// Public because ADIF is not only something sdroxide reads into its own log:
+/// Public because ADIF is not only something sdrcrow reads into its own log:
 /// HamQTH's real-time logbook wants a *subset* of the fields, under two names
 /// of its own, so `sdrcrow-net` re-emits a record rather than parsing one. It
 /// goes through [`adif_visit`] so there is one tokenizer — the byte-vs-character
@@ -4148,7 +4148,7 @@ fn adif_visit(adif: &str, mut visit: impl FnMut(&[(String, String)])) {
 /// Parse an ADIF (.adi) document into QSO records. Tolerant of unknown fields
 /// (ignored) and of a missing/short header. Used both for importing external
 /// logs and for ingesting downloaded QSL confirmations. The inverse of
-/// [`qso_log_to_adif`] for the fields sdroxide round-trips.
+/// [`qso_log_to_adif`] for the fields sdrcrow round-trips.
 ///
 /// Records marked `SWL` are left out — see [`adif_to_qso_log_counting_swl`].
 pub fn adif_to_qso_log(adif: &str) -> Vec<QsoRecord> {
@@ -4278,7 +4278,7 @@ fn parse_adif_datetime(date: &str, time: &str) -> i64 {
 /// like the ADIF export, so the file opens correctly on Windows.
 pub fn qso_log_to_text(records: &[QsoRecord]) -> String {
     let mut out = String::from(
-        "sdroxide QSO log\r\nUTC date/time        call       grid  freq(MHz)  mode  sent rcvd\r\n",
+        "sdrcrow QSO log\r\nUTC date/time        call       grid  freq(MHz)  mode  sent rcvd\r\n",
     );
     for r in records {
         let (date, time) = adif_date_time(r.start_utc);
@@ -4399,8 +4399,8 @@ pub fn digi_decode_to_adif_record(d: &Decode, dial_hz: f64, mode: Mode) -> Optio
     if !d.message.trim().is_empty() {
         out.push_str(&adif_field("COMMENT", &d.message));
     }
-    out.push_str(&adif_field("APP_SDROXIDE_SNR", &d.snr_db.to_string()));
-    out.push_str(&adif_field("APP_SDROXIDE_DT", &format!("{:.2}", d.dt)));
+    out.push_str(&adif_field("APP_SDRCROW_SNR", &d.snr_db.to_string()));
+    out.push_str(&adif_field("APP_SDRCROW_DT", &format!("{:.2}", d.dt)));
     out.push_str("<EOR>");
     Some(out)
 }
@@ -4413,8 +4413,8 @@ pub fn digi_decodes_to_adif<'a>(
     mode: Mode,
 ) -> String {
     let mut out = String::from(
-        "ADIF export from sdroxide — received reports (SWL)\r\n\
-         <ADIF_VER:5>3.1.4\r\n<PROGRAMID:8>sdroxide\r\n<EOH>\r\n",
+        "ADIF export from sdrcrow — received reports (SWL)\r\n\
+         <ADIF_VER:5>3.1.4\r\n<PROGRAMID:8>sdrcrow\r\n<EOH>\r\n",
     );
     for record in
         decodes.into_iter().filter_map(|(d, dial_hz)| digi_decode_to_adif_record(d, dial_hz, mode))
@@ -4512,7 +4512,7 @@ mod tests {
         assert_eq!(adif.matches("<EOR>").count(), 1, "only the decode with a sender: {adif}");
         assert!(adif.contains("<SWL:1>Y"), "a logger must not read it as a contact: {adif}");
         assert!(adif.contains("<MODE:3>FT8"), "{adif}");
-        assert!(adif.contains("APP_SDROXIDE_SNR"), "the decode's own figure: {adif}");
+        assert!(adif.contains("APP_SDRCROW_SNR"), "the decode's own figure: {adif}");
         assert!(!adif.contains("RST_SENT"), "an SWL report sends nothing: {adif}");
         assert!(!adif.contains("RST_RCVD"), "and made no contact: {adif}");
     }
@@ -4788,7 +4788,7 @@ mod tests {
         }
     }
 
-    /// Every band sdroxide has gets its own ADIF name, and a contact anywhere
+    /// Every band sdrcrow has gets its own ADIF name, and a contact anywhere
     /// inside it lands on that name. 70 cm through 6 cm used to come out as
     /// "2m", which was the catch-all arm rather than an answer.
     #[test]
@@ -4824,7 +4824,7 @@ mod tests {
         ] {
             assert_eq!(adif_band(hz), band, "{hz} Hz");
         }
-        // Above every band sdroxide knows, the honest answer is none at all
+        // Above every band sdrcrow knows, the honest answer is none at all
         // rather than the nearest name — 1.2 cm and up have no band here.
         assert_eq!(adif_band(24_048_000_000.0), "");
         // And a contact anywhere inside a band gets one name for the whole of
@@ -4887,7 +4887,7 @@ mod tests {
         // The file form is that record with a header in front of it, so the two
         // cannot drift apart.
         let file = qso_log_to_adif(std::slice::from_ref(&rec));
-        assert!(file.starts_with("ADIF export from sdroxide\r\n"), "{file}");
+        assert!(file.starts_with("ADIF export from sdrcrow\r\n"), "{file}");
         assert!(file.contains("<EOH>\r\n"), "{file}");
         assert!(file.contains(&one), "the file must contain the record verbatim");
         assert!(file.ends_with("<EOR>\r\n"), "{file}");
@@ -5183,7 +5183,7 @@ fn default_packet_kiss_port() -> u16 {
 /// Generic on purpose: it goes out under whatever callsign the operator set,
 /// and a greeting naming a station that is not theirs is worse than none.
 fn default_packet_connect_text() -> String {
-    "Connected to sdroxide. No mailbox here — type away.".to_string()
+    "Connected to sdrcrow. No mailbox here — type away.".to_string()
 }
 /// One local fill-in hop and one wide one — the path that reaches almost
 /// anywhere without asking the whole network to repeat you three times.

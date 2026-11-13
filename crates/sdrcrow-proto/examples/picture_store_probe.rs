@@ -1,4 +1,4 @@
-//! Drive a running sdroxide server's picture stores over the WebSocket and
+//! Drive a running sdrcrow server's picture stores over the WebSocket and
 //! report what comes back.
 //!
 //! An end-to-end check of the path a browser tab takes, which no unit test can

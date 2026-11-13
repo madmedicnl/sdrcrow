@@ -15,7 +15,7 @@ use eframe::egui::{self, Color32, RichText};
 
 use sdrcrow_enigma::{Enigma, Plugboard, REFLECTORS, ROTORS, SolveParams, Variant, Wheel};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::i18n::tr;
 
 /// The faceplate's palette. Fixed rather than themed: this is a *machine*, not
@@ -152,7 +152,7 @@ fn face_chip(ui: &mut egui::Ui, label: &str, lit: bool, w: f32) -> egui::Respons
     resp
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn enigma_window(&mut self, ctx: &egui::Context) {
         if !self.enigma.show {
             return;

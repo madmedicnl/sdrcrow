@@ -1,4 +1,4 @@
-//! Native network-cockpit clients for sdroxide: DX-cluster telnet, POTA/SOTA
+//! Native network-cockpit clients for sdrcrow: DX-cluster telnet, POTA/SOTA
 //! and PSK Reporter spot feeds, QRZ/HamQTH callsign lookup, and QSO upload /
 //! QSL-confirmation download (eQSL, QRZ Logbook, HamQTH, Club Log, LoTW).
 //!

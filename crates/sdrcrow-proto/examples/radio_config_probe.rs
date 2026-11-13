@@ -1,4 +1,4 @@
-//! Drive a running sdroxide server's interface configuration over the
+//! Drive a running sdrcrow server's interface configuration over the
 //! WebSocket and report what comes back.
 //!
 //! An end-to-end check of the path a remote client's **Settings → Radio** takes,
@@ -10,7 +10,7 @@
 //! **Not** safe to point at a station in use: it writes the server's
 //! `radio.json`. It puts every value back at the end, but a probe that was
 //! interrupted halfway would leave the change behind. Run it against a server
-//! started with `SDROXIDE_CONFIG_DIR` pointed somewhere scratch.
+//! started with `SDRCROW_CONFIG_DIR` pointed somewhere scratch.
 //!
 //! Usage: cargo run -p sdrcrow-proto --example radio_config_probe -- 127.0.0.1:4950
 

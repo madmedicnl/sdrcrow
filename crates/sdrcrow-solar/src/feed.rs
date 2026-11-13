@@ -168,7 +168,7 @@ fn worker(
     };
     let agent: ureq::Agent = ureq::Agent::config_builder()
         .timeout_global(Some(TIMEOUT))
-        .user_agent(concat!("sdroxide/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("sdrcrow/", env!("CARGO_PKG_VERSION")))
         .build()
         .into();
     let mut cache = Cache::open();
@@ -724,7 +724,7 @@ pub fn band_conditions_cached() -> Option<indices::BandConditions> {
 
     let agent: ureq::Agent = ureq::Agent::config_builder()
         .timeout_global(Some(TIMEOUT))
-        .user_agent(concat!("sdroxide/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("sdrcrow/", env!("CARGO_PKG_VERSION")))
         .build()
         .into();
     match http_get(&agent, url, &cache.validators(url), JSON_LIMIT) {
@@ -786,7 +786,7 @@ pub fn band_activity_cached() -> Option<indices::BandActivityTable> {
 
     let agent: ureq::Agent = ureq::Agent::config_builder()
         .timeout_global(Some(TIMEOUT))
-        .user_agent(concat!("sdroxide/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("sdrcrow/", env!("CARGO_PKG_VERSION")))
         .build()
         .into();
     match http_get(&agent, &url, &cache.validators(&url), JSON_LIMIT) {
@@ -841,7 +841,7 @@ pub fn psk_activity_cached() -> Option<indices::BandActivityTable> {
 
     let agent: ureq::Agent = ureq::Agent::config_builder()
         .timeout_global(Some(TIMEOUT))
-        .user_agent(concat!("sdroxide/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("sdrcrow/", env!("CARGO_PKG_VERSION")))
         .build()
         .into();
     match http_get(&agent, url, &cache.validators(url), JSON_LIMIT) {

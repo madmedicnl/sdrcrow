@@ -313,7 +313,7 @@ mod tests {
     #[test]
     #[ignore]
     fn the_corpus_sample_is_measured_not_claimed() {
-        let path = std::env::var("SDROXIDE_FSQ_SAMPLE").unwrap_or_else(|_| {
+        let path = std::env::var("SDRCROW_FSQ_SAMPLE").unwrap_or_else(|_| {
             concat!(env!("CARGO_MANIFEST_DIR"), "/../../samples/fldigi/FSQ.wav").to_string()
         });
         let mut reader = hound::WavReader::open(&path).expect("the FSQ sample");

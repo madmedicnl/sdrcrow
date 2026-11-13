@@ -13,7 +13,7 @@
 //!
 //! **It lives here, in the engine, and not in the screen.** The name has to
 //! point at the address of the machine that is *heard*, and the screen is not
-//! always on it: `sdroxide --server` on a Pi runs with no UI open at all, and a
+//! always on it: `sdrcrow --server` on a Pi runs with no UI open at all, and a
 //! UI on a laptop driving a remote station would otherwise send the laptop's
 //! address to the provider — the name would resolve to the operator's desk
 //! instead of his aerial. A browser client has no address to keep and never

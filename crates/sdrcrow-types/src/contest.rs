@@ -927,7 +927,7 @@ mod tests {
         q.rst_rcvd = Some(-7);
         q.stx_string = "5".into();
         q.srx_string = "12".into();
-        let out = to_cabrillo(ContestId::Generic, "k1abc", "5", &[q], "sdroxide 1.9.15");
+        let out = to_cabrillo(ContestId::Generic, "k1abc", "5", &[q], "sdrcrow 1.9.15");
         assert!(out.contains("K1ABC -12 5 DL1ABC -7 12"), "signs kept: {out}");
     }
 
@@ -935,8 +935,8 @@ mod tests {
     fn the_export_names_the_program_that_made_it_and_its_category() {
         let mut q = qso("DL1ABC", "20M", "CW", 1_700_000_000);
         q.freq_hz = 14_000_000.0;
-        let out = to_cabrillo(ContestId::CqWw, "k1abc", "14", &[q], "sdroxide 1.9.15");
-        assert!(out.contains("CREATED-BY: sdroxide 1.9.15\n"), "{out}");
+        let out = to_cabrillo(ContestId::CqWw, "k1abc", "14", &[q], "sdrcrow 1.9.15");
+        assert!(out.contains("CREATED-BY: sdrcrow 1.9.15\n"), "{out}");
         assert!(out.contains("CATEGORY-MODE: CW\n"), "one mode is not MIXED: {out}");
     }
 
@@ -948,7 +948,7 @@ mod tests {
         // cannot be a QSO: line — but dropping it in silence loses it.
         let mut lost = qso("K2ABC", "20M", "SSB", 1_700_000_100);
         lost.freq_hz = 0.0;
-        let out = to_cabrillo(ContestId::CqWw, "k1abc", "05", &[good, lost], "sdroxide 1.9.15");
+        let out = to_cabrillo(ContestId::CqWw, "k1abc", "05", &[good, lost], "sdrcrow 1.9.15");
         assert!(out.contains("QSO: 14250 PH "), "{out}");
         assert!(!out.contains("K2ABC"), "the dead row is not exported: {out}");
         assert!(out.contains("# 1 QSO omitted: no frequency recorded"), "{out}");
@@ -962,7 +962,7 @@ mod tests {
         q.rst_rcvd = Some(59);
         q.stx_string = "05".into();
         q.srx_string = "14".into();
-        let out = to_cabrillo(ContestId::CqWw, "k1abc", "05", &[q], "sdroxide 1.9.15");
+        let out = to_cabrillo(ContestId::CqWw, "k1abc", "05", &[q], "sdrcrow 1.9.15");
         assert!(out.starts_with("START-OF-LOG: 3.0\n"));
         assert!(out.contains("CONTEST: CQ-WW-SSB\n"));
         assert!(out.contains("CALLSIGN: K1ABC\n"), "the call is upcased: {out}");

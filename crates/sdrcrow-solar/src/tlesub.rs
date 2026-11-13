@@ -204,7 +204,7 @@ pub fn status_all(subs: &[TleSubscription]) -> Vec<SubStatus> {
 pub(crate) fn agent() -> ureq::Agent {
     ureq::Agent::config_builder()
         .timeout_global(Some(std::time::Duration::from_secs(25)))
-        .user_agent(concat!("sdroxide/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("sdrcrow/", env!("CARGO_PKG_VERSION")))
         .build()
         .into()
 }

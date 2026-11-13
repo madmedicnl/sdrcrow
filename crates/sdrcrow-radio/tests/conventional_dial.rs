@@ -72,7 +72,7 @@ fn caps() -> DeviceCaps {
 /// Point the engine at a scratch config directory.
 ///
 /// The engine loads its `DigiConfig` from the station's store, and
-/// `SDROXIDE_CONFIG_DIR` is process-global — without this the test would read
+/// `SDRCROW_CONFIG_DIR` is process-global — without this the test would read
 /// (and, on a mode change, write) the real station's settings, and an operator
 /// who had switched **KEEP DIAL** on would find SSTV never lands on the calling
 /// frequency and the tests red on their machine alone. Every other radio test
@@ -84,7 +84,7 @@ fn isolate_config() {
             std::env::temp_dir().join(format!("sdrcrow-conventional-dial-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
         std::fs::create_dir_all(&root).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
     });
 }
 

@@ -155,7 +155,7 @@ impl Follower {
             mode,
             notch: self.cfg.notch,
             atten_steps: self.cfg.atten_steps,
-            // The SWR subsystem is left off: sdroxide does not read the board's
+            // The SWR subsystem is left off: sdrcrow does not read the board's
             // ADCs, and enabling a detector nothing looks at only adds a way
             // for the configuration to be refused.
             swr_enable: false,

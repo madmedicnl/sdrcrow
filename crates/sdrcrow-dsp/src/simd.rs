@@ -1,6 +1,6 @@
 //! Runtime CPU dispatch for the loops that run at the front end's rate.
 //!
-//! sdroxide ships one binary per platform, so the compiler may assume no more
+//! sdrcrow ships one binary per platform, so the compiler may assume no more
 //! than the x86-64 baseline: SSE2, whose 128-bit registers a single
 //! [`Complex32`](crate::Complex32) fills half of. Rebuilding the whole program
 //! with `-C target-cpu=native` was measured at **26 % fewer cycles** against an

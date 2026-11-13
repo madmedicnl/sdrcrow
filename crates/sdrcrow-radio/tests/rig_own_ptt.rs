@@ -1,7 +1,7 @@
-//! An over the operator started at the radio, not in sdroxide.
+//! An over the operator started at the radio, not in sdrcrow.
 //!
 //! A transceiver has its own microphone, and pressing the button on it is a
-//! transmission sdroxide never asked for. Two things have to follow from that,
+//! transmission sdrcrow never asked for. Two things have to follow from that,
 //! and they pull in opposite directions.
 //!
 //! It has to be *noticed*: the meter belongs to whatever is on the air, so it
@@ -205,7 +205,7 @@ fn sdrcrow_neither_keys_along_nor_transmits_into_it() {
     // own over is not a route into `tx_begin`.
     assert!(
         t.rig.lock().unwrap().keyed_by_us.is_empty(),
-        "sdroxide transmitted into an over it did not key"
+        "sdrcrow transmitted into an over it did not key"
     );
 
     t.drain();
@@ -216,7 +216,7 @@ fn sdrcrow_neither_keys_along_nor_transmits_into_it() {
         "a refused key-down still reached the transmitter"
     );
 
-    // And it is a refusal, not a lock: the operator lets go, and sdroxide's own
+    // And it is a refusal, not a lock: the operator lets go, and sdrcrow's own
     // PTT works again.
     t.rig_keys(false);
     t.wait(
@@ -231,7 +231,7 @@ fn sdrcrow_neither_keys_along_nor_transmits_into_it() {
     assert_eq!(
         t.rig.lock().unwrap().keyed_by_us.as_slice(),
         &[DIAL],
-        "sdroxide could not transmit after the operator's over ended"
+        "sdrcrow could not transmit after the operator's over ended"
     );
     t.h.cmd_tx.send(Command::SetPtt(false)).unwrap();
     t.shutdown();

@@ -8,7 +8,7 @@
 # needs no group to exist and no re-login. It is the better half of this rule
 # and it is not the whole of it: uaccess grants nothing where there is no seat
 # to be logged in at — WSL2, a headless box reached over ssh, a container, or
-# sdroxide running as a systemd service — and the device stays root-owned and
+# sdrcrow running as a systemd service — and the device stays root-owned and
 # unreachable for reasons nothing on screen explains (issue #350).
 #
 # So a GROUP= comes along with it as a fallback, taking effect for anyone in
@@ -49,15 +49,15 @@
 # anyone using their software USB stack, and shared with other people's
 # home-made keyboards, LED controllers and thermometers. This rule therefore
 # loosens permissions on any such device on the machine — the same trade every
-# distribution's own generic FTDI rules already make, and the reason sdroxide's
+# distribution's own generic FTDI rules already make, and the reason sdrcrow's
 # own device list additionally filters on the product string ("USBRelay…")
 # rather than offering everything that answers to these ids.
-SUBSYSTEM=="hidraw", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="05df", ENV{SDROXIDE_RELAY_PLUGDEV}="1"
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="05df", ENV{SDRCROW_RELAY_PLUGDEV}="1"
 
 # ── CM108/CM119-family sound-card GPIO ───────────────────────────────────────
 #
 # The pins on a cheap USB "rig interface" — DRA boards, the RB-USB RIM, the
-# AIOC, and a great many home-made ones with a wire tacked to pin 13. sdroxide
+# AIOC, and a great many home-made ones with a wire tacked to pin 13. sdrcrow
 # writes an output report to the card's HID interface; the audio it is carrying
 # for the radio is on a different interface and is not disturbed.
 #
@@ -68,26 +68,26 @@ SUBSYSTEM=="hidraw", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="05df", ENV{SDRO
 # in place, the chip is one of those.
 
 # C-Media's own parts: CM108, CM108B, CM119, CM119A, CM108AH.
-SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0d8c", ENV{SDROXIDE_RELAY_PLUGDEV}="1"
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0d8c", ENV{SDRCROW_RELAY_PLUGDEV}="1"
 
 # SSS1621/SSS1623 and relatives, which clone them.
-SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0c76", ATTRS{idProduct}=="1605", ENV{SDROXIDE_RELAY_PLUGDEV}="1"
-SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0c76", ATTRS{idProduct}=="1607", ENV{SDROXIDE_RELAY_PLUGDEV}="1"
-SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0c76", ATTRS{idProduct}=="160b", ENV{SDROXIDE_RELAY_PLUGDEV}="1"
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0c76", ATTRS{idProduct}=="1605", ENV{SDRCROW_RELAY_PLUGDEV}="1"
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0c76", ATTRS{idProduct}=="1607", ENV{SDRCROW_RELAY_PLUGDEV}="1"
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0c76", ATTRS{idProduct}=="160b", ENV{SDRCROW_RELAY_PLUGDEV}="1"
 
 # The AIOC (All-In-One-Cable), which emulates a CM108 in a microcontroller.
-SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="7388", ENV{SDROXIDE_RELAY_PLUGDEV}="1"
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="7388", ENV{SDRCROW_RELAY_PLUGDEV}="1"
 
 # ── GPIO lines ───────────────────────────────────────────────────────────────
 #
 # For a Raspberry Pi header or any other board with a GPIO character device.
 # Best-effort: many distributions ship their own rule giving these to a `gpio`
 # group, and where they do this one simply agrees with it.
-SUBSYSTEM=="gpio", KERNEL=="gpiochip*", ENV{SDROXIDE_RELAY_GPIO}="1"
+SUBSYSTEM=="gpio", KERNEL=="gpiochip*", ENV{SDRCROW_RELAY_GPIO}="1"
 
 # Permissions, applied on their own lines — see the note at the top of this
 # file for why GROUP must not share a line with TAG+="uaccess".
-ENV{SDROXIDE_RELAY_PLUGDEV}=="1", MODE="0660", TAG+="uaccess"
-ENV{SDROXIDE_RELAY_GPIO}=="1", MODE="0660", TAG+="uaccess"
-ENV{SDROXIDE_RELAY_PLUGDEV}=="1", GROUP="plugdev"
-ENV{SDROXIDE_RELAY_GPIO}=="1", GROUP="gpio"
+ENV{SDRCROW_RELAY_PLUGDEV}=="1", MODE="0660", TAG+="uaccess"
+ENV{SDRCROW_RELAY_GPIO}=="1", MODE="0660", TAG+="uaccess"
+ENV{SDRCROW_RELAY_PLUGDEV}=="1", GROUP="plugdev"
+ENV{SDRCROW_RELAY_GPIO}=="1", GROUP="gpio"

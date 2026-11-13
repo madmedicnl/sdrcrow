@@ -24,7 +24,7 @@
 //! `ad9361-phy` is the AD9361/AD9363 transceiver: local oscillators, sample
 //! rate, analog filter bandwidth, gains, AGC mode and port selection.
 //! `cf-ad9361-lpc` is the receive DMA buffer and `cf-ad9361-dds-core-lpc` the
-//! transmit one. sdroxide reads the limits off the device rather than hardcoding
+//! transmit one. sdrcrow reads the limits off the device rather than hardcoding
 //! them, which is the only way to serve both a stock AD9363 (325 MHz–3.8 GHz)
 //! and one unlocked to AD9364 (70 MHz–6 GHz) from the same code.
 //!

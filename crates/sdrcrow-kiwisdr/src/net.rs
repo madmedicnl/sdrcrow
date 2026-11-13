@@ -500,7 +500,7 @@ fn waterfall_thread(host: &str, port: u16, session: u64, shared: Arc<Shared>, in
         }
     };
     send(&mut ws, p::set_auth(""));
-    send(&mut ws, p::set_ident("sdroxide"));
+    send(&mut ws, p::set_ident("sdrcrow"));
 
     let mut configured = false;
     let mut speed = 0u8;

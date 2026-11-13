@@ -132,7 +132,7 @@ pub(in crate::app) struct OnlineClient {
     /// The station's list of every aircraft it kept, for the statistics view.
     pub stats: StatsStore,
     /// What the station answered about the PROGRAMS state, not yet taken by
-    /// [`SdroxideApp::programs_sync_tick`].
+    /// [`SdrcrowApp::programs_sync_tick`].
     pub programs_inbox: Vec<(Option<u16>, String)>,
     /// A request to switch the station's online relay, waiting to be sent.
     switch_wanted: Option<bool>,
@@ -669,7 +669,7 @@ fn get_info(
             let mut req = agent
                 .post(url)
                 .header("content-type", "application/json")
-                .header("x-sdroxide", "1");
+                .header("x-sdrcrow", "1");
             if let Some(c) = cookie {
                 req = req.header("Cookie", c);
             }
@@ -741,7 +741,7 @@ fn send_release(url: String, of: &ThumbOf, peer: Option<&str>) {
     std::thread::spawn(move || {
         let agent = agent();
         let release = |cookie: Option<&str>| {
-            let mut req = agent.delete(&url).header("x-sdroxide", "1");
+            let mut req = agent.delete(&url).header("x-sdrcrow", "1");
             if let Some(c) = cookie {
                 req = req.header("Cookie", c);
             }
@@ -826,7 +826,7 @@ async fn fetch(url: &str, info: bool, post: Option<&str>) -> Option<web_sys::Res
             init.set_method("POST");
             let headers = web_sys::Headers::new().ok()?;
             headers.set("content-type", "application/json").ok()?;
-            headers.set("x-sdroxide", "1").ok()?;
+            headers.set("x-sdrcrow", "1").ok()?;
             init.set_headers(&headers);
             init.set_body(&wasm_bindgen::JsValue::from_str(body));
         }
@@ -881,7 +881,7 @@ fn send_release(url: String, _of: &ThumbOf, _peer: Option<&str>) {
         init.set_method("DELETE");
         init.set_mode(web_sys::RequestMode::SameOrigin);
         let Ok(headers) = web_sys::Headers::new() else { return };
-        let _ = headers.set("x-sdroxide", "1");
+        let _ = headers.set("x-sdrcrow", "1");
         init.set_headers(&headers);
         let _ = js_sys::Reflect::set(&init, &"keepalive".into(), &true.into());
         if let Ok(request) = web_sys::Request::new_with_str_and_init(&url, &init) {
@@ -1340,7 +1340,7 @@ mod tests {
         .unwrap();
         c.poll(&ctx, 1);
         assert!(!c.relay_on(), "what the station says, not what was asked");
-        assert!(c.switch_note.as_deref().is_some_and(|n| n.contains("SDROXIDE_AIRCRAFT_ONLINE")));
+        assert!(c.switch_note.as_deref().is_some_and(|n| n.contains("SDRCROW_AIRCRAFT_ONLINE")));
     }
 
     /// **This test cannot catch a regression of the `peer.is_some()` guard.**

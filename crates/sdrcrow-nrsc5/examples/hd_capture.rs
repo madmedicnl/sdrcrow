@@ -1,11 +1,11 @@
 //! Decode a recorded FM channel through `HdDemod`, off a capture made by
-//! `sdroxide --record-iq` at 4x the FM rate (2,976,750 S/s).
+//! `sdrcrow --record-iq` at 4x the FM rate (2,976,750 S/s).
 //!
 //!     cargo run --release -p sdrcrow-nrsc5 --example hd_capture -- \
 //!         cap.cf32 <capture centre Hz> <channel Hz> [capture rate] [programme]
 //!
 //! The capture rate defaults to 2,976,750 S/s — four times the decoder's own
-//! rate, which is what an `sdroxide --record-iq` file of an FM band usually is.
+//! rate, which is what an `sdrcrow --record-iq` file of an FM band usually is.
 //! Pass 744187.5 for a clip already cut to one channel at the decoder's rate,
 //! and the shift and decimation fall away. Any other rate works: the
 //! decimation stays whole and the decoder is told the rate that produces, so
@@ -13,7 +13,7 @@
 //!
 //! The capture centre is the *front end's* centre, which is not the dial
 //! frequency when the device tunes with an LO offset — `--record-iq` writes
-//! what the device produced. sdroxide's "source ready" line reports the offset
+//! what the device produced. sdrcrow's "source ready" line reports the offset
 //! in force; an RSPdx at 2 Msps offsets by a quarter of the rate, so a station
 //! on a 99.5 MHz dial sits in a capture centred on 100.0 MHz.
 //!
@@ -65,7 +65,7 @@ fn main() {
     let decim = (cap_rate / FM_RATE_HZ).round().max(1.0) as u64;
     // What that whole decimation actually produces, and so the rate the
     // decoder has to be told: only a capture at an exact multiple of the
-    // native rate lands on it by decimating. A 2 Msps one — sdroxide's own
+    // native rate lands on it by decimating. A 2 Msps one — sdrcrow's own
     // default for an RSPdx — decimates by 3 to 666,666.7 S/s, and a decoder
     // told it was getting 744,187.5 never locks on it.
     let chan_rate = cap_rate / decim as f64;
@@ -215,7 +215,7 @@ fn main() {
     );
     // Zero on a healthy decode. A climbing count is a queue drained slower than
     // the decoder fills it — the shape the stereo-pair pacing bug took, and the
-    // assertion the SDROXIDE_HD_SAMPLE test makes.
+    // assertion the SDRCROW_HD_SAMPLE test makes.
     println!("  backlog drops: {}", demod.backlog_drops());
     if let Ok(path) = env::var("HD_OUT") {
         let pcm: Vec<u8> =

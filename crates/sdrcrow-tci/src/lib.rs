@@ -3,16 +3,16 @@
 //! NATIVE ONLY. Pure-Rust WebSocket (tungstenite); this crate must never be a
 //! dependency of any wasm-targeted crate.
 //!
-//! [`TciDevice`] / [`TciRx`] are the **client**: sdroxide as the operator of
+//! [`TciDevice`] / [`TciRx`] are the **client**: sdrcrow as the operator of
 //! somebody else's rig (ExpertSDR3, Thetis). One connection per rig, one
 //! stream per receiver — a SunSDR2DX serves two radios from one WebSocket.
-//! Receive is wideband IQ (sdroxide demodulates); transmit is audio (the rig
+//! Receive is wideband IQ (sdrcrow demodulates); transmit is audio (the rig
 //! modulates the audio we send) and belongs to receiver 0's stream. Reached
 //! only from the root binary; the settings UI talks to it exclusively through
 //! the `RadioController` trait. [`TciHandle`] is the single-receiver
 //! convenience the tests and the live example drive.
 //!
-//! [`server`] is the **server**: sdroxide as the rig, driven by third-party TCI
+//! [`server`] is the **server**: sdrcrow as the rig, driven by third-party TCI
 //! clients (WSJT-X, JTDX, MSHV, skimmers). It is owned by the DSP engine, which
 //! feeds it IQ and RX audio and drains its client requests.
 //!
@@ -46,7 +46,7 @@ pub(crate) const HANDSHAKE_TIMEOUT: Duration = Duration::from_secs(5);
 /// Windows reports the same expiry as `WSAETIMEDOUT`, which tungstenite cannot
 /// tell from a real I/O failure and will not resume from. Resuming an
 /// `Interrupted` handshake is still what makes connecting to a busy ExpertSDR3
-/// reliable, and taking it as fatal is why a freshly started sdroxide so often
+/// reliable, and taking it as fatal is why a freshly started sdrcrow so often
 /// needed a manual "Apply / reconnect" to attach to a rig that was running all
 /// along — but on Windows only the wide timeout keeps that from happening
 /// (see the KiwiSDR client, issue #266, where the same shape broke outright).

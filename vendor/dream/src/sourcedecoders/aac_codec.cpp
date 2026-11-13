@@ -112,7 +112,7 @@ AacCodec::AacCodec() :
             cerr << "Got FAAD2 library" << endl;
     }
 #endif
-#if !defined(USE_FAAC_LIBRARY) && !defined(SDROXIDE_NO_AAC_ENCODER)
+#if !defined(USE_FAAC_LIBRARY) && !defined(SDRCROW_NO_AAC_ENCODER)
     if (hFaacLib == nullptr)
     {
         hFaacLib = CLibraryLoader::Load(FaacLibNames, FaacLibFuncs, FaacCheckCallback);

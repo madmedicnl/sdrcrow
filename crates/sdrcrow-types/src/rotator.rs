@@ -1,6 +1,6 @@
 //! The antenna-rotator client's configuration.
 //!
-//! sdroxide points a motorized antenna by talking *to* a Hamlib `rotctld`
+//! sdrcrow points a motorized antenna by talking *to* a Hamlib `rotctld`
 //! daemon over TCP — the opposite direction from the built-in rigctld
 //! *server*. One text protocol reaches every rotator Hamlib can drive, which
 //! is essentially all of them, without this codebase growing a serial driver
@@ -107,7 +107,7 @@ pub struct RotatorConfig {
     pub protocol: RotatorProtocol,
 }
 
-/// The rotator program sdroxide talks to.
+/// The rotator program sdrcrow talks to.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum RotatorProtocol {
     /// Hamlib `rotctld`, over TCP.

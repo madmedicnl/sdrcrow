@@ -1,4 +1,4 @@
-//! Antenna-rotator client: sdroxide driving a motorised antenna.
+//! Antenna-rotator client: sdrcrow driving a motorised antenna.
 //!
 //! The satellite lock and the manual compass compute azimuth and elevation;
 //! this crate is how those numbers reach a motor. Two kinds of transport:

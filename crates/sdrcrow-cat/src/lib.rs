@@ -30,7 +30,7 @@ use sdrcrow_types::{
 };
 use tracing::{info, warn};
 
-/// How long after sdroxide keys or unkeys the rig's own transmit state is
+/// How long after sdrcrow keys or unkeys the rig's own transmit state is
 /// ignored. Covers a read that was already in flight across the edge, and the
 /// rig's own turnaround, without being long enough to miss a real over.
 const PTT_SETTLE: Duration = Duration::from_millis(600);
@@ -178,7 +178,7 @@ pub enum CatUpdate {
     Swr(f32),
     /// TX ALC reading, 0.0..=1.0 of the rig's own meter. Routed alongside
     /// [`CatUpdate::Swr`]. Distinct from the engine's own drive measurement,
-    /// which is what SDRoxide SENDS rather than what the rig does about it.
+    /// which is what SDRCrow SENDS rather than what the rig does about it.
     Alc(f32),
     /// TX power-output reading as a `0.0..=1.0` fraction of the rig's full
     /// scale (routed to the telemetry channel, like [`CatUpdate::Swr`]).
@@ -220,7 +220,7 @@ pub enum CatUpdate {
     /// into the receive path.
     ///
     /// Only ever the radio reporting itself: read when the port opens and
-    /// again after anything the radio recalls per band, and adopted. sdroxide
+    /// again after anything the radio recalls per band, and adopted. sdrcrow
     /// writes it exactly when the operator clicks, because writing a
     /// receive-only input nobody asked about takes an aerial out of use with
     /// nothing on screen to say so.
@@ -228,7 +228,7 @@ pub enum CatUpdate {
     /// The rig is transmitting under its *own* control — a hand on the mic
     /// button, a foot switch, its VOX, its keyer. `true` is keyed.
     ///
-    /// Only ever an over sdroxide did not ask for: an over we keyed is one the
+    /// Only ever an over sdrcrow did not ask for: an over we keyed is one the
     /// engine already knows about, and reporting it back would be an echo. See
     /// the suppression around `ptt_ours` in the serial thread.
     Ptt(bool),
@@ -323,7 +323,7 @@ trait Protocol: Send {
         false
     }
     /// Frames that make the rig work on `vfo`, so its own A/B agrees with
-    /// sdroxide's. Empty for a family with no such command.
+    /// sdrcrow's. Empty for a family with no such command.
     fn select_vfo(&self, _vfo: Vfo) -> Vec<Vec<u8>> {
         Vec::new()
     }
@@ -369,11 +369,11 @@ trait Protocol: Send {
     fn rx_telemetry_requests(&self) -> Vec<Vec<u8>> {
         Vec::new()
     }
-    /// Frames asking whether the rig is transmitting, polled while sdroxide is
+    /// Frames asking whether the rig is transmitting, polled while sdrcrow is
     /// *not* the one keying it.
     ///
     /// This is how an over the operator started at the radio — mic button, foot
-    /// switch, VOX, the rig's own keyer — becomes something sdroxide knows
+    /// switch, VOX, the rig's own keyer — becomes something sdrcrow knows
     /// about, so the meter can show the SWR of it and nothing here tries to key
     /// on top of it. Empty for families with no such read, which simply never
     /// learn about an over they were not asked for.
@@ -405,7 +405,7 @@ trait Protocol: Send {
     }
 
     /// Frames that switch the rig's *own* RIT, XIT and split off, sent once
-    /// when the port opens. sdroxide carries all three on the dial (the rig's
+    /// when the port opens. sdrcrow carries all three on the dial (the rig's
     /// dial is the only frequency control a CAT rig gives us), so anything the
     /// radio is still holding would add to ours unseen. Empty for families with
     /// no such command.
@@ -421,7 +421,7 @@ trait Protocol: Send {
     /// they are put, but a radio with band stacking registers restores the
     /// duplex setting the band was last left on as soon as the dial crosses
     /// into it. On an IC-9700 that means 70 cm and 23 cm come up on DUP−, and
-    /// an operator who wanted simplex had no way to say so — sdroxide carries
+    /// an operator who wanted simplex had no way to say so — sdrcrow carries
     /// the shift on the dial itself, so the radio's own would be added to it
     /// (issue #192). Empty for families with no such command.
     fn clear_duplex(&self) -> Vec<Vec<u8>> {
@@ -549,7 +549,7 @@ trait Protocol: Send {
     }
 
     /// The antenna sockets this family can switch the *receiver* between, named
-    /// as the rest of sdroxide names ports. Empty — the default — for the
+    /// as the rest of sdrcrow names ports. Empty — the default — for the
     /// families with no such command, which is all of them but ELAD.
     ///
     /// Receive only, and deliberately: the one rig here with two sockets
@@ -1011,7 +1011,7 @@ impl Protocol for Civ {
     }
 
     fn split_on(&mut self) -> Vec<Vec<u8>> {
-        // Split alone: which VFO the rig receives on is sdroxide's A/B, sent by
+        // Split alone: which VFO the rig receives on is sdrcrow's A/B, sent by
         // `select_vfo` (a satellite lock selects VFO A before it gets here).
         vec![civ::split_on_frame(self.radio)]
     }
@@ -1365,7 +1365,7 @@ impl Protocol for Civ {
                 // implement answers this way — so it is only noted here, for a
                 // caller that knows it just sent something that mattered.
                 // Transceiver status (0x1C): sub-command 0x00 is the PTT
-                // line. Asked for only while sdroxide is not keying, so an
+                // line. Asked for only while sdrcrow is not keying, so an
                 // answer of "transmitting" means the operator is on the mic.
                 0x1C => {
                     if let Some(on) = civ::parse_ptt_reply(&reply.data) {
@@ -1501,7 +1501,7 @@ fn make_protocol(cfg: &CatConfig) -> Box<dyn Protocol> {
         CatFamily::QrpLabs => Box::new(qrplabs::QrpLabs::new(cfg.format == SoundFormat::Iq)),
         // The one family that commands nothing but the oscillator and the
         // transmit relay: everything else about an RS-HFIQ is I/Q, and so
-        // sdroxide's.
+        // sdrcrow's.
         CatFamily::RsHfiq => Box::new(rshfiq::RsHfiq::new()),
         // The one family whose audio is *in* the byte stream: the serial
         // thread routes bytes to the profile's own demultiplexer rather than
@@ -1533,7 +1533,7 @@ enum CatCmd {
     SplitOn,
     /// Switch split off.
     SplitOff,
-    /// Make the rig work on this VFO (sdroxide's A/B button).
+    /// Make the rig work on this VFO (sdrcrow's A/B button).
     SelectVfo(Vfo),
     /// Set VFO B's mode.
     ModeVfoB(Mode),
@@ -1756,7 +1756,7 @@ impl CatHandle {
     }
     /// Set the rig's own receive filter to the passband the operator chose,
     /// as audio-band edges in Hz. Silently ignored on a family — or a model —
-    /// whose filter sdroxide cannot address.
+    /// whose filter sdrcrow cannot address.
     pub fn set_filter(&self, mode: Mode, lo_hz: f32, hi_hz: f32) {
         if !self.commands_filter {
             return;
@@ -1921,7 +1921,7 @@ impl CatHandle {
     ///
     /// Dropping the handle only *asks* the thread to stop, and it answers in its
     /// own time — while it does, it still holds the serial port, which is
-    /// exclusive on every platform sdroxide runs on. A runtime interface switch
+    /// exclusive on every platform sdrcrow runs on. A runtime interface switch
     /// builds the replacement before the old source is dropped, so the new open
     /// hit a port the old thread had not closed yet and failed (issue #15). The
     /// wait is bounded: a thread wedged in a driver call is left to finish on
@@ -2373,7 +2373,7 @@ impl Exchange {
 /// Three seconds because of what the slowest ordinary call costs: flrig's
 /// `rig.set_ptt` holds its server for up to a second waiting for the radio to
 /// confirm the change, that server is one thread shared by every program
-/// pointed at it, and an operator running sdroxide beside fldigi can have two
+/// pointed at it, and an operator running sdrcrow beside fldigi can have two
 /// of those queued ahead of the answer being waited for here. Reconnecting
 /// through a daemon that was merely busy would cost more than the wait does.
 const REPLY_TIMEOUT: Duration = Duration::from_secs(3);
@@ -2618,7 +2618,7 @@ fn write_power(
 /// describes anything the rig is on, and the level the operator chose has to be
 /// written again rather than deduped away.
 ///
-/// It is the I/Q sound format where that bites: there sdroxide demodulates the
+/// It is the I/Q sound format where that bites: there sdrcrow demodulates the
 /// rig's quadrature stream itself, so the app's mode is nobody's business but
 /// ours until the transmitter comes up, and the mode is asserted *at key-down*
 /// (see the engine's `sync_tx_state`). Every over therefore moved the rig to
@@ -2789,14 +2789,14 @@ fn open_link(cfg: &CatConfig) -> std::io::Result<Box<dyn Link>> {
         .open()
         .map_err(std::io::Error::other)?;
     let port: Box<dyn Link> = Box::new(port);
-    Ok(match std::env::var_os("SDROXIDE_CAT_LOG").filter(|p| !p.is_empty()) {
+    Ok(match std::env::var_os("SDRCROW_CAT_LOG").filter(|p| !p.is_empty()) {
         Some(path) => FrameLog::wrap(port, std::path::Path::new(&path), &link_label(cfg)),
         None => port,
     })
 }
 
 /// Every byte written to and read from a serial CAT link, with the time,
-/// appended to the file `SDROXIDE_CAT_LOG` names. A diagnostic for checking
+/// appended to the file `SDRCROW_CAT_LOG` names. A diagnostic for checking
 /// what a radio actually answers; off unless the variable is set.
 struct FrameLog {
     inner: Box<dyn Link>,
@@ -2906,7 +2906,7 @@ fn apply_line(port: &mut dyn Link, forced: LineState, rts: bool) {
     if rts { port.set_rts(level) } else { port.set_dtr(level) }
 }
 
-/// What mode to command the rig into for a given app mode. Everything sdroxide
+/// What mode to command the rig into for a given app mode. Everything sdrcrow
 /// modulates through the rig's sound card uses the separate `digi_mode`
 /// setting; every other mode obeys `mode_control` (CAT = mirror the selected
 /// mode to the rig; Radio = don't touch it).
@@ -3395,7 +3395,7 @@ fn serial_thread(
         // with no such read stays for good.
         let mut emit_rig_tx: Option<bool> = None;
         let mut last_tx_reply = Instant::now();
-        // When sdroxide last keyed or unkeyed. A read already on the wire when
+        // When sdrcrow last keyed or unkeyed. A read already on the wire when
         // that happened comes back describing the other side of the edge, so
         // answers are ignored for a moment either side of one — otherwise every
         // unkey ends with one frame's worth of "the operator is on the mic".
@@ -5157,7 +5157,7 @@ mod tests {
             }
             // A family whose whole poll is the dial has nothing to split off:
             // an RS-HFIQ has no mode command at all, because it has no modes —
-            // what comes off it is I/Q and the mode is sdroxide's (issue #383).
+            // what comes off it is I/Q and the mode is sdrcrow's (issue #383).
             if full.len() == 1 {
                 assert_eq!(dial, full, "{f:?}");
                 continue;

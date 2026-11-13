@@ -306,7 +306,7 @@ fn mode_digit(m: Mode) -> char {
         // position for it and its AM one is the closest thing.
         Mode::Am | Mode::Sam | Mode::Cquam | Mode::Dsb | Mode::Isb | Mode::Drm | Mode::Acars => '5',
         // No (tr)uSDX is a general-coverage FM set, but it has the position and
-        // the firmware answers it, so the modes sdroxide maps to FM go there.
+        // the firmware answers it, so the modes sdrcrow maps to FM go there.
         Mode::Nfm
         | Mode::Wfm
         | Mode::Rifp
@@ -519,7 +519,7 @@ impl Protocol for TrUsdx {
         out
     }
 
-    /// Clear the clarifier and switch RIT/XIT off. sdroxide carries RIT on the
+    /// Clear the clarifier and switch RIT/XIT off. sdrcrow carries RIT on the
     /// dial — the radio's dial is the only frequency control a CAT rig gives us
     /// — so an offset the radio is still holding would add to ours unseen.
     /// `RC;` clears the offset; the `RT0;`/`XT0;` that would switch it off are

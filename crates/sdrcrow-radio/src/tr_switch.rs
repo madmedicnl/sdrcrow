@@ -23,7 +23,7 @@
 //! * [`TrSwitch::abort`] when a key-down was refused *after* the contacts were
 //!   thrown. No RF appeared, so there is nothing to protect on the way out and
 //!   the hold would only delay the receiver coming back.
-//! * [`TrSwitch::publish`] every tick, for the overs sdroxide does not drive:
+//! * [`TrSwitch::publish`] every tick, for the overs sdrcrow does not drive:
 //!   a transceiver keyed at its own microphone, or a rig sending CW from its
 //!   own keyer.
 //! * [`TrSwitch::set_tx_band`] whenever its transmit dial changes band, and
@@ -218,7 +218,7 @@ impl TrSwitch {
     /// Reconcile `radio`'s bit with what it is actually doing. Called every
     /// engine tick, so it is one atomic in the common case.
     ///
-    /// This is the path for the overs sdroxide does not drive and cannot lead:
+    /// This is the path for the overs sdrcrow does not drive and cannot lead:
     /// a transceiver keyed at its own microphone, or a rig sending CW from its
     /// own keyer. The relay follows as soon as the engine notices, which is the
     /// best software can do — see `sdrcrow_types::SenseConfig` for the wire

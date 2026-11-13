@@ -6,7 +6,7 @@
 //! that an edit reaches the store as an edit: the same channel, same id, new
 //! contents, and the passband still the one the mode needs.
 //!
-//! One test function on purpose: `SDROXIDE_CONFIG_DIR` is process-global, and
+//! One test function on purpose: `SDRCROW_CONFIG_DIR` is process-global, and
 //! this one writes a real `memories.json` under it.
 
 use std::sync::{Arc, Mutex};
@@ -92,7 +92,7 @@ fn an_edit_rewrites_the_channel_it_names() {
     let root = std::env::temp_dir().join(format!("sdrcrow-memory-edit-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &root) };
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &root) };
 
     let center = Arc::new(Mutex::new(STORED_HZ));
     let mut h = start_engine(
@@ -212,6 +212,6 @@ fn an_edit_rewrites_the_channel_it_names() {
     assert_eq!(saved[0].freq_hz, EDITED_HZ);
     assert_eq!(saved[0].mode, Mode::Cw);
 
-    unsafe { std::env::remove_var("SDROXIDE_CONFIG_DIR") };
+    unsafe { std::env::remove_var("SDRCROW_CONFIG_DIR") };
     let _ = std::fs::remove_dir_all(&root);
 }

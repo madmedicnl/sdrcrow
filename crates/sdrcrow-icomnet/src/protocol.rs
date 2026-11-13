@@ -931,7 +931,7 @@ pub const UNKNOWN_MODEL: Model = Model {
 ///
 /// Every Icom that speaks this protocol belongs here, because the alternative
 /// is not a smaller table but an operator being sent to the radio's own menus
-/// for something sdroxide could have written for them. What keeps a model out
+/// for something sdrcrow could have written for them. What keeps a model out
 /// is only ever a number nobody has read.
 pub const MODELS: &[Model] = &[
     Model {
@@ -1137,7 +1137,7 @@ pub fn model_for(civ_address: u8) -> Model {
 /// radios, and so is the network radio name the capability block carries. So
 /// the name is consulted — a rig moved off its factory address would otherwise
 /// fall through to [`UNKNOWN_MODEL`] and be told to set its own menu items by
-/// hand, in the one case where sdroxide knows perfectly well which radio it is
+/// hand, in the one case where sdrcrow knows perfectly well which radio it is
 /// talking to — but only where it does not contradict a known address.
 ///
 /// A name matching one model while the address is another model's factory
@@ -1213,11 +1213,11 @@ mod tests {
 
     #[test]
     fn login_puts_credentials_where_the_radio_looks() {
-        let p = login("bob", "secret", "sdroxide", 3, 0xabcd, 1, 2);
+        let p = login("bob", "secret", "sdrcrow", 3, 0xabcd, 1, 2);
         assert_eq!(p.len(), LOGIN_SIZE);
         assert_eq!(&p[0x40..0x43], &passcode("bob")[..3]);
         assert_eq!(&p[0x50..0x56], &passcode("secret")[..6]);
-        assert_eq!(&p[0x60..0x68], b"sdroxide");
+        assert_eq!(&p[0x60..0x68], b"sdrcrow");
         assert_eq!(u32_be_at(&p, 0x10), (LOGIN_SIZE - HEADER) as u32);
         assert_eq!(u16_be_at(&p, 0x16), 3);
         assert_eq!(u16_at(&p, 0x1a), 0xabcd);
@@ -1530,7 +1530,7 @@ mod tests {
 
     #[test]
     fn the_ic7610_sweeps_the_ic7760s_shape_on_numbering_of_its_own() {
-        // Issue #190: the model an operator was told sdroxide did not know.
+        // Issue #190: the model an operator was told sdrcrow did not know.
         let r = model_for(0x98);
         assert_eq!(r.name, "IC-7610");
         // 689 points on 0 ~ 200, like the IC-7760 and unlike everything else

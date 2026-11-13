@@ -32,9 +32,9 @@ fn isolated_config() {
         // SAFETY: first thing every test here does, before any thread of ours
         // reads the environment.
         unsafe {
-            std::env::set_var("SDROXIDE_CONFIG_DIR", &dir);
+            std::env::set_var("SDRCROW_CONFIG_DIR", &dir);
             // Off unless the operator says so; these tests are the operator.
-            std::env::set_var("SDROXIDE_AIRCRAFT_HISTORY", "1");
+            std::env::set_var("SDRCROW_AIRCRAFT_HISTORY", "1");
         }
     });
 }
@@ -157,7 +157,7 @@ async fn what_a_radio_reports_is_served_on_the_list_and_per_aircraft() {
     assert_eq!(j["aircraft"][0]["callsign"], "KLM1234");
     assert_eq!(j["aircraft"][0]["points"], 1);
 
-    for path in ["/aircraft-history/4840d6", "/sdroxide/aircraft-history/4840D6"] {
+    for path in ["/aircraft-history/4840d6", "/sdrcrow/aircraft-history/4840D6"] {
         let one = get(PORT_OPEN, path, None).await;
         assert!(one.starts_with("HTTP/1.1 200"), "{path}: {one}");
         let j = body(&one);
@@ -179,7 +179,7 @@ async fn a_bad_address_is_refused_with_400() {
     for path in [
         "/aircraft-history/zz",
         "/aircraft-history/48400",
-        "/sdroxide/aircraft-history/not-an-address",
+        "/sdrcrow/aircraft-history/not-an-address",
     ] {
         let answer = get(PORT_BAD, path, None).await;
         assert!(answer.starts_with("HTTP/1.1 400"), "{path}: {answer}");
@@ -224,7 +224,7 @@ async fn the_fleet_is_exported_as_csv_or_json_without_a_position() {
     assert!(csv.contains("icao,callsign,registration,"), "{csv}");
     assert!(csv.contains("4840D6,KLM1234,"), "{csv}");
 
-    for path in ["/aircraft-export?format=json", "/sdroxide/aircraft-export?format=JSON"] {
+    for path in ["/aircraft-export?format=json", "/sdrcrow/aircraft-export?format=JSON"] {
         let json = get(PORT_EXPORT, path, None).await;
         assert!(json.starts_with("HTTP/1.1 200"), "{path}: {json}");
         assert!(json.to_ascii_lowercase().contains("application/json"), "{json}");

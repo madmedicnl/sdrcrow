@@ -189,7 +189,7 @@ fn download(src: &Source) -> Result<Vec<PublicSdrEntry>, String> {
     let agent: ureq::Agent = ureq::Agent::config_builder()
         .timeout_connect(Some(Duration::from_secs(6)))
         .timeout_global(Some(TIMEOUT))
-        .user_agent(concat!("sdroxide/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("sdrcrow/", env!("CARGO_PKG_VERSION")))
         .build()
         .into();
 

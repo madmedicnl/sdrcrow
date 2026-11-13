@@ -22,7 +22,7 @@ use nusb::transfer::{ControlIn, ControlOut, ControlType, Recipient};
 
 use crate::error::{Error, Result};
 
-/// The firmware image shipped with sdroxide. See `firmware/PROVENANCE.md`.
+/// The firmware image shipped with sdrcrow. See `firmware/PROVENANCE.md`.
 pub const BUNDLED: &[u8] = include_bytes!("../firmware/SDDC_FX3.img");
 
 /// The bootloader's one vendor request: read/write internal memory.

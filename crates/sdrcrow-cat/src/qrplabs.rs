@@ -373,7 +373,7 @@ impl Protocol for QrpLabs {
             // *and* one every 1.5 seconds regardless. We poll, and a previous
             // program may well have left it on.
             b"AI0;".to_vec(),
-            // Clear the clarifier, then switch RIT off. sdroxide carries RIT on
+            // Clear the clarifier, then switch RIT off. sdrcrow carries RIT on
             // the dial — the radio's dial is the only frequency control a CAT
             // rig gives us — so an offset the radio is still holding would add
             // to ours unseen.

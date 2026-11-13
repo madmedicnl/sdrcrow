@@ -273,7 +273,7 @@ impl Flrig {
         }
         body.push_str("</params></methodCall>");
         format!(
-            "POST /RPC2 HTTP/1.1\r\nHost: {}\r\nUser-Agent: sdroxide\r\n\
+            "POST /RPC2 HTTP/1.1\r\nHost: {}\r\nUser-Agent: sdrcrow\r\n\
              Content-Type: text/xml\r\nContent-Length: {}\r\n\r\n{}",
             self.host,
             body.len(),
@@ -628,7 +628,7 @@ fn candidates(m: Mode) -> &'static [&'static str] {
 /// Deliberately not the inverse of [`candidates`] over its whole range, on the
 /// principle every profile here follows: a rig position that would be
 /// commanded back as something *else* yields `None`, or the two sides spend
-/// the session correcting each other. `RTTY`/`FSK` because sdroxide's RTTY is
+/// the session correcting each other. `RTTY`/`FSK` because sdrcrow's RTTY is
 /// its own modem in a data sideband; `AMS` because synchronous AM is this
 /// side's own detector on the rig's plain AM; the FM-data positions because
 /// two app modes (RIFP, packet) command them and neither can claim the read.
@@ -1196,7 +1196,7 @@ mod tests {
     #[test]
     fn only_the_positions_that_round_trip_are_followed() {
         let mut f = flrig();
-        // RTTY: sdroxide's is its own modem in a data sideband, and would be
+        // RTTY: sdrcrow's is its own modem in a data sideband, and would be
         // commanded back as a data position — so it is not followed.
         ask(&mut f, "rig.get_mode");
         assert!(respond(&mut f, &ok("<string>RTTY</string>")).is_empty());

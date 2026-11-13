@@ -18,7 +18,7 @@
 //! <https://github.com/rsadsb/dump1090_rs>:
 //!
 //! ```text
-//! SDROXIDE_ADSB_IQ=/path/to/dump1090_rs/test_iq \
+//! SDRCROW_ADSB_IQ=/path/to/dump1090_rs/test_iq \
 //!   cargo test -p sdrcrow-adsb --test reference_corpus -- --nocapture
 //! ```
 //!
@@ -68,7 +68,7 @@ const CORPUS: [(&str, &[&str]); 3] = [
 ];
 
 fn corpus_dir() -> Option<PathBuf> {
-    let d = PathBuf::from(std::env::var("SDROXIDE_ADSB_IQ").ok()?);
+    let d = PathBuf::from(std::env::var("SDRCROW_ADSB_IQ").ok()?);
     d.is_dir().then_some(d)
 }
 
@@ -108,7 +108,7 @@ fn decode(iq: &[Complex32]) -> BTreeSet<String> {
 #[test]
 fn the_reference_recordings_decode_to_what_the_reference_says() {
     let Some(dir) = corpus_dir() else {
-        eprintln!("SDROXIDE_ADSB_IQ is not set to a directory of captures; skipping");
+        eprintln!("SDRCROW_ADSB_IQ is not set to a directory of captures; skipping");
         return;
     };
     let (mut want_total, mut common_total) = (0usize, 0usize);

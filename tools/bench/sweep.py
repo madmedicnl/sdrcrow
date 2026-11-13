@@ -30,7 +30,7 @@ import xmlrpc.client
 import numpy as np
 
 HOME = os.path.expanduser("~")
-ROOT = os.path.join(HOME, "sdroxide")
+ROOT = os.path.join(HOME, "sdrcrow")
 RSPCAP = os.path.join(ROOT, "tools", "rsp1-capture", "target", "release", "rspcap")
 DECODER = [os.path.join(ROOT, "target", "release", "examples", "decode_file")]
 OUT = os.path.join(HOME, "Downloads", "sounds", "our-captures", "fldigi")

@@ -1246,7 +1246,7 @@ mod tests {
     #[test]
     #[ignore]
     fn the_corpus_sitorb_sample_decodes() {
-        let path = std::env::var("SDROXIDE_SITOR_SAMPLE").unwrap_or_else(|_| {
+        let path = std::env::var("SDRCROW_SITOR_SAMPLE").unwrap_or_else(|_| {
             concat!(env!("CARGO_MANIFEST_DIR"), "/../../samples/fldigi/SITORB.wav").to_string()
         });
         let mut reader = hound::WavReader::open(&path).expect("open");

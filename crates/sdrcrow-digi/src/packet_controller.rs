@@ -803,7 +803,7 @@ impl PacketController {
         self.term_line(PacketTermKind::Rx, decode_cp1252(&bytes));
     }
 
-    /// sdroxide's own voice in the transcript: the link came up, the call was
+    /// sdrcrow's own voice in the transcript: the link came up, the call was
     /// refused, the far end gave up.
     fn term_note(&mut self, text: String) {
         self.term_line(PacketTermKind::Note, text);
@@ -1441,7 +1441,7 @@ mod tests {
     #[test]
     fn a_station_with_no_callsign_never_beacons() {
         let cfg = DigiConfig {
-            packet_beacon_text: "sdroxide test".into(),
+            packet_beacon_text: "sdrcrow test".into(),
             packet_beacon_minutes: 1,
             packet_mycall: String::new(),
             ..Default::default()
@@ -1455,7 +1455,7 @@ mod tests {
     #[test]
     fn a_beacon_carries_the_operators_call_and_text() {
         let cfg = DigiConfig {
-            packet_beacon_text: "sdroxide test".into(),
+            packet_beacon_text: "sdrcrow test".into(),
             packet_beacon_minutes: 1,
             packet_mycall: "OE3JJS-10".into(),
             packet_persist: 255,
@@ -1475,7 +1475,7 @@ mod tests {
         assert_eq!(p.src().call(), "OE3JJS-10");
         assert_eq!(p.dst().call(), "BEACON");
         match p.packet_type() {
-            PacketType::Ui(ui) => assert_eq!(ui.payload, b"sdroxide test"),
+            PacketType::Ui(ui) => assert_eq!(ui.payload, b"sdrcrow test"),
             other => panic!("a beacon must be a UI frame, got {other:?}"),
         }
     }

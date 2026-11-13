@@ -77,7 +77,7 @@ pub struct AudioCatSource {
     /// When set, `tx_begin` skips the frequency write (VFO A stays on the
     /// downlink; the rig transmits on VFO B because split is on).
     sat_split_on: bool,
-    /// Which of its own VFOs the rig was last told to receive on (sdroxide's A/B).
+    /// Which of its own VFOs the rig was last told to receive on (sdrcrow's A/B).
     /// The transmit frequency of a split goes to the other one.
     rig_vfo: sdrcrow_types::Vfo,
     /// Top of the `27 00` amplitude scale on the rig the model list names —
@@ -92,7 +92,7 @@ pub struct AudioCatSource {
     /// Whether the rig has ever answered its control port, and so whether its
     /// dial is something this end can move at all. Seeded from the startup
     /// query and latched on by the first thing the rig says afterwards, so a
-    /// radio switched on after sdroxide is picked up rather than left out for
+    /// radio switched on after sdrcrow is picked up rather than left out for
     /// the session. See [`IqSource::center_is_dial`].
     dial_reachable: bool,
     label: String,
@@ -436,7 +436,7 @@ impl AudioCatSource {
     /// kills it (see `trusdx::TrUsdx::poll_requests`). So the dial below is
     /// where the band starts rather than where the radio is, and the first
     /// tune from here is what puts the two in step. The settings note says as
-    /// much: in this mode the radio is driven from sdroxide, not followed.
+    /// much: in this mode the radio is driven from sdrcrow, not followed.
     fn open_streamed(cfg: CatConfig) -> anyhow::Result<Self> {
         let cat = sdrcrow_cat::spawn(cfg.clone());
         let signal_max_age = sdrcrow_cat::signal_max_age(&cfg);
@@ -569,7 +569,7 @@ impl AudioCatSource {
             SoundFormat::Iq => "Try a lower I/Q sample rate under Settings → Radio.",
             SoundFormat::DemodAudio => {
                 "This card is fixed at 48 kHz, so there is no rate to lower — look instead at \
-                 what else on this machine is keeping sdroxide off the CPU."
+                 what else on this machine is keeping sdrcrow off the CPU."
             }
         };
         // The window is measured, not assumed: reporting a fixed 5 s after a
@@ -673,7 +673,7 @@ const QUAD_DEAD_RATIO: f32 = 1e-4;
 /// Watches the two capture channels for the one arrangement that cannot work:
 /// a stream declared as I/Q whose channels are not in quadrature.
 ///
-/// The commonest way to get one is to point sdroxide at a radio's *demodulated*
+/// The commonest way to get one is to point sdrcrow at a radio's *demodulated*
 /// audio and tell it the card carries I/Q. A demodulated channel is one real
 /// signal, and a stereo cable carries it twice — so `I` and `Q` are the same
 /// numbers, the complex stream they build is that real signal at 45°, and its
@@ -1069,7 +1069,7 @@ impl IqSource for AudioCatSource {
         !self.cat.streams_audio()
     }
 
-    /// sdroxide's A/B told to the rig: its own VFO A or B is selected, and the
+    /// sdrcrow's A/B told to the rig: its own VFO A or B is selected, and the
     /// selected VFO is then given this VFO's frequency, even when the dial has
     /// not moved — the rig's other VFO holds a number of its own until it is.
     /// With SPLIT on, the transmit frequency then follows to the other VFO
@@ -1100,7 +1100,7 @@ impl IqSource for AudioCatSource {
     /// With no dial to command, the span the rig *is* sending is the whole of
     /// the radio, and the engine tunes inside it with its own DDC exactly as it
     /// does on an SDR. Typing a frequency still moves the centre, which is how
-    /// the operator tells sdroxide where they have left the radio's own dial.
+    /// the operator tells sdrcrow where they have left the radio's own dial.
     fn center_is_dial(&self) -> bool {
         self.dial_reachable
     }
@@ -1109,7 +1109,7 @@ impl IqSource for AudioCatSource {
     ///
     /// Demod audio reaches this through `DeviceCaps::audio_mode` — there is no
     /// demodulator on this side at all — but a rig sending quadrature does not:
-    /// its stream is ordinary complex baseband and sdroxide demodulates it, so
+    /// its stream is ordinary complex baseband and sdrcrow demodulates it, so
     /// the engine's "command the rig's mode" gate never fired and the mode
     /// control moved nothing on the radio. Mode travelled rig→app on the CAT
     /// poll and never the other way, and the two readouts sat there disagreeing
@@ -1125,7 +1125,7 @@ impl IqSource for AudioCatSource {
     ///
     /// The *filter* is not pushed with it, and must not be: the engine guards
     /// that separately on whether the rig is the one doing the receiving, and
-    /// here it is not — the width the operator sets belongs to sdroxide's own
+    /// here it is not — the width the operator sets belongs to sdrcrow's own
     /// demodulator, and sending it would narrow the radio's IF against a
     /// passband it is not carrying.
     fn commands_rx_mode(&self) -> bool {
@@ -1296,7 +1296,7 @@ impl IqSource for AudioCatSource {
         let updates = self.cat.poll();
         // Anything at all from the rig is also the answer to "is there a radio
         // on the control port": a link that only came up later — the operator
-        // switched the radio on, or plugged the cable in, after sdroxide
+        // switched the radio on, or plugged the cable in, after sdrcrow
         // started — hands its dial back here. Latched rather than tracked,
         // because a rig that has gone quiet for a poll or two is still a rig
         // whose dial we own, and flipping the panadapter's whole tuning
@@ -1454,11 +1454,11 @@ impl IqSource for AudioCatSource {
         self.cat.set_squelch(frac);
     }
 
-    /// True on a family whose squelch sdroxide can address — but only while the
+    /// True on a family whose squelch sdrcrow can address — but only while the
     /// rig is the one doing the demodulating.
     ///
     /// On quadrature it is the wrong gate entirely: the stream is raw baseband,
-    /// sdroxide demodulates it, and the radio's squelch decides nothing but
+    /// sdrcrow demodulates it, and the radio's squelch decides nothing but
     /// what comes out of the radio's own speaker. There the engine's own
     /// threshold is the honest one, and handing the SQL rail to a control that
     /// does not reach the audio would be the same fault the other way round.

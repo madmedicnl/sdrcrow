@@ -154,7 +154,7 @@ fn the_dial_is_a_label_on_a_fax_recording() {
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(dir.join("recordings")).unwrap();
     // SAFETY: the only test in this binary, and no engine exists yet.
-    unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) }
+    unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) }
     std::fs::write(dir.join("recordings").join(NAME), recording()).unwrap();
 
     let (base, base_rows) = play(None, None);

@@ -316,19 +316,19 @@ pub fn swl_entry_to_adif_record(e: &SwlEntry) -> Option<String> {
         out.push_str(&field("MY_ANTENNA", &e.antenna));
     }
     if let Some(r) = e.report {
-        out.push_str(&field("APP_SDROXIDE_REPORT", &format!("{} {}", r.label(), r.digits())));
+        out.push_str(&field("APP_SDRCROW_REPORT", &format!("{} {}", r.label(), r.digits())));
     }
     if let Some(d) = e.smeter_dbm {
-        out.push_str(&field("APP_SDROXIDE_SMETER_DBM", &format!("{d:.1}")));
+        out.push_str(&field("APP_SDRCROW_SMETER_DBM", &format!("{d:.1}")));
     }
     if !e.site.is_empty() {
-        out.push_str(&field("APP_SDROXIDE_SITE", &e.site));
+        out.push_str(&field("APP_SDRCROW_SITE", &e.site));
     }
     if !e.language.is_empty() {
-        out.push_str(&field("APP_SDROXIDE_LANGUAGE", &e.language));
+        out.push_str(&field("APP_SDRCROW_LANGUAGE", &e.language));
     }
     if e.pirate {
-        out.push_str(&field("APP_SDROXIDE_PIRATE", "Y"));
+        out.push_str(&field("APP_SDRCROW_PIRATE", "Y"));
     }
     if let Some(t) = e.report_sent_unix {
         out.push_str(&field("QSL_SENT", "Y"));
@@ -349,8 +349,8 @@ pub fn swl_entry_to_adif_record(e: &SwlEntry) -> Option<String> {
 /// [`swl_entry_to_adif_record`]).
 pub fn swl_log_to_adif(entries: &[SwlEntry]) -> String {
     let mut out = String::from(
-        "ADIF export from sdroxide — reception log (SWL)\r\n\
-         <ADIF_VER:5>3.1.4\r\n<PROGRAMID:8>sdroxide\r\n<EOH>\r\n",
+        "ADIF export from sdrcrow — reception log (SWL)\r\n\
+         <ADIF_VER:5>3.1.4\r\n<PROGRAMID:8>sdrcrow\r\n<EOH>\r\n",
     );
     for record in entries.iter().filter_map(swl_entry_to_adif_record) {
         out.push_str(&record);
@@ -534,13 +534,13 @@ mod tests {
 
     #[test]
     fn the_report_is_the_expected_text() {
-        let text = entry().report_text("19DCG373", "JO22aa", "RTL-SDR + sdroxide", "long wire");
+        let text = entry().report_text("19DCG373", "JO22aa", "RTL-SDR + sdrcrow", "long wire");
         let want = "Reception report\n\n\
                     Station:    Radio Taiwan International\n\
                     Frequency:  6185 kHz (6.185 MHz), AM\n\
                     Heard:      2026-09-16 19:42 UTC\n\
                     Location:   JO22aa\n\
-                    Receiver:   RTL-SDR + sdroxide\n\
+                    Receiver:   RTL-SDR + sdrcrow\n\
                     Antenna:    long wire\n\
                     SINPO:  4 3 3 4 4\n\
                     Notes:      News, then music\n\

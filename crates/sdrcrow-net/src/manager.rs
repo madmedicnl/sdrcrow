@@ -959,7 +959,7 @@ impl SpotManager {
         let station = crate::pskupload::Station {
             call,
             grid: self.op_grid.clone(),
-            software: format!("sdroxide {}", env!("CARGO_PKG_VERSION")),
+            software: format!("sdrcrow {}", env!("CARGO_PKG_VERSION")),
             antenna: self.cfg.psk.antenna.trim().to_string(),
         };
         self.psk_upload =

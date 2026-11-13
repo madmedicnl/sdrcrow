@@ -640,7 +640,7 @@ mod tests {
     }
 
     /// Two stations must not start their cycle on the same slot, or every
-    /// sdroxide beacon on the band would key together.
+    /// sdrcrow beacon on the band would key together.
     ///
     /// A fixed cadence can only offer this as a phase difference, so that is
     /// what is asserted. Where two phases *do* line up the stations share slots

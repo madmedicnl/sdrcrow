@@ -2,7 +2,7 @@
 //!
 //! The field-diagnosis tool for this backend: it answers "does the machine see
 //! the dongle at all, and may this user have it?" without involving the rest of
-//! sdroxide. Run it with `cargo run -p sdrcrow-rtlsdr --example probe`, and
+//! sdrcrow. Run it with `cargo run -p sdrcrow-rtlsdr --example probe`, and
 //! add `RUST_LOG=sdrcrow_rtlsdr=debug` for the register traffic.
 
 fn main() {

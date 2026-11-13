@@ -15,7 +15,7 @@
 use eframe::egui::{self, RichText};
 use sdrcrow_types::{Command, DscFormat, DscHeard, DscStatus, Vfo};
 
-use crate::app::SdroxideApp;
+use crate::app::SdrcrowApp;
 use crate::i18n::tr;
 use crate::theme;
 
@@ -32,7 +32,7 @@ const CHANNELS: &[(f64, &str)] = &[
     (16_802_800.0, "16804.5"),
 ];
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn dsc_panel(
         &mut self,
         ui: &mut egui::Ui,

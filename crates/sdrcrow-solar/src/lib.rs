@@ -1,4 +1,4 @@
-//! Solar-system ephemeris and space-weather data for the sdroxide 3D view.
+//! Solar-system ephemeris and space-weather data for the sdrcrow 3D view.
 //!
 //! Two halves, and the split is along the target boundary:
 //!

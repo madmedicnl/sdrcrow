@@ -182,7 +182,7 @@ fn upload_hamqth(cfg: &NetworkConfig, my_call: &str, adif: &str) -> Result<Strin
                 // HamQTH login is not their station call.
                 ("c", my_call.trim()),
                 ("adif", &body),
-                ("prg", "sdroxide"),
+                ("prg", "sdrcrow"),
                 ("cmd", "insert"),
             ],
         )?;
@@ -218,13 +218,13 @@ const WRL_API: &str = "https://api.worldradioleague.com";
 /// Not an ADIF POST like the other four. WRL takes JSON, one contact per
 /// request — an array is refused outright — with the fields named as ADIF's
 /// are but camelCased, and unknown fields *rejected* rather than ignored. So
-/// this is a translation from the ADIF record sdroxide already builds into the
+/// this is a translation from the ADIF record sdrcrow already builds into the
 /// subset WRL names, and nothing beyond it: a field it has not published would
 /// fail the whole insert rather than being dropped.
 ///
 /// `logbookId` is deliberately never sent. It is optional, and omitting it puts
 /// the contact in the operator's default logbook — which is the right answer
-/// for a station that has one and the only answer sdroxide could give without
+/// for a station that has one and the only answer sdrcrow could give without
 /// a logbook picker. An operator with several logbooks and no default gets
 /// WRL's own `LOGBOOK_REQUIRED`, reported here as the instruction it is.
 fn upload_wrl(cfg: &NetworkConfig, my_call: &str, adif: &str) -> Result<String, String> {
@@ -255,7 +255,7 @@ fn upload_wrl(cfg: &NetworkConfig, my_call: &str, adif: &str) -> Result<String, 
 /// LOG11DX: the 11 m logbook's WSJT-X upload API.
 ///
 /// The site ships a small bridge that listens for WSJT-X UDP and posts each
-/// logged QSO here; sdroxide *is* the program that logs the QSO, so it posts
+/// logged QSO here; sdrcrow *is* the program that logs the QSO, so it posts
 /// directly — no bridge, no UDP, no second program. The body is the bridge's,
 /// `{ "source": "wsjtx", "qso": { … } }`, with the API token as a Bearer
 /// header; the server validates the token before the body, which is why a
@@ -505,7 +505,7 @@ fn wrl_contact_json(fields: &[(String, String)], my_call: &str) -> Result<String
     let field = |out: &mut String, name: &str, value: &str| {
         out.push_str(&format!("\"{name}\":\"{}\",", json_escape(value)));
     };
-    field(&mut out, "programId", "sdroxide");
+    field(&mut out, "programId", "sdrcrow");
     field(&mut out, "call", call);
     // WRL wants HH:MM or HHMMSS; ADIF's TIME_ON is HHMM or HHMMSS, which is
     // what its own `timeOn` takes.
@@ -555,7 +555,7 @@ fn json_escape(s: &str) -> String {
 }
 
 /// The ADIF fields HamQTH's real-time endpoint documents, as
-/// `(what sdroxide exports, what HamQTH calls it)`.
+/// `(what sdrcrow exports, what HamQTH calls it)`.
 ///
 /// A filter as much as a rename table. HamQTH publishes the list it supports
 /// and answers 500 for "a problem with your ADIF file", so a field it never
@@ -619,7 +619,7 @@ fn hamqth_adif(fields: &[(String, String)]) -> Result<String, String> {
         if value.is_empty() {
             continue;
         }
-        // Band and mode go up. sdroxide writes bands lower-case ("20m") where
+        // Band and mode go up. sdrcrow writes bands lower-case ("20m") where
         // most loggers write "20M", and one of the things HamQTH names when it
         // answers "400 QSO Rejected" is a wrong band. Both are ADIF
         // enumerations, which are case-insensitive by specification, so this
@@ -633,7 +633,7 @@ fn hamqth_adif(fields: &[(String, String)]) -> Result<String, String> {
         } else {
             value
         };
-        // Length in bytes, as sdroxide's own writer counts it, and no escaping:
+        // Length in bytes, as sdrcrow's own writer counts it, and no escaping:
         // HamQTH asks specifically that values not be HTML-escaped.
         out.push_str(&format!("<{}:{}>{}", hamqth_name, value.len(), value));
         present.push(hamqth_name);
@@ -1055,7 +1055,7 @@ mod tests {
         assert_eq!(strip_html("<b>Result: 1</b> added").trim(), "Result: 1 added");
     }
 
-    /// Issue #337: an sdroxide ADIF record becomes the JSON body WRL takes —
+    /// Issue #337: an sdrcrow ADIF record becomes the JSON body WRL takes —
     /// its camelCased ADIF names, its required six, and nothing it has not
     /// published, because it rejects an unknown field rather than ignoring it.
     #[test]
@@ -1085,9 +1085,9 @@ mod tests {
         let out = wrl_contact_json(fields, "OE3JJS").expect("all required fields present");
 
         // The six the API requires.
-        assert!(out.contains(r#""programId":"sdroxide""#), "{out}");
+        assert!(out.contains(r#""programId":"sdrcrow""#), "{out}");
         assert!(out.contains(r#""call":"OK2CQR""#), "{out}");
-        // ADIF's own pair, which the API takes beside the ISO form. sdroxide
+        // ADIF's own pair, which the API takes beside the ISO form. sdrcrow
         // writes TIME_ON to the second, and WRL's `timeOn` is `HHMM` or
         // `HHMMSS` — so the record goes up as it stands, with no reassembly
         // into an instant and back.
@@ -1135,7 +1135,7 @@ mod tests {
         assert!(e.contains("500"), "{e}");
     }
 
-    /// The whole point of the rewrite: sdroxide's own export goes in, and what
+    /// The whole point of the rewrite: sdrcrow's own export goes in, and what
     /// comes out is HamQTH's spelling, without the header or the fields it
     /// never named.
     #[test]
@@ -1193,7 +1193,7 @@ mod tests {
         assert!(err.contains("RST_S") && err.contains("RST_R"), "{err}");
     }
 
-    /// Values are counted in bytes, as sdroxide's own writer counts them — an
+    /// Values are counted in bytes, as sdrcrow's own writer counts them — an
     /// accented name is where a character count would part company with it and
     /// hand HamQTH a truncated field.
     #[test]

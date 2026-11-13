@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleName</key>
-    <string>sdroxide</string>
+    <string>sdrcrow</string>
     <key>CFBundleDisplayName</key>
-    <string>sdroxide</string>
+    <string>sdrcrow</string>
     <key>CFBundleIdentifier</key>
-    <string>com.github.dividebysandwich.sdroxide</string>
+    <string>com.github.dividebysandwich.sdrcrow</string>
     <key>CFBundleExecutable</key>
-    <string>sdroxide</string>
-    <!-- Resources/sdroxide-brown.icns; this is what Finder, the Dock and Launchpad
+    <string>sdrcrow</string>
+    <!-- Resources/sdrcrow.icns; this is what Finder, the Dock and Launchpad
          show for the bundle. -->
     <key>CFBundleIconFile</key>
-    <string>sdroxide-brown</string>
+    <string>sdrcrow-brown</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -25,6 +25,6 @@
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSMicrophoneUsageDescription</key>
-    <string>sdroxide uses the microphone as the transmit audio source.</string>
+    <string>sdrcrow uses the microphone as the transmit audio source.</string>
 </dict>
 </plist>

@@ -22,7 +22,7 @@
 //!   stations by their offset inside the passband.)
 //! * **12 kHz IF** — Icom's DRM output, a real IF in the audio stream. Mixed to
 //!   baseband and decimated by two here, it becomes a 24 kHz complex stream the
-//!   engine treats like any other front end, so sdroxide's own filters, noise
+//!   engine treats like any other front end, so sdrcrow's own filters, noise
 //!   reduction and decoders apply over roughly ±12 kHz.
 //!
 //! Either way the *wide* panadapter is fed from the radio's own `27 00` scope
@@ -283,7 +283,7 @@ impl IcomNetSource {
                 control_port: cfg.control_port,
                 username: cfg.username.clone(),
                 password: cfg.password.clone(),
-                client_name: "sdroxide".into(),
+                client_name: "sdrcrow".into(),
                 rx_sample_rate: cfg.sample_rate_hz,
                 tx_sample_rate: cfg.sample_rate_hz,
                 tx_buffer_ms: cfg.tx_latency_ms,
@@ -444,7 +444,7 @@ impl IcomNetSource {
         match model.lan_afif_select {
             Some(item) => writes.push((item, cfg.rx_source.menu_value())),
             None if cfg.rx_source == IcomRxSource::If12k => notes.push(
-                "sdroxide does not know this model's menu numbering, so it cannot switch the \
+                "sdrcrow does not know this model's menu numbering, so it cannot switch the \
                  LAN output to IF — set SET > Connectors > LAN AF/IF Output > Output Select \
                  to IF on the radio."
                     .into(),
@@ -465,7 +465,7 @@ impl IcomNetSource {
                     writes.extend(items.iter().map(|item| (*item, lan)));
                 }
                 None => notes.push(
-                    "sdroxide does not know this model's menu numbering, so it cannot switch \
+                    "sdrcrow does not know this model's menu numbering, so it cannot switch \
                      the modulation input to LAN — set SET > Connectors > MOD Input on the \
                      radio, or transmit audio will not be heard."
                         .into(),
@@ -489,7 +489,7 @@ impl IcomNetSource {
     /// The reason the read comes first is issue #252: a radio left with its
     /// DATA and DATA-OFF modulation inputs on LAN is deaf to its own microphone
     /// and its own key the next time it is used standalone in the shack, and
-    /// nothing on the radio says why. sdroxide changes the setting because it
+    /// nothing on the radio says why. sdrcrow changes the setting because it
     /// has to — transmit audio arrives over the network, and the rig only
     /// listens to one input at a time — but that is a loan, not a keep.
     ///
@@ -734,7 +734,7 @@ impl IcomNetSource {
             if self.transmitting {
                 // All three TX meters, as the serial CI-V path polls them: ALC
                 // is what the operator sets the drive by, and with only SWR
-                // asked for the ALC bar read SDRoxide's own level (#600).
+                // asked for the ALC bar read SDRCrow's own level (#600).
                 self.send(civ::read_swr_frame(self.civ_addr));
                 self.send(civ::read_alc_frame(self.civ_addr));
                 self.send(civ::read_po_frame(self.civ_addr));
@@ -1042,7 +1042,7 @@ impl IqSource for IcomNetSource {
     }
 
     /// The radio in front of us is the rig, so the mode control has to reach it
-    /// on both receive paths — including the 12 kHz IF, where sdroxide does the
+    /// on both receive paths — including the 12 kHz IF, where sdrcrow does the
     /// demodulating but the radio's mode still picks the IF filter the stream
     /// arrives through, and its own display would otherwise disagree with ours.
     ///
@@ -1143,7 +1143,7 @@ impl IqSource for IcomNetSource {
         self.squelch_set = true;
         self.send(civ::set_squelch_frame(self.civ_addr, frac));
     }
-    /// AF only. On the 12 kHz IF the stream is real spectrum that sdroxide
+    /// AF only. On the 12 kHz IF the stream is real spectrum that sdrcrow
     /// demodulates itself, so the radio's gate decides nothing about the audio
     /// heard here and the engine's own threshold is the one that does.
     fn commands_squelch(&self) -> bool {
@@ -1387,7 +1387,7 @@ mod tests {
     /// tune that simply never happened — and one poll period later the radio
     /// answers from where it always was, the settling guard runs out, and the
     /// dial snaps back. The operator's own remedy was to click again; this is
-    /// sdroxide doing it for them. The simulator swallows the first tune, which
+    /// sdrcrow doing it for them. The simulator swallows the first tune, which
     /// is exactly what that loss looks like from this end.
     #[test]
     fn a_tune_the_radio_never_took_is_sent_again_until_it_sticks() {
@@ -1682,7 +1682,7 @@ mod tests {
     #[test]
     fn switching_mode_sends_the_radio_a_set_mode() {
         // Field report, 2026-08-19: an IC-705 on the 12 kHz IF followed mode
-        // changes made at the radio but not ones made in sdroxide. The stream
+        // changes made at the radio but not ones made in sdrcrow. The stream
         // is not `audio_mode`, so the engine's "command the rig's mode" gate
         // never fired — see `IqSource::commands_rx_mode`.
         let sim = Sim::start(SimOptions { scope: false, ..Default::default() }).unwrap();
@@ -1825,7 +1825,7 @@ mod tests {
     /// Issue #252: an IC-7300MK2 was left with DATA MOD and DATA OFF MOD on
     /// LAN, so the next time it was used standalone in the shack it put out a
     /// carrier and nothing else — no microphone, no key, and nothing on the
-    /// radio saying why. What sdroxide borrows from the Set-mode menu it has
+    /// radio saying why. What sdrcrow borrows from the Set-mode menu it has
     /// to give back.
     #[test]
     fn the_menu_items_the_session_borrowed_go_back_when_it_ends() {
@@ -1846,7 +1846,7 @@ mod tests {
         assert_eq!(
             sim.menu_item(0x0079),
             0x00,
-            "the LAN output select was left as sdroxide set it"
+            "the LAN output select was left as sdrcrow set it"
         );
     }
 
@@ -1914,7 +1914,7 @@ mod tests {
     /// Field report, issue #183: an IC-7760 over its RF deck's LAN port came
     /// up with both "menu numbering unknown" notes, so its LAN output stayed on
     /// AF — a 3 kHz-wide audio FFT where the operator had asked for the 12 kHz
-    /// IF — and nothing it transmitted was modulated by sdroxide at all.
+    /// IF — and nothing it transmitted was modulated by sdrcrow at all.
     #[test]
     fn an_ic7760_gets_its_own_menu_numbers_and_every_one_of_its_data_slots() {
         let sim = Sim::start(SimOptions {
@@ -1984,7 +1984,7 @@ mod tests {
     }
 
     /// Field report, issue #190: an IC-7610 over its LAN port was told
-    /// sdroxide did not know its menu numbering, and so had to be sent to
+    /// sdrcrow did not know its menu numbering, and so had to be sent to
     /// SET > Connectors > MOD Input by hand before anything it transmitted was
     /// modulated at all.
     #[test]

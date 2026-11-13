@@ -48,7 +48,7 @@ use crate::controller::DigiAction;
 /// addressed to it and no station answers it. It is a *software identifier*,
 /// and the convention is `AP` followed by up to four characters from a
 /// registry, with the `APZ` prefix set aside for software that is not in it.
-/// That is where a program like this belongs: `APZSDR` says "sdroxide" to
+/// That is where a program like this belongs: `APZSDR` says "sdrcrow" to
 /// anyone reading a raw feed and claims nothing that has been allocated.
 ///
 /// (The one format that *does* use the destination for data is Mic-E, which

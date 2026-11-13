@@ -1,10 +1,10 @@
 //! The main window's application state and its behaviour.
 //!
-//! [`SdroxideApp`] is one large struct — everything the window draws is a
+//! [`SdrcrowApp`] is one large struct — everything the window draws is a
 //! function of it, and egui redraws all of it every frame — so splitting the
 //! state up would only scatter it. What *is* split is the behaviour: this
 //! module holds the state and its constructor, and each submodule holds the
-//! `impl SdroxideApp` methods for one part of the window:
+//! `impl SdrcrowApp` methods for one part of the window:
 //!
 //! - [`frame`] — the per-frame loop: drain engine events, lay the window out.
 //! - [`top_bar`] — the control strip along the top (VFO, filter, TX, display).
@@ -151,7 +151,7 @@ pub(in crate::app) const RETRY_MAX_S: f64 = 30.0;
 /// Only then: several of these controls are also greyed for reasons of their
 /// own — no station selected, nothing composed yet, an over already running —
 /// and naming the receiver there would be the wrong answer to "why can't I
-/// press this". `tx_ok` is [`SdroxideApp::tx_capable`] at the call site.
+/// press this". `tx_ok` is [`SdrcrowApp::tx_capable`] at the call site.
 pub(in crate::app) fn rx_only_hint(resp: egui::Response, tx_ok: bool) -> egui::Response {
     if tx_ok { resp } else { resp.on_disabled_hover_text(rx_only_hint_text()) }
 }
@@ -176,7 +176,7 @@ pub(in crate::app) fn tx_gated(
     rx_only_hint(ui.add_enabled_ui(tx_ok, add).inner, tx_ok)
 }
 
-/// Global flag mirrored from [`SdroxideApp::swl_mode`] every frame so
+/// Global flag mirrored from [`SdrcrowApp::swl_mode`] every frame so
 /// `tx_gated` can read it without threading the setting through every panel.
 static SWL_ACTIVE: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
@@ -186,7 +186,7 @@ pub(in crate::app) fn set_swl_active(on: bool) {
 }
 
 /// Whether a tool window is undocked into its own OS window, and where that
-/// window last was. See [`SdroxideApp::tool_windows`].
+/// window last was. See [`SdrcrowApp::tool_windows`].
 #[cfg(not(target_arch = "wasm32"))]
 #[derive(Debug, Clone, Copy, Default)]
 pub(crate) struct ToolWindowState {
@@ -198,7 +198,7 @@ pub(crate) struct ToolWindowState {
 
 /// Where a tool window must open, and which opening this is. Set by a caller
 /// that remembers its window's geometry (EXTRAS) and consumed by
-/// [`SdroxideApp::tool_window_egui`]: the `epoch` goes into the window's id, so
+/// [`SdrcrowApp::tool_window_egui`]: the `epoch` goes into the window's id, so
 /// egui has no remembered state for this opening and `pos`/`size` apply.
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct ToolPlace {
@@ -222,7 +222,7 @@ pub fn set_open_settings_tab(key: &str) {
     }
 }
 
-/// Where one detachable module is — see [`SdroxideApp::module_window_state`].
+/// Where one detachable module is — see [`SdrcrowApp::module_window_state`].
 ///
 /// Three states, though only the operating panel can be in all three: the
 /// others are docked or in a window of their own.
@@ -240,7 +240,7 @@ pub(crate) enum ModuleWindow {
     OwnWindow,
 }
 
-pub struct SdroxideApp {
+pub struct SdrcrowApp {
     ctrl: Box<dyn RadioController>,
     caps: Option<DeviceCaps>,
     state: RadioState,
@@ -338,8 +338,8 @@ pub struct SdroxideApp {
     tx_band_refused_in: Option<sdrcrow_types::Band>,
     /// Notices shown this session on this tab. Never saved.
     tx_band_shown: u8,
-    /// Another sdroxide found running on this machine at start-up — see
-    /// [`SdroxideApp::warn_other_instance`]. Kept apart from `radio_notice`
+    /// Another sdrcrow found running on this machine at start-up — see
+    /// [`SdrcrowApp::warn_other_instance`]. Kept apart from `radio_notice`
     /// because the engine clears that one with its own notices, and this is
     /// not the engine's to clear: it stays until the operator dismisses it.
     other_instance: Option<String>,
@@ -382,7 +382,7 @@ pub struct SdroxideApp {
     desired_at: f64,
     /// What this machine's renderer will carry, gathered once when the window
     /// opened. `None` where there is no wgpu at all (a headless test), which
-    /// reads as "the width sdroxide has always drawn".
+    /// reads as "the width sdrcrow has always drawn".
     display_class: Option<waterfall_gpu::DisplayClass>,
     /// The display's pixels per egui point, as of the last panadapter draw.
     ///
@@ -631,7 +631,7 @@ pub struct SdroxideApp {
     public_sdr_favourites: std::collections::HashSet<String>,
     /// The **MINE** chip: only the starred receivers.
     public_sdr_mine_only: bool,
-    /// The address just handed to [`SdroxideApp::take_public_sdr`], so a
+    /// The address just handed to [`SdrcrowApp::take_public_sdr`], so a
     /// following "Interface change failed" notice can be charged to it.
     last_public_sdr_try: Option<String>,
     /// The window shows the map rather than the list.
@@ -1487,7 +1487,7 @@ pub struct SdroxideApp {
     client_settings_from: Option<Option<String>>,
     /// When the screen was last pushed to the profile by the **automatic**
     /// save, so a theme being dragged through its options is one write and not
-    /// sixty. See `SdroxideApp::auto_save_screen`.
+    /// sixty. See `SdrcrowApp::auto_save_screen`.
     client_save_last: f64,
     /// The set the server last sent, kept so the settings row can offer "back
     /// to the profile's look" without another round trip.
@@ -1538,7 +1538,7 @@ pub struct SdroxideApp {
     /// comparing or cloning the list every frame.
     spots_gen: u64,
     /// The station radio's `spots_gen` this tab last took its spots from, in a
-    /// multi-radio window — see [`SdroxideApp::adopt_spot_feed`].
+    /// multi-radio window — see [`SdrcrowApp::adopt_spot_feed`].
     adopted_spots_gen: Option<u64>,
     /// Spots window open state.
     show_spots: bool,
@@ -1935,10 +1935,10 @@ pub(crate) struct RadioChip {
     pub id: u32,
     /// Which station this radio is on: empty for this machine's own, and the
     /// address for one reached over the network
-    /// ([`SdroxideApp::station_key`]).
+    /// ([`SdrcrowApp::station_key`]).
     pub station: String,
     /// The id that station knows this radio by
-    /// ([`SdroxideApp::station_radio_id`]). What goes into a configuration
+    /// ([`SdrcrowApp::station_radio_id`]). What goes into a configuration
     /// stored on that station — a panadapter pairing names the receiver this
     /// way, because the file it is written to lives there.
     pub station_id: u32,
@@ -2005,7 +2005,7 @@ pub(crate) enum RadioTabRequest {
     Focus(u32),
     /// Put another radio in a roster. `station` is empty for this machine's own
     /// — the "+" the shell has always had — and otherwise the station key of a
-    /// connection ([`SdroxideApp::station_key`]), which asks the station at the
+    /// connection ([`SdrcrowApp::station_key`]), which asks the station at the
     /// far end to add one to *its* roster.
     ///
     /// The distinction is the whole point on a native client: a screen holding
@@ -2094,7 +2094,7 @@ fn coded_weather_lines(text: &str) -> impl Iterator<Item = &str> {
     text.split(['\r', '\n']).map(str::trim).filter(|l| l.len() >= 20)
 }
 
-/// The pure half of [`SdroxideApp::tx_chrome_ok`], so the rule can be tested
+/// The pure half of [`SdrcrowApp::tx_chrome_ok`], so the rule can be tested
 /// without a radio, a mode or a window.
 pub(in crate::app) fn tx_chrome_ok(tx_capable: bool, mode: sdrcrow_types::Mode) -> bool {
     tx_capable && !mode.is_rx_only()
@@ -2112,7 +2112,7 @@ pub(in crate::app) fn drop_swl_seed_for_transmitter(
     swl_start && !forced && transmit_capable
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// Offer any new RTTY text lines to the coded-weather parser.
     ///
     /// SYNOP and SHIP arrive as ordinary RTTY text, so they are found where the
@@ -2191,13 +2191,13 @@ impl SdroxideApp {
             let themes = dir.join("themes");
             let _ = std::fs::create_dir_all(&themes);
             for problem in crate::theme::load_theme_files(&themes) {
-                eprintln!("sdroxide: theme not loaded: {problem}");
+                eprintln!("sdrcrow: theme not loaded: {problem}");
             }
         }
         // Start in SWL mode when asked: either the stored preference or this
         // run's `--swl`. The per-radio switch can still turn it off for a
         // session (which clears this seed), but the next start honours the
-        // preference again. See `SdroxideApp::swl_start`.
+        // preference again. See `SdrcrowApp::swl_start`.
         crate::theme::set_look(
             ui_settings.theme,
             ui_settings.button_style,
@@ -2254,7 +2254,7 @@ impl SdroxideApp {
         // its transmit controls until something happened to ask for the config
         // — which is exactly the flicker a click used to fix.
         let radio_cfg = ctrl.radio_config();
-        SdroxideApp {
+        SdrcrowApp {
             ctrl,
             display_class,
             wf_row_scale: 1.0,
@@ -2318,7 +2318,7 @@ impl SdroxideApp {
             audio_devices_queried: false,
             // Asked for when the settings dialog opens, along with everything
             // else about the machine the radio is on — see
-            // `SdroxideApp::ask_device`. Until then the interface list simply
+            // `SdrcrowApp::ask_device`. Until then the interface list simply
             // does not offer SoapySDR, which is the safe way round: the list is
             // only ever read inside that dialog.
             soapy_supported: false,
@@ -3179,7 +3179,7 @@ impl SdroxideApp {
         self.radio_roster.iter().find(|c| c.id == self.radio_id)?.attached_to
     }
 
-    /// Whether sdroxide's link to this radio is open — what the top bar's LINK
+    /// Whether sdrcrow's link to this radio is open — what the top bar's LINK
     /// chip shows. `None` when there is no switch to draw: the roster is empty,
     /// the radio is at the far end of a station that holds no switch a client
     /// may throw, or its front end is lent out as somebody's panadapter
@@ -3464,20 +3464,20 @@ impl SdroxideApp {
     }
 
     /// The shell's per-frame publication of the radio roster (see
-    /// [`SdroxideApp::radio_roster`]).
+    /// [`SdrcrowApp::radio_roster`]).
     pub(crate) fn set_radio_roster(&mut self, roster: Vec<RadioChip>) {
         self.radio_roster = roster;
     }
 
     /// Whether the shell can open a radio attached to this machine (see
-    /// [`SdroxideApp::can_add_radio`]). Set once, when the session is
+    /// [`SdrcrowApp::can_add_radio`]). Set once, when the session is
     /// assembled.
     pub(crate) fn set_can_add_radio(&mut self, can: bool) {
         self.can_add_radio = can;
     }
 
     /// How the connection the General tab asked for went (see
-    /// [`SdroxideApp::remote_status`]). Success is reported in the dialog as well
+    /// [`SdrcrowApp::remote_status`]). Success is reported in the dialog as well
     /// as by the new radio appearing, because the operator may well be looking
     /// at the dialog rather than at the strip behind it.
     ///
@@ -3488,7 +3488,7 @@ impl SdroxideApp {
     }
 
     /// Drain the radio-management requests the settings dialog queued this
-    /// frame (see [`SdroxideApp::radio_tab_requests`]).
+    /// frame (see [`SdrcrowApp::radio_tab_requests`]).
     pub(crate) fn take_radio_tab_requests(&mut self) -> Vec<RadioTabRequest> {
         std::mem::take(&mut self.radio_tab_requests)
     }
@@ -3500,7 +3500,7 @@ impl SdroxideApp {
         self.radio_notice = Some(text);
     }
 
-    /// Warn that another sdroxide on this machine may be reading the same
+    /// Warn that another sdrcrow on this machine may be reading the same
     /// radio — the warning stays on the banner until dismissed.
     pub(crate) fn warn_other_instance(&mut self, text: String) {
         self.other_instance = Some(text);
@@ -3519,7 +3519,7 @@ impl SdroxideApp {
     /// Four sources, in the order they override: `--swl` for the run, the
     /// session's start-in-SWL seed, the band/mode tab, and this radio's own SWL
     /// switch. The per-radio switch is the persisted one (Settings → Radio); the
-    /// other three only ever turn it *on*. See `SdroxideApp::swl_start`.
+    /// other three only ever turn it *on*. See `SdrcrowApp::swl_start`.
     ///
     /// **The tab half is derived, not stored** (issue #146). It used to be a
     /// flag that one of the three places drawing the band/mode selector set and
@@ -3884,12 +3884,12 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-udprow-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         for backend in [Backend::SdrPlay, Backend::Cat, Backend::RtlSdr, Backend::AtsMini] {
             let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
             let ctx = egui::Context::default();
-            let app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+            let app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
             let mut radio_edit =
                 Some(sdrcrow_types::RadioConfig { backend, ..Default::default() });
             let mut audio_pick = None;
@@ -3966,11 +3966,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-foreground-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
 
         // Two tool windows at once, which is the reported situation: the fault
         // only shows when one can be raised over another.
@@ -4025,11 +4025,11 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         // SAFETY: no other thread reads the environment here — `frame_test_lock`
         // serialises this against the frame tests, and the variable is set before
-        // any `SdroxideApp` in this test reads its configuration. Set once, never
+        // any `SdrcrowApp` in this test reads its configuration. Set once, never
         // removed again: a `set_var`/`remove_var` pair racing another test's read
         // is the thing that would be unsafe, and leaving the temp dir in place is
         // a cheaper price than a race.
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         // As the operator left it: radio 1 with the dock open, radio 0 with it
         // docked and hidden, radio 2 without one at all.
@@ -4041,7 +4041,7 @@ mod tests {
         let ctx = egui::Context::default();
         let make = |radio: u32| {
             let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
-            SdroxideApp::new_tab(&ctx, None, None, controller, radio, true)
+            SdrcrowApp::new_tab(&ctx, None, None, controller, radio, true)
         };
         let mut one = make(1);
         assert!(one.band_docked, "radio 1 had the dock open");
@@ -4081,11 +4081,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-cwspot-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         // The operator copies at 600 Hz, not the mode's 700 Hz default, and the
         // engine has not reported a cursor yet.
         app.digi_status = None;
@@ -4148,11 +4148,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-contest-log-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         // A session with a serial, so the contact is also what the next serial
         // is seeded from.
         app.contest = Some(sdrcrow_types::ContestSession::new(
@@ -4233,12 +4233,12 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-acks-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let events = std::rc::Rc::new(std::cell::RefCell::new(std::collections::VecDeque::new()));
         let sent = std::rc::Rc::new(std::cell::RefCell::new(Vec::new()));
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(
+        let mut app = SdrcrowApp::new_tab(
             &ctx,
             None,
             None,
@@ -4298,11 +4298,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-dial-hold-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let events = std::rc::Rc::new(std::cell::RefCell::new(std::collections::VecDeque::new()));
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(
+        let mut app = SdrcrowApp::new_tab(
             &ctx,
             None,
             None,
@@ -4347,11 +4347,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-dab-hold-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let events = std::rc::Rc::new(std::cell::RefCell::new(std::collections::VecDeque::new()));
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(
+        let mut app = SdrcrowApp::new_tab(
             &ctx,
             None,
             None,
@@ -4400,11 +4400,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-jtty-panel-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let ctx = egui::Context::default();
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.state.rx[0].mode = sdrcrow_types::Mode::Jtty;
         let input = egui::RawInput {
             screen_rect: Some(egui::Rect::from_min_size(
@@ -4461,11 +4461,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-phone-{tag}-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
 
         let input = egui::RawInput {
             screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, size)),
@@ -4501,7 +4501,7 @@ mod tests {
             std::env::temp_dir().join(format!("sdrcrow-console-band-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         fn walk(s: &egui::Shape, out: &mut Vec<(egui::Rect, bool)>) {
             match s {
                 egui::Shape::Rect(r) => {
@@ -4519,7 +4519,7 @@ mod tests {
         for w in [360.0_f32, 480.0, 600.0, 720.0, 951.0, 1280.0, 1920.0] {
             let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
             let ctx = egui::Context::default();
-            let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+            let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
             let input = egui::RawInput {
                 screen_rect: Some(egui::Rect::from_min_size(
                     egui::Pos2::ZERO,
@@ -4559,10 +4559,10 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-modules-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
 
         // Everything starts where the program put it: docked.
         for m in M::ALL {
@@ -4612,10 +4612,10 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-winkeys-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         let chord = |key| {
             // Press **and release**, as a keyboard sends them: egui marks a
             // second press of a key that never went up as a repeat, and a held
@@ -4638,7 +4638,7 @@ mod tests {
                 },
             ]
         };
-        let frame = |app: &mut SdroxideApp, events: Vec<egui::Event>| {
+        let frame = |app: &mut SdrcrowApp, events: Vec<egui::Event>| {
             let input = egui::RawInput {
                 screen_rect: Some(egui::Rect::from_min_size(
                     egui::Pos2::ZERO,
@@ -4709,7 +4709,7 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-modlist-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
         // The list is drawn inside a menu, so dress the context the way the app
@@ -4718,7 +4718,7 @@ mod tests {
         crate::theme::apply(&ctx);
         crate::layout::set_tier(&ctx, crate::layout::Tier::Desktop);
         crate::theme::apply_metrics(&ctx, crate::layout::Tier::Desktop);
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         // A plausible arrangement: the spectrum and the band selector out on
         // their own monitors, the panel floating here, the rest in.
         app.ui_settings.set_detached(M::Panadapter, true);
@@ -4778,12 +4778,12 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-classic-one-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.ui_settings.classic_ui = true;
-        let frame = |app: &mut SdroxideApp, w: f32| {
+        let frame = |app: &mut SdrcrowApp, w: f32| {
             let input = egui::RawInput {
                 screen_rect: Some(egui::Rect::from_min_size(
                     egui::Pos2::ZERO,
@@ -4856,12 +4856,12 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-listen-tab-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
         crate::layout::set_tier(&ctx, crate::layout::Tier::Desktop);
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.ui_settings.listen_tab_hides_tx = true;
         app.ui_settings.band_menu_listen = false;
 
@@ -4903,7 +4903,7 @@ mod tests {
         // A fresh start, the way the program really comes up: `new_tab` loads the
         // settings itself, so this is the saved tab doing the work.
         let rebound: Box<dyn RadioController> = Box::new(RecordingController::default());
-        let mut again = SdroxideApp::new_tab(&ctx, None, None, rebound, 0, true);
+        let mut again = SdrcrowApp::new_tab(&ctx, None, None, rebound, 0, true);
         again.radio_cfg =
             Some(sdrcrow_types::RadioConfig { hide_tx: false, ..Default::default() });
         assert!(again.swl_mode(), "a station left on the LISTEN tab must come back listening");
@@ -4920,12 +4920,12 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-text-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
         crate::layout::set_tier(&ctx, crate::layout::Tier::Desktop);
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         // The operator's own arrangement: the classic column takes ~280 pt off
         // the left, which is what makes the panel narrow enough to wrap. Without
         // it the panel is as wide as the window and the row does not wrap at all
@@ -5115,11 +5115,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-panel-edge-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.band_docked = true;
         app.band_dock_visible = true;
         app.state.rx[0].mode = mode;
@@ -5175,7 +5175,7 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-dab-preview-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let w: f32 = std::env::var("DAB_W").ok().and_then(|v| v.parse().ok()).unwrap_or(1600.0);
         let h: f32 = std::env::var("DAB_H").ok().and_then(|v| v.parse().ok()).unwrap_or(900.0);
@@ -5185,7 +5185,7 @@ mod tests {
 
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         if let Some(t) = theme {
             app.ui_settings.theme = t;
         }
@@ -5361,7 +5361,7 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-rc-preview-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let num =
             |var: &str, d: f32| std::env::var(var).ok().and_then(|v| v.parse().ok()).unwrap_or(d);
         let (w, h) = (num("RC_W", 1920.0), num("RC_H", 1080.0));
@@ -5375,7 +5375,7 @@ mod tests {
 
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         if let Some(t) = theme {
             app.ui_settings.theme = t;
         }
@@ -5526,7 +5526,7 @@ mod tests {
             std::env::temp_dir().join(format!("sdrcrow-aircraft-preview-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let num =
             |var: &str, d: f32| std::env::var(var).ok().and_then(|v| v.parse().ok()).unwrap_or(d);
         let (ww, wh) = (num("AIRCRAFT_W", 560.0), num("AIRCRAFT_H", 320.0));
@@ -5534,7 +5534,7 @@ mod tests {
 
         let ctx = egui::Context::default();
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.show_aircraft = true;
         app.ui_settings.aircraft_window =
             Some(DetachedWindow { size: [ww, wh], pos: Some([8.0, 8.0]) });
@@ -5610,12 +5610,12 @@ mod tests {
             std::env::temp_dir().join(format!("sdrcrow-extras-place-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let (w, h) = (1920.0_f32, 720.0_f32);
         let open_rect = |saved: Option<sdrcrow_types::DetachedWindow>| {
             let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
             let ctx = egui::Context::default();
-            let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+            let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
             app.ui_settings.extras_window = saved;
             app.show_extras = true;
             let mut tex = crate::test_raster::Textures::default();
@@ -5670,13 +5670,13 @@ mod tests {
             std::env::temp_dir().join(format!("sdrcrow-float-preview-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let env_f32 =
             |k: &str, d: f32| std::env::var(k).ok().and_then(|v| v.parse().ok()).unwrap_or(d);
         let (w, h) = (env_f32("FLOAT_W", 1600.0), env_f32("FLOAT_H", 1000.0));
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.state.rx[0].mode = sdrcrow_types::Mode::Ft8;
         app.panel_floating = true;
         // The panel's own width is its opened size (540 pt), clamped to 95 % of
@@ -5728,12 +5728,12 @@ mod tests {
             std::env::temp_dir().join(format!("sdrcrow-extras-preview-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let w: f32 = std::env::var("EXTRAS_W").ok().and_then(|v| v.parse().ok()).unwrap_or(1600.0);
         let h: f32 = std::env::var("EXTRAS_H").ok().and_then(|v| v.parse().ok()).unwrap_or(500.0);
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.show_extras = std::env::var("EXTRAS_OPEN").is_ok();
         let mut tex = crate::test_raster::Textures::default();
         let mut last = None;
@@ -5774,12 +5774,12 @@ mod tests {
             std::env::temp_dir().join(format!("sdrcrow-aircraft-place-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let (w, h) = (1920.0_f32, 900.0_f32);
         let open_rect = |saved: Option<sdrcrow_types::DetachedWindow>| {
             let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
             let ctx = egui::Context::default();
-            let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+            let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
             app.ui_settings.aircraft_window = saved;
             // Open the way the program remembers it: the persisted bit, which
             // the frame reads back into the flag.
@@ -5823,13 +5823,13 @@ mod tests {
             std::env::temp_dir().join(format!("sdrcrow-aircraft-preview-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let w: f32 =
             std::env::var("AIRCRAFT_W").ok().and_then(|v| v.parse().ok()).unwrap_or(1600.0);
         let h: f32 = std::env::var("AIRCRAFT_H").ok().and_then(|v| v.parse().ok()).unwrap_or(900.0);
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.ui_settings.tool_windows_open |= crate::app::frame::TW_AIRCRAFT;
         let mut tex = crate::test_raster::Textures::default();
         let mut last = None;
@@ -5885,10 +5885,10 @@ mod tests {
             .join(format!("sdrcrow-aircraft-online-save-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         let mut info = Info::bare(Status::Ok);
         info.aircraft = Some(AircraftInfo {
             type_name: Some("ZZTYPE-737".into()),
@@ -5934,11 +5934,11 @@ mod tests {
             .join(format!("sdrcrow-aircraft-online-preview-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let (w, h) = (1000.0_f32, 620.0_f32);
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.ui_settings.tool_windows_open |= crate::app::frame::TW_AIRCRAFT;
         app.aircraft_cards = true;
         let now = crate::time::now_unix();
@@ -6013,7 +6013,7 @@ mod tests {
         let level_at = |volume: f32| {
             let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
             let ctx = egui::Context::default();
-            let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+            let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
             app.state.rx[0].volume = volume;
             let st = sdrcrow_types::DabStatus {
                 playing: Some("F204".into()),
@@ -6050,11 +6050,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-dab-logo-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.state.rx[0].mode = Mode::Dab;
         app.state.dab.channel = "8D".into();
         app.state.dab.service_id = "F0E1".into();
@@ -6119,7 +6119,7 @@ mod tests {
         let _guard = frame_test_lock();
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.state.rx[0].mode = Mode::Dab;
         app.view.digi_pane = usize::MAX; // the WFALL tab
         let mut texts = Vec::new();
@@ -6171,7 +6171,7 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-wf-preview-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let w: f32 = std::env::var("WF_W").ok().and_then(|v| v.parse().ok()).unwrap_or(390.0);
         let h: f32 = std::env::var("WF_H").ok().and_then(|v| v.parse().ok()).unwrap_or(844.0);
         let mode = std::env::var("WF_MODE")
@@ -6181,7 +6181,7 @@ mod tests {
 
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.state.rx[0].mode = mode;
         app.view.digi_pane = usize::MAX; // the WFALL tab
         // A DAB block: a flat plateau 1.5 MHz wide over the noise.
@@ -6266,11 +6266,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-classicui-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
-        let frame = |app: &mut SdroxideApp| {
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
+        let frame = |app: &mut SdrcrowApp| {
             let input = egui::RawInput {
                 screen_rect: Some(egui::Rect::from_min_size(
                     egui::Pos2::ZERO,
@@ -6387,7 +6387,7 @@ mod tests {
         // appear is the failure this arrangement cannot afford, and in a
         // 900-point window the later ones are below the fold — so this reading
         // is taken on a window tall enough to hold all of them.
-        let tall = |app: &mut SdroxideApp| {
+        let tall = |app: &mut SdrcrowApp| {
             let input = egui::RawInput {
                 screen_rect: Some(egui::Rect::from_min_size(
                     egui::Pos2::ZERO,
@@ -6518,10 +6518,10 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-classicfit-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         let input = egui::RawInput {
             screen_rect: Some(egui::Rect::from_min_size(
                 egui::Pos2::ZERO,
@@ -6764,7 +6764,7 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-pb-strip-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let name = "sdrcrow_radio2_2026-10-06_10-00-05Z_14.230000MHz_SSTV.mp3";
         for (w, h, tier) in [
@@ -6774,7 +6774,7 @@ mod tests {
             let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
             let ctx = egui::Context::default();
             crate::layout::set_tier(&ctx, tier);
-            let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+            let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
             app.state.rx[0].mode = sdrcrow_types::Mode::Sstv;
             app.state.playback = Some(sdrcrow_types::PlaybackStatus {
                 name: name.into(),
@@ -6846,7 +6846,7 @@ mod tests {
 
         let queue = std::rc::Rc::new(std::cell::RefCell::new(std::collections::VecDeque::new()));
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(
+        let mut app = SdrcrowApp::new_tab(
             &ctx,
             None,
             None,
@@ -6856,7 +6856,7 @@ mod tests {
         );
         app.state.rx[0].mode = sdrcrow_types::Mode::Ft8;
 
-        let bar = |app: &SdroxideApp, at: f64| -> Vec<egui::Color32> {
+        let bar = |app: &SdrcrowApp, at: f64| -> Vec<egui::Color32> {
             let mut out = ctx.run_ui(egui::RawInput::default(), |ui| app.slot_progress_at(ui, at));
             let shapes = std::mem::take(&mut out.shapes);
             out.drop_without_applying_deltas();
@@ -6908,7 +6908,7 @@ mod tests {
         let _guard = frame_test_lock();
         let queue = std::rc::Rc::new(std::cell::RefCell::new(std::collections::VecDeque::new()));
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(
+        let mut app = SdrcrowApp::new_tab(
             &ctx,
             None,
             None,
@@ -6970,12 +6970,12 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-centre-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
         crate::layout::set_tier(&ctx, crate::layout::Tier::Desktop);
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
 
         // A digital mode: a panel and a panadapter, both in-window by default.
         assert!(app.center_has_content(Mode::Ft8));
@@ -7002,13 +7002,13 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-toolwin-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
         crate::layout::set_tier(&ctx, crate::layout::Tier::Desktop);
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
 
-        let run = |app: &mut SdroxideApp, open: bool| -> bool {
+        let run = |app: &mut SdrcrowApp, open: bool| -> bool {
             let mut out = false;
             let _ = crate::test_support::run_frame(&ctx, egui::RawInput::default(), |ui| {
                 out = app.tool_window(ui.ctx(), "t", "T", [300.0, 200.0], open, |_, _| {});
@@ -7036,10 +7036,10 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-toolframe-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.show_scanner = true;
         let input = egui::RawInput {
             screen_rect: Some(egui::Rect::from_min_size(
@@ -7067,7 +7067,7 @@ mod tests {
         assert!(app.tool_windows.get("scanner").is_some_and(|s| s.undocked));
     }
 
-    /// Another sdroxide on the same machine is the cause of a broken-up stream
+    /// Another sdrcrow on the same machine is the cause of a broken-up stream
     /// that nothing on screen used to name. The warning is drawn on the banner,
     /// survives the engine clearing its own notice (which it does with
     /// `Notice(None)`), and goes when the operator dismisses it.
@@ -7092,11 +7092,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-otherinst-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
-        let frame = |app: &mut SdroxideApp| {
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
+        let frame = |app: &mut SdrcrowApp| {
             let input = egui::RawInput {
                 screen_rect: Some(egui::Rect::from_min_size(
                     egui::Pos2::ZERO,
@@ -7111,7 +7111,7 @@ mod tests {
                 .shapes,
             )
         };
-        app.warn_other_instance("an sdroxide server is already running — PID 2488".into());
+        app.warn_other_instance("an sdrcrow server is already running — PID 2488".into());
         assert!(frame(&mut app).contains("PID 2488"), "the warning is drawn");
         // What `RadioEvent::Notice(None)` does: the engine's own notice gone.
         app.radio_notice = None;
@@ -7155,11 +7155,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-dab-scan-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
 
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.dab_scan = Some(crate::app::frame::DabScan { at: 0, since: None, found: Vec::new() });
 
         let mut cmds = Vec::new();
@@ -7194,10 +7194,10 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-setbox-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.show_settings = true;
         let input = egui::RawInput {
             screen_rect: Some(egui::Rect::from_min_size(
@@ -7260,7 +7260,7 @@ mod tests {
         let _guard = crate::multi::frame_test_lock();
         let events = std::rc::Rc::new(std::cell::RefCell::new(std::collections::VecDeque::new()));
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(
+        let mut app = SdrcrowApp::new_tab(
             &ctx,
             None,
             None,
@@ -7280,7 +7280,7 @@ mod tests {
             passband_dbfs: -50.0,
             puresignal: None,
         };
-        let shown = |app: &mut SdroxideApp, cal: i8| {
+        let shown = |app: &mut SdrcrowApp, cal: i8| {
             app.radio_cfg =
                 Some(sdrcrow_types::RadioConfig { smeter_cal: cal, ..Default::default() });
             events.borrow_mut().push_back(RadioEvent::Meters(raw));
@@ -7311,7 +7311,7 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-smcal-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         /// A controller holding a radio configuration, as a local engine
         /// does, so Settings → Radio has a radio to edit.
         struct WithConfig;
@@ -7325,7 +7325,7 @@ mod tests {
             }
         }
         let ctx = egui::Context::default();
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, Box::new(WithConfig), 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, Box::new(WithConfig), 0, true);
         app.show_settings = true;
         app.settings_tab = SettingsTab::Radio;
         let input = || egui::RawInput {
@@ -7387,12 +7387,12 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-uitab-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
         // Built for its side effect: the app installs the program's own fonts
         // and style on the context, which is what the tab is drawn in.
-        let app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         let mut cfg = app.ui_settings;
         let mut report = sdrcrow_types::SwlReportPrefs::default();
         let pick = std::sync::Arc::new(std::sync::Mutex::new(None));
@@ -7558,15 +7558,15 @@ mod tests {
     }
 
     /// Not a check — a picture. Draws Settings → UI's colour and font rows at
-    /// `SDROXIDE_PREVIEW_WIDTH` points (default 700) into the PNG at
-    /// `SDROXIDE_PREVIEW_PNG`, so a layout change can be looked at before it
+    /// `SDRCROW_PREVIEW_WIDTH` points (default 700) into the PNG at
+    /// `SDRCROW_PREVIEW_PNG`, so a layout change can be looked at before it
     /// ships.
     #[test]
     #[ignore]
     fn preview_settings_ui_colour_rows() {
         let _guard = crate::multi::frame_test_lock();
-        let Ok(path) = std::env::var("SDROXIDE_PREVIEW_PNG") else { return };
-        let width: f32 = std::env::var("SDROXIDE_PREVIEW_WIDTH")
+        let Ok(path) = std::env::var("SDRCROW_PREVIEW_PNG") else { return };
+        let width: f32 = std::env::var("SDRCROW_PREVIEW_WIDTH")
             .ok()
             .and_then(|w| w.parse().ok())
             .unwrap_or(700.0);
@@ -7648,11 +7648,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-txband-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
         crate::layout::set_tier(&ctx, crate::layout::Tier::Desktop);
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.ui_settings.listen_tab_hides_tx = false;
         app.caps = Some(sdrcrow_types::DeviceCaps { tx_channels: 1, ..Default::default() });
         app.radio_cfg = Some(RadioConfig {
@@ -7661,7 +7661,7 @@ mod tests {
             rx_bands_confirmed: true,
             ..RadioConfig::default()
         });
-        let tune = |app: &mut SdroxideApp, hz: f64| {
+        let tune = |app: &mut SdrcrowApp, hz: f64| {
             app.state.vfo_a_hz = hz;
             app.tx_band_guard();
         };
@@ -7699,11 +7699,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-txpill-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
         crate::layout::set_tier(&ctx, crate::layout::Tier::Desktop);
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.ui_settings.listen_tab_hides_tx = false;
         app.swl_start = false;
         app.state.rx[0].mode = sdrcrow_types::Mode::Usb;
@@ -7740,11 +7740,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sdrcrow-rx-notice-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        unsafe { std::env::set_var("SDROXIDE_CONFIG_DIR", &dir) };
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
         let controller: Box<dyn RadioController> = Box::new(RecordingController::default());
         let ctx = egui::Context::default();
         crate::layout::set_tier(&ctx, crate::layout::Tier::Desktop);
-        let mut app = SdroxideApp::new_tab(&ctx, None, None, controller, 0, true);
+        let mut app = SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
         app.caps = Some(sdrcrow_types::DeviceCaps { tx_channels: 1, ..Default::default() });
         let both = RadioConfig {
             tx_band_enable: Some(vec![Band::M80]),
@@ -7753,7 +7753,7 @@ mod tests {
             rx_bands_confirmed: true,
             ..RadioConfig::default()
         };
-        let set = |app: &mut SdroxideApp, tx: bool, rx: bool| {
+        let set = |app: &mut SdrcrowApp, tx: bool, rx: bool| {
             app.radio_cfg = Some(RadioConfig {
                 tx_bands_confirmed: tx,
                 rx_bands_confirmed: rx,

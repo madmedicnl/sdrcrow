@@ -887,13 +887,13 @@ mod tests {
     }
 
     /// Off-air check, run by hand like the decoders' own: point
-    /// `SDROXIDE_FRAMEGATE_SAMPLE` at a mono or stereo 16-bit WAV of FT8 and it
+    /// `SDRCROW_FRAMEGATE_SAMPLE` at a mono or stereo 16-bit WAV of FT8 and it
     /// must find a stop and a start for every gap, at the times in
-    /// `SDROXIDE_FRAMEGATE_STOPS` / `_STARTS` (comma-separated seconds).
+    /// `SDRCROW_FRAMEGATE_STOPS` / `_STARTS` (comma-separated seconds).
     #[test]
     #[ignore = "needs an off-air recording"]
     fn an_off_air_recording_is_followed() {
-        let Ok(path) = std::env::var("SDROXIDE_FRAMEGATE_SAMPLE") else { return };
+        let Ok(path) = std::env::var("SDRCROW_FRAMEGATE_SAMPLE") else { return };
         let bytes = std::fs::read(path).expect("read the recording");
         // A RIFF walk, enough for PCM16: find `fmt ` and `data`.
         let (mut channels, mut rate, mut data) = (1usize, RATE as u32, &bytes[..0]);
@@ -947,7 +947,7 @@ mod tests {
         let v = f.view(&FT8, T0 + last + 0.2).expect("the follower lost the recording");
         assert!(!v.quiet, "the last frame had started: {v:?}");
         for (present, key) in
-            [(false, "SDROXIDE_FRAMEGATE_STOPS"), (true, "SDROXIDE_FRAMEGATE_STARTS")]
+            [(false, "SDRCROW_FRAMEGATE_STOPS"), (true, "SDRCROW_FRAMEGATE_STARTS")]
         {
             let heard: Vec<f64> = got.iter().filter(|e| e.0 == present).map(|e| e.1).collect();
             let want = list(key);

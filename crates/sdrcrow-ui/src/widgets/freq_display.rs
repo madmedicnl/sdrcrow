@@ -17,7 +17,7 @@ pub const DIGIT_SIZE: f32 = 40.0;
 pub const DIGITS: u32 = 10;
 /// One more than [`DIGITS`] — for a station whose LNB/converter puts real
 /// frequencies at or past 10 GHz, a QO-100 downlink chief among them. Callers
-/// decide which a radio needs; see `SdroxideApp::readout_digits`. Kept
+/// decide which a radio needs; see `SdrcrowApp::readout_digits`. Kept
 /// conditional rather than paid by every radio: the extra column costs the
 /// top strip a full digit's width, and the packer already runs tight.
 pub const DIGITS_EXT: u32 = 11;

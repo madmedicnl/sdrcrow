@@ -24,7 +24,7 @@ fn isolated_config() {
         std::fs::create_dir_all(&dir).unwrap();
         // SAFETY: first thing the test does, before any thread of ours reads the environment.
         unsafe {
-            std::env::set_var("SDROXIDE_CONFIG_DIR", &dir);
+            std::env::set_var("SDRCROW_CONFIG_DIR", &dir);
         }
     });
 }
@@ -81,7 +81,7 @@ fn post(path: &str, data: Vec<u8>) -> (u16, String) {
     let mut resp = agent
         .post(&url)
         .header("content-type", "application/octet-stream")
-        .header("x-sdroxide", "1")
+        .header("x-sdrcrow", "1")
         .send(&data[..])
         .expect("the station answers");
     let status = resp.status().as_u16();

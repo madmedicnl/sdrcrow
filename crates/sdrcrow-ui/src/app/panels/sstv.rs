@@ -26,7 +26,7 @@ use crate::theme::ThemedScroll;
 
 use crate::app::panels::widgets::{pick_image, sstv_section};
 use crate::app::util::shorten;
-use crate::app::{SdroxideApp, rx_only_hint};
+use crate::app::{SdrcrowApp, rx_only_hint};
 
 // ───────────────────────────── SSTV panel ──────────────────────────────
 
@@ -750,7 +750,7 @@ fn split_two(total: f32, frac: f32, min_first: f32, min_second: f32) -> (f32, f3
     (first, total - first)
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     /// The image panel, shared by SSTV and RIFP: a live picture and a gallery
     /// on the left, a transmit compositor on the right, and a control strip
     /// that is the only part either mode owns alone.
@@ -3543,7 +3543,7 @@ impl SdroxideApp {
                                     ui,
                                     egui::TextEdit::singleline(&mut cfg.sstv_banner_right)
                                         .desired_width(240.0)
-                                        .hint_text("SDRoxide v{version}"),
+                                        .hint_text("SDRCrow v{version}"),
                                 )
                                 .on_hover_text(&hint);
                                 if resp.lost_focus() && resp.changed() {

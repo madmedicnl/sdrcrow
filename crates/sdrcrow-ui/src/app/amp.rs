@@ -17,7 +17,7 @@ use sdrcrow_types::{
     Command, amp_band_label,
 };
 
-use super::SdroxideApp;
+use super::SdrcrowApp;
 use crate::{chrome, theme};
 
 /// What the two meters show, and what the window remembers from one frame to
@@ -638,7 +638,7 @@ fn corner_mark(p: &egui::Painter, rect: egui::Rect, s: f32, col: Color32) {
     ));
 }
 
-impl SdroxideApp {
+impl SdrcrowApp {
     pub(in crate::app) fn amp_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
         // Back as it was closed: open or not, its picks, and (below) docked or
         // popped out and where.
@@ -707,7 +707,7 @@ impl SdroxideApp {
             let vid =
                 egui::ViewportId::from_hash_of(("sdrcrow-amp", crate::layout::radio_salt(ctx)));
             let mut builder = egui::ViewportBuilder::default()
-                .with_title(format!("sdroxide — {title}"))
+                .with_title(format!("sdrcrow — {title}"))
                 .with_min_inner_size([520.0, 420.0])
                 .with_clamp_size_to_monitor_size(true);
             // Sized and placed only when the window is first made, where it

@@ -1,19 +1,19 @@
-# LimeRFE, for sdroxide's LimeRFE control over the board's own USB port.
+# LimeRFE, for sdrcrow's LimeRFE control over the board's own USB port.
 #
-# This file is only about the *LimeRFE*, not the LimeSDR. sdroxide reaches the
+# This file is only about the *LimeRFE*, not the LimeSDR. sdrcrow reaches the
 # LimeSDR through LimeSuite, which opens the USB device itself and ships its own
 # rules (64-limesuite.rules, in the limesuite package) — so there is nothing for
 # this project to add there, and duplicating it would only make it unclear which
 # rule owns those ids.
 #
-# The LimeRFE is different: sdroxide opens its serial port directly, and on most
+# The LimeRFE is different: sdrcrow opens its serial port directly, and on most
 # distributions a USB serial device is owned by root and the `dialout` group.
 #
 # TAG+="uaccess" hands an ACL to whoever is logged in at the active seat, which
 # needs no group to exist and no re-login. It is the better half of this rule
 # and it is not the whole of it: uaccess grants nothing where there is no seat
 # to be logged in at — WSL2, a headless box reached over ssh, a container, or
-# sdroxide running as a systemd service — and the device stays root-owned and
+# sdrcrow running as a systemd service — and the device stays root-owned and
 # unreachable for reasons nothing on screen explains (issue #350).
 #
 # So GROUP="dialout" comes along as a fallback, taking effect for anyone in that
@@ -46,12 +46,12 @@
 # other end of it. The consequence is that this rule also loosens permissions on
 # any other FTDI serial adapter on the machine, which is the same trade every
 # distribution's own FTDI rules already make.
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ENV{SDROXIDE_LIMERFE}="1"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ENV{SDRCROW_LIMERFE}="1"
 
 # Some LimeRFE units carry the FT230X's own id instead.
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6015", ENV{SDROXIDE_LIMERFE}="1"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6015", ENV{SDRCROW_LIMERFE}="1"
 
 # Permissions, applied on their own lines — see the note at the top of this
 # file for why GROUP must not share a line with TAG+="uaccess".
-ENV{SDROXIDE_LIMERFE}=="1", MODE="0660", TAG+="uaccess"
-ENV{SDROXIDE_LIMERFE}=="1", GROUP="dialout"
+ENV{SDRCROW_LIMERFE}=="1", MODE="0660", TAG+="uaccess"
+ENV{SDRCROW_LIMERFE}=="1", GROUP="dialout"

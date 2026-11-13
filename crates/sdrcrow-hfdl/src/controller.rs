@@ -332,10 +332,10 @@ mod tests {
     /// queue and the poll path hand a real 21 931 kHz Riverhead squitter back
     /// as a recognised decode — the same chain the engine drives.
     #[test]
-    #[ignore = "points at an off-air capture via SDROXIDE_HFDL_SAMPLE"]
+    #[ignore = "points at an off-air capture via SDRCROW_HFDL_SAMPLE"]
     fn an_off_air_capture_decodes_through_the_worker() {
-        let path = std::env::var("SDROXIDE_HFDL_SAMPLE")
-            .expect("set SDROXIDE_HFDL_SAMPLE to the i16 interleaved complex capture");
+        let path = std::env::var("SDRCROW_HFDL_SAMPLE")
+            .expect("set SDRCROW_HFDL_SAMPLE to the i16 interleaved complex capture");
         let raw = std::fs::read(&path).expect("read capture");
         let samples: Vec<Complex32> = raw
             .chunks_exact(4)
@@ -373,10 +373,10 @@ mod tests {
     /// it, whatever the DDC happened to output. A station on real hardware
     /// showed a live waterfall, a noise level and no burst at all.
     #[test]
-    #[ignore = "points at an off-air capture via SDROXIDE_HFDL_SAMPLE"]
+    #[ignore = "points at an off-air capture via SDRCROW_HFDL_SAMPLE"]
     fn the_decoder_needs_the_exact_lane_rate() {
-        let path = std::env::var("SDROXIDE_HFDL_SAMPLE")
-            .expect("set SDROXIDE_HFDL_SAMPLE to the i16 interleaved complex capture");
+        let path = std::env::var("SDRCROW_HFDL_SAMPLE")
+            .expect("set SDRCROW_HFDL_SAMPLE to the i16 interleaved complex capture");
         let raw = std::fs::read(&path).expect("read capture");
         let base: Vec<Complex32> = raw
             .chunks_exact(4)
