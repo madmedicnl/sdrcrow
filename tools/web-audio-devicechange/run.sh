@@ -13,8 +13,8 @@ set -eu
 
 here="$(cd "$(dirname "$0")" && pwd)"
 root="$(cd "$here/../.." && pwd)"
-build="${TMPDIR:-/tmp}/sdroxide-web-devicechange"
-raw="${TMPDIR:-/tmp}/sdroxide-web-devicechange.txt"
+build="${TMPDIR:-/tmp}/sdrcrow-web-devicechange"
+raw="${TMPDIR:-/tmp}/sdrcrow-web-devicechange.txt"
 port="${PORT:-8732}"
 
 browser=""
@@ -28,8 +28,8 @@ fi
 
 rm -rf "$build" "$raw"
 mkdir -p "$build"
-cp "$root/crates/sdroxide-web/assets/audio_bridge.js" "$build/"
-cp "$root/crates/sdroxide-web/assets/pcm_worklet.js" "$build/"
+cp "$root/crates/sdrcrow-web/assets/audio_bridge.js" "$build/"
+cp "$root/crates/sdrcrow-web/assets/pcm_worklet.js" "$build/"
 cp "$here/page.html" "$here/harness.js" "$here/serve.py" "$build/"
 
 python3 "$build/serve.py" "$port" "$raw" &

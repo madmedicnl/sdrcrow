@@ -13,9 +13,9 @@
 use std::net::Ipv4Addr;
 use std::time::{Duration, Instant};
 
-use sdroxide_dsp::{Decimator, Diversity, PureSignal};
-use sdroxide_hpsdr::{HpsdrBoard, HpsdrRx, LNA_GAIN_ELEMENT};
-use sdroxide_radio::{Complex32, ControlUpdate, IqSource, Result};
+use sdrcrow_dsp::{Decimator, Diversity, PureSignal};
+use sdrcrow_hpsdr::{HpsdrBoard, HpsdrRx, LNA_GAIN_ELEMENT};
+use sdrcrow_radio::{Complex32, ControlUpdate, IqSource, Result};
 
 use crate::device_registry::{DeviceKey, SharedDevice, registry};
 
@@ -43,10 +43,10 @@ const PS_LOG_INTERVAL: Duration = Duration::from_secs(5);
 /// same interval the other diversity-capable backends use.
 const DIV_LOG_INTERVAL: Duration = Duration::from_secs(10);
 
-fn dsp_div_mode(mode: sdroxide_types::DiversityMode) -> sdroxide_dsp::DiversityMode {
+fn dsp_div_mode(mode: sdrcrow_types::DiversityMode) -> sdrcrow_dsp::DiversityMode {
     match mode {
-        sdroxide_types::DiversityMode::Cancel => sdroxide_dsp::DiversityMode::Cancel,
-        sdroxide_types::DiversityMode::Combine => sdroxide_dsp::DiversityMode::Combine,
+        sdrcrow_types::DiversityMode::Cancel => sdrcrow_dsp::DiversityMode::Cancel,
+        sdrcrow_types::DiversityMode::Combine => sdrcrow_dsp::DiversityMode::Combine,
     }
 }
 
@@ -65,7 +65,7 @@ pub struct HpsdrSource {
     /// never assumed to equal it or to be a constant (issue #440).
     tx_rate: f64,
     center: f64,
-    /// See [`sdroxide_types::HpsdrConfig::ppm`].
+    /// See [`sdrcrow_types::HpsdrConfig::ppm`].
     ppm: f64,
     rx_scratch: Vec<f32>,
     tx_scratch: Vec<f32>,
@@ -74,7 +74,7 @@ pub struct HpsdrSource {
     /// wants an edge.
     ptt: bool,
     label: String,
-    /// See [`sdroxide_types::HpsdrConfig::tx_latency_ms`].
+    /// See [`sdrcrow_types::HpsdrConfig::tx_latency_ms`].
     tx_latency_ms: f64,
 
     // ── PureSignal ──
@@ -102,7 +102,7 @@ pub struct HpsdrSource {
     /// Where the HL2IOBoard takes its receive signal from, when that is offered
     /// as the receive antenna — see [`HpsdrSource::io_inputs_offered`]. `None`
     /// on every other board and configuration.
-    io_rx_input: Option<sdroxide_types::HpsdrIoRxInput>,
+    io_rx_input: Option<sdrcrow_types::HpsdrIoRxInput>,
 
     // ── Diversity ──
     /// The combiner, present exactly when the board was asked for a synced DDC
@@ -122,7 +122,7 @@ impl HpsdrSource {
     /// attach runs with the established ones whatever its own config says.
     pub fn open(
         ip: Ipv4Addr,
-        cfg: &sdroxide_types::HpsdrConfig,
+        cfg: &sdrcrow_types::HpsdrConfig,
         center_hz: f64,
     ) -> anyhow::Result<Self> {
         let board = registry()
@@ -137,7 +137,7 @@ impl HpsdrSource {
                     cfg.io_rx_input,
                     {
                         let (lo, hi) = cfg.auto_gain_bounds();
-                        sdroxide_hpsdr::AutoGain::new(
+                        sdrcrow_hpsdr::AutoGain::new(
                             cfg.auto_gain,
                             cfg.auto_gain_step_db,
                             cfg.auto_gain_attack_ms,
@@ -178,18 +178,18 @@ impl HpsdrSource {
             tracing::info!(
                 "HPSDR: Diversity on — second aerial on ADC1, {} filter, {} taps",
                 match cfg.div_mode {
-                    sdroxide_types::DiversityMode::Cancel => "cancelling",
-                    sdroxide_types::DiversityMode::Combine => "combining",
+                    sdrcrow_types::DiversityMode::Cancel => "cancelling",
+                    sdrcrow_types::DiversityMode::Combine => "combining",
                 },
                 cfg.div_taps
             );
             Diversity::new(
                 dsp_div_mode(cfg.div_mode),
-                usize::from(cfg.div_taps.clamp(1, sdroxide_types::DIVERSITY_MAX_TAPS)),
+                usize::from(cfg.div_taps.clamp(1, sdrcrow_types::DIVERSITY_MAX_TAPS)),
                 cfg.div_rate.clamp(0.0, 1.0),
             )
         });
-        rx.set_rx_freq(sdroxide_types::HpsdrConfig::apply_ppm(center_hz, cfg.ppm));
+        rx.set_rx_freq(sdrcrow_types::HpsdrConfig::apply_ppm(center_hz, cfg.ppm));
         let label = if cfg.ddc == 0 {
             format!("HPSDR {} @ {ip} ({:.3} Msps)", board.board(), board.sample_rate_hz() / 1e6)
         } else {
@@ -260,7 +260,7 @@ impl HpsdrSource {
             // is set wrong sends the operator after a board they do not own
             // (issue #518).
             if board.has_io_board()
-                && cfg.io_rx_input != sdroxide_types::HpsdrIoRxInput::IoBoardPureSignal
+                && cfg.io_rx_input != sdrcrow_types::HpsdrIoRxInput::IoBoardPureSignal
             {
                 tracing::warn!(
                     "HPSDR: PureSignal is on but the IO board's receive input is set to \"{}\" \
@@ -278,7 +278,7 @@ impl HpsdrSource {
         let io_rx_input = (board.protocol() == 1
             && board.has_io_board()
             && cfg.ddc == 0
-            && cfg.io_rx_input != sdroxide_types::HpsdrIoRxInput::Radio)
+            && cfg.io_rx_input != sdrcrow_types::HpsdrIoRxInput::Radio)
             .then_some(cfg.io_rx_input);
         Ok(HpsdrSource {
             rate,
@@ -298,8 +298,8 @@ impl HpsdrSource {
             // hand, or by the one build whose ceiling was 1000 ms, still opens
             // on something the ring can hold.
             tx_latency_ms: cfg.tx_latency_ms.clamp(
-                *sdroxide_types::HpsdrConfig::TX_LATENCY_MS_RANGE.start(),
-                *sdroxide_types::HpsdrConfig::TX_LATENCY_MS_RANGE.end(),
+                *sdrcrow_types::HpsdrConfig::TX_LATENCY_MS_RANGE.start(),
+                *sdrcrow_types::HpsdrConfig::TX_LATENCY_MS_RANGE.end(),
             ),
             puresignal: puresignal.map(|mut ps| {
                 ps.set_frozen(cfg.ps_frozen);
@@ -450,7 +450,7 @@ impl IqSource for HpsdrSource {
     fn set_center_hz(&mut self, hz: f64) -> Result<()> {
         self.center = hz;
         if let Some(rx) = self.rx.as_ref() {
-            rx.set_rx_freq(sdroxide_types::HpsdrConfig::apply_ppm(hz, self.ppm));
+            rx.set_rx_freq(sdrcrow_types::HpsdrConfig::apply_ppm(hz, self.ppm));
         }
         Ok(())
     }
@@ -526,7 +526,7 @@ impl IqSource for HpsdrSource {
     fn set_antenna(&mut self, name: &str) -> Result<()> {
         let Some(current) = self.io_rx_input.as_mut() else { return Ok(()) };
         let Some(input) =
-            sdroxide_types::HpsdrIoRxInput::ALL.into_iter().find(|i| i.label() == name)
+            sdrcrow_types::HpsdrIoRxInput::ALL.into_iter().find(|i| i.label() == name)
         else {
             return Ok(());
         };
@@ -550,9 +550,9 @@ impl IqSource for HpsdrSource {
         self.rx.as_ref()?.pa_temp_c()
     }
 
-    fn tx_telemetry(&mut self) -> Option<sdroxide_types::TxTelemetry> {
+    fn tx_telemetry(&mut self) -> Option<sdrcrow_types::TxTelemetry> {
         let swr = self.rx.as_ref()?.swr()?;
-        Some(sdroxide_types::TxTelemetry {
+        Some(sdrcrow_types::TxTelemetry {
             fwd_w: None,
             swr: Some(swr),
             alc: None,
@@ -572,9 +572,9 @@ impl IqSource for HpsdrSource {
     /// What the predistortion loop is doing, for the operator rather than for
     /// the log (issue #441). Only the radio that owns the transmitter runs one,
     /// so every other DDC's tab answers `None` and shows nothing.
-    fn puresignal(&mut self) -> Option<sdroxide_types::PsMeter> {
+    fn puresignal(&mut self) -> Option<sdrcrow_types::PsMeter> {
         let ps = self.puresignal.as_ref()?;
-        Some(sdroxide_types::PsMeter {
+        Some(sdrcrow_types::PsMeter {
             locked: ps.locked(),
             correction_db: ps.correction_db(),
             score: ps.score(),
@@ -590,26 +590,26 @@ impl IqSource for HpsdrSource {
             if let Some(rx) = self.rx.as_mut() {
                 rx.set_lna_gain_db(db);
             }
-        } else if name == sdroxide_types::HpsdrConfig::PPM_ELEMENT {
+        } else if name == sdrcrow_types::HpsdrConfig::PPM_ELEMENT {
             self.ppm = db;
             if let Some(rx) = self.rx.as_ref() {
-                rx.set_rx_freq(sdroxide_types::HpsdrConfig::apply_ppm(self.center, self.ppm));
+                rx.set_rx_freq(sdrcrow_types::HpsdrConfig::apply_ppm(self.center, self.ppm));
             }
         } else if let Some(d) = self.diversity.as_mut() {
             // The main window's DIV strip, shared by every diversity-capable
-            // backend (`sdroxide_types::DIV_MODE_ELEMENT`'s own doc comment).
+            // backend (`sdrcrow_types::DIV_MODE_ELEMENT`'s own doc comment).
             match name {
-                sdroxide_types::DIV_MODE_ELEMENT => d.set_mode(if db >= 0.5 {
-                    sdroxide_dsp::DiversityMode::Combine
+                sdrcrow_types::DIV_MODE_ELEMENT => d.set_mode(if db >= 0.5 {
+                    sdrcrow_dsp::DiversityMode::Combine
                 } else {
-                    sdroxide_dsp::DiversityMode::Cancel
+                    sdrcrow_dsp::DiversityMode::Cancel
                 }),
-                sdroxide_types::DIV_RATE_ELEMENT => d.set_rate(db as f32),
-                sdroxide_types::DIV_TAPS_ELEMENT => d.set_taps(usize::from(
-                    db.round().clamp(1.0, f64::from(sdroxide_types::DIVERSITY_MAX_TAPS)) as u8,
+                sdrcrow_types::DIV_RATE_ELEMENT => d.set_rate(db as f32),
+                sdrcrow_types::DIV_TAPS_ELEMENT => d.set_taps(usize::from(
+                    db.round().clamp(1.0, f64::from(sdrcrow_types::DIVERSITY_MAX_TAPS)) as u8,
                 )),
-                sdroxide_types::DIV_FREEZE_ELEMENT => d.set_frozen(db >= 0.5),
-                sdroxide_types::DIV_RESET_ELEMENT if db >= 0.5 => {
+                sdrcrow_types::DIV_FREEZE_ELEMENT => d.set_frozen(db >= 0.5),
+                sdrcrow_types::DIV_RESET_ELEMENT if db >= 0.5 => {
                     // RESTART means "zero the filter and find the null again":
                     // adaptation has to resume too, or a held filter stays
                     // parked at zero (the Fobos backend found this on hardware).
@@ -685,7 +685,7 @@ impl IqSource for HpsdrSource {
     /// the right band before the operator keys.
     fn set_tx_freq_hz(&mut self, hz: f64) {
         if let Some(rx) = self.rx.as_ref() {
-            rx.set_tx_freq(sdroxide_types::HpsdrConfig::apply_ppm(hz, self.ppm));
+            rx.set_tx_freq(sdrcrow_types::HpsdrConfig::apply_ppm(hz, self.ppm));
         }
     }
 
@@ -705,7 +705,7 @@ impl IqSource for HpsdrSource {
         }
         match self.rx.as_ref() {
             Some(rx) => {
-                Ok(rx.tx_begin(sdroxide_types::HpsdrConfig::apply_ppm(center_hz, self.ppm)))
+                Ok(rx.tx_begin(sdrcrow_types::HpsdrConfig::apply_ppm(center_hz, self.ppm)))
             }
             None => Ok(self.tx_rate),
         }
@@ -768,7 +768,7 @@ impl IqSource for HpsdrSource {
         }
     }
 
-    /// See [`sdroxide_types::HpsdrConfig::tx_latency_ms`]: this board holds no
+    /// See [`sdrcrow_types::HpsdrConfig::tx_latency_ms`]: this board holds no
     /// transmit buffer of its own to widen, so raising this only widens the
     /// cushion the engine leaves before the board's TX ring on this side of
     /// the network.

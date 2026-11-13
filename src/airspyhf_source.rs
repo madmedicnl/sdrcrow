@@ -1,14 +1,14 @@
 //! An [`IqSource`] for an Airspy HF+ driven over USB by the native driver in
-//! `sdroxide-airspyhf` — no SoapySDR, no libairspyhf, no libusb.
+//! `sdrcrow-airspyhf` — no SoapySDR, no libairspyhf, no libusb.
 //!
 //! Receive only: the trait's transmit methods already default to errors, which
 //! is the correct answer for this hardware.
 
 use std::time::Duration;
 
-use sdroxide_airspyhf::AirspyHfHandle;
-use sdroxide_radio::{Complex32, IqSource, Result};
-use sdroxide_types::{AirspyHfConfig, AirspyHfModel};
+use sdrcrow_airspyhf::AirspyHfHandle;
+use sdrcrow_radio::{Complex32, IqSource, Result};
+use sdrcrow_types::{AirspyHfConfig, AirspyHfModel};
 
 /// How long the receiver may deliver nothing before the connection counts as
 /// dead. Same three seconds as the RTL-SDR: this is a local USB device, so

@@ -1,5 +1,5 @@
 //! An [`IqSource`] for a RigExpert Fobos SDR driven through `libfobos` by the
-//! native driver in `sdroxide-fobos` — no SoapySDR; the vendor library itself
+//! native driver in `sdrcrow-fobos` — no SoapySDR; the vendor library itself
 //! is found with dlopen at runtime, matching the SDRplay and LimeSDR
 //! backends.
 //!
@@ -8,18 +8,18 @@
 //!
 //! RF port, single-channel HF (direct sampling), and dual-channel HF
 //! (`FobosPort::HfDual`, both real ADC channels combined by a
-//! [`sdroxide_dsp::Diversity`] filter) all work. The combiner lives here
-//! rather than inside `sdroxide-fobos` itself — same layer
-//! `sdroxide-sdrplay`'s own dual-tuner combining lives at — running the
+//! [`sdrcrow_dsp::Diversity`] filter) all work. The combiner lives here
+//! rather than inside `sdrcrow-fobos` itself — same layer
+//! `sdrcrow-sdrplay`'s own dual-tuner combining lives at — running the
 //! plain adaptive NLMS filter: Cancel or Combine mode, configurable taps
 //! and adaptation rate, with a freeze/hold control.
 
 use std::time::{Duration, Instant};
 
-use sdroxide_dsp::{Complex32, Diversity};
-use sdroxide_fobos::{FobosHandle, OpenParams, Port};
-use sdroxide_radio::{ControlUpdate, IqSource, Result};
-use sdroxide_types::{DiversityMode, FobosConfig, FobosPort};
+use sdrcrow_dsp::{Complex32, Diversity};
+use sdrcrow_fobos::{FobosHandle, OpenParams, Port};
+use sdrcrow_radio::{ControlUpdate, IqSource, Result};
+use sdrcrow_types::{DiversityMode, FobosConfig, FobosPort};
 
 /// How long the receiver may deliver nothing before the connection counts as
 /// dead. Same three seconds as the other native USB-adjacent backends: this
@@ -27,7 +27,7 @@ use sdroxide_types::{DiversityMode, FobosConfig, FobosPort};
 const SILENCE_BEFORE_REOPEN: Duration = Duration::from_secs(3);
 
 /// How often the diversity filter's achieved null depth reaches the log —
-/// same interval `sdroxide-sdrplay`'s own dual-tuner combining uses.
+/// same interval `sdrcrow-sdrplay`'s own dual-tuner combining uses.
 const DEPTH_LOG_INTERVAL: Duration = Duration::from_secs(10);
 
 fn to_driver_port(p: FobosPort) -> Port {
@@ -44,7 +44,7 @@ fn to_driver_port(p: FobosPort) -> Port {
 /// on the HF ports the downconverter can refuse a centre closer to DC (or to
 /// Nyquist) than half its own output rate, silently: `WbDdc::set_center_hz`
 /// clamps rather than erroring, since a live retune has nowhere to report a
-/// `Result` to (see `sdroxide_dsp::clamp_center_hz`'s own doc comment). This
+/// `Result` to (see `sdrcrow_dsp::clamp_center_hz`'s own doc comment). This
 /// mirrors that clamp using only the two rates `FobosHandle` already
 /// reports, rather than asking the DDC instances themselves — which live on
 /// the stream thread's own converter, not here.
@@ -63,20 +63,20 @@ fn achieved_center_hz(
     match port {
         FobosPort::Rf => None,
         FobosPort::Hf1 | FobosPort::Hf2 | FobosPort::HfDual => {
-            Some(sdroxide_dsp::clamp_center_hz(requested_hz, adc_rate_hz, out_rate_hz))
+            Some(sdrcrow_dsp::clamp_center_hz(requested_hz, adc_rate_hz, out_rate_hz))
         }
     }
 }
 
 /// The configuration's mode, as the DSP crate spells it — two different
 /// enums with the same two variants, same reasoning as every other
-/// diversity-capable backend here: `sdroxide_types::DiversityMode` is the
-/// wasm-safe config mirror, `sdroxide_dsp::DiversityMode` is what the filter
+/// diversity-capable backend here: `sdrcrow_types::DiversityMode` is the
+/// wasm-safe config mirror, `sdrcrow_dsp::DiversityMode` is what the filter
 /// actually runs on.
-fn dsp_div_mode(mode: DiversityMode) -> sdroxide_dsp::DiversityMode {
+fn dsp_div_mode(mode: DiversityMode) -> sdrcrow_dsp::DiversityMode {
     match mode {
-        DiversityMode::Cancel => sdroxide_dsp::DiversityMode::Cancel,
-        DiversityMode::Combine => sdroxide_dsp::DiversityMode::Combine,
+        DiversityMode::Cancel => sdrcrow_dsp::DiversityMode::Cancel,
+        DiversityMode::Combine => sdrcrow_dsp::DiversityMode::Combine,
     }
 }
 
@@ -98,7 +98,7 @@ pub struct FobosSource {
     pending_center: Option<f64>,
 
     /// `Some` only on `FobosPort::HfDual` — the combiner for the two real
-    /// channels `sdroxide-fobos::FobosHandle::rx_read_pair` hands back.
+    /// channels `sdrcrow-fobos::FobosHandle::rx_read_pair` hands back.
     diversity: Option<Diversity>,
     div_mode: DiversityMode,
     aux_scratch: Vec<f32>,
@@ -300,12 +300,12 @@ impl IqSource for FobosSource {
     /// comment) plus pseudo-elements for the clock-source switch and — on
     /// `FobosPort::HfDual` — the diversity filter, riding the same shared
     /// `DIV_*_ELEMENT` names every diversity-capable backend here uses (see
-    /// `sdroxide_types::DIV_MODE_ELEMENT`'s own doc comment: the main
+    /// `sdrcrow_types::DIV_MODE_ELEMENT`'s own doc comment: the main
     /// window's strip drives them without needing to know which backend has
     /// a filter). `port` itself is not here: switching it means a different
     /// hardware path and — on the HF ports — rebuilding the downconverter,
     /// so it is a config-only field the settings tab asks for a reconnect
-    /// over, the same way `sdroxide-hydrasdr`'s own 12-bit packing switch
+    /// over, the same way `sdrcrow-hydrasdr`'s own 12-bit packing switch
     /// works.
     fn set_gain_element(&mut self, name: &str, db: f64) -> Result<()> {
         match name {
@@ -320,31 +320,31 @@ impl IqSource for FobosSource {
             FobosConfig::CLK_EXTERNAL_ELEMENT => {
                 self.handle.set_clk_external(db >= 0.5);
             }
-            sdroxide_types::DIV_MODE_ELEMENT => {
+            sdrcrow_types::DIV_MODE_ELEMENT => {
                 self.div_mode =
                     if db >= 0.5 { DiversityMode::Combine } else { DiversityMode::Cancel };
                 if let Some(d) = self.diversity.as_mut() {
                     d.set_mode(dsp_div_mode(self.div_mode));
                 }
             }
-            sdroxide_types::DIV_RATE_ELEMENT => {
+            sdrcrow_types::DIV_RATE_ELEMENT => {
                 if let Some(d) = self.diversity.as_mut() {
                     d.set_rate(db as f32);
                 }
             }
-            sdroxide_types::DIV_TAPS_ELEMENT => {
+            sdrcrow_types::DIV_TAPS_ELEMENT => {
                 let taps =
-                    db.round().clamp(1.0, f64::from(sdroxide_types::DIVERSITY_MAX_TAPS)) as u8;
+                    db.round().clamp(1.0, f64::from(sdrcrow_types::DIVERSITY_MAX_TAPS)) as u8;
                 if let Some(d) = self.diversity.as_mut() {
                     d.set_taps(usize::from(taps));
                 }
             }
-            sdroxide_types::DIV_FREEZE_ELEMENT => {
+            sdrcrow_types::DIV_FREEZE_ELEMENT => {
                 if let Some(d) = self.diversity.as_mut() {
                     d.set_frozen(db >= 0.5);
                 }
             }
-            sdroxide_types::DIV_RESET_ELEMENT => {
+            sdrcrow_types::DIV_RESET_ELEMENT => {
                 // RESTART's own tooltip promises "zero the filter and find
                 // the null again" — the second half needs adaptation to
                 // actually resume, which `Diversity::reset()` alone does not
@@ -364,7 +364,7 @@ impl IqSource for FobosSource {
                 // same gap exists at `LimeConfig::DIV_RESET_ELEMENT` and the
                 // SdrPlay equivalent) to keep this branch's diff scoped to
                 // Fobos for a clean PR. The better home for this fix is
-                // almost certainly `sdroxide_dsp::Diversity::reset()`
+                // almost certainly `sdrcrow_dsp::Diversity::reset()`
                 // itself — one change would then cover all three backends
                 // instead of three separate copies of the same patch — and
                 // that's worth raising in review rather than deciding here.
@@ -415,7 +415,7 @@ impl IqSource for FobosSource {
     /// Without this, changing anything in Settings → Radio on a running
     /// Fobos fails with "may be held by another program" — the other
     /// program being us, and the device's own real reopen-timing quirk
-    /// (`sdroxide_fobos::device::open`'s retry) then having to absorb it.
+    /// (`sdrcrow_fobos::device::open`'s retry) then having to absorb it.
     fn release(&mut self) {
         self.handle.release();
     }

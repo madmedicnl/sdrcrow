@@ -30,7 +30,7 @@
 # that line is dropped and the ACL still lands.
 #
 # Install:
-#   sudo cp 60-sdroxide-hackrf.rules /usr/lib/udev/rules.d/
+#   sudo cp 60-sdrcrow-hackrf.rules /usr/lib/udev/rules.d/
 #   sudo udevadm control --reload
 # then unplug and replug the radio.
 #

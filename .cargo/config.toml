@@ -6,8 +6,8 @@
 # "libstdc++-6.dll not found" — the moment they double-click sdroxide.exe.
 #
 # So link the compiler runtime in. The C++ side (libstdc++/winpthread) is
-# handled in each C++ crate's build.rs (sdroxide-drm, sdroxide-olivia,
-# sdroxide-s4285); this covers libgcc, which rustc leaves to the gcc driver's
+# handled in each C++ crate's build.rs (sdrcrow-drm, sdrcrow-olivia,
+# sdrcrow-s4285); this covers libgcc, which rustc leaves to the gcc driver's
 # own defaults.
 #
 # Note that a RUSTFLAGS environment variable, if one is ever set, replaces this

@@ -1,5 +1,5 @@
 //! An [`IqSource`] for an RX-888 Mk2 driven over USB by the native driver in
-//! `sdroxide-rx888` — no SoapySDR, no libusb, and no vendor driver package.
+//! `sdrcrow-rx888` — no SoapySDR, no libusb, and no vendor driver package.
 //!
 //! Receive only: the trait's transmit methods already default to errors, which
 //! is the correct answer for a receiver.
@@ -25,10 +25,10 @@
 
 use std::time::Duration;
 
-use sdroxide_radio::{Complex32, ControlUpdate, IqSource, Result};
-use sdroxide_rx888::band::{self, Band, BandState};
-use sdroxide_rx888::{Rx888Handle, Settings};
-use sdroxide_types::Rx888Config;
+use sdrcrow_radio::{Complex32, ControlUpdate, IqSource, Result};
+use sdrcrow_rx888::band::{self, Band, BandState};
+use sdrcrow_rx888::{Rx888Handle, Settings};
+use sdrcrow_types::Rx888Config;
 
 /// How long the receiver may deliver nothing before the link counts as dead.
 /// Matches the RTL-SDR backend: this is a local USB device, so there is no
@@ -117,7 +117,7 @@ impl Rx888Source {
         if !firmware.is_empty() {
             tracing::info!("RX-888: using firmware image {firmware}");
         }
-        let handle = sdroxide_rx888::spawn(&settings_from(cfg), center_hz)?;
+        let handle = sdrcrow_rx888::spawn(&settings_from(cfg), center_hz)?;
         let label = format!(
             "{} @ {:.1} Msps ADC → {:.3} Msps",
             handle.label(),
@@ -168,7 +168,7 @@ impl Rx888Source {
 
     /// The ranges this receiver can reach, HF and — where it has a tuner — VHF.
     pub fn freq_ranges(&self) -> Vec<(f64, f64)> {
-        sdroxide_rx888::band::freq_ranges(self.adc_rate_hz(), self.vhf_capable())
+        sdrcrow_rx888::band::freq_ranges(self.adc_rate_hz(), self.vhf_capable())
     }
 }
 
@@ -219,8 +219,8 @@ impl IqSource for Rx888Source {
     fn read(&mut self, buf: &mut [Complex32]) -> Result<usize> {
         // Straight into the caller's block: the ring's interleaved floats and a
         // complex buffer are the same bytes, so there is nothing to unpack —
-        // see `sdroxide_dsp::as_interleaved_mut`.
-        let n = self.handle.read(sdroxide_dsp::as_interleaved_mut(buf));
+        // see `sdrcrow_dsp::as_interleaved_mut`.
+        let n = self.handle.read(sdrcrow_dsp::as_interleaved_mut(buf));
         let pairs = n / 2;
         if pairs == 0 {
             // Nothing yet — brief nap so the DSP loop doesn't spin hot.
@@ -290,7 +290,7 @@ impl IqSource for Rx888Source {
     ///
     /// The backend analyses roughly 2 % of the samples going past to build this,
     /// so it costs about 1 % of what the downconverter costs — see
-    /// `sdroxide_dsp::WideSpectrum`.
+    /// `sdrcrow_dsp::WideSpectrum`.
     fn wide_spectrum_db(&mut self, out: &mut Vec<f32>) -> Option<(f64, f64)> {
         // The axis comes with the frame rather than being asked for: above the
         // VHF crossover the strip is a slice of the tuner's IF mapped back to

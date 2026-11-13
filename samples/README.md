@@ -106,8 +106,8 @@ the controller yet.
 The decoders' tests take a path from the environment, and default to here:
 
 ```sh
-cargo test -p sdroxide-olivia --release -- --ignored --nocapture
-cargo test -p sdroxide-dsp --release --lib -- --ignored --nocapture
+cargo test -p sdrcrow-olivia --release -- --ignored --nocapture
+cargo test -p sdrcrow-dsp --release --lib -- --ignored --nocapture
 ```
 
 `tools/bench/verify.py` walks the whole corpus and grades it.

@@ -1,6 +1,6 @@
 # rax25 — provenance
 
-`crates/sdroxide-ax25` carries code from **rax25**, an AX.25 connected-mode
+`crates/sdrcrow-ax25` carries code from **rax25**, an AX.25 connected-mode
 implementation in Rust by Thomas Habets.
 
 | | |
@@ -12,7 +12,7 @@ implementation in Rust by Thomas Habets.
 
 **The upstream repository ships no `LICENSE` file.** MIT is declared in its
 `Cargo.toml` (`license = "MIT"`) and in the crates.io metadata, and nowhere
-else. `crates/sdroxide-ax25/LICENSE` carries the standard MIT text with Thomas
+else. `crates/sdrcrow-ax25/LICENSE` carries the standard MIT text with Thomas
 Habets named as the copyright holder, which is the licence he granted; it is
 reproduced by us rather than copied from him, and this note exists so nobody
 later mistakes it for an upstream file.
@@ -64,7 +64,7 @@ loud now.
 
 The codec is exercised against frames that came off Direwolf's own
 transmission, not merely against frames built here — see
-`crates/sdroxide-digi/tests/packet_interop.rs`. The state machine is covered by
+`crates/sdrcrow-digi/tests/packet_interop.rs`. The state machine is covered by
 upstream's own tests, carried across and passing.
 
 ## What was *not* taken, and why

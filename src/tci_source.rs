@@ -12,9 +12,9 @@
 
 use std::time::{Duration, Instant};
 
-use sdroxide_radio::{Complex32, ControlUpdate, IqSource, Result};
-use sdroxide_tci::{TciDevice, TciRx, TciUpdate};
-use sdroxide_types::TxTelemetry;
+use sdrcrow_radio::{Complex32, ControlUpdate, IqSource, Result};
+use sdrcrow_tci::{TciDevice, TciRx, TciUpdate};
+use sdrcrow_types::TxTelemetry;
 
 use crate::device_registry::{DeviceKey, SharedDevice, registry};
 
@@ -168,7 +168,7 @@ impl IqSource for TciSource {
         self.label.clone()
     }
 
-    fn set_control_mode(&mut self, mode: sdroxide_types::Mode) -> Result<()> {
+    fn set_control_mode(&mut self, mode: sdrcrow_types::Mode) -> Result<()> {
         if let Some(rx) = self.rx.as_ref() {
             rx.set_mode(mode);
         }
@@ -191,7 +191,7 @@ impl IqSource for TciSource {
     fn tx_begin(&mut self, center_hz: f64, _rate: f64) -> Result<f64> {
         match self.rx.as_ref() {
             Some(rx) => Ok(rx.tx_begin(center_hz)),
-            None => Ok(sdroxide_tci::TX_RATE_HZ as f64),
+            None => Ok(sdrcrow_tci::TX_RATE_HZ as f64),
         }
     }
 

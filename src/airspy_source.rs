@@ -1,5 +1,5 @@
 //! An [`IqSource`] for an Airspy R2 or Mini driven over USB by the native
-//! driver in `sdroxide-airspy` — no SoapySDR, no libairspy, no libusb.
+//! driver in `sdrcrow-airspy` — no SoapySDR, no libairspy, no libusb.
 //!
 //! Receive only: the trait's transmit methods already default to errors, which
 //! is the correct answer for this hardware.
@@ -9,10 +9,10 @@
 
 use std::time::Duration;
 
-use sdroxide_airspy::AirspyHandle;
-use sdroxide_airspy::protocol::GainCurve;
-use sdroxide_radio::{Complex32, IqSource, Result};
-use sdroxide_types::{AirspyConfig, AirspyGain};
+use sdrcrow_airspy::AirspyHandle;
+use sdrcrow_airspy::protocol::GainCurve;
+use sdrcrow_radio::{Complex32, IqSource, Result};
+use sdrcrow_types::{AirspyConfig, AirspyGain};
 
 /// How long the receiver may deliver nothing before the connection counts as
 /// dead. Same three seconds as the other native USB backends: this is a local

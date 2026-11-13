@@ -1,5 +1,5 @@
 //! An [`IqSource`] for an ELAD FDM-DUO, FDM-S2 or FDM-S1: wideband I/Q over
-//! the native USB driver in `sdroxide-elad`, rig control over the transceiver's
+//! the native USB driver in `sdrcrow-elad`, rig control over the transceiver's
 //! CAT port, and transmit audio out through its USB sound card.
 //!
 //! # One radio, three USB devices
@@ -7,9 +7,9 @@
 //! An FDM-DUO enumerates three times — ELAD's own vendor interface for the
 //! DDC's I/Q, an FTDI bridge for CAT, and a C-Media sound card — and this file
 //! is where the three become one interface. That shape is why the pieces here
-//! are borrowed rather than rebuilt: `sdroxide_cat` already drives the serial
+//! are borrowed rather than rebuilt: `sdrcrow_cat` already drives the serial
 //! link (with [`CatFamily::Elad`], the same profile `Backend::Cat` uses) and
-//! `sdroxide_audio` already carries transmit audio, so what is left is the
+//! `sdrcrow_audio` already carries transmit audio, so what is left is the
 //! joining.
 //!
 //! An FDM-S1 or FDM-S2 has only the first of the three and comes up
@@ -80,9 +80,9 @@
 
 use std::time::Duration;
 
-use sdroxide_elad::{EladHandle, Model};
-use sdroxide_radio::{Complex32, ControlUpdate, IqSource, Result};
-use sdroxide_types::{CatConfig, CatFamily, EladAntenna, EladConfig, Mode, TxTelemetry, Vfo};
+use sdrcrow_elad::{EladHandle, Model};
+use sdrcrow_radio::{Complex32, ControlUpdate, IqSource, Result};
+use sdrcrow_types::{CatConfig, CatFamily, EladAntenna, EladConfig, Mode, TxTelemetry, Vfo};
 
 /// How long the device may deliver nothing before the connection counts as
 /// dead. Same three seconds as the other native USB backends: this is a local
@@ -117,7 +117,7 @@ const FREQ_SETTLE: Duration = Duration::from_millis(1200);
 /// at all is an FDM-S.
 enum Control {
     /// The rig's CAT serial port.
-    Serial(Box<sdroxide_cat::CatHandle>),
+    Serial(Box<sdrcrow_cat::CatHandle>),
     /// The FDM-DUO's CAT gateway on the streaming USB interface.
     ///
     /// The reason it exists is worth stating: it works with **no serial cable
@@ -141,8 +141,8 @@ pub struct EladSource {
 
     // TX audio to the rig (interleaved stereo playback ring), exactly as
     // `AudioCatSource` drives it.
-    out: Option<(sdroxide_audio::AudioOutput, sdroxide_radio::rtrb::Producer<f32>)>,
-    tx_resampler: Option<sdroxide_dsp::MonoResampler>,
+    out: Option<(sdrcrow_audio::AudioOutput, sdrcrow_radio::rtrb::Producer<f32>)>,
+    tx_resampler: Option<sdrcrow_dsp::MonoResampler>,
     tx_scratch: Vec<f32>,
     /// Amplitude applied to the TX audio: the Drive level, or the TUNE level
     /// while tuning. The rig's power register is set from the power buttons
@@ -232,7 +232,7 @@ pub struct EladSource {
     /// one of them shows the answer: the engine also asks it to decide whether a
     /// source that wants reopening already has a reason on screen. Taking the
     /// stream thread's sentence there and dropping it is how the one message
-    /// that explains a receiver delivering nothing — see `sdroxide_elad::fpga`
+    /// that explains a receiver delivering nothing — see `sdrcrow_elad::fpga`
     /// and issue #178 — was thrown away on every cycle of the reopen loop.
     late: std::sync::Mutex<Vec<String>>,
 }
@@ -283,7 +283,7 @@ impl EladSource {
             let mut cat = cat.clone();
             cat.family = CatFamily::Elad;
             // Forcing the family is also what brings the line discipline into
-            // line: `sdroxide_cat::spawn` holds an ELAD to the four baud rates
+            // line: `sdrcrow_cat::spawn` holds an ELAD to the four baud rates
             // and the 8N1 frame its CAT port actually has. Worth saying on
             // screen as well as in the log, because the value that fails this
             // way is the *default* — `RadioConfig::cat` is shared with the CAT
@@ -296,7 +296,7 @@ impl EladSource {
             //
             // [issue #146]: https://github.com/dividebysandwich/sdroxide/issues/146
             let asked = cat.serial.baud;
-            let using = sdroxide_types::elad_cat_baud(asked);
+            let using = sdrcrow_types::elad_cat_baud(asked);
             if using != asked {
                 status.push(format!(
                     "the FDM-DUO has no {asked} baud CAT setting, so its control port is \
@@ -311,19 +311,19 @@ impl EladSource {
             // the whole shape of tuning hangs on it. A DUO that has not answered
             // by the time the first sample arrives can still say so later —
             // `poll_control` latches this on at the first update.
-            dial_reachable = sdroxide_cat::query_once(&cat).is_some();
+            dial_reachable = sdrcrow_cat::query_once(&cat).is_some();
             if !dial_reachable {
                 status.push(format!(
                     "No answer from the FDM-DUO on {} — its VFO cannot be commanded from \
                      here, so tuning stays inside the window the radio is already sending \
                      and its display will not follow. Check the port, and that Baud matches \
                      menu 70 \"CAT BAUD\" on the radio.",
-                    sdroxide_cat::link_label(&cat),
+                    sdrcrow_cat::link_label(&cat),
                 ));
             }
-            Control::Serial(Box::new(sdroxide_cat::spawn(cat)))
+            Control::Serial(Box::new(sdrcrow_cat::spawn(cat)))
         };
-        let signal_max_age = sdroxide_cat::signal_max_age(cat);
+        let signal_max_age = sdrcrow_cat::signal_max_age(cat);
 
         // TX audio is best-effort and only on the transceiver: a missing device
         // means no transmit audio, not a failed open.
@@ -336,10 +336,10 @@ impl EladSource {
                         .to_string(),
                 );
             }
-            match sdroxide_audio::start_output(
+            match sdrcrow_audio::start_output(
                 audio_out,
                 48_000,
-                sdroxide_types::AudioRouting::Both,
+                sdrcrow_types::AudioRouting::Both,
             ) {
                 Ok((o, p)) => Some((o, p)),
                 Err(e) => {
@@ -354,7 +354,7 @@ impl EladSource {
         // `MonoResampler::new` returns None when the rates match.
         let tx_resampler = out
             .as_ref()
-            .and_then(|(o, _)| sdroxide_dsp::MonoResampler::new(48_000.0, o.sample_rate));
+            .and_then(|(o, _)| sdrcrow_dsp::MonoResampler::new(48_000.0, o.sample_rate));
 
         tracing::info!("ELAD source ready: {label}, center {center_hz:.0} Hz");
         let mut src = EladSource {
@@ -389,11 +389,11 @@ impl EladSource {
         // whatever B happens to hold. The serial path sends this already, in
         // `Protocol::clear_offsets`; this is the gateway's copy of it.
         if matches!(src.control, Control::Gateway) {
-            src.handle.send_cat(sdroxide_cat::elad::vfo_frame(Vfo::A));
+            src.handle.send_cat(sdrcrow_cat::elad::vfo_frame(Vfo::A));
             // Menu 34 to MAX, as the serial path does in `clear_offsets`:
             // with the PC's USB audio as low as it is, any numbered step caps
             // the output below what the radio is asked for.
-            src.handle.send_cat(sdroxide_cat::elad::tx_power_max_frame());
+            src.handle.send_cat(sdrcrow_cat::elad::tx_power_max_frame());
             // And its dial is read back, which is the only way this path sees
             // the knob turned. Not on the serial path, where the CAT poll
             // already reports it.
@@ -504,7 +504,7 @@ impl EladSource {
             // the radio there. See `select_vfo`.
             Control::Serial(cat) => cat.set_freq(hz),
             Control::Gateway => {
-                self.handle.send_cat(sdroxide_cat::elad::freq_frame_on(self.rig_vfo, hz))
+                self.handle.send_cat(sdrcrow_cat::elad::freq_frame_on(self.rig_vfo, hz))
             }
             Control::None => return,
         }
@@ -514,7 +514,7 @@ impl EladSource {
     fn command_ptt(&self, on: bool) {
         match &self.control {
             Control::Serial(cat) => cat.set_ptt(on),
-            Control::Gateway => self.handle.send_cat(sdroxide_cat::elad::ptt_frame(on)),
+            Control::Gateway => self.handle.send_cat(sdrcrow_cat::elad::ptt_frame(on)),
             Control::None => {}
         }
     }
@@ -664,7 +664,7 @@ impl IqSource for EladSource {
             EladConfig::ATT_ELEMENT => {
                 // A gain, so negative is attenuation: anything below half the
                 // pad's depth is the pad in.
-                self.attenuator = db <= -sdroxide_types::ELAD_ATTENUATOR_DB / 2.0;
+                self.attenuator = db <= -sdrcrow_types::ELAD_ATTENUATOR_DB / 2.0;
                 self.handle.set_attenuator(self.attenuator);
             }
             EladConfig::LPF_ELEMENT => {
@@ -679,7 +679,7 @@ impl IqSource for EladSource {
     fn current_gains(&self) -> Vec<(String, f64)> {
         vec![(
             EladConfig::ATT_ELEMENT.to_string(),
-            if self.attenuator { -sdroxide_types::ELAD_ATTENUATOR_DB } else { 0.0 },
+            if self.attenuator { -sdrcrow_types::ELAD_ATTENUATOR_DB } else { 0.0 },
         )]
     }
 
@@ -703,7 +703,7 @@ impl IqSource for EladSource {
         };
         match &self.control {
             Control::Serial(cat) => cat.set_antenna(name),
-            Control::Gateway => self.handle.send_cat(sdroxide_cat::elad::antenna_frame(ant)),
+            Control::Gateway => self.handle.send_cat(sdrcrow_cat::elad::antenna_frame(ant)),
             Control::None => return Ok(()),
         }
         self.antenna = ant;
@@ -760,7 +760,7 @@ impl IqSource for EladSource {
             return;
         }
         self.rig_vfo = vfo;
-        self.handle.send_cat(sdroxide_cat::elad::vfo_frame(vfo));
+        self.handle.send_cat(sdrcrow_cat::elad::vfo_frame(vfo));
         self.command_freq(hz);
     }
 
@@ -789,39 +789,39 @@ impl IqSource for EladSource {
         let mut out = Vec::new();
         for u in updates {
             match u {
-                sdroxide_cat::CatUpdate::Freq(hz) => out.extend(self.adopt_dial(hz)),
-                sdroxide_cat::CatUpdate::Mode(m) => out.push(ControlUpdate::Mode(m)),
+                sdrcrow_cat::CatUpdate::Freq(hz) => out.extend(self.adopt_dial(hz)),
+                sdrcrow_cat::CatUpdate::Mode(m) => out.push(ControlUpdate::Mode(m)),
                 // Which socket the rig came up on, read once as the port
                 // opened. Adopted rather than overridden: it is the operator's
                 // own front-panel setting, and the serial thread has already
                 // dropped an answer that crossed a command from this end.
-                sdroxide_cat::CatUpdate::Antenna(name) => {
+                sdrcrow_cat::CatUpdate::Antenna(name) => {
                     if let Some(a) = EladAntenna::from_label(name) {
                         self.antenna = a;
                         out.push(ControlUpdate::Antenna(name));
                     }
                 }
                 // The power the rig came up on, read once when the port opened.
-                sdroxide_cat::CatUpdate::Power(frac) => out.push(ControlUpdate::TxDrive(frac)),
+                sdrcrow_cat::CatUpdate::Power(frac) => out.push(ControlUpdate::TxDrive(frac)),
                 // The ELAD family asks for no transmit state (see
                 // `Protocol::tx_state_requests`), so this never arrives — but
                 // the day it does, it means the same thing here as anywhere.
-                sdroxide_cat::CatUpdate::Ptt(on) => out.push(ControlUpdate::RigTx(on)),
+                sdrcrow_cat::CatUpdate::Ptt(on) => out.push(ControlUpdate::RigTx(on)),
                 // The meters arrive on their own telemetry channels, not here;
                 // and the ELAD dialect has no squelch command, so that read is
                 // never asked for either.
                 //
                 // Nor has an FDM-DUO a separate receiving antenna: its two
                 // sockets are a choice between them, which is `Antenna` above.
-                sdroxide_cat::CatUpdate::Swr(_)
-                | sdroxide_cat::CatUpdate::Alc(_)
-                | sdroxide_cat::CatUpdate::Po(_)
-                | sdroxide_cat::CatUpdate::FwdW(_)
-                | sdroxide_cat::CatUpdate::RflW(_)
-                | sdroxide_cat::CatUpdate::Squelch(_)
-                | sdroxide_cat::CatUpdate::RxAntenna(_)
-                | sdroxide_cat::CatUpdate::Signal(_)
-                | sdroxide_cat::CatUpdate::Split(_) => {}
+                sdrcrow_cat::CatUpdate::Swr(_)
+                | sdrcrow_cat::CatUpdate::Alc(_)
+                | sdrcrow_cat::CatUpdate::Po(_)
+                | sdrcrow_cat::CatUpdate::FwdW(_)
+                | sdrcrow_cat::CatUpdate::RflW(_)
+                | sdrcrow_cat::CatUpdate::Squelch(_)
+                | sdrcrow_cat::CatUpdate::RxAntenna(_)
+                | sdrcrow_cat::CatUpdate::Signal(_)
+                | sdrcrow_cat::CatUpdate::Split(_) => {}
             }
         }
         out
@@ -830,7 +830,7 @@ impl IqSource for EladSource {
     fn set_control_mode(&mut self, mode: Mode) -> Result<()> {
         match &self.control {
             Control::Serial(cat) => cat.set_mode(mode),
-            Control::Gateway => self.handle.send_cat(sdroxide_cat::elad::mode_frame(mode)),
+            Control::Gateway => self.handle.send_cat(sdrcrow_cat::elad::mode_frame(mode)),
             Control::None => {}
         }
         Ok(())
@@ -887,8 +887,8 @@ impl IqSource for EladSource {
             // The gateway pins menu 34 at MAX as it opens, so the audio level
             // is the only power control left here too.
             Control::Gateway => {
-                self.tx_audio_gain = sdroxide_cat::audio_gain_for_power(
-                    frac.clamp(0.0, 1.0) as f32 * sdroxide_cat::elad::DUO_AUDIO_POWER_CEILING,
+                self.tx_audio_gain = sdrcrow_cat::audio_gain_for_power(
+                    frac.clamp(0.0, 1.0) as f32 * sdrcrow_cat::elad::DUO_AUDIO_POWER_CEILING,
                 );
             }
             _ => {}
@@ -918,7 +918,7 @@ impl IqSource for EladSource {
     // The FDM-DUO has no text keyer — `SW` plays a message stored in the radio
     // and nothing hands it text — so `cw_text_keying` stays at its default of
     // `None` and CW is keyed by the operator's own key or paddle. See the
-    // module header of `sdroxide_cat::elad`.
+    // module header of `sdrcrow_cat::elad`.
 
     // ── Transmit ─────────────────────────────────────────────────────────────
 
@@ -945,7 +945,7 @@ impl IqSource for EladSource {
         // off, and the centre below lands on it.
         if let Some(vfo) = self.pending_vfo.take() {
             self.rig_vfo = vfo;
-            self.handle.send_cat(sdroxide_cat::elad::vfo_frame(vfo));
+            self.handle.send_cat(sdrcrow_cat::elad::vfo_frame(vfo));
         }
         self.command_freq(self.center);
         self.last_telem = None; // drop the stale SWR reading on unkey
@@ -969,7 +969,7 @@ impl IqSource for EladSource {
             for _ in 0..2 {
                 let mut v = s * gain;
                 let mut tries = 0u32;
-                while let Err(sdroxide_radio::rtrb::PushError::Full(x)) = producer.push(v) {
+                while let Err(sdrcrow_radio::rtrb::PushError::Full(x)) = producer.push(v) {
                     v = x;
                     tries += 1;
                     if tries > 200 {

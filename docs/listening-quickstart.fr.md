@@ -135,7 +135,7 @@ La fenêtre **SWL LOG** est votre trace de ce qui a été entendu :
   « boucle MLA-30 »). Réglez-la une fois ; chaque réception la capture.
 - **REPORT** écrit la réception sélectionnée sous forme de rapport texte à
   envoyer au radiodiffuseur — les chiffres, le locator **received-at** et
-  l'antenne, signés de votre identité de rapport et avec **sdroxide_SWL** comme
+  l'antenne, signés de votre identité de rapport et avec **sdrcrow_SWL** comme
   nom de programme.
 - **report sent** et **QSL received** suivent toute la boucle, *entendre →
   rapporter → attendre le QSL* : **REPORT** tamponne la première, et une petite

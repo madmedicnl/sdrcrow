@@ -41,22 +41,22 @@
 //! was in the table, so what the trace proves is the transport, not the menu
 //! writes or the 689-bin sweep now built from its CI-V reference guide. The one
 //! thing that model has since been reported to do differently is its 12 kHz IF,
-//! which arrives mirrored: see `sdroxide_icomnet::protocol::Model::if_inverted`
+//! which arrives mirrored: see `sdrcrow_icomnet::protocol::Model::if_inverted`
 //! for what that costs and how little of it Icom documents.
 //! Everything else — transmit, the other models' menu numbering, the meters —
-//! is still only exercised against `sdroxide_icomnet::sim`, and the session
+//! is still only exercised against `sdrcrow_icomnet::sim`, and the session
 //! trace is copyable from the settings tab so a user with a radio can report
 //! what actually happened.
 
 use std::collections::VecDeque;
 use std::time::{Duration, Instant};
 
-use sdroxide_cat::{DUPLEX_FLOOR_HZ, civ};
-use sdroxide_dsp::Ddc;
-use sdroxide_icomnet::{IcomNetDevice, IcomNetOptions};
-use sdroxide_radio::rtrb;
-use sdroxide_radio::{Complex32, ControlUpdate, IqSource, Result};
-use sdroxide_types::{Band, CwKeying, IcomNetConfig, IcomRxSource, Mode, TxTelemetry};
+use sdrcrow_cat::{DUPLEX_FLOOR_HZ, civ};
+use sdrcrow_dsp::Ddc;
+use sdrcrow_icomnet::{IcomNetDevice, IcomNetOptions};
+use sdrcrow_radio::rtrb;
+use sdrcrow_radio::{Complex32, ControlUpdate, IqSource, Result};
+use sdrcrow_types::{Band, CwKeying, IcomNetConfig, IcomRxSource, Mode, TxTelemetry};
 
 use crate::dial::Dial;
 use crate::session_trace::TraceStore;
@@ -78,11 +78,11 @@ fn session_key(cfg: &IcomNetConfig) -> String {
 /// whether or not a session has run.
 pub fn diagnostics_or_hint(cfg: &IcomNetConfig) -> String {
     match TRACES.get(&session_key(cfg)) {
-        Some(t) => format!("{t}\n{}\n", sdroxide_icomnet::FIELD_REPORT_HINT),
+        Some(t) => format!("{t}\n{}\n", sdrcrow_icomnet::FIELD_REPORT_HINT),
         None => format!(
             "No Icom LAN session has run yet for {} — connect to that radio first.\n\n{}\n",
             if cfg.address.trim().is_empty() { "this radio" } else { cfg.address.trim() },
-            sdroxide_icomnet::FIELD_REPORT_HINT
+            sdrcrow_icomnet::FIELD_REPORT_HINT
         ),
     }
 }
@@ -134,7 +134,7 @@ const MENU_READ_WAIT: Duration = Duration::from_millis(500);
 /// The frames are written to the socket before the shutdown that follows them
 /// — the session thread drains its queue in order — but this is UDP, and the
 /// only thing that recovers a lost datagram is the radio noticing the gap and
-/// asking for it (see `sdroxide_icomnet::stream`). That request has to find a
+/// asking for it (see `sdrcrow_icomnet::stream`). That request has to find a
 /// session still standing.
 const MENU_RESTORE_SETTLE: Duration = Duration::from_millis(250);
 
@@ -276,7 +276,7 @@ impl IcomNetSource {
         // The trace lives out here so a connect that *fails* still leaves one
         // behind — the wedged-radio and wrong-address sessions are exactly the
         // ones a bug report is filed about, and they never become a device.
-        let trace = sdroxide_icomnet::Trace::new();
+        let trace = sdrcrow_icomnet::Trace::new();
         let dev = IcomNetDevice::connect_traced(
             IcomNetOptions {
                 address: cfg.address.clone(),
@@ -748,7 +748,7 @@ impl IcomNetSource {
     /// Put the radio's own repeater shift back to simplex for `dial_hz`, unless
     /// that has already been done for this dial.
     ///
-    /// The HF/VHF split is [`sdroxide_cat`]'s: below 28 MHz nothing but a band
+    /// The HF/VHF split is [`sdrcrow_cat`]'s: below 28 MHz nothing but a band
     /// stacking register can restore a duplex setting, so once per band is
     /// enough and the link stays quiet while the operator tunes; above it an
     /// auto-repeater function arms on the frequency and every move has to be
@@ -1340,7 +1340,7 @@ impl Drop for IcomNetSource {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use sdroxide_icomnet::sim::{Sim, SimOptions};
+    use sdrcrow_icomnet::sim::{Sim, SimOptions};
 
     use crate::dial::FREQ_SETTLE;
 
@@ -2089,7 +2089,7 @@ mod tests {
     fn the_scope_span_is_commanded_rather_than_left_wherever_the_radio_had_it() {
         let sim = Sim::start(SimOptions { civ_address: 0xA4, ..Default::default() }).unwrap();
         let mut c = cfg(&sim);
-        c.scope_span = sdroxide_types::IcomScopeSpan::Khz500;
+        c.scope_span = sdrcrow_types::IcomScopeSpan::Khz500;
         let _src = IcomNetSource::open(&c).expect("open");
         wait_for("centre mode and a ±500 kHz span", || {
             let frames = sim.civ_frames();
@@ -2111,7 +2111,7 @@ mod tests {
     fn leaving_the_span_to_the_radio_touches_neither_setting() {
         let sim = Sim::start(SimOptions { civ_address: 0xA4, ..Default::default() }).unwrap();
         let mut c = cfg(&sim);
-        c.scope_span = sdroxide_types::IcomScopeSpan::Radio;
+        c.scope_span = sdrcrow_types::IcomScopeSpan::Radio;
         let mut src = IcomNetSource::open(&c).expect("open");
         // Wait for something the session does send, so "nothing was sent" is a
         // real observation rather than a race with the opening burst.

@@ -1,0 +1,9 @@
+[package]
+name = "sdrcrow-rigctld"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+sdrcrow-types.workspace = true
+crossbeam-channel.workspace = true
+tracing.workspace = true

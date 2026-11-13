@@ -8,7 +8,7 @@ background?**
 A window left in the taskbar for a long spell is a page the browser stops
 drawing, freezes, or drops the audio device under — and the `AudioContext` goes
 with it. The page is driven in a headless browser against the **real** bridge
-scripts (`crates/sdroxide-web/assets/audio_bridge.js` and `pcm_worklet.js`) so
+scripts (`crates/sdrcrow-web/assets/audio_bridge.js` and `pcm_worklet.js`) so
 that what is tested is the code the client runs, not a copy of it:
 
 1. the page takes a gesture and the bridge starts playing, as it does on a real
@@ -26,7 +26,7 @@ before the fix it ends at:
     FAIL the window came back and the sound did not: {"contexts":1,"states":["closed"]}
 
 Nothing is written inside the tree: the scripts are copied to a scratch
-directory (`$TMPDIR/sdroxide-web-audio-recovery`) and served from there.
+directory (`$TMPDIR/sdrcrow-web-audio-recovery`) and served from there.
 
 Needs `python3` and a Chromium-family browser (Chrome, Chromium or Edge); the
 browser runs with autoplay allowed, since a synthetic gesture cannot grant real

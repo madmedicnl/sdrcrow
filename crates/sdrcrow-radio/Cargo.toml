@@ -1,0 +1,92 @@
+[package]
+name = "sdrcrow-radio"
+version.workspace = true
+edition.workspace = true
+
+[features]
+# SoapySDR is optional so a CAT-only build needs no libSoapySDR installed.
+default = ["soapy", "rtl433"]
+soapy = ["dep:soapysdr"]
+# The embedded rtl_433 ISM decoders. Needs a C compiler, CMake and the
+# vendor/rtl_433 submodule; turn off for a build without them.
+rtl433 = ["sdrcrow-ism/rtl433"]
+
+[dependencies]
+sdrcrow-types.workspace = true
+sdrcrow-dsp.workspace = true
+# DRM reception. Links a vendored C++ receiver, so it is native-only — which
+# this crate already is.
+sdrcrow-drm.workspace = true
+# HD Radio reception, through the libnrsc5 installed on the machine — found at
+# run time, nothing linked (issue #488).
+sdrcrow-nrsc5.workspace = true
+num-complex.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+soapysdr = { version = "0.5.1", optional = true }
+triple_buffer = "9.0.0"
+# The block loop's fork/join. Only `join` is used, and only onto a pool of this
+# crate's own making — see `lane_pool` in engine.rs.
+rayon = "1"
+crossbeam-channel.workspace = true
+rtrb.workspace = true
+sdrcrow-config = { path = "../sdrcrow-config" }
+# The dynamic-DNS update is one HTTPS GET, with the same client the spot feeds
+# use rather than a second one.
+ureq = "3.4"
+
+sdrcrow-digi = { path = "../sdrcrow-digi" }
+sdrcrow-kiss = { path = "../sdrcrow-kiss" }
+sdrcrow-ax25 = { path = "../sdrcrow-ax25" }
+sdrcrow-skimmer = { path = "../sdrcrow-skimmer" }
+sdrcrow-ism = { path = "../sdrcrow-ism" }
+sdrcrow-adsb = { path = "../sdrcrow-adsb" }
+sdrcrow-vdl2 = { path = "../sdrcrow-vdl2" }
+sdrcrow-vor = { path = "../sdrcrow-vor" }
+sdrcrow-ais = { path = "../sdrcrow-ais" }
+sdrcrow-dab = { path = "../sdrcrow-dab" }
+sdrcrow-qo100 = { path = "../sdrcrow-qo100" }
+# Native-only, like the rest of the `on_rx_iq` lanes: the HFDL decoder runs
+# in the engine off a dedicated downconversion of the raw IQ.
+sdrcrow-hfdl = { path = "../sdrcrow-hfdl" }
+sdrcrow-sonde = { path = "../sdrcrow-sonde" }
+sdrcrow-meshtastic = { path = "../sdrcrow-meshtastic", features = ["engine"] }
+sdrcrow-wxsat = { path = "../sdrcrow-wxsat" }
+sdrcrow-net = { path = "../sdrcrow-net" }
+sdrcrow-winlink = { path = "../sdrcrow-winlink" }
+# Only for `tlesub`: the engine persists the satellite subscriptions and, being
+# the machine with the config directory, is also the one that fetches them and
+# reports what each listing holds. No tracking happens here — that is the UI's.
+sdrcrow-solar = { path = "../sdrcrow-solar" }
+# The built-in TCI server, which the engine owns and feeds. (The TCI *client*
+# in the same crate is built by the binary, not from here.)
+sdrcrow-tci.workspace = true
+# The built-in rigctld server: control-only, so unlike TCI it carries no
+# streams — the engine just publishes state and drains requests.
+sdrcrow-rigctld = { path = "../sdrcrow-rigctld" }
+sdrcrow-rotator = { path = "../sdrcrow-rotator" }
+# Uploading received pictures to an FTP server — station-side, native only.
+sdrcrow-picup.workspace = true
+# The station's external T/R switch: the relay that grounds the SDR's antenna
+# while anything in this process is transmitting. Driven from the engine rather
+# than from a source, because it follows the whole station and not one front end.
+sdrcrow-relay = { path = "../sdrcrow-relay" }
+# The desk microphone and pedal that key the transmitter (issue #636): a serial
+# port's handshake lines, and a MIDI note, read on the engine's machine.
+sdrcrow-midi.workspace = true
+serialport = { version = "4.10", default-features = false }
+sdrcrow-wsjtx = { path = "../sdrcrow-wsjtx" }
+# SSTV: encode received images to PNG for the config store, decode composed
+# TX images (PNG) back to RGB. Minimal formats to keep the build lean.
+# JPEG as well as PNG: the transmit-preset store normalises whatever the
+# operator picked, and the file picker offers both.
+image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }
+shine-rs = "0.1.4"
+# Playback of recordings into the decoders (fork discussion #10): the
+# recorder's MP3, and WAV, OGG Vorbis and FLAC made elsewhere. Pure Rust, no
+# system codec. MPL-2.0.
+symphonia = { version = "0.5", default-features = false, features = ["mp3", "wav", "pcm", "ogg", "vorbis", "flac"] }
+
+[dev-dependencies]
+# The APRS codec, so the transmit test can read back what the engine sent.
+sdrcrow-aprs.workspace = true

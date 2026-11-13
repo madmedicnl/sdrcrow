@@ -41,7 +41,7 @@ seven decoder entry points through `CLibraryLoader` at run time, the way Dream
 already loads libopus, and `FdkAacCodec::CanDecode` answers `false` when there
 is no library — which leaves an xHE-AAC service falling back to Dream's null
 codec, exactly where this build stood before. **No Fraunhofer object code is
-produced by this build**, and `crates/sdroxide-drm/build.rs` emits no
+produced by this build**, and `crates/sdrcrow-drm/build.rs` emits no
 `-lfdk-aac`.
 
 ## Why headers rather than hand-written declarations

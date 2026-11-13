@@ -87,7 +87,7 @@
                      of the binary, so its notice has to be installed too. -->
                 <Component Id="Rx888FirmwareLicenseFile" Guid="A0CCC0FB-6B67-4A7D-B379-433D2DE40CE6">
                     <File Id="Rx888FirmwareLicenseTxt"
-                          Source="crates/sdroxide-rx888/firmware/LICENSE.txt"
+                          Source="crates/sdrcrow-rx888/firmware/LICENSE.txt"
                           Name="LICENSE-rx888-firmware.txt" KeyPath="yes" />
                 </Component>
                 <!-- The spoken-announcement voice. CC BY-NC-SA rather than
@@ -106,7 +106,7 @@
                      the same reason the RX-888 firmware's does. -->
                 <Component Id="CmudictLicenseFile" Guid="A6093759-F5C0-4194-9B86-1A43D831D0A5">
                     <File Id="CmudictLicenseTxt"
-                          Source="crates/sdroxide-speech/assets/LICENSE-cmudict.txt"
+                          Source="crates/sdrcrow-speech/assets/LICENSE-cmudict.txt"
                           Name="LICENSE-cmudict.txt" KeyPath="yes" />
                 </Component>
                 <Directory Id="VoicesFolder" Name="voices">

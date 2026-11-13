@@ -14,7 +14,7 @@ different denoiser. We copy them, transcoded to little-endian `f32`.
 five orders of magnitude below the ~0.4 % the 0.25 dB grid and its bilinear
 interpolation cost anyway. Uncompressed because deflate only reaches 0.74 here
 (smooth float surfaces), and the 117 KiB that would save does not buy a new
-dependency in `sdroxide-dsp` the way JS8's 12x did in `sdroxide-digi`.
+dependency in `sdrcrow-dsp` the way JS8's 12x did in `sdrcrow-digi`.
 
 This is a transcoder and nothing more: the values are upstream's, unedited, so
 the blob can be checked against WDSP byte for byte. That includes a known
@@ -72,7 +72,7 @@ def main() -> None:
     blob += struct.pack("<%df" % len(ggs), *ggs)
 
     out = pathlib.Path(__file__).resolve().parent.parent / (
-        "crates/sdroxide-dsp/src/nr2_tables.bin"
+        "crates/sdrcrow-dsp/src/nr2_tables.bin"
     )
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_bytes(blob)

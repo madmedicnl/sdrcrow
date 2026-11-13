@@ -240,7 +240,7 @@ jobs:
           # bare crate version; anything else says which build it is and which
           # commit it came from, so `sdroxide --version`, the About box and a
           # crash report name the build rather than the release it was cut
-          # from. `sdroxide-version`'s build script reads this; unset (a local
+          # from. `sdrcrow-version`'s build script reads this; unset (a local
           # `cargo build`) means the plain version. Both the wasm client and
           # every native build take it from here so they agree.
           #
@@ -297,7 +297,7 @@ jobs:
     steps:
       # The client compiles none of the vendored code, but cargo reads every
       # workspace member's manifest before building any of them, and
-      # sdroxide-hfdl reaches xng by path into the vendor/xng submodule.
+      # sdrcrow-hfdl reaches xng by path into the vendor/xng submodule.
       # Without it cargo stops at "failed to get `xng-mode-hfdl`", which is
       # what failed every nightly from 2026-09-24 on.
       - uses: actions/checkout@v7
@@ -327,12 +327,12 @@ jobs:
             | tar -xzf - -C "$HOME/.local/bin"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - name: Build web client
-        working-directory: crates/sdroxide-web
+        working-directory: crates/sdrcrow-web
         run: trunk build --release
       - uses: actions/upload-artifact@v7
         with:
           name: web-dist
-          path: crates/sdroxide-web/dist
+          path: crates/sdrcrow-web/dist
           if-no-files-found: error
           # A nightly is superseded the next night, so it need not sit on the
           # run page for the repository's default 90 days. 0 means "use the
@@ -416,7 +416,7 @@ jobs:
           {
             echo "RELEASE_VERSION=$RELEASE_VERSION"
             echo "CARGO_VERSION=$CARGO_VERSION"
-            echo "PKG=sdroxide-$RELEASE_VERSION-${{ matrix.label }}$SUFFIX"
+            echo "PKG=sdrcrow-$RELEASE_VERSION-${{ matrix.label }}$SUFFIX"
           } >> "$GITHUB_ENV"
 
       - name: Install dependencies (Linux)
@@ -513,7 +513,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: web-dist
-          path: crates/sdroxide-web/dist
+          path: crates/sdrcrow-web/dist
 
       # The probe. A sampler runs beside the build so the memory curve survives
       # even when the job is killed: GitHub does not serve a running job's log,
@@ -603,7 +603,7 @@ jobs:
       # those exist only on a machine with MSYS2 or PothosSDR installed — a
       # plain Windows box answers "libstdc++-6.dll not found" the moment the
       # user double-clicks the .exe. .cargo/config.toml and
-      # crates/sdroxide-drm/build.rs link them in statically instead; this
+      # crates/sdrcrow-drm/build.rs link them in statically instead; this
       # checks that actually held, because the failure is otherwise invisible
       # here and only shows up on a user's machine.
       - name: Check for MinGW runtime DLLs (Windows)
@@ -626,15 +626,15 @@ jobs:
           # Every binary embeds the RX-888's FX3 firmware image, which is MIT
           # licensed: the notice has to travel with the binary, not just live
           # in the source tree.
-          cp crates/sdroxide-rx888/firmware/LICENSE.txt stage/sdroxide/LICENSE-rx888-firmware.txt
+          cp crates/sdrcrow-rx888/firmware/LICENSE.txt stage/sdroxide/LICENSE-rx888-firmware.txt
           # ...and CMUdict, embedded for the spoken announcements'
           # grapheme-to-phoneme. BSD-2-Clause, same argument.
-          cp crates/sdroxide-speech/assets/LICENSE-cmudict.txt stage/sdroxide/
+          cp crates/sdrcrow-speech/assets/LICENSE-cmudict.txt stage/sdroxide/
           # ...and the DeepCW model, embedded for the CW decoder. This one is
           # AGPL-3.0-only, which is stronger than sdroxide's own GPL and adds a
           # network clause, so the notice matters more here than for the two
           # above rather than less.
-          cp crates/sdroxide-deepcw/LICENSE stage/sdroxide/LICENSE-deepcw.txt
+          cp crates/sdrcrow-deepcw/LICENSE stage/sdroxide/LICENSE-deepcw.txt
           # The speech voice. Unlike the two above this is not embedded — it is
           # CC BY-NC-SA, which a GPL binary may not absorb, so it travels as a
           # data file the program reads at run time. sdroxide looks for a
@@ -654,10 +654,10 @@ jobs:
           # hand and cannot do that if they are not in the tarball. Both
           # variants carry them — the RTL-SDR, RX-888 and Airspy HF+ drivers
           # are native and present in every build.
-          cp packaging/linux/60-sdroxide-rtlsdr.rules packaging/linux/60-sdroxide-rx888.rules \
-             packaging/linux/60-sdroxide-airspyhf.rules packaging/linux/60-sdroxide-hackrf.rules \
-             packaging/linux/60-sdroxide-airspy.rules packaging/linux/60-sdroxide-elad.rules \
-             packaging/linux/60-sdroxide-limerfe.rules stage/sdroxide/
+          cp packaging/linux/60-sdrcrow-rtlsdr.rules packaging/linux/60-sdrcrow-rx888.rules \
+             packaging/linux/60-sdrcrow-airspyhf.rules packaging/linux/60-sdrcrow-hackrf.rules \
+             packaging/linux/60-sdrcrow-airspy.rules packaging/linux/60-sdrcrow-elad.rules \
+             packaging/linux/60-sdrcrow-limerfe.rules stage/sdroxide/
           if [[ "${{ matrix.variant }}" == "cat" ]]; then
             cat > stage/sdroxide/README.txt <<'EOF'
           sdroxide — SDR transceiver (https://github.com/dividebysandwich/sdroxide)
@@ -714,7 +714,7 @@ jobs:
           user needs a udev rule, which the .deb installs for you but the
           tarball cannot:
 
-            sudo cp 60-sdroxide-*.rules /usr/lib/udev/rules.d/
+            sudo cp 60-sdrcrow-*.rules /usr/lib/udev/rules.d/
             sudo udevadm control --reload
 
           Then unplug and replug the receiver. Without this sdroxide will see
@@ -746,7 +746,7 @@ jobs:
           tar czf "out/$PKG.tar.gz" -C stage sdroxide
           cargo install cargo-deb --locked
           # The SoapySDR build uses the `soapysdr` deb variant (package
-          # sdroxide-soapysdr, recommends the driver modules); the default build
+          # sdrcrow-soapysdr, recommends the driver modules); the default build
           # uses the base metadata (package sdroxide, no SoapySDR recommendation).
           if [[ "${{ matrix.variant }}" == "soapy" ]]; then
             cargo deb --no-build -p sdroxide --variant soapysdr -o "out/$PKG.deb"
@@ -868,10 +868,10 @@ jobs:
           cp /mingw64/bin/libwinpthread-1.dll stage/sdroxide/
           cp LICENSE stage/sdroxide/LICENSE.txt
           # MIT notice for the FX3 firmware image embedded in the binary.
-          cp crates/sdroxide-rx888/firmware/LICENSE.txt stage/sdroxide/LICENSE-rx888-firmware.txt
-          cp crates/sdroxide-speech/assets/LICENSE-cmudict.txt stage/sdroxide/
+          cp crates/sdrcrow-rx888/firmware/LICENSE.txt stage/sdroxide/LICENSE-rx888-firmware.txt
+          cp crates/sdrcrow-speech/assets/LICENSE-cmudict.txt stage/sdroxide/
           # AGPL notice for the DeepCW model embedded in the binary.
-          cp crates/sdroxide-deepcw/LICENSE stage/sdroxide/LICENSE-deepcw.txt
+          cp crates/sdrcrow-deepcw/LICENSE stage/sdroxide/LICENSE-deepcw.txt
           # The speech voice, in a "voices" directory beside the executable —
           # see the Linux step for why it is a data file rather than embedded.
           mkdir -p stage/sdroxide/voices
@@ -978,8 +978,8 @@ jobs:
             # variant publishes them, so they never collide with the SoapySDR
             # .zip and always mean the recommended build. The versioned files
             # beside them remain the canonical, archiveable names.
-            cp "out/$PKG.msi" out/sdroxide-windows-x86_64.msi
-            cp "out/$PKG.zip" out/sdroxide-windows-x86_64.zip
+            cp "out/$PKG.msi" out/sdrcrow-windows-x86_64.msi
+            cp "out/$PKG.zip" out/sdrcrow-windows-x86_64.zip
           fi
 
           # Verify the MinGW runtime DLLs shipped in the package.
@@ -1010,10 +1010,10 @@ jobs:
           # Portable tarball (both variants)
           cp target/release/sdroxide LICENSE stage/sdroxide/
           # MIT notice for the FX3 firmware image embedded in the binary.
-          cp crates/sdroxide-rx888/firmware/LICENSE.txt stage/sdroxide/LICENSE-rx888-firmware.txt
-          cp crates/sdroxide-speech/assets/LICENSE-cmudict.txt stage/sdroxide/
+          cp crates/sdrcrow-rx888/firmware/LICENSE.txt stage/sdroxide/LICENSE-rx888-firmware.txt
+          cp crates/sdrcrow-speech/assets/LICENSE-cmudict.txt stage/sdroxide/
           # AGPL notice for the DeepCW model embedded in the binary.
-          cp crates/sdroxide-deepcw/LICENSE stage/sdroxide/LICENSE-deepcw.txt
+          cp crates/sdrcrow-deepcw/LICENSE stage/sdroxide/LICENSE-deepcw.txt
           # The speech voice, in a "voices" directory beside the executable —
           # see the Linux step for why it is a data file rather than embedded.
           mkdir -p stage/sdroxide/voices
@@ -1103,9 +1103,9 @@ jobs:
             # (so it survives dragging the .app out of the image) as well as
             # alongside it. It has to be in place before codesign, which seals
             # the contents of Resources into the signature.
-            cp crates/sdroxide-rx888/firmware/LICENSE.txt "$APP/Contents/Resources/LICENSE-rx888-firmware.txt"
-            cp crates/sdroxide-speech/assets/LICENSE-cmudict.txt "$APP/Contents/Resources/"
-            cp crates/sdroxide-deepcw/LICENSE "$APP/Contents/Resources/LICENSE-deepcw.txt"
+            cp crates/sdrcrow-rx888/firmware/LICENSE.txt "$APP/Contents/Resources/LICENSE-rx888-firmware.txt"
+            cp crates/sdrcrow-speech/assets/LICENSE-cmudict.txt "$APP/Contents/Resources/"
+            cp crates/sdrcrow-deepcw/LICENSE "$APP/Contents/Resources/LICENSE-deepcw.txt"
             # The speech voice. In a bundle it goes under Resources, which is
             # where sdroxide looks once it finds itself in Contents/MacOS.
             # Also before codesign, for the same reason as the notices above.
@@ -1117,9 +1117,9 @@ jobs:
             codesign --force -s - "$APP/Contents/MacOS/sdroxide"
             codesign --force -s - "$APP"
             cp LICENSE stage-dmg/
-            cp crates/sdroxide-rx888/firmware/LICENSE.txt stage-dmg/LICENSE-rx888-firmware.txt
-            cp assets/voices/LICENSE-voice.txt crates/sdroxide-speech/assets/LICENSE-cmudict.txt stage-dmg/
-            cp crates/sdroxide-deepcw/LICENSE stage-dmg/LICENSE-deepcw.txt
+            cp crates/sdrcrow-rx888/firmware/LICENSE.txt stage-dmg/LICENSE-rx888-firmware.txt
+            cp assets/voices/LICENSE-voice.txt crates/sdrcrow-speech/assets/LICENSE-cmudict.txt stage-dmg/
+            cp crates/sdrcrow-deepcw/LICENSE stage-dmg/LICENSE-deepcw.txt
             # The image is created at an explicit size and filled by hand
             # rather than handed to `hdiutil create -srcfolder`, whose own
             # sizing runs out of room mid-copy ("hdiutil: create failed - No
@@ -1139,9 +1139,9 @@ jobs:
             ditto "$APP" "$mnt/sdroxide.app"
             codesign --verify --strict "$mnt/sdroxide.app"
             cp LICENSE "$mnt/"
-            cp crates/sdroxide-rx888/firmware/LICENSE.txt "$mnt/LICENSE-rx888-firmware.txt"
-            cp assets/voices/LICENSE-voice.txt crates/sdroxide-speech/assets/LICENSE-cmudict.txt "$mnt/"
-            cp crates/sdroxide-deepcw/LICENSE "$mnt/LICENSE-deepcw.txt"
+            cp crates/sdrcrow-rx888/firmware/LICENSE.txt "$mnt/LICENSE-rx888-firmware.txt"
+            cp assets/voices/LICENSE-voice.txt crates/sdrcrow-speech/assets/LICENSE-cmudict.txt "$mnt/"
+            cp crates/sdrcrow-deepcw/LICENSE "$mnt/LICENSE-deepcw.txt"
             ln -s /Applications "$mnt/Applications"
             hdiutil detach "$mnt" || { sleep 5; hdiutil detach "$mnt" -force; }
             hdiutil convert rw.dmg -format UDZO -ov -o "out/$PKG.dmg"
@@ -1215,7 +1215,7 @@ jobs:
         run: |
           mkdir -p dist
           cd web-dist
-          zip -r "../dist/sdroxide-web-$GITHUB_REF_NAME.zip" .
+          zip -r "../dist/sdrcrow-web-$GITHUB_REF_NAME.zip" .
       - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}

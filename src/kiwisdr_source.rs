@@ -38,9 +38,9 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
-use sdroxide_kiwisdr::KiwiHandle;
-use sdroxide_radio::{Complex32, IqSource, Result};
-use sdroxide_types::KiwiConfig;
+use sdrcrow_kiwisdr::KiwiHandle;
+use sdrcrow_radio::{Complex32, IqSource, Result};
+use sdrcrow_types::KiwiConfig;
 
 /// How long the receiver may deliver nothing before the link counts as dead.
 /// The same window the SpyServer and `rtl_tcp` backends use: long enough that a
@@ -133,7 +133,7 @@ impl IqSource for KiwiSdrSource {
     fn set_center_hz(&mut self, hz: f64) -> Result<()> {
         let (lo, hi) = self.tuning_range();
         if hz < lo || hz > hi {
-            return Err(sdroxide_radio::RadioError::Msg(format!(
+            return Err(sdrcrow_radio::RadioError::Msg(format!(
                 "this receiver tunes {:.3}–{:.3} MHz",
                 lo / 1e6,
                 hi / 1e6

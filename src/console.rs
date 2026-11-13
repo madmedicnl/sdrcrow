@@ -2,8 +2,8 @@
 
 use std::time::{Duration, Instant};
 
-use sdroxide_dsp::{Complex32, SpectrumAnalyzer};
-use sdroxide_radio::IqSource;
+use sdrcrow_dsp::{Complex32, SpectrumAnalyzer};
+use sdrcrow_radio::IqSource;
 
 const GRADIENT: &[u8] = b" .:-=+*#%@";
 /// Print a frequency ruler every this many waterfall lines.

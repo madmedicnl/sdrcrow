@@ -14,9 +14,9 @@
 use std::sync::Mutex;
 use std::time::{Duration, Instant};
 
-use sdroxide_radio::{Complex32, ControlUpdate, IqSource, Result};
-use sdroxide_smartsdr::{FlexHandle, FlexUpdate};
-use sdroxide_types::TxTelemetry;
+use sdrcrow_radio::{Complex32, ControlUpdate, IqSource, Result};
+use sdrcrow_smartsdr::{FlexHandle, FlexUpdate};
+use sdrcrow_types::TxTelemetry;
 
 use crate::session_trace::TraceStore;
 
@@ -53,11 +53,11 @@ fn remember_eviction(key: &str) {
 
 /// Which FlexRadio a session was with: the address it was dialled at, the one
 /// thing both the source and the tab asking for the report can spell.
-fn session_key(cfg: &sdroxide_types::SmartSdrConfig) -> String {
+fn session_key(cfg: &sdrcrow_types::SmartSdrConfig) -> String {
     cfg.target().unwrap_or("").trim().to_ascii_lowercase()
 }
 
-fn record_trace(key: &str, trace: &sdroxide_smartsdr::Trace) {
+fn record_trace(key: &str, trace: &sdrcrow_smartsdr::Trace) {
     TRACES.record(key, trace.dump());
 }
 
@@ -75,17 +75,17 @@ pub struct SmartSdrSource {
     /// meter poll. Cleared on unkey.
     last_telem: Option<TxTelemetry>,
     /// Kept so the trace survives the handle being dropped.
-    trace: sdroxide_smartsdr::Trace,
+    trace: sdrcrow_smartsdr::Trace,
     /// Warning captured while opening, surfaced in the UI.
     warning: Option<String>,
     /// Conjugate what the radio sends, mirroring the spectrum — see
-    /// [`sdroxide_types::SmartSdrConfig::swap_iq`].
+    /// [`sdrcrow_types::SmartSdrConfig::swap_iq`].
     swap_iq: bool,
 }
 
 impl SmartSdrSource {
     pub fn open(
-        cfg: &sdroxide_types::SmartSdrConfig,
+        cfg: &sdrcrow_types::SmartSdrConfig,
         center_hz: f64,
     ) -> anyhow::Result<SmartSdrSource> {
         let address = cfg
@@ -99,7 +99,7 @@ impl SmartSdrSource {
             .to_string();
 
         let key = session_key(cfg);
-        let handle = FlexHandle::connect_with(&sdroxide_smartsdr::ConnectOptions {
+        let handle = FlexHandle::connect_with(&sdrcrow_smartsdr::ConnectOptions {
             address: address.clone(),
             iq_rate_hz: cfg.iq_sample_rate_hz,
             iq_channel: cfg.iq_channel,
@@ -251,7 +251,7 @@ impl IqSource for SmartSdrSource {
         self.warning.clone()
     }
 
-    fn set_control_mode(&mut self, mode: sdroxide_types::Mode) -> Result<()> {
+    fn set_control_mode(&mut self, mode: sdrcrow_types::Mode) -> Result<()> {
         self.handle.set_mode(mode);
         Ok(())
     }
@@ -358,10 +358,10 @@ impl IqSource for SmartSdrSource {
 }
 
 /// Discover FlexRadios and map them to the settings UI's device type.
-pub fn discover() -> Vec<sdroxide_types::SmartSdrDevice> {
-    sdroxide_smartsdr::discover_default()
+pub fn discover() -> Vec<sdrcrow_types::SmartSdrDevice> {
+    sdrcrow_smartsdr::discover_default()
         .into_iter()
-        .map(|r| sdroxide_types::SmartSdrDevice {
+        .map(|r| sdrcrow_types::SmartSdrDevice {
             joinable: r.joinable(),
             ip: r.ip,
             port: r.port,
@@ -376,13 +376,13 @@ pub fn discover() -> Vec<sdroxide_types::SmartSdrDevice> {
 
 /// Shared with the settings UI's "Copy diagnostic report" button: the trace of
 /// the radio *this* configuration names, never another one's.
-pub fn diagnostics_or_hint(cfg: &sdroxide_types::SmartSdrConfig) -> String {
+pub fn diagnostics_or_hint(cfg: &sdrcrow_types::SmartSdrConfig) -> String {
     match TRACES.get(&session_key(cfg)) {
-        Some(t) => format!("{t}\n{}\n", sdroxide_smartsdr::FIELD_REPORT_HINT),
+        Some(t) => format!("{t}\n{}\n", sdrcrow_smartsdr::FIELD_REPORT_HINT),
         None => format!(
             "No SmartSDR session has run yet for {} — connect to that radio first.\n\n{}\n",
             cfg.target().unwrap_or("this radio"),
-            sdroxide_smartsdr::FIELD_REPORT_HINT
+            sdrcrow_smartsdr::FIELD_REPORT_HINT
         ),
     }
 }

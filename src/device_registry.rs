@@ -10,7 +10,7 @@
 //! never tears down another's.
 //!
 //! Lives in the binary, like the backends themselves: the engine stays free
-//! of process globals, and each engine's [`sdroxide_radio::ReopenFn`] simply
+//! of process globals, and each engine's [`sdrcrow_radio::ReopenFn`] simply
 //! calls in here. The one lock also serializes two engines' reconnect workers
 //! racing to revive the same dead rig — the first one reopens, the second
 //! finds the fresh entry and attaches.

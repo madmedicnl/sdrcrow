@@ -66,7 +66,7 @@ d'échantillonnage** et le **gain**. Les changements s'appliquent après
 
 - **Linux — récepteurs USB :** installez les règles udev fournies, sinon
   sdroxide verra l'appareil mais ne pourra pas l'ouvrir :
-  `sudo cp 60-sdroxide-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, puis rebranchez.
+  `sudo cp 60-sdrcrow-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, puis rebranchez.
 - **Windows — RX-888 :** liez l'appareil à **WinUSB** une fois avec
   [Zadig](https://zadig.akeo.ie/) — pour **les deux** identifiants USB
   (`04B4:00F3` et `04B4:00F1`).

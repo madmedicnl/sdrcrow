@@ -127,7 +127,7 @@ The **SWL LOG** window is your record of what was heard:
   loop"). Set it once; each reception captures it.
 - **REPORT** writes the selected reception out as a text report to send to the
   broadcaster — the numbers, the **received-at** locator and the aerial, signed
-  with your report identity and naming the program **sdroxide_SWL**.
+  with your report identity and naming the program **sdrcrow_SWL**.
 - **report sent** and **QSL received** track the whole loop, *hear → report →
   await QSL*: **REPORT** stamps the first, and a small **sent** or **QSL** mark
   on the row shows how far each catch has got.

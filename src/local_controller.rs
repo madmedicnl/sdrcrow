@@ -4,9 +4,9 @@
 
 use std::time::{Duration, Instant};
 
-use sdroxide_radio::crossbeam_channel::{Receiver, Sender};
-use sdroxide_radio::{AudioParams, EngineHandles, EngineSwap, MicParams, triple_buffer};
-use sdroxide_types::{
+use sdrcrow_radio::crossbeam_channel::{Receiver, Sender};
+use sdrcrow_radio::{AudioParams, EngineHandles, EngineSwap, MicParams, triple_buffer};
+use sdrcrow_types::{
     AudioDevices, AudioRouting, Command, RadioConfig, RadioController, RadioEvent, SpectrumFrame,
 };
 use tracing::{debug, info, warn};
@@ -22,16 +22,16 @@ pub struct LocalController {
     /// `None` after shutdown, or when the frontend chose to join it itself.
     thread: Option<std::thread::JoinHandle<()>>,
     /// Live cpal streams (they must outlive their ring endpoints in the engine).
-    audio_out: Option<sdroxide_audio::AudioOutput>,
-    mic_in: Option<sdroxide_audio::AudioInput>,
+    audio_out: Option<sdrcrow_audio::AudioOutput>,
+    mic_in: Option<sdrcrow_audio::AudioInput>,
     /// A microphone open still running. Opening a capture device can block for
     /// as long as the sound stack feels like it (see
-    /// [`sdroxide_audio::PendingInput`]), which is time neither startup nor the
+    /// [`sdrcrow_audio::PendingInput`]), which is time neither startup nor the
     /// UI thread has to spare, so the open happens on a thread of its own and
     /// [`LocalController::poll_pending_mic`] hands it to the engine when it
     /// lands. TX before then carries silence, exactly as it does with no
     /// microphone at all.
-    pending_mic: Option<sdroxide_audio::PendingInput>,
+    pending_mic: Option<sdrcrow_audio::PendingInput>,
     /// When to try the microphone again after its stream broke, while it stays
     /// broken. Only a stream that ran and then failed is retried; a device that
     /// never opened is the operator's to pick again.
@@ -42,26 +42,26 @@ pub struct LocalController {
     /// Which speaker channel(s) the received audio reaches (#654).
     routing: AudioRouting,
     /// Where this radio's `radio.json` lives — radio 0 is the legacy root.
-    store: sdroxide_config::Store,
+    store: sdrcrow_config::Store,
     /// Answers to the probes this controller runs on a thread rather than in
     /// [`RadioController::probe`] itself, handed out by
     /// [`RadioController::poll_probe`]. The sender is cloned into each thread.
     // Why: the map's receiver check (`DeviceProbe::PublicSdrCheck`) is asked
     //      on a click, up to six at once at three seconds each; answered in
     //      `probe` it would freeze the window for as long.
-    bg_probe_tx: std::sync::mpsc::Sender<sdroxide_types::ProbeAnswer>,
-    bg_probe_rx: std::sync::mpsc::Receiver<sdroxide_types::ProbeAnswer>,
+    bg_probe_tx: std::sync::mpsc::Sender<sdrcrow_types::ProbeAnswer>,
+    bg_probe_rx: std::sync::mpsc::Receiver<sdrcrow_types::ProbeAnswer>,
 }
 
 impl LocalController {
     pub fn new(
         mut handles: EngineHandles,
-        audio_out: Option<sdroxide_audio::AudioOutput>,
-        pending_mic: Option<sdroxide_audio::PendingInput>,
+        audio_out: Option<sdrcrow_audio::AudioOutput>,
+        pending_mic: Option<sdrcrow_audio::PendingInput>,
         out_name: Option<String>,
         in_name: Option<String>,
         routing: AudioRouting,
-        store: sdroxide_config::Store,
+        store: sdrcrow_config::Store,
     ) -> Self {
         let (bg_probe_tx, bg_probe_rx) = std::sync::mpsc::channel();
         LocalController {
@@ -123,13 +123,13 @@ impl LocalController {
             MicAction::Retry => {
                 self.mic_retry_at = Some(now + MIC_RETRY);
                 self.pending_mic =
-                    Some(sdroxide_audio::start_input_background(self.in_name.clone(), 48_000));
+                    Some(sdrcrow_audio::start_input_background(self.in_name.clone(), 48_000));
             }
         }
     }
 
     fn persist_selection(&self) {
-        let mut s = sdroxide_config::Settings::load();
+        let mut s = sdrcrow_config::Settings::load();
         s.audio_output = self.out_name.clone();
         s.audio_input = self.in_name.clone();
         s.audio_routing = self.routing;
@@ -147,7 +147,7 @@ impl RadioController for LocalController {
         // selection is, and only for a LOCAL radio — a remote session's
         // config.toml is on the client machine, which is the wrong one.
         if let Command::SetSwrGuard { enabled, limit } = cmd {
-            let mut s = sdroxide_config::Settings::load();
+            let mut s = sdrcrow_config::Settings::load();
             s.swr_guard = enabled;
             s.swr_limit = limit;
             if let Err(e) = s.save() {
@@ -183,8 +183,8 @@ impl RadioController for LocalController {
 
     fn audio_devices(&self) -> Option<AudioDevices> {
         Some(AudioDevices {
-            outputs: sdroxide_audio::output_device_names(),
-            inputs: sdroxide_audio::input_device_names(),
+            outputs: sdrcrow_audio::output_device_names(),
+            inputs: sdrcrow_audio::input_device_names(),
             selected_output: self.out_name.clone(),
             selected_input: self.in_name.clone(),
             routing: self.routing,
@@ -195,7 +195,7 @@ impl RadioController for LocalController {
         if output {
             // Drop the old stream first so an exclusive device is released.
             self.audio_out = None;
-            match sdroxide_audio::start_output(name.as_deref(), 48_000, self.routing) {
+            match sdrcrow_audio::start_output(name.as_deref(), 48_000, self.routing) {
                 Ok((out, producer)) => {
                     let out_rate = out.sample_rate;
                     self.audio_out = Some(out);
@@ -219,7 +219,7 @@ impl RadioController for LocalController {
             self.mic_in = None;
             self.mic_retry_at = None;
             let _ = self.swap_tx.send(EngineSwap::Input(None));
-            self.pending_mic = Some(sdroxide_audio::start_input_background(name.clone(), 48_000));
+            self.pending_mic = Some(sdrcrow_audio::start_input_background(name.clone(), 48_000));
             self.in_name = name;
         }
         self.persist_selection();
@@ -240,7 +240,7 @@ impl RadioController for LocalController {
     /// [`crate::devices`]. Answered inline: the radio is on this machine, and
     /// the settings dialog calls this after its window closure rather than
     /// during it, so a blocking scan costs one frame and nothing else.
-    fn probe(&mut self, req: sdroxide_types::DeviceProbe) -> Option<sdroxide_types::ProbeAnswer> {
+    fn probe(&mut self, req: sdrcrow_types::DeviceProbe) -> Option<sdrcrow_types::ProbeAnswer> {
         // Named, because one of the questions is about a radio rather than
         // about this machine: the diagnostic report is this radio's session,
         // and on a station with two of a kind the other one's is worse than
@@ -251,14 +251,14 @@ impl RadioController for LocalController {
         // Effect: returns `None` for it, as a remote controller does, which
         // the UI already treats as "the answer comes later".
         // Fails: a thread that cannot be spawned answers in place instead.
-        if matches!(req, sdroxide_types::DeviceProbe::PublicSdrCheck { .. }) {
+        if matches!(req, sdrcrow_types::DeviceProbe::PublicSdrCheck { .. }) {
             // What the thread needs, taken out of `self` before it starts.
             let tx = self.bg_probe_tx.clone();
             let id = self.store.radio_id();
             // A copy for the thread; `req` stays here for the fallback below.
             let req2 = req.clone();
             let spawned = std::thread::Builder::new()
-                .name("sdroxide-sdr-check".into())
+                .name("sdrcrow-sdr-check".into())
                 .spawn(move || {
                     // A send fails only when this controller is gone, and then
                     // nobody is waiting for the answer.
@@ -274,7 +274,7 @@ impl RadioController for LocalController {
     /// Answers from the probe threads [`RadioController::probe`] started, one
     /// per call, drained each frame by the UI. Never blocks; `None` when none
     /// has arrived.
-    fn poll_probe(&mut self) -> Option<sdroxide_types::ProbeAnswer> {
+    fn poll_probe(&mut self) -> Option<sdrcrow_types::ProbeAnswer> {
         self.bg_probe_rx.try_recv().ok()
     }
 
@@ -307,9 +307,9 @@ impl RadioController for LocalController {
         // Logged stage by stage: a close that hangs here has to name which join
         // it is stuck on, or the only symptom is a window that will not go away.
         info!("shutdown: disconnecting the engine");
-        let (dead_cmd, _) = sdroxide_radio::crossbeam_channel::unbounded();
+        let (dead_cmd, _) = sdrcrow_radio::crossbeam_channel::unbounded();
         self.cmd_tx = dead_cmd;
-        let (dead_swap, _) = sdroxide_radio::crossbeam_channel::unbounded();
+        let (dead_swap, _) = sdrcrow_radio::crossbeam_channel::unbounded();
         self.swap_tx = dead_swap;
         info!("shutdown: closing the audio output");
         self.audio_out = None;

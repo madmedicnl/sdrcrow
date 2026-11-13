@@ -29,7 +29,7 @@
 # that line is dropped and the ACL still lands.
 #
 # Install:
-#   sudo cp 60-sdroxide-hydrasdr.rules /usr/lib/udev/rules.d/
+#   sudo cp 60-sdrcrow-hydrasdr.rules /usr/lib/udev/rules.d/
 #   sudo udevadm control --reload
 # then unplug and replug the receiver.
 #
@@ -40,7 +40,7 @@
 SUBSYSTEM=="usb", ATTRS{idVendor}=="38af", ATTRS{idProduct}=="0001", ENV{SDROXIDE_HYDRASDR}="1"
 
 # Prototype boards, flashed before that vendor id existed. This is the Airspy R2
-# and Mini's own id, and 60-sdroxide-airspy.rules already covers it — the line
+# and Mini's own id, and 60-sdrcrow-airspy.rules already covers it — the line
 # is repeated here so that installing only this file is still enough for a
 # prototype, and so that removing the Airspy rule does not silently break one.
 # Two udev rules granting the same access to the same device is a no-op, not a

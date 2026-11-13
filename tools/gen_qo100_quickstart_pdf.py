@@ -9,7 +9,7 @@ entirely off the Markdown, so the two are never out of sync:
 
   1. `--images` (re)draws the panel mock-ups as PNGs under
      `docs/images/qo100-quickstart/`, styled from the live palette in
-     `crates/sdroxide-ui/src/theme.rs` (DEFAULT theme) and the app's own
+     `crates/sdrcrow-ui/src/theme.rs` (DEFAULT theme) and the app's own
      Chakra Petch / Share Tech Mono fonts. The Markdown embeds them with plain
      `![]()` image syntax, so they also render on GitHub.
   2. `--pdf` turns each Markdown file (images and all) into the themed A4 PDF
@@ -34,7 +34,7 @@ import sys
 import tempfile
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-FONTS = ROOT / "crates/sdroxide-ui/assets/fonts"
+FONTS = ROOT / "crates/sdrcrow-ui/assets/fonts"
 IMAGES = ROOT / "docs/images/qo100-quickstart"
 DOCS = ROOT / "docs"
 
@@ -58,7 +58,7 @@ def b64(p):
     return base64.b64encode(p.read_bytes()).decode()
 
 
-# ---- palette (crates/sdroxide-ui/src/theme.rs, DEFAULT theme) — keep in sync ----
+# ---- palette (crates/sdrcrow-ui/src/theme.rs, DEFAULT theme) — keep in sync ----
 BG_DEEP = "#050810"
 PANEL = "#0b111e"
 INPUT_BG = "#04070e"

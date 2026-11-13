@@ -128,7 +128,7 @@ Het **SWL LOG**-venster is jouw verslag van wat er is gehoord:
   "MLA-30-loop"). Zet hem één keer; elke ontvangst legt hem vast.
 - **REPORT** schrijft de geselecteerde ontvangst uit als tekstrapport om naar de
   omroep te sturen — de cijfers, de **received-at**-locator en de antenne,
-  ondertekend met je rapportidentiteit en met **sdroxide_SWL** als programmanaam.
+  ondertekend met je rapportidentiteit en met **sdrcrow_SWL** als programmanaam.
 - **report sent** en **QSL received** volgen de hele lus, *horen → rapporteren →
   QSL afwachten*: **REPORT** stempelt de eerste, en een klein **sent**- of
   **QSL**-merk op de rij laat zien hoever elke vangst is.

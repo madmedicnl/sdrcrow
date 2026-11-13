@@ -1,0 +1,15 @@
+[package]
+name = "sdrcrow-rotator"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+sdrcrow-types.workspace = true
+crossbeam-channel.workspace = true
+tracing.workspace = true
+# Native-only serial transports (EasyComm II, GS-232A/B) for stations that would
+# rather not run a rotctld daemon. `default-features = false` drops `libudev`,
+# exactly as `sdrcrow-cat` does, so no libudev-dev is needed to build.
+# `sdrcrow-rotator` is never a dependency of a wasm-targeted crate — only
+# `sdrcrow-radio` uses it, and that is native — so this belt is safe.
+serialport = { version = "4.10", default-features = false }

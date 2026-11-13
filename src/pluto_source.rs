@@ -1,5 +1,5 @@
 //! An [`IqSource`] for one receive chain of an ADALM-Pluto driven over IIOD by
-//! the native driver in `sdroxide-pluto` — no libiio, no libSoapySDR.
+//! the native driver in `sdrcrow-pluto` — no libiio, no libSoapySDR.
 //!
 //! The AD9361 delivers wideband complex I/Q, so this drives the engine's normal
 //! DDC/demod path exactly like a SoapySDR device (`audio_mode = false`), and
@@ -11,7 +11,7 @@
 //! the first one's rig. What the chains do **not** have is their own LOs: the
 //! AD9361's receive chains share one synthesiser, so either radio retuning
 //! moves both, and the sibling learns of it through
-//! [`sdroxide_radio::ControlUpdate::Center`] — its span simply is somewhere
+//! [`sdrcrow_radio::ControlUpdate::Center`] — its span simply is somewhere
 //! else now. The transmitter belongs to the chain-0 radio.
 //!
 //! # Zero IF
@@ -25,10 +25,10 @@
 
 use std::time::Duration;
 
-use sdroxide_dsp::ComplexDcBlock;
-use sdroxide_pluto::{PlutoRig, PlutoRx};
-use sdroxide_radio::{Complex32, ControlUpdate, DC_BLOCK_HZ, IqSource, Result, lo_offset_for};
-use sdroxide_types::{PlutoAgc, PlutoConfig};
+use sdrcrow_dsp::ComplexDcBlock;
+use sdrcrow_pluto::{PlutoRig, PlutoRx};
+use sdrcrow_radio::{Complex32, ControlUpdate, DC_BLOCK_HZ, IqSource, Result, lo_offset_for};
+use sdrcrow_types::{PlutoAgc, PlutoConfig};
 
 use crate::device_registry::{DeviceKey, SharedDevice, registry};
 
@@ -98,7 +98,7 @@ impl PlutoSource {
         rx.set_rx_freq(center_hz);
         let rate = rig.sample_rate_hz();
         // Decided against the analog filter we set ourselves — see
-        // `sdroxide_radio::lo_offset_for` for why that filter is opened up
+        // `sdrcrow_radio::lo_offset_for` for why that filter is opened up
         // rather than left at the AD9361's default.
         let lo_offset = lo_offset_for(rate, rig.rf_bandwidth_hz());
         let label =
@@ -126,7 +126,7 @@ impl PlutoSource {
 
     /// What the device says it can do — the source of every figure in
     /// `pluto_caps`.
-    pub fn limits(&self) -> Option<&sdroxide_pluto::PlutoLimits> {
+    pub fn limits(&self) -> Option<&sdrcrow_pluto::PlutoLimits> {
         self.rig.as_deref().map(PlutoRig::limits)
     }
 

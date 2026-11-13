@@ -3,8 +3,8 @@
 //!
 //! One function, because there are two callers and they must not drift apart.
 //! The GUI asks it directly (the radio is on the same machine as the dialog),
-//! and in server mode the same function is handed to `sdroxide-server` as its
-//! [`sdroxide_server::ProbeFn`], so a remote or browser client's Rescan,
+//! and in server mode the same function is handed to `sdrcrow-server` as its
+//! [`sdrcrow_server::ProbeFn`], so a remote or browser client's Rescan,
 //! Discover and Test buttons describe *this* computer rather than the one the
 //! operator happens to be sitting at. Every backend is reached from the binary,
 //! which is why this lives here and not in a library crate.
@@ -13,7 +13,7 @@
 //! connection test — so callers run it off their hot path: the GUI after the
 //! settings window closure, the server on its own probe thread.
 
-use sdroxide_types::{DeviceProbe, ProbeAnswer, ProbeTest, ReportKind, TestKind};
+use sdrcrow_types::{DeviceProbe, ProbeAnswer, ProbeTest, ReportKind, TestKind};
 
 /// Answer one device question about this machine, asked by radio `radio` (its
 /// roster id).
@@ -26,47 +26,47 @@ pub fn probe(req: DeviceProbe, radio: u32) -> ProbeAnswer {
     match req {
         DeviceProbe::Host => ProbeAnswer::Host { soapy: cfg!(feature = "soapy") },
         DeviceProbe::RadioAudio => ProbeAnswer::RadioAudio {
-            inputs: sdroxide_audio::input_device_names(),
-            outputs: sdroxide_audio::output_device_names(),
+            inputs: sdrcrow_audio::input_device_names(),
+            outputs: sdrcrow_audio::output_device_names(),
         },
-        DeviceProbe::SerialPorts => ProbeAnswer::SerialPorts(sdroxide_cat::available_ports()),
-        DeviceProbe::RtlSdr => ProbeAnswer::RtlSdr(sdroxide_rtlsdr::list()),
-        DeviceProbe::Rx888 => ProbeAnswer::Rx888(sdroxide_rx888::list()),
-        DeviceProbe::AirspyHf => ProbeAnswer::AirspyHf(sdroxide_airspyhf::list()),
-        DeviceProbe::Airspy => ProbeAnswer::Airspy(sdroxide_airspy::list()),
-        DeviceProbe::HackRf => ProbeAnswer::HackRf(sdroxide_hackrf::list()),
-        DeviceProbe::HydraSdr => ProbeAnswer::HydraSdr(sdroxide_hydrasdr::list()),
-        DeviceProbe::SdrPlay => ProbeAnswer::SdrPlay(sdroxide_sdrplay::list()),
-        DeviceProbe::Elad => ProbeAnswer::Elad(sdroxide_elad::list()),
-        DeviceProbe::Lime => ProbeAnswer::Lime(sdroxide_lime::list()),
+        DeviceProbe::SerialPorts => ProbeAnswer::SerialPorts(sdrcrow_cat::available_ports()),
+        DeviceProbe::RtlSdr => ProbeAnswer::RtlSdr(sdrcrow_rtlsdr::list()),
+        DeviceProbe::Rx888 => ProbeAnswer::Rx888(sdrcrow_rx888::list()),
+        DeviceProbe::AirspyHf => ProbeAnswer::AirspyHf(sdrcrow_airspyhf::list()),
+        DeviceProbe::Airspy => ProbeAnswer::Airspy(sdrcrow_airspy::list()),
+        DeviceProbe::HackRf => ProbeAnswer::HackRf(sdrcrow_hackrf::list()),
+        DeviceProbe::HydraSdr => ProbeAnswer::HydraSdr(sdrcrow_hydrasdr::list()),
+        DeviceProbe::SdrPlay => ProbeAnswer::SdrPlay(sdrcrow_sdrplay::list()),
+        DeviceProbe::Elad => ProbeAnswer::Elad(sdrcrow_elad::list()),
+        DeviceProbe::Lime => ProbeAnswer::Lime(sdrcrow_lime::list()),
         DeviceProbe::Soapy => ProbeAnswer::Soapy(soapy_devices()),
-        DeviceProbe::Hpsdr => ProbeAnswer::Hpsdr(sdroxide_hpsdr::discover_default()),
+        DeviceProbe::Hpsdr => ProbeAnswer::Hpsdr(sdrcrow_hpsdr::discover_default()),
         DeviceProbe::SmartSdr => ProbeAnswer::SmartSdr(crate::smartsdr_source::discover()),
-        DeviceProbe::Pluto => ProbeAnswer::Pluto(sdroxide_pluto::discover_default()),
+        DeviceProbe::Pluto => ProbeAnswer::Pluto(sdrcrow_pluto::discover_default()),
         // The one probe that asks about the internet rather than about this
         // machine. It still belongs here: this is the computer that will hold
         // the connection, so it is the one whose reachability decides whether a
         // receiver in the list is any use.
         DeviceProbe::PublicSdrs { refresh } => {
-            ProbeAnswer::PublicSdrs(Box::new(sdroxide_config::public_sdr_directory(refresh)))
+            ProbeAnswer::PublicSdrs(Box::new(sdrcrow_config::public_sdr_directory(refresh)))
         }
         DeviceProbe::Fobos => ProbeAnswer::Fobos(fobos_devices()),
         DeviceProbe::Test(ProbeTest::Tci(address)) => {
             // The one test that can say a failed connect as data, so the
             // interface words it in the operator's language.
-            match sdroxide_tci::test_connection(&address, std::time::Duration::from_secs(3)) {
+            match sdrcrow_tci::test_connection(&address, std::time::Duration::from_secs(3)) {
                 Ok(s) => ProbeAnswer::Test(TestKind::Tci, Ok(s)),
-                Err(sdroxide_tci::TestError::Connect(f)) => {
+                Err(sdrcrow_tci::TestError::Connect(f)) => {
                     ProbeAnswer::TestFailed(TestKind::Tci, f)
                 }
-                Err(sdroxide_tci::TestError::Other(m)) => {
+                Err(sdrcrow_tci::TestError::Other(m)) => {
                     ProbeAnswer::Test(TestKind::Tci, Err(m))
                 }
             }
         }
         DeviceProbe::Test(t) => ProbeAnswer::Test(t.kind(), test(&t)),
         DeviceProbe::Report(k) => ProbeAnswer::Report(k, report(k, radio)),
-        DeviceProbe::Relays => ProbeAnswer::Relays(sdroxide_relay::list()),
+        DeviceProbe::Relays => ProbeAnswer::Relays(sdrcrow_relay::list()),
         DeviceProbe::PublicSdrCheck { network, address } => {
             let result = public_sdr_check(network, &address);
             ProbeAnswer::PublicSdrCheck { network, address, result }
@@ -87,15 +87,15 @@ pub fn probe(req: DeviceProbe, radio: u32) -> ProbeAnswer {
 //      Check nach 500 ms ein Connection-Test". The same tests the settings'
 //      "Test connection" runs, so the map and the dialog agree about a receiver.
 fn public_sdr_check(
-    network: sdroxide_types::PublicSdrNetwork,
+    network: sdrcrow_types::PublicSdrNetwork,
     address: &str,
 ) -> Result<String, String> {
-    use sdroxide_types::PublicSdrNetwork as N;
+    use sdrcrow_types::PublicSdrNetwork as N;
     match network {
         // `/status` over HTTP: up, users, and whether non-browser apps may in.
-        N::KiwiSdr => sdroxide_kiwisdr::test_connection(address, CHECK_TIMEOUT),
+        N::KiwiSdr => sdrcrow_kiwisdr::test_connection(address, CHECK_TIMEOUT),
         // Hello, device info, hang up; no stream is started.
-        N::SpyServer => sdroxide_spyserver::test_connection(address, CHECK_TIMEOUT),
+        N::SpyServer => sdrcrow_spyserver::test_connection(address, CHECK_TIMEOUT),
         // Nothing here speaks these protocols yet, so the honest check is the
         // lowest one: does anything accept a connection on that port.
         N::SdrList => {
@@ -127,12 +127,12 @@ const CHECK_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(3);
 
 /// `fobos_rx_list_devices`, translated into the wasm-safe type. `libfobos`'s
 /// own `DevInfo` also carries the index `fobos_rx_open` wants, which is not
-/// here: `sdroxide-fobos::device::open` re-derives it by matching the serial
+/// here: `sdrcrow-fobos::device::open` re-derives it by matching the serial
 /// again, the same lookup-by-serial every other backend's config uses.
-fn fobos_devices() -> Vec<sdroxide_types::FobosDevice> {
-    sdroxide_fobos::list()
+fn fobos_devices() -> Vec<sdrcrow_types::FobosDevice> {
+    sdrcrow_fobos::list()
         .into_iter()
-        .map(|d| sdroxide_types::FobosDevice { serial: d.serial })
+        .map(|d| sdrcrow_types::FobosDevice { serial: d.serial })
         .collect()
 }
 
@@ -141,21 +141,21 @@ fn fobos_devices() -> Vec<sdroxide_types::FobosDevice> {
 /// they need to see named. The *automatic* pick filters it (see
 /// `selectable_soapy_devices` in main.rs).
 #[cfg(feature = "soapy")]
-fn soapy_devices() -> Vec<sdroxide_types::SoapyDeviceInfo> {
-    sdroxide_radio::enumerate_devices("")
+fn soapy_devices() -> Vec<sdrcrow_types::SoapyDeviceInfo> {
+    sdrcrow_radio::enumerate_devices("")
         .unwrap_or_else(|e| {
             tracing::warn!("SoapySDR enumeration failed: {e}");
             Vec::new()
         })
         .into_iter()
-        .map(|d| sdroxide_types::SoapyDeviceInfo { driver: d.driver, label: d.label, args: d.args })
+        .map(|d| sdrcrow_types::SoapyDeviceInfo { driver: d.driver, label: d.label, args: d.args })
         .collect()
 }
 
 /// Nothing to enumerate in a build without SoapySDR — and the interface is not
 /// offered either, so nobody can be looking at this list.
 #[cfg(not(feature = "soapy"))]
-fn soapy_devices() -> Vec<sdroxide_types::SoapyDeviceInfo> {
+fn soapy_devices() -> Vec<sdrcrow_types::SoapyDeviceInfo> {
     Vec::new()
 }
 
@@ -167,22 +167,22 @@ fn test(t: &ProbeTest) -> Result<String, String> {
     use std::time::Duration;
     match t {
         ProbeTest::Tci(address) => {
-            sdroxide_tci::test_connection(address, Duration::from_secs(3)).map_err(|e| e.to_string())
+            sdrcrow_tci::test_connection(address, Duration::from_secs(3)).map_err(|e| e.to_string())
         }
         ProbeTest::SpyServer(address) => {
-            sdroxide_spyserver::test_connection(address, Duration::from_secs(3))
+            sdrcrow_spyserver::test_connection(address, Duration::from_secs(3))
         }
         ProbeTest::SmartSdr(address) => {
-            sdroxide_smartsdr::test_connection(address, Duration::from_secs(3))
+            sdrcrow_smartsdr::test_connection(address, Duration::from_secs(3))
         }
         ProbeTest::Pluto(address) => {
-            sdroxide_pluto::test_connection(address, Duration::from_secs(3))
+            sdrcrow_pluto::test_connection(address, Duration::from_secs(3))
         }
         ProbeTest::Kiwi(address) => {
-            sdroxide_kiwisdr::test_connection(address, Duration::from_secs(3))
+            sdrcrow_kiwisdr::test_connection(address, Duration::from_secs(3))
         }
         ProbeTest::IcomNet(cfg) => {
-            sdroxide_icomnet::test_connection(sdroxide_icomnet::IcomNetOptions {
+            sdrcrow_icomnet::test_connection(sdrcrow_icomnet::IcomNetOptions {
                 address: cfg.address.clone(),
                 control_port: cfg.control_port,
                 username: cfg.username.clone(),
@@ -210,40 +210,40 @@ fn test(t: &ProbeTest) -> Result<String, String> {
 /// bus-attached backends still keep one trace apiece; two of a kind on one
 /// station is a rarity there, and the trace names the serial it opened.
 fn report(kind: ReportKind, radio: u32) -> String {
-    let scoped = || sdroxide_config::Store::radio(radio).load_radio_config();
+    let scoped = || sdrcrow_config::Store::radio(radio).load_radio_config();
     match kind {
         ReportKind::IcomNet => crate::icomnet_source::diagnostics_or_hint(&scoped().icomnet),
         ReportKind::SmartSdr => crate::smartsdr_source::diagnostics_or_hint(&scoped().smartsdr),
-        ReportKind::Pluto => sdroxide_pluto::diagnostics().unwrap_or_else(|| {
+        ReportKind::Pluto => sdrcrow_pluto::diagnostics().unwrap_or_else(|| {
             "No PlutoSDR session has run yet — press Test connection or \
              Apply / reconnect first."
                 .to_string()
         }),
-        ReportKind::AirspyHf => sdroxide_airspyhf::diagnostics().unwrap_or_else(|| {
+        ReportKind::AirspyHf => sdrcrow_airspyhf::diagnostics().unwrap_or_else(|| {
             "No Airspy HF+ session has run yet — press Apply / reconnect \
-             first, or run `cargo run -p sdroxide-airspyhf --example probe`."
+             first, or run `cargo run -p sdrcrow-airspyhf --example probe`."
                 .to_string()
         }),
-        ReportKind::Airspy => sdroxide_airspy::diagnostics().unwrap_or_else(|| {
+        ReportKind::Airspy => sdrcrow_airspy::diagnostics().unwrap_or_else(|| {
             "No Airspy R2/Mini session has run yet — press Apply / reconnect \
-             first, or run `cargo run -p sdroxide-airspy --example probe`."
+             first, or run `cargo run -p sdrcrow-airspy --example probe`."
                 .to_string()
         }),
-        ReportKind::HackRf => sdroxide_hackrf::diagnostics().unwrap_or_else(|| {
+        ReportKind::HackRf => sdrcrow_hackrf::diagnostics().unwrap_or_else(|| {
             "No HackRF session has run yet — press Apply / reconnect first.".to_string()
         }),
-        ReportKind::HydraSdr => sdroxide_hydrasdr::diagnostics().unwrap_or_else(|| {
+        ReportKind::HydraSdr => sdrcrow_hydrasdr::diagnostics().unwrap_or_else(|| {
             "No HydraSDR RFOne session has run yet — press Apply / reconnect \
-             first, or run `cargo run -p sdroxide-hydrasdr --example probe`."
+             first, or run `cargo run -p sdrcrow-hydrasdr --example probe`."
                 .to_string()
         }),
-        ReportKind::Elad => sdroxide_elad::diagnostics().unwrap_or_else(|| {
+        ReportKind::Elad => sdrcrow_elad::diagnostics().unwrap_or_else(|| {
             "No ELAD session has run yet — press Apply / reconnect first, or \
-             run `cargo run -p sdroxide-elad --example probe`."
+             run `cargo run -p sdrcrow-elad --example probe`."
                 .to_string()
         }),
         ReportKind::Lime => lime_report(),
-        ReportKind::Relay => sdroxide_relay::diagnostics().unwrap_or_else(|| {
+        ReportKind::Relay => sdrcrow_relay::diagnostics().unwrap_or_else(|| {
             "No T/R switch has been opened yet — set one up in Settings \u{2192} T/R switch and \
              press APPLY first."
                 .to_string()
@@ -261,10 +261,10 @@ fn report(kind: ReportKind, radio: u32) -> String {
 /// operator who has pressed the button too early needs.
 fn lime_report() -> String {
     let mut out = String::new();
-    if let Some(radio) = sdroxide_lime::diagnostics() {
+    if let Some(radio) = sdrcrow_lime::diagnostics() {
         out.push_str(&radio);
     }
-    if let Some(rfe) = sdroxide_limerfe::diagnostics() {
+    if let Some(rfe) = sdrcrow_limerfe::diagnostics() {
         if !out.is_empty() {
             out.push('\n');
         }
@@ -273,8 +273,8 @@ fn lime_report() -> String {
     }
     if out.is_empty() {
         return "No LimeSDR session has run yet — press Apply / reconnect first, or \
-                run `cargo run -p sdroxide-lime --example probe`."
+                run `cargo run -p sdrcrow-lime --example probe`."
             .to_string();
     }
-    format!("{out}\n{}\n", sdroxide_lime::trace::FIELD_REPORT_HINT)
+    format!("{out}\n{}\n", sdrcrow_lime::trace::FIELD_REPORT_HINT)
 }

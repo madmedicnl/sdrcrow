@@ -13,8 +13,8 @@ use std::sync::Arc;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{Duration, Instant};
 
-use sdroxide_radio::{Complex32, EngineConfig, IqSource, Result, start_engine};
-use sdroxide_types::{Command, DeviceCaps, SpectrumConfig};
+use sdrcrow_radio::{Complex32, EngineConfig, IqSource, Result, start_engine};
+use sdrcrow_types::{Command, DeviceCaps, SpectrumConfig};
 
 const CENTER: f64 = 89_900_000.0;
 

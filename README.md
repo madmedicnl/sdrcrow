@@ -1,7 +1,7 @@
 # SDR Oxide Brown
 
-> **Windows download** — [**installer (`.msi`)**](https://github.com/madmedicnl/sdroxide-brown/releases/latest/download/sdroxide-windows-x86_64.msi)
-> · [**portable `.zip`** (contains `sdroxide.exe`)](https://github.com/madmedicnl/sdroxide-brown/releases/latest/download/sdroxide-windows-x86_64.zip)
+> **Windows download** — [**installer (`.msi`)**](https://github.com/madmedicnl/sdroxide-brown/releases/latest/download/sdrcrow-windows-x86_64.msi)
+> · [**portable `.zip`** (contains `sdroxide.exe`)](https://github.com/madmedicnl/sdroxide-brown/releases/latest/download/sdrcrow-windows-x86_64.zip)
 > · [every platform and build](https://github.com/madmedicnl/sdroxide-brown/releases/latest)
 >
 > Linux (AppImage · `.deb` · tarball) and macOS (`.dmg`) are on the same
@@ -254,7 +254,7 @@ client — are in [`docs/images/`](docs/images).
 Every release carries, for Linux:
 
 - an **AppImage** — one file, no install: download
-  `sdroxide-<version>-linux-x86_64.AppImage`, `chmod +x` it and run it. Built
+  `sdrcrow-<version>-linux-x86_64.AppImage`, `chmod +x` it and run it. Built
   with every native driver compiled in.
 - a **.deb**, which installs the udev rules and the menu entry for you.
 - a **portable tarball**, for anything else.
@@ -338,17 +338,17 @@ cargo build --release
 
 ```sh
 cargo install --locked trunk
-cd crates/sdroxide-web && trunk build --release      # output in ./dist
+cd crates/sdrcrow-web && trunk build --release      # output in ./dist
 ```
 
 To bake the client into the binary, build it first, then:
 
 ```sh
-(cd crates/sdroxide-web && trunk build --release) && cargo build --release --features embed-web
+(cd crates/sdrcrow-web && trunk build --release) && cargo build --release --features embed-web
 ```
 
 Without `embed-web`, `--server` still serves native `--connect` clients; pass
-`--web-root crates/sdroxide-web/dist` to serve a Trunk build from disk.
+`--web-root crates/sdrcrow-web/dist` to serve a Trunk build from disk.
 
 </details>
 
@@ -362,13 +362,13 @@ package:
 |---|---|
 | `/usr/bin/sdroxide` | the binary — client and server are the same program |
 | `/usr/share/applications/sdroxide.desktop` | the desktop menu entry |
-| `/usr/lib/udev/rules.d/60-sdroxide-*.rules` | 9 dongle rules, so no root is needed |
+| `/usr/lib/udev/rules.d/60-sdrcrow-*.rules` | 9 dongle rules, so no root is needed |
 | `/usr/share/icons/hicolor/*/apps/sdroxide-brown.{png,svg}` | the icon, nine sizes |
 | `/usr/share/sdroxide/voices/` | the speech voice, for spoken announcements |
 | `/usr/share/doc/sdroxide/` | README, `copyright` and the four licence notices |
 
 ```sh
-sudo apt purge sdroxide-soapysdr      # or sdroxide — removes every path above
+sudo apt purge sdrcrow-soapysdr      # or sdroxide — removes every path above
 rm -rf ~/.config/sdroxide-brown      # every setting, logbook and recording it wrote
 ```
 
@@ -392,7 +392,7 @@ other program using `libsoapysdr0.8`.
 ```sh
 sdroxide --freq 14074000 --mode ft8               # native desktop, 20 m FT8
 sdroxide --server                                 # server + UI at http://<host>:4950
-sdroxide --server --web-root crates/sdroxide-web/dist
+sdroxide --server --web-root crates/sdrcrow-web/dist
 sdroxide --connect 192.168.1.10:4950              # native UI driving a remote server
 ```
 
@@ -430,7 +430,7 @@ one core. `WGPU_BACKEND=vulkan sdroxide` takes Vulkan back where it is steady.
 | `--server` | Run as a server: HTTP web client + WebSocket streaming backend. |
 | `--connect <HOST[:PORT]>` | Connect as a native remote client to a running server. |
 | `--port <PORT>` | Server port (default: from config, `4950`). |
-| `--web-root <DIR>` | Directory with the Trunk-built web client, e.g. `crates/sdroxide-web/dist` (default: embedded assets with `--features embed-web`). |
+| `--web-root <DIR>` | Directory with the Trunk-built web client, e.g. `crates/sdrcrow-web/dist` (default: embedded assets with `--features embed-web`). |
 | `--fft <N>` | Spectrum FFT size (default `4096`). |
 | `--swl` | Start in SWL mode. |
 | `--oob-tx` | Lift the amateur-band transmit lockout for this run (licensed out-of-band use; not persisted). |

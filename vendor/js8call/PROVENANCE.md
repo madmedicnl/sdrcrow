@@ -1,14 +1,14 @@
 # JS8 protocol constants — provenance
 
-Every JS8 constant in `crates/sdroxide-digi/src/js8/` is transcribed from the
+Every JS8 constant in `crates/sdrcrow-digi/src/js8/` is transcribed from the
 JS8Call source, not reconstructed. This file records where each one came from,
 so a future reader can re-derive any of them without guessing.
 
 **Upstream:** <https://github.com/js8call/js8call>
 **Commit:** `a7ff1be0b389d287fdc56e2ea0d06962aa68127d` (2025-12-05)
 **License:** GPL-3.0-or-later — compatible with sdroxide, which is GPL-3.0-or-later
-because `sdroxide-digi` links `mfsk-core`. Everything derived from JS8Call lives
-in `sdroxide-digi` for the same reason: the permissive crates and the wasm client
+because `sdrcrow-digi` links `mfsk-core`. Everything derived from JS8Call lives
+in `sdrcrow-digi` for the same reason: the permissive crates and the wasm client
 must link none of it.
 
 Paths below are relative to a JS8Call checkout.
@@ -110,13 +110,13 @@ column weight uniformly 3). Both assertions run as unit tests in `js8/ldpc.rs`.
 These are necessary but not sufficient — they prove the tables are
 self-consistent, not that they are JS8's. The sufficient evidence is below:
 frames JS8Call's own decoder reads, and vectors its own encoder produced
-(`crates/sdroxide-digi/tests/js8_varicode.rs`).
+(`crates/sdrcrow-digi/tests/js8_varicode.rs`).
 
 ## Transmit verified against JS8Call's decoder
 
 JS8Call's standalone decoder (`js8 -8 -b <A|B|C|E> -d 3 <file.wav>`, from the
 2.2.0 package) was run against WAVs written by
-`cargo run -p sdroxide-digi --example js8_wav -- encode …`:
+`cargo run -p sdrcrow-digi --example js8_wav -- encode …`:
 
 | Speed | Submode | Combinations | Exact |
 |---|---|---|---|
@@ -198,7 +198,7 @@ filter rather than the band, and compressed a 30 dB span into 8 dB.
 
 `tools/gen_js8_varicode_vectors.sh` compiles JS8Call's own `varicode.cpp`
 (plus `jsc.cpp` and the dictionary) against Qt6 and runs it, emitting
-`crates/sdroxide-digi/tests/js8_varicode_vectors.rs`. The expected values in the
+`crates/sdrcrow-digi/tests/js8_varicode_vectors.rs`. The expected values in the
 message-layer tests are therefore produced by the reference implementation, not
 by a second reading of it — which matters here more than anywhere else in the
 mode, because none of this encoding is derivable: it carries per-country
@@ -284,7 +284,7 @@ them only when the upstream commit above changes:
 python3 tools/gen_js8_ldpc.py ~/Development/js8call
 python3 tools/gen_js8_jsc.py  ~/Development/js8call
 ./tools/gen_js8_varicode_vectors.sh ~/Development/js8call \
-    > crates/sdroxide-digi/tests/js8_varicode_vectors/mod.rs
+    > crates/sdrcrow-digi/tests/js8_varicode_vectors/mod.rs
 ```
 
 The first two refuse to emit anything that fails their internal cross-checks;
@@ -294,8 +294,8 @@ Generated artefacts, all committed:
 
 | File | From |
 |---|---|
-| `crates/sdroxide-digi/src/js8/ldpc_tables.rs` | `JS8.cpp` Mn/Nm/generator |
-| `crates/sdroxide-digi/src/js8/jsc_dict.bin` | `jsc_map.cpp` (1.0 MB deflated) |
-| `crates/sdroxide-digi/tests/js8_varicode_vectors/mod.rs` | `varicode.cpp`, linked and run |
+| `crates/sdrcrow-digi/src/js8/ldpc_tables.rs` | `JS8.cpp` Mn/Nm/generator |
+| `crates/sdrcrow-digi/src/js8/jsc_dict.bin` | `jsc_map.cpp` (1.0 MB deflated) |
+| `crates/sdrcrow-digi/tests/js8_varicode_vectors/mod.rs` | `varicode.cpp`, linked and run |
 
 

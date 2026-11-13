@@ -132,7 +132,7 @@ La finestra **SWL LOG** è la tua traccia di ciò che è stato sentito:
   MLA-30»). Impostala una volta; ogni ricezione la cattura.
 - **REPORT** scrive la ricezione selezionata come rapporto testuale da inviare
   all'emittente — le cifre, il locatore **received-at** e l'antenna, firmati con
-  la tua identità di rapporto e con **sdroxide_SWL** come nome del programma.
+  la tua identità di rapporto e con **sdrcrow_SWL** come nome del programma.
 - **report sent** e **QSL received** seguono tutto il ciclo, *sentire →
   rapportare → attendere il QSL*: **REPORT** timbra il primo, e un piccolo segno
   **sent** o **QSL** sulla riga mostra a che punto è ogni presa.

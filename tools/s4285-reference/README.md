@@ -44,7 +44,7 @@ do not include what they use.
 In the tree, with those two files in place:
 
 ```sh
-cargo test -p sdroxide-dsp --release --lib \
+cargo test -p sdrcrow-dsp --release --lib \
     the_reference_soft_decisions_through_our_chain -- --ignored --nocapture
 ```
 

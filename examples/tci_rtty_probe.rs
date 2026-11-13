@@ -12,8 +12,8 @@
 //!
 //! `cargo run --release --example tci_rtty_probe -- [seconds]`
 
-use sdroxide_dsp::{Complex32, RttyRx, bandpass_taps};
-use sdroxide_tci::{TciHandle, TciUpdate};
+use sdrcrow_dsp::{Complex32, RttyRx, bandpass_taps};
+use sdrcrow_tci::{TciHandle, TciUpdate};
 
 const IQ_RATE: f64 = 192_000.0;
 const AUDIO_RATE: f64 = 8_000.0;

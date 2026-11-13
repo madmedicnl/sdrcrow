@@ -34,7 +34,7 @@ all four are decided here instead of by hand:
 - **The RSP1 free: sdroxide must be closed**, because it holds the device.
 - `tools/rsp1-capture/target/release/rspcap` built, and
   `target/release/examples/decode_file` (`cargo build --release -p
-  sdroxide-olivia --example decode_file`).
+  sdrcrow-olivia --example decode_file`).
 
 Nothing here tunes the radio. Set the transmitter's dial by hand and pass `--hz`
 to match; the harness only listens.

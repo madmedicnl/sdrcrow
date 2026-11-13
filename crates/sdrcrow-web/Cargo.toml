@@ -1,0 +1,25 @@
+[package]
+name = "sdrcrow-web"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+sdrcrow-types.workspace = true
+sdrcrow-proto.workspace = true
+sdrcrow-version.workspace = true
+sdrcrow-ui = { workspace = true, features = ["remote"] }
+eframe = { version = "0.36.1", default-features = false, features = ["default_fonts", "wgpu", "persistence"] }
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+js-sys = "0.3"
+web-sys = { version = "0.3", features = [
+    "Window",
+    "Location",
+    "Document",
+    "HtmlCanvasElement",
+    # Asking the browser to keep this origin's storage instead of treating it
+    # as evictable — see `keep_storage` in main.rs.
+    "Navigator",
+    "StorageManager",
+] }
+console_error_panic_hook = "0.1"

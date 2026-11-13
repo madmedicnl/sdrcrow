@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate `crates/sdroxide-digi/src/js8/ldpc_tables.rs` from JS8Call source.
+"""Generate `crates/sdrcrow-digi/src/js8/ldpc_tables.rs` from JS8Call source.
 
 The LDPC(174,87) tables are large enough that hand-transcription would be a
 liability, so they are machine-extracted instead. Run this only when the
@@ -167,7 +167,7 @@ def main() -> None:
     verify(mn, nm, gen)
 
     out = pathlib.Path(__file__).resolve().parent.parent / (
-        "crates/sdroxide-digi/src/js8/ldpc_tables.rs"
+        "crates/sdrcrow-digi/src/js8/ldpc_tables.rs"
     )
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(emit(mn, nm, gen))

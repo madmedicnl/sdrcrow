@@ -5314,63 +5314,63 @@ dependencies = [
  "eframe",
  "num-complex",
  "rtrb",
- "sdroxide-airspy",
- "sdroxide-airspyhf",
- "sdroxide-audio",
- "sdroxide-cat",
- "sdroxide-config",
- "sdroxide-dsp",
- "sdroxide-elad",
- "sdroxide-fobos",
- "sdroxide-hackrf",
- "sdroxide-hpsdr",
- "sdroxide-hydrasdr",
- "sdroxide-icomnet",
- "sdroxide-kiwisdr",
- "sdroxide-lime",
- "sdroxide-limerfe",
- "sdroxide-net",
- "sdroxide-pluto",
- "sdroxide-proto",
- "sdroxide-radio",
- "sdroxide-relay",
- "sdroxide-rtlsdr",
- "sdroxide-rx888",
- "sdroxide-sdrplay",
- "sdroxide-server",
- "sdroxide-smartsdr",
- "sdroxide-spyserver",
- "sdroxide-tci",
- "sdroxide-types",
- "sdroxide-ui",
- "sdroxide-version",
+ "sdrcrow-airspy",
+ "sdrcrow-airspyhf",
+ "sdrcrow-audio",
+ "sdrcrow-cat",
+ "sdrcrow-config",
+ "sdrcrow-dsp",
+ "sdrcrow-elad",
+ "sdrcrow-fobos",
+ "sdrcrow-hackrf",
+ "sdrcrow-hpsdr",
+ "sdrcrow-hydrasdr",
+ "sdrcrow-icomnet",
+ "sdrcrow-kiwisdr",
+ "sdrcrow-lime",
+ "sdrcrow-limerfe",
+ "sdrcrow-net",
+ "sdrcrow-pluto",
+ "sdrcrow-proto",
+ "sdrcrow-radio",
+ "sdrcrow-relay",
+ "sdrcrow-rtlsdr",
+ "sdrcrow-rx888",
+ "sdrcrow-sdrplay",
+ "sdrcrow-server",
+ "sdrcrow-smartsdr",
+ "sdrcrow-spyserver",
+ "sdrcrow-tci",
+ "sdrcrow-types",
+ "sdrcrow-ui",
+ "sdrcrow-version",
  "tracing",
  "tracing-subscriber",
 ]
 
 [[package]]
-name = "sdroxide-adsb"
+name = "sdrcrow-adsb"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "num-complex",
- "sdroxide-dsp",
- "sdroxide-types",
+ "sdrcrow-dsp",
+ "sdrcrow-types",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-aircraft-history"
+name = "sdrcrow-aircraft-history"
 version = "2.3.0"
 dependencies = [
  "flate2",
- "sdroxide-aircraft-history",
+ "sdrcrow-aircraft-history",
  "serde",
  "serde_json",
 ]
 
 [[package]]
-name = "sdroxide-aircraft-online"
+name = "sdrcrow-aircraft-online"
 version = "2.3.0"
 dependencies = [
  "serde",
@@ -5379,21 +5379,21 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-airspy"
+name = "sdrcrow-airspy"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "nusb",
  "rtrb",
- "sdroxide-dsp",
- "sdroxide-types",
+ "sdrcrow-dsp",
+ "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
  "tracing-subscriber",
 ]
 
 [[package]]
-name = "sdroxide-airspyhf"
+name = "sdrcrow-airspyhf"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
@@ -5401,35 +5401,35 @@ dependencies = [
  "nusb",
  "rtrb",
  "rustfft",
- "sdroxide-dsp",
- "sdroxide-types",
+ "sdrcrow-dsp",
+ "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
  "tracing-subscriber",
 ]
 
 [[package]]
-name = "sdroxide-ais"
+name = "sdrcrow-ais"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "num-complex",
- "sdroxide-ax25",
- "sdroxide-dsp",
- "sdroxide-types",
+ "sdrcrow-ax25",
+ "sdrcrow-dsp",
+ "sdrcrow-types",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-aprs"
+name = "sdrcrow-aprs"
 version = "2.3.0"
 dependencies = [
- "sdroxide-types",
+ "sdrcrow-types",
  "thiserror 2.0.20",
 ]
 
 [[package]]
-name = "sdroxide-atchat"
+name = "sdrcrow-atchat"
 version = "2.3.0"
 dependencies = [
  "anyhow",
@@ -5450,20 +5450,20 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-audio"
+name = "sdrcrow-audio"
 version = "2.3.0"
 dependencies = [
  "alsa",
  "cpal",
  "rtrb",
- "sdroxide-dsp",
- "sdroxide-types",
+ "sdrcrow-dsp",
+ "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-ax25"
+name = "sdrcrow-ax25"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
@@ -5472,26 +5472,26 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-cat"
+name = "sdrcrow-cat"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "roxmltree",
  "rtrb",
- "sdroxide-types",
+ "sdrcrow-types",
  "serialport",
  "thiserror 2.0.20",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-config"
+name = "sdrcrow-config"
 version = "2.3.0"
 dependencies = [
  "directories",
  "encoding_rs",
  "flate2",
- "sdroxide-types",
+ "sdrcrow-types",
  "serde",
  "serde_json",
  "thiserror 2.0.20",
@@ -5501,33 +5501,33 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-dab"
+name = "sdrcrow-dab"
 version = "2.3.0"
 dependencies = [
  "cc",
  "dabradio",
  "num-complex",
- "sdroxide-dsp",
- "sdroxide-faad2",
- "sdroxide-types",
+ "sdrcrow-dsp",
+ "sdrcrow-faad2",
+ "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-deepcw"
+name = "sdrcrow-deepcw"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "rten",
  "rten-tensor",
  "rustfft",
- "sdroxide-dsp",
+ "sdrcrow-dsp",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-digi"
+name = "sdrcrow-digi"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
@@ -5540,15 +5540,15 @@ dependencies = [
  "num-complex",
  "rayon",
  "rustfft",
- "sdroxide-aprs",
- "sdroxide-atchat",
- "sdroxide-ax25",
- "sdroxide-deepcw",
- "sdroxide-dsp",
- "sdroxide-olivia",
- "sdroxide-rade",
- "sdroxide-s4285",
- "sdroxide-types",
+ "sdrcrow-aprs",
+ "sdrcrow-atchat",
+ "sdrcrow-ax25",
+ "sdrcrow-deepcw",
+ "sdrcrow-dsp",
+ "sdrcrow-olivia",
+ "sdrcrow-rade",
+ "sdrcrow-s4285",
+ "sdrcrow-types",
  "serde",
  "serde_json",
  "sha2 0.11.0",
@@ -5556,7 +5556,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-drm"
+name = "sdrcrow-drm"
 version = "2.3.0"
 dependencies = [
  "bindgen",
@@ -5564,16 +5564,16 @@ dependencies = [
  "hound",
  "num-complex",
  "rustfft",
- "sdroxide-dsp",
- "sdroxide-faad2",
- "sdroxide-types",
+ "sdrcrow-dsp",
+ "sdrcrow-faad2",
+ "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
  "tracing-subscriber",
 ]
 
 [[package]]
-name = "sdroxide-dsp"
+name = "sdrcrow-dsp"
 version = "2.3.0"
 dependencies = [
  "deep_filter",
@@ -5585,115 +5585,115 @@ dependencies = [
  "rtrb",
  "rubato 5.0.0",
  "rustfft",
- "sdroxide-types",
+ "sdrcrow-types",
 ]
 
 [[package]]
-name = "sdroxide-elad"
+name = "sdrcrow-elad"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "nusb",
  "rtrb",
- "sdroxide-dsp",
- "sdroxide-types",
+ "sdrcrow-dsp",
+ "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
  "tracing-subscriber",
 ]
 
 [[package]]
-name = "sdroxide-enigma"
+name = "sdrcrow-enigma"
 version = "2.3.0"
 
 [[package]]
-name = "sdroxide-faad2"
+name = "sdrcrow-faad2"
 version = "2.3.0"
 dependencies = [
  "cc",
 ]
 
 [[package]]
-name = "sdroxide-fobos"
+name = "sdrcrow-fobos"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "libloading 0.9.0",
  "rtrb",
- "sdroxide-dsp",
+ "sdrcrow-dsp",
  "thiserror 2.0.20",
  "tracing",
  "tracing-subscriber",
 ]
 
 [[package]]
-name = "sdroxide-hackrf"
+name = "sdrcrow-hackrf"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "nusb",
  "rtrb",
- "sdroxide-dsp",
- "sdroxide-types",
+ "sdrcrow-dsp",
+ "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
  "tracing-subscriber",
 ]
 
 [[package]]
-name = "sdroxide-hfdl"
+name = "sdrcrow-hfdl"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
- "sdroxide-dsp",
- "sdroxide-types",
+ "sdrcrow-dsp",
+ "sdrcrow-types",
  "serde_json",
  "tracing",
  "xng-mode-hfdl",
 ]
 
 [[package]]
-name = "sdroxide-hpsdr"
+name = "sdrcrow-hpsdr"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "network-interface",
  "rtrb",
- "sdroxide-types",
+ "sdrcrow-types",
  "socket2",
  "thiserror 2.0.20",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-hydrasdr"
+name = "sdrcrow-hydrasdr"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "nusb",
  "rtrb",
- "sdroxide-airspy",
- "sdroxide-dsp",
- "sdroxide-types",
+ "sdrcrow-airspy",
+ "sdrcrow-dsp",
+ "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
  "tracing-subscriber",
 ]
 
 [[package]]
-name = "sdroxide-icomnet"
+name = "sdrcrow-icomnet"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "rtrb",
- "sdroxide-types",
+ "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
  "tracing-subscriber",
 ]
 
 [[package]]
-name = "sdroxide-ism"
+name = "sdrcrow-ism"
 version = "2.3.0"
 dependencies = [
  "bindgen",
@@ -5701,27 +5701,27 @@ dependencies = [
  "cmake",
  "crossbeam-channel",
  "num-complex",
- "sdroxide-dsp",
- "sdroxide-types",
+ "sdrcrow-dsp",
+ "sdrcrow-types",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-kiss"
+name = "sdrcrow-kiss"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
- "sdroxide-ax25",
+ "sdrcrow-ax25",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-kiwisdr"
+name = "sdrcrow-kiwisdr"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "rtrb",
- "sdroxide-types",
+ "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
  "tracing-subscriber",
@@ -5730,25 +5730,25 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-lime"
+name = "sdrcrow-lime"
 version = "2.3.0"
 dependencies = [
  "libloading 0.9.0",
  "num-complex",
- "sdroxide-limerfe",
- "sdroxide-types",
+ "sdrcrow-limerfe",
+ "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
  "tracing-subscriber",
 ]
 
 [[package]]
-name = "sdroxide-limerfe"
+name = "sdrcrow-limerfe"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "libc",
- "sdroxide-types",
+ "sdrcrow-types",
  "serialport",
  "thiserror 2.0.20",
  "tracing",
@@ -5756,7 +5756,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-meshtastic"
+name = "sdrcrow-meshtastic"
 version = "2.3.0"
 dependencies = [
  "aes",
@@ -5764,22 +5764,22 @@ dependencies = [
  "ctr",
  "num-complex",
  "rustfft",
- "sdroxide-types",
+ "sdrcrow-types",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-midi"
+name = "sdrcrow-midi"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "midir",
- "sdroxide-types",
+ "sdrcrow-types",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-net"
+name = "sdrcrow-net"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
@@ -5787,7 +5787,7 @@ dependencies = [
  "ring",
  "roxmltree",
  "rustls",
- "sdroxide-types",
+ "sdrcrow-types",
  "serde",
  "serde_json",
  "thiserror 2.0.20",
@@ -5797,20 +5797,20 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-nrsc5"
+name = "sdrcrow-nrsc5"
 version = "2.3.0"
 dependencies = [
  "libloading 0.9.0",
  "num-complex",
  "rtrb",
- "sdroxide-dsp",
- "sdroxide-types",
+ "sdrcrow-dsp",
+ "sdrcrow-types",
  "tracing",
  "tracing-subscriber",
 ]
 
 [[package]]
-name = "sdroxide-olivia"
+name = "sdrcrow-olivia"
 version = "2.3.0"
 dependencies = [
  "cc",
@@ -5818,7 +5818,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-picup"
+name = "sdrcrow-picup"
 version = "2.3.0"
 dependencies = [
  "ab_glyph",
@@ -5827,52 +5827,52 @@ dependencies = [
  "image",
  "rustls",
  "rustls-platform-verifier",
- "sdroxide-types",
+ "sdrcrow-types",
  "sha2 0.10.9",
  "suppaftp",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-pluto"
+name = "sdrcrow-pluto"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "network-interface",
  "roxmltree",
  "rtrb",
- "sdroxide-types",
+ "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
  "tracing-subscriber",
 ]
 
 [[package]]
-name = "sdroxide-proto"
+name = "sdrcrow-proto"
 version = "2.3.0"
 dependencies = [
  "image",
  "postcard",
- "sdroxide-solar",
- "sdroxide-types",
+ "sdrcrow-solar",
+ "sdrcrow-types",
  "serde",
  "thiserror 2.0.20",
  "tungstenite 0.30.0",
 ]
 
 [[package]]
-name = "sdroxide-qo100"
+name = "sdrcrow-qo100"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "rustfft",
- "sdroxide-dsp",
- "sdroxide-types",
+ "sdrcrow-dsp",
+ "sdrcrow-types",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-r82xx"
+name = "sdrcrow-r82xx"
 version = "2.3.0"
 dependencies = [
  "thiserror 2.0.20",
@@ -5880,7 +5880,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-rade"
+name = "sdrcrow-rade"
 version = "2.3.0"
 dependencies = [
  "anyhow",
@@ -5892,13 +5892,13 @@ dependencies = [
  "hound",
  "num-complex",
  "rtrb",
- "sdroxide-dsp",
+ "sdrcrow-dsp",
  "thiserror 2.0.20",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-radio"
+name = "sdrcrow-radio"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
@@ -5906,37 +5906,37 @@ dependencies = [
  "num-complex",
  "rayon",
  "rtrb",
- "sdroxide-adsb",
- "sdroxide-ais",
- "sdroxide-aprs",
- "sdroxide-ax25",
- "sdroxide-config",
- "sdroxide-dab",
- "sdroxide-digi",
- "sdroxide-drm",
- "sdroxide-dsp",
- "sdroxide-hfdl",
- "sdroxide-ism",
- "sdroxide-kiss",
- "sdroxide-meshtastic",
- "sdroxide-midi",
- "sdroxide-net",
- "sdroxide-nrsc5",
- "sdroxide-picup",
- "sdroxide-qo100",
- "sdroxide-relay",
- "sdroxide-rigctld",
- "sdroxide-rotator",
- "sdroxide-skimmer",
- "sdroxide-solar",
- "sdroxide-sonde",
- "sdroxide-tci",
- "sdroxide-types",
- "sdroxide-vdl2",
- "sdroxide-vor",
- "sdroxide-winlink",
- "sdroxide-wsjtx",
- "sdroxide-wxsat",
+ "sdrcrow-adsb",
+ "sdrcrow-ais",
+ "sdrcrow-aprs",
+ "sdrcrow-ax25",
+ "sdrcrow-config",
+ "sdrcrow-dab",
+ "sdrcrow-digi",
+ "sdrcrow-drm",
+ "sdrcrow-dsp",
+ "sdrcrow-hfdl",
+ "sdrcrow-ism",
+ "sdrcrow-kiss",
+ "sdrcrow-meshtastic",
+ "sdrcrow-midi",
+ "sdrcrow-net",
+ "sdrcrow-nrsc5",
+ "sdrcrow-picup",
+ "sdrcrow-qo100",
+ "sdrcrow-relay",
+ "sdrcrow-rigctld",
+ "sdrcrow-rotator",
+ "sdrcrow-skimmer",
+ "sdrcrow-solar",
+ "sdrcrow-sonde",
+ "sdrcrow-tci",
+ "sdrcrow-types",
+ "sdrcrow-vdl2",
+ "sdrcrow-vor",
+ "sdrcrow-winlink",
+ "sdrcrow-wsjtx",
+ "sdrcrow-wxsat",
  "serialport",
  "shine-rs",
  "soapysdr",
@@ -5948,12 +5948,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-relay"
+name = "sdrcrow-relay"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "libc",
- "sdroxide-types",
+ "sdrcrow-types",
  "serialport",
  "thiserror 2.0.20",
  "tracing",
@@ -5962,70 +5962,70 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-rigctld"
+name = "sdrcrow-rigctld"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
- "sdroxide-types",
+ "sdrcrow-types",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-rotator"
+name = "sdrcrow-rotator"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
- "sdroxide-types",
+ "sdrcrow-types",
  "serialport",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-rtlsdr"
+name = "sdrcrow-rtlsdr"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "nusb",
  "rtrb",
- "sdroxide-r82xx",
- "sdroxide-types",
+ "sdrcrow-r82xx",
+ "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
  "tracing-subscriber",
 ]
 
 [[package]]
-name = "sdroxide-rx888"
+name = "sdrcrow-rx888"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "nusb",
  "rtrb",
- "sdroxide-dsp",
- "sdroxide-r82xx",
- "sdroxide-types",
+ "sdrcrow-dsp",
+ "sdrcrow-r82xx",
+ "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
  "tracing-subscriber",
 ]
 
 [[package]]
-name = "sdroxide-s4285"
+name = "sdrcrow-s4285"
 version = "2.3.0"
 dependencies = [
  "cc",
  "hound",
- "sdroxide-dsp",
+ "sdrcrow-dsp",
 ]
 
 [[package]]
-name = "sdroxide-sdrplay"
+name = "sdrcrow-sdrplay"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "libloading 0.9.0",
  "rtrb",
- "sdroxide-types",
+ "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
  "tracing-subscriber",
@@ -6033,7 +6033,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-server"
+name = "sdrcrow-server"
 version = "2.3.0"
 dependencies = [
  "axum",
@@ -6044,13 +6044,13 @@ dependencies = [
  "opusic-sys",
  "rtrb",
  "rust-embed",
- "sdroxide-aircraft-history",
- "sdroxide-aircraft-online",
- "sdroxide-config",
- "sdroxide-proto",
- "sdroxide-radio",
- "sdroxide-solar",
- "sdroxide-types",
+ "sdrcrow-aircraft-history",
+ "sdrcrow-aircraft-online",
+ "sdrcrow-config",
+ "sdrcrow-proto",
+ "sdrcrow-radio",
+ "sdrcrow-solar",
+ "sdrcrow-types",
  "serde",
  "serde_json",
  "sha2 0.11.0",
@@ -6066,25 +6066,25 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-skimmer"
+name = "sdrcrow-skimmer"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "num-complex",
  "rustfft",
- "sdroxide-deepcw",
- "sdroxide-dsp",
- "sdroxide-types",
+ "sdrcrow-deepcw",
+ "sdrcrow-dsp",
+ "sdrcrow-types",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-smartsdr"
+name = "sdrcrow-smartsdr"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "rtrb",
- "sdroxide-types",
+ "sdrcrow-types",
  "socket2",
  "thiserror 2.0.20",
  "tracing",
@@ -6092,14 +6092,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-solar"
+name = "sdrcrow-solar"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "image",
  "roxmltree",
- "sdroxide-config",
- "sdroxide-types",
+ "sdrcrow-config",
+ "sdrcrow-types",
  "serde",
  "serde_json",
  "sgp4",
@@ -6108,19 +6108,19 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-sonde"
+name = "sdrcrow-sonde"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "rustfft",
- "sdroxide-dsp",
- "sdroxide-types",
+ "sdrcrow-dsp",
+ "sdrcrow-types",
  "tracing",
  "xng-mode-sonde",
 ]
 
 [[package]]
-name = "sdroxide-speech"
+name = "sdrcrow-speech"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
@@ -6129,9 +6129,9 @@ dependencies = [
  "rten",
  "rten-tensor",
  "rtrb",
- "sdroxide-audio",
- "sdroxide-dsp",
- "sdroxide-types",
+ "sdrcrow-audio",
+ "sdrcrow-dsp",
+ "sdrcrow-types",
  "serde",
  "serde_json",
  "thiserror 2.0.20",
@@ -6140,31 +6140,31 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-spyserver"
+name = "sdrcrow-spyserver"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "rtrb",
- "sdroxide-types",
+ "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
  "tracing-subscriber",
 ]
 
 [[package]]
-name = "sdroxide-tci"
+name = "sdrcrow-tci"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "rtrb",
- "sdroxide-types",
+ "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
  "tungstenite 0.30.0",
 ]
 
 [[package]]
-name = "sdroxide-types"
+name = "sdrcrow-types"
 version = "2.3.0"
 dependencies = [
  "postcard",
@@ -6173,7 +6173,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-ui"
+name = "sdrcrow-ui"
 version = "2.3.0"
 dependencies = [
  "ab_glyph",
@@ -6195,20 +6195,20 @@ dependencies = [
  "rfd",
  "ron",
  "rust-embed",
- "sdroxide-aircraft-history",
- "sdroxide-aircraft-online",
- "sdroxide-aprs",
- "sdroxide-audio",
- "sdroxide-config",
- "sdroxide-dsp",
- "sdroxide-enigma",
- "sdroxide-meshtastic",
- "sdroxide-midi",
- "sdroxide-proto",
- "sdroxide-solar",
- "sdroxide-speech",
- "sdroxide-types",
- "sdroxide-version",
+ "sdrcrow-aircraft-history",
+ "sdrcrow-aircraft-online",
+ "sdrcrow-aprs",
+ "sdrcrow-audio",
+ "sdrcrow-config",
+ "sdrcrow-dsp",
+ "sdrcrow-enigma",
+ "sdrcrow-meshtastic",
+ "sdrcrow-midi",
+ "sdrcrow-proto",
+ "sdrcrow-solar",
+ "sdrcrow-speech",
+ "sdrcrow-types",
+ "sdrcrow-version",
  "serde",
  "serde_json",
  "sys-locale",
@@ -6221,71 +6221,71 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdroxide-vdl2"
+name = "sdrcrow-vdl2"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "num-complex",
- "sdroxide-ax25",
- "sdroxide-dsp",
- "sdroxide-types",
+ "sdrcrow-ax25",
+ "sdrcrow-dsp",
+ "sdrcrow-types",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-version"
+name = "sdrcrow-version"
 version = "2.3.0"
 
 [[package]]
-name = "sdroxide-vor"
+name = "sdrcrow-vor"
 version = "2.3.0"
 
 [[package]]
-name = "sdroxide-web"
+name = "sdrcrow-web"
 version = "2.3.0"
 dependencies = [
  "console_error_panic_hook",
  "eframe",
  "js-sys",
- "sdroxide-proto",
- "sdroxide-types",
- "sdroxide-ui",
- "sdroxide-version",
+ "sdrcrow-proto",
+ "sdrcrow-types",
+ "sdrcrow-ui",
+ "sdrcrow-version",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
 ]
 
 [[package]]
-name = "sdroxide-winlink"
+name = "sdrcrow-winlink"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "md-5",
- "sdroxide-ax25",
- "sdroxide-types",
+ "sdrcrow-ax25",
+ "sdrcrow-types",
  "serde",
  "thiserror 2.0.20",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-wsjtx"
+name = "sdrcrow-wsjtx"
 version = "2.3.0"
 dependencies = [
- "sdroxide-types",
+ "sdrcrow-types",
  "tracing",
 ]
 
 [[package]]
-name = "sdroxide-wxsat"
+name = "sdrcrow-wxsat"
 version = "2.3.0"
 dependencies = [
  "crossbeam-channel",
  "rustfft",
- "sdroxide-dsp",
- "sdroxide-sonde",
- "sdroxide-types",
+ "sdrcrow-dsp",
+ "sdrcrow-sonde",
+ "sdrcrow-types",
  "tracing",
 ]
 

@@ -1,4 +1,4 @@
-//! An [`IqSource`] for a LimeSDR driven through LimeSuite by `sdroxide-lime`,
+//! An [`IqSource`] for a LimeSDR driven through LimeSuite by `sdrcrow-lime`,
 //! and the LimeRFE in front of it.
 //!
 //! # No thread
@@ -31,12 +31,12 @@
 
 use std::time::{Duration, Instant};
 
-use sdroxide_dsp::{Diversity, IqCorrect, PureSignal};
-use sdroxide_lime::LimeHandle;
-use sdroxide_lime::handle::RX_TIMEOUT_MS;
-use sdroxide_limerfe::LimeRfeHandle;
-use sdroxide_radio::{Complex32, DC_BLOCK_HZ, IqSource, RadioError, Result, lo_offset_for};
-use sdroxide_types::{DiversityMode, LimeAuxRole, LimeConfig, RfeLink, RfeModeControl};
+use sdrcrow_dsp::{Diversity, IqCorrect, PureSignal};
+use sdrcrow_lime::LimeHandle;
+use sdrcrow_lime::handle::RX_TIMEOUT_MS;
+use sdrcrow_limerfe::LimeRfeHandle;
+use sdrcrow_radio::{Complex32, DC_BLOCK_HZ, IqSource, RadioError, Result, lo_offset_for};
+use sdrcrow_types::{DiversityMode, LimeAuxRole, LimeConfig, RfeLink, RfeModeControl};
 
 /// How often the diversity filter's achieved null depth reaches the log.
 ///
@@ -115,7 +115,7 @@ impl LimeSource {
         let rate = handle.sample_rate();
         let label = format!("{} @ {:.3} Msps", handle.label(), rate / 1e6);
         // Zero-IF part: park the LO off the VFO where the analog filter allows
-        // it — see `sdroxide_radio::lo_offset_for`.
+        // it — see `sdrcrow_radio::lo_offset_for`.
         let lo_offset = lo_offset_for(rate, handle.analog_bw());
         let iq_correct = cfg.iq_correction.then(|| IqCorrect::new(DC_BLOCK_HZ, rate));
         // Only where the chain actually came up: `LimeHandle::open` degrades a
@@ -217,7 +217,7 @@ impl LimeSource {
         if cfg.rfe.link == RfeLink::Off {
             return (None, None);
         }
-        match sdroxide_lime::open_rfe(&cfg.rfe, handle) {
+        match sdrcrow_lime::open_rfe(&cfg.rfe, handle) {
             Ok(h) => (h, None),
             Err(e) => {
                 tracing::warn!("LimeRFE not opened: {e}");
@@ -493,10 +493,10 @@ impl LimeSource {
 }
 
 /// The configuration's mode, as the DSP crate spells it.
-fn div_mode(mode: DiversityMode) -> sdroxide_dsp::DiversityMode {
+fn div_mode(mode: DiversityMode) -> sdrcrow_dsp::DiversityMode {
     match mode {
-        DiversityMode::Cancel => sdroxide_dsp::DiversityMode::Cancel,
-        DiversityMode::Combine => sdroxide_dsp::DiversityMode::Combine,
+        DiversityMode::Cancel => sdrcrow_dsp::DiversityMode::Cancel,
+        DiversityMode::Combine => sdrcrow_dsp::DiversityMode::Combine,
     }
 }
 
@@ -507,9 +507,9 @@ impl IqSource for LimeSource {
 
     /// What the predistortion loop on the second chain is doing, for the
     /// operator rather than for the log (issue #441).
-    fn puresignal(&mut self) -> Option<sdroxide_types::PsMeter> {
+    fn puresignal(&mut self) -> Option<sdrcrow_types::PsMeter> {
         let ps = self.puresignal.as_ref()?;
-        Some(sdroxide_types::PsMeter {
+        Some(sdrcrow_types::PsMeter {
             locked: ps.locked(),
             correction_db: ps.correction_db(),
             score: ps.score(),
@@ -616,7 +616,7 @@ impl IqSource for LimeSource {
             }
             LimeConfig::DIV_TAPS_ELEMENT => {
                 let taps =
-                    db.round().clamp(1.0, f64::from(sdroxide_types::LimeAuxConfig::MAX_TAPS)) as u8;
+                    db.round().clamp(1.0, f64::from(sdrcrow_types::LimeAuxConfig::MAX_TAPS)) as u8;
                 self.cfg.aux.taps = taps;
                 if let Some(d) = self.diversity.as_mut() {
                     // Necessarily starts the filter again: the taps mean
@@ -656,8 +656,8 @@ impl IqSource for LimeSource {
             }
             LimeConfig::PS_BINS_ELEMENT => {
                 let bins = db.round().clamp(
-                    f64::from(sdroxide_types::LimeAuxConfig::PS_MIN_BINS),
-                    f64::from(sdroxide_types::LimeAuxConfig::PS_MAX_BINS),
+                    f64::from(sdrcrow_types::LimeAuxConfig::PS_MIN_BINS),
+                    f64::from(sdrcrow_types::LimeAuxConfig::PS_MAX_BINS),
                 ) as u8;
                 self.cfg.aux.ps_bins = bins;
                 if self.puresignal.is_some() {
@@ -719,13 +719,13 @@ impl IqSource for LimeSource {
                 self.cfg.aux.antenna = value.to_string();
             }
             LimeConfig::RFE_SETTING => {
-                let Some(want) = sdroxide_types::LimeRfeConfig::from_setting(value) else {
+                let Some(want) = sdrcrow_types::LimeRfeConfig::from_setting(value) else {
                     return Err(RadioError::Msg("that is not a LimeRFE configuration".to_string()));
                 };
                 // Which cable the board is on is settled when it is opened, so
                 // those two fields stay as they are however they arrive: the
                 // settings panel asks for a rebuild when they change.
-                let cfg = sdroxide_types::LimeRfeConfig {
+                let cfg = sdrcrow_types::LimeRfeConfig {
                     link: self.cfg.rfe.link,
                     serial: self.cfg.rfe.serial.clone(),
                     ..want

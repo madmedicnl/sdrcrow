@@ -37,7 +37,7 @@
 # line means only that line is dropped and the ACL still lands.
 #
 # Install:
-#   sudo cp 60-sdroxide-rx888.rules /usr/lib/udev/rules.d/
+#   sudo cp 60-sdrcrow-rx888.rules /usr/lib/udev/rules.d/
 #   sudo udevadm control --reload
 # then unplug and replug the receiver.
 

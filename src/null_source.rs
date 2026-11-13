@@ -4,7 +4,7 @@
 //! including the Settings dialog — running, so the user can pick a working
 //! interface and restart instead of the program failing to launch.
 
-use sdroxide_radio::{Complex32, IqSource, Result};
+use sdrcrow_radio::{Complex32, IqSource, Result};
 
 pub struct NullSource {
     center: f64,

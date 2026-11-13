@@ -1,5 +1,5 @@
 //! An [`IqSource`] for an RTL2832U dongle driven by the native driver in
-//! `sdroxide-rtlsdr` — no SoapySDR, no libusb.
+//! `sdrcrow-rtlsdr` — no SoapySDR, no libusb.
 //!
 //! Two ways in, one source: [`RtlSdrSource::open`] takes a dongle on this
 //! machine's USB bus, [`RtlSdrSource::connect`] one published over the network
@@ -12,11 +12,11 @@
 
 use std::time::Duration;
 
-use sdroxide_dsp::IqCorrect;
-use sdroxide_radio::{Complex32, DC_BLOCK_HZ, IqSource, Result};
-use sdroxide_rtlsdr::RtlSdrHandle;
-use sdroxide_rtlsdr::tcp::proto::RspCmd;
-use sdroxide_types::{RtlSdrAgc, RtlSdrConfig, RtlSdrHfMode, RtlTcpConfig};
+use sdrcrow_dsp::IqCorrect;
+use sdrcrow_radio::{Complex32, DC_BLOCK_HZ, IqSource, Result};
+use sdrcrow_rtlsdr::RtlSdrHandle;
+use sdrcrow_rtlsdr::tcp::proto::RspCmd;
+use sdrcrow_types::{RtlSdrAgc, RtlSdrConfig, RtlSdrHfMode, RtlTcpConfig};
 
 /// How long the dongle may deliver nothing before the connection counts as
 /// dead. Shorter than the HPSDR backend's five seconds: this is a local USB
@@ -173,10 +173,10 @@ impl IqSource for RtlSdrSource {
     fn read(&mut self, buf: &mut [Complex32]) -> Result<usize> {
         // Straight into the caller's block: the ring's interleaved floats and a
         // complex buffer are the same bytes, so there is nothing to unpack —
-        // see `sdroxide_dsp::as_interleaved_mut`. The scratch vector and the
+        // see `sdrcrow_dsp::as_interleaved_mut`. The scratch vector and the
         // loop that copied out of it were a second pass over the whole stream
         // to change nothing but the type.
-        let n = self.handle.rx_read(sdroxide_dsp::as_interleaved_mut(buf));
+        let n = self.handle.rx_read(sdrcrow_dsp::as_interleaved_mut(buf));
         let pairs = n / 2;
         if pairs == 0 {
             // Nothing yet — brief nap so the DSP loop doesn't spin hot.
@@ -348,7 +348,7 @@ fn applied_gain_db(agc: RtlSdrAgc, commanded_db: f64) -> Option<f32> {
 #[cfg(test)]
 mod gain_tests {
     use super::applied_gain_db;
-    use sdroxide_types::RtlSdrAgc;
+    use sdrcrow_types::RtlSdrAgc;
 
     /// The fault: a manual-gain RTL-SDR reported its whole tuner gain as signal,
     /// so a normal noise floor read as S9+10 — about 30 dB too high (issue #68).
@@ -393,7 +393,7 @@ mod gain_tests {
     /// meter looks wrong" is not otherwise checkable.
     #[test]
     fn subtracting_the_gain_lowers_the_floor_by_the_s_units_it_was_raised() {
-        use sdroxide_types::Meters;
+        use sdrcrow_types::Meters;
 
         let reading = |dbm: f32| {
             let m = Meters {

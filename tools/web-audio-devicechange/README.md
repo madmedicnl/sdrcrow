@@ -13,7 +13,7 @@ silent with no symptom at all.
 
 A headless browser cannot be given a headset, so the harness drives the
 **mechanism** the cure rests on, against the **real** bridge scripts
-(`crates/sdroxide-web/assets/audio_bridge.js` and `pcm_worklet.js`) rather than a
+(`crates/sdrcrow-web/assets/audio_bridge.js` and `pcm_worklet.js`) rather than a
 copy of them:
 
 1. the page takes a gesture and the bridge starts playing, as it does on a real
@@ -34,7 +34,7 @@ it ends at:
     FAIL the output device changed and the bridge did not rebuild: {"contexts":1,...}
 
 Nothing is written inside the tree: the scripts are copied to a scratch
-directory (`$TMPDIR/sdroxide-web-devicechange`) and served from there.
+directory (`$TMPDIR/sdrcrow-web-devicechange`) and served from there.
 
 Needs `python3` and a Chromium-family browser (Chrome, Chromium or Edge); the
 browser runs with autoplay allowed, since a synthetic gesture cannot grant real

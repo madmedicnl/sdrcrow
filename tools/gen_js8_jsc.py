@@ -71,7 +71,7 @@ def main() -> None:
     compressed = zlib.compress(blob, 9)
 
     out = pathlib.Path(__file__).resolve().parent.parent / (
-        "crates/sdroxide-digi/src/js8/jsc_dict.bin"
+        "crates/sdrcrow-digi/src/js8/jsc_dict.bin"
     )
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_bytes(compressed)

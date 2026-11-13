@@ -11,13 +11,13 @@ headless-install/
 ├── install.sh                     Linux (bash)
 ├── install.py                     Linux, macOS and Windows (Python 3.8+)
 ├── README.md                      this file
-├── sdroxide-2.0.13.1-linux-x86_64.deb      ← the package: any shape below
+├── sdrcrow-2.0.13.1-linux-x86_64.deb      ← the package: any shape below
 ├── config/                        ← a *configured* station's settings
 │   ├── config.toml
 │   ├── radios.json
 │   ├── radio-1/ …
 │   └── …
-└── rules/                         ← optional: the 60-sdroxide-*.rules files
+└── rules/                         ← optional: the 60-sdrcrow-*.rules files
 ```
 
 Then, on every machine:
@@ -33,9 +33,9 @@ That is the whole procedure. Nothing is asked, and running it twice is safe.
 
 | | |
 |---|---|
-| **The program** | `--package`, or the first `sdroxide-*` file beside the script. `.deb` (apt/dpkg), `.rpm` (dnf/zypper/rpm), `.pkg.tar.*` (pacman), `.AppImage`, `.tar.gz` (unpacked under `/opt/sdroxide`), `.msi` (Windows, silently), `.dmg` (macOS, copied into `/Applications`), `.zip`. |
+| **The program** | `--package`, or the first `sdrcrow-*` file beside the script. `.deb` (apt/dpkg), `.rpm` (dnf/zypper/rpm), `.pkg.tar.*` (pacman), `.AppImage`, `.tar.gz` (unpacked under `/opt/sdroxide`), `.msi` (Windows, silently), `.dmg` (macOS, copied into `/Applications`), `.zip`. |
 | **Device rules** | `rules/*.rules` → `/usr/lib/udev/rules.d/`, then `udevadm` reload, and the station's user added to `plugdev`. The `.deb` and `.rpm` already carry these, so this step is usually a no-op. |
-| **The configuration** | `config/` (or `sdroxide-config*.tar.gz`) → the directory the program itself reads. An existing one is **moved aside first**, as `<config>-<date>.bak`. |
+| **The configuration** | `config/` (or `sdrcrow-config*.tar.gz`) → the directory the program itself reads. An existing one is **moved aside first**, as `<config>-<date>.bak`. |
 | **A headless server** | only with `--server-unit`: a systemd unit running `sdroxide --server`, enabled and started. |
 
 ## Where the configuration goes

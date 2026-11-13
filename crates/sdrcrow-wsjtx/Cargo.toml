@@ -1,0 +1,8 @@
+[package]
+name = "sdrcrow-wsjtx"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+sdrcrow-types.workspace = true
+tracing.workspace = true

@@ -13,8 +13,8 @@ $ErrorActionPreference = "Stop"
 
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $root = (Resolve-Path (Join-Path $here "..\..")).Path
-$build = Join-Path $env:TEMP "sdroxide-web-audio-recovery"
-$raw = Join-Path $env:TEMP "sdroxide-web-audio-recovery.txt"
+$build = Join-Path $env:TEMP "sdrcrow-web-audio-recovery"
+$raw = Join-Path $env:TEMP "sdrcrow-web-audio-recovery.txt"
 $port = if ($env:PORT) { $env:PORT } else { "8731" }
 
 $browser = @(
@@ -31,8 +31,8 @@ if (-not $browser) {
 Remove-Item $build -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item $raw -Force -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force -Path $build | Out-Null
-Copy-Item (Join-Path $root "crates\sdroxide-web\assets\audio_bridge.js") $build
-Copy-Item (Join-Path $root "crates\sdroxide-web\assets\pcm_worklet.js") $build
+Copy-Item (Join-Path $root "crates\sdrcrow-web\assets\audio_bridge.js") $build
+Copy-Item (Join-Path $root "crates\sdrcrow-web\assets\pcm_worklet.js") $build
 Copy-Item (Join-Path $here "page.html") $build
 Copy-Item (Join-Path $here "harness.js") $build
 Copy-Item (Join-Path $here "serve.py") $build

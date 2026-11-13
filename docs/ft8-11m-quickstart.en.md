@@ -70,7 +70,7 @@ Open **SETTINGS** and go to the **Radio** tab. Pick your interface (for example
 
 - **Linux — USB receivers:** install the bundled udev rules, or sdroxide will
   see the device but fail to open it:
-  `sudo cp 60-sdroxide-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, then replug.
+  `sudo cp 60-sdrcrow-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, then replug.
 - **Windows — RX-888:** bind the device to **WinUSB** once with
   [Zadig](https://zadig.akeo.ie/) — for **both** USB ids (`04B4:00F3` and
   `04B4:00F1`).

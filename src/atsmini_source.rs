@@ -4,7 +4,7 @@
 //! radio's headphone jack into a host sound card (the Si4732 demodulates in
 //! hardware; there is no I/Q). Control — band, frequency, mode, volume — goes
 //! over the firmware's "ad hoc" protocol on a TCP socket
-//! ([`sdroxide_types::atsmini`]). So this is the audio half of
+//! ([`sdrcrow_types::atsmini`]). So this is the audio half of
 //! [`crate::audio_cat_source::AudioCatSource`] with a bespoke TCP control link
 //! instead of a CAT serial port. See AGENTS.md, "The ATS Mini".
 //!
@@ -19,10 +19,10 @@ use std::sync::mpsc::{Receiver, TryRecvError};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
-use sdroxide_radio::rtrb;
-use sdroxide_radio::{Complex32, ControlUpdate, IqSource, Result};
-use sdroxide_types::Mode;
-use sdroxide_types::atsmini::{self, FirmwareMode, Telemetry};
+use sdrcrow_radio::rtrb;
+use sdrcrow_radio::{Complex32, ControlUpdate, IqSource, Result};
+use sdrcrow_types::Mode;
+use sdrcrow_types::atsmini::{self, FirmwareMode, Telemetry};
 
 use crate::audio_cat_source::DropWatch;
 
@@ -61,7 +61,7 @@ enum Cmd {
     /// `ControlUpdate::AtsMiniMemories`.
     DumpMemories,
     /// Write one memory slot (`#NN,…`).
-    SetMemory(sdroxide_types::atsmini::AtsMiniMemory),
+    SetMemory(sdrcrow_types::atsmini::AtsMiniMemory),
 }
 
 /// State the control thread publishes for the source and UI to read.
@@ -78,7 +78,7 @@ struct Shared {
 
 /// ATS Mini receive source: sound-card audio plus the TCP control link.
 pub struct AtsMiniSource {
-    in_stream: Option<sdroxide_audio::AudioInput>,
+    in_stream: Option<sdrcrow_audio::AudioInput>,
     in_consumer: rtrb::Consumer<f32>,
     in_rate: f64,
     drops: DropWatch,
@@ -117,7 +117,7 @@ impl AtsMiniSource {
             );
         }
 
-        let opened = sdroxide_audio::start_input_buffered(audio_in, 48_000);
+        let opened = sdrcrow_audio::start_input_buffered(audio_in, 48_000);
         let dev_label = audio_in.unwrap_or("system default");
         let silent = || {
             let (_p, c) = rtrb::RingBuffer::<f32>::new(1);
@@ -323,7 +323,7 @@ impl IqSource for AtsMiniSource {
             return Ok(());
         }
         if key == "memory-set" {
-            if let Some(m) = sdroxide_types::atsmini::AtsMiniMemory::parse(value) {
+            if let Some(m) = sdrcrow_types::atsmini::AtsMiniMemory::parse(value) {
                 let _ = self.cmd_tx.send(Cmd::SetMemory(m));
             }
             return Ok(());
@@ -460,7 +460,7 @@ mod tests {
     }
 
     #[test]
-    fn sdroxide_modes_map_to_the_radio_demodulator() {
+    fn sdrcrow_modes_map_to_the_radio_demodulator() {
         assert_eq!(firmware_mode(Mode::Am), Some(FirmwareMode::Am));
         assert_eq!(firmware_mode(Mode::Usb), Some(FirmwareMode::Usb));
         assert_eq!(firmware_mode(Mode::Lsb), Some(FirmwareMode::Lsb));
@@ -551,7 +551,7 @@ fn control_thread(
         // and must not reach the app as out-of-band moves.
         let mut settle_until: Option<Instant> = None;
         // A dump in progress: when it started and the slots gathered so far.
-        let mut collecting: Option<(Instant, Vec<sdroxide_types::atsmini::AtsMiniMemory>)> = None;
+        let mut collecting: Option<(Instant, Vec<sdrcrow_types::atsmini::AtsMiniMemory>)> = None;
 
         'session: while !stop.load(Ordering::Relaxed) {
             // Commands from the app.
@@ -817,7 +817,7 @@ fn control_thread(
                                 s.telemetry = Some(t);
                             }
                         } else if let Some((_, mems)) = collecting.as_mut()
-                            && let Some(m) = sdroxide_types::atsmini::AtsMiniMemory::parse(&line)
+                            && let Some(m) = sdrcrow_types::atsmini::AtsMiniMemory::parse(&line)
                         {
                             mems.push(m);
                         } else if line.to_ascii_lowercase().contains("error") {

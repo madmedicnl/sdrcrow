@@ -10,16 +10,16 @@ machine, and the browser client has no business reaching past sdroxide for one.
 They are drawn here rather than sourced from an existing icon set, so there is
 no third-party artwork in the tree and no licence attached to it. This writes:
 
-  * `crates/sdroxide-ui/assets/aprs/<kind>.png` — one 48x48 white-on-transparent
-    image per `sdroxide_types::AprsSymbolKind`, drawn at 4x and downsampled, so
+  * `crates/sdrcrow-ui/assets/aprs/<kind>.png` — one 48x48 white-on-transparent
+    image per `sdrcrow_types::AprsSymbolKind`, drawn at 4x and downsampled, so
     the edges are properly antialiased. White so the panel can tint them: the
     map colours a station by how recently it was heard.
-  * `crates/sdroxide-ui/src/aprs_icons.rs` — the `include_bytes!` table.
+  * `crates/sdrcrow-ui/src/aprs_icons.rs` — the `include_bytes!` table.
 
     ./tools/gen_aprs_icons.py
     ./tools/gen_aprs_icons.py --sheet /tmp/sheet.png   # a contact sheet to look at
 
-The kind list has to match the enum in `crates/sdroxide-types/src/aprs.rs`; the
+The kind list has to match the enum in `crates/sdrcrow-types/src/aprs.rs`; the
 script reads it from there and fails if this file has drifted from it.
 
 Coordinates are in a 0..1 box, x right and y down.
@@ -35,9 +35,9 @@ import sys
 from PIL import Image, ImageDraw
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-ENUM = ROOT / "crates/sdroxide-types/src/aprs.rs"
-OUT_DIR = ROOT / "crates/sdroxide-ui/assets/aprs"
-OUT_RS = ROOT / "crates/sdroxide-ui/src/aprs_icons.rs"
+ENUM = ROOT / "crates/sdrcrow-types/src/aprs.rs"
+OUT_DIR = ROOT / "crates/sdrcrow-ui/assets/aprs"
+OUT_RS = ROOT / "crates/sdrcrow-ui/src/aprs_icons.rs"
 
 SIZE = 48
 SUPER = 4
@@ -552,7 +552,7 @@ def main():
 use std::collections::HashMap;
 
 use eframe::egui;
-use sdroxide_types::AprsSymbolKind;
+use sdrcrow_types::AprsSymbolKind;
 
 /// One 48x48 image per symbol kind, in the enum's own order.
 static ICON_PNG: &[(AprsSymbolKind, &[u8])] = &[

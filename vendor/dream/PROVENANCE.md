@@ -3,7 +3,7 @@
 `vendor/dream` is a source subset of the **Dream** AM/DRM receiver, the
 long-running open-source Digital Radio Mondiale implementation begun at
 Technische Universität Darmstadt. It is built into a static library by
-`crates/sdroxide-drm`, which wraps it behind a small C API.
+`crates/sdrcrow-drm`, which wraps it behind a small C API.
 
 | | |
 |---|---|
@@ -26,7 +26,7 @@ built.
 
 ## What this links against
 
-`crates/sdroxide-drm` also builds **faad2** (`vendor/faad2`, a git submodule
+`crates/sdrcrow-drm` also builds **faad2** (`vendor/faad2`, a git submodule
 pinned to `2.11.2`, GPL-2.0-or-later) with `DRM_SUPPORT`, and links it directly.
 Dream normally `dlopen`s a `libfaad_drm` at runtime instead, which most systems
 do not have — leaving a receiver that acquires the signal, reads the service
@@ -60,7 +60,7 @@ broadcast happens to contain.
 
 **`src/sound/sound.h`** — one added branch. Under `USE_SDROXIDE_SOUND` the
 `CSoundIn`/`CSoundOut` typedefs resolve to the ring-buffer shims in
-`crates/sdroxide-drm/include/sdrx_sound.h` instead of a sound card, and the two
+`crates/sdrcrow-drm/include/sdrx_sound.h` instead of a sound card, and the two
 fallback conditions (the null interface, and the Windows mmsystem branch) are
 guarded so they no longer win. sdroxide feeds the decoder samples from its own
 receive chain, so there is no sound card in this picture at all.
@@ -76,7 +76,7 @@ receive chain, so there is no sound card in this picture at all.
    segfaults within seconds of acquiring any real broadcast. It now takes the
    length faad2 reports, bounded by the destination, zero-fills any remainder,
    and returns a proper `EDecError`. This is why upstream Dream 2.2 crashes
-   against a current faad2, and the fix is not sdroxide-specific.
+   against a current faad2, and the fix is not sdrcrow-specific.
 2. Under `SDROXIDE_NO_AAC_ENCODER`, the constructor no longer `dlopen`s a FAAC
    *encoder*. sdroxide never transmits DRM, and the probe only produced a
    failure message on stderr.
@@ -186,7 +186,7 @@ SDC-supplied frame length without checking the sign. `init()` also fixes an
 upstream bug of its own: `audioParam.AM_MONO ? 1 : 2` tests the *enumerator
 constant*, never the field, so `numChannels` was always the same value whatever
 the broadcast said.
-`crates/sdroxide-drm/src/decoder_tests.rs` fuzzes both parsers through
+`crates/sdrcrow-drm/src/decoder_tests.rs` fuzzes both parsers through
 `sdrx_drm_test_parse_superframe` and keeps the three super frames that used to
 crash, by name.
 

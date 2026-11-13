@@ -49,5 +49,5 @@ trivially reviewable, and to be dropped the moment upstream carries it.
 
 When upstream publishes the method, delete `vendor/soapysdr`, drop the
 `[patch.crates-io]` block and the `exclude` entry from the workspace manifest,
-and raise the `soapysdr` version in `crates/sdroxide-radio/Cargo.toml`. Nothing
+and raise the `soapysdr` version in `crates/sdrcrow-radio/Cargo.toml`. Nothing
 else in the workspace refers to the fork.

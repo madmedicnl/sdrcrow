@@ -23,8 +23,8 @@ and the [README](https://github.com/madmedicnl/sdroxide-brown#readme).
 - **Meshtastic: sending a text** — a message field and a "Send…" button in the panel, with a confirmation before anything goes out. The text goes through the ordinary transmit path, so the TX band list decides: on EU 868 the new **ISM868** band (863–870 MHz) has to be ticked and confirmed in Settings, Radio, Transmit bands, otherwise the panel shows the refusal in red. EU 433 works with the 70 cm band ticked, US 902–928 with 33 cm. The radio must already be on the channel ("Listen here"). Frames are encrypted with the channel key, paced in real time, and a one-hour duty-cycle budget is kept per region (1 % EU 868, 10 % EU 433). The node id is drawn once and kept in `meshtastic.json`. Checked on generated IQ only, not over the air. Protocol 288.
 - **Meshtastic: the panel** — a MESHTASTIC window (docked in the main window, or in its own with the title-bar button; also in the web client) with the receiver switch, region, preset, channel and key list, the table of nodes and the packet log. "Listen here" switches the receiver on and brings the radio to the channel with the ordinary tune, so the receive band list in the Radio menu keeps deciding; when it refuses, the panel says so in red. Chips in the Extras window (which grows by one button) and on the experimental bench of the mode menu, shown once "Show the panel" is ticked in Settings, Interface.
 - **Meshtastic: the receiver in the engine (no screen yet)** — a downconverter lane centred on the chosen channel feeds the demodulator on a worker thread, which keeps the table of nodes (names, position, battery, signal, relays) and the packet log. Region, preset (EU 868 / LongFast by default), channel and extra keys are kept on the station in `meshtastic.json`. Turning the receiver on records where the radio was; turning it off, or quitting, puts the dial and the mode back, through the ordinary tune commands, so the receive band list still decides. The receiver reads that list and never writes it: when the list refuses the channel, or the channel is outside the captured window, the lane stays idle and its status says why. Status and settings reach remote and web clients. Protocol 287.
-- **Meshtastic: payload decoders** — `sdroxide-meshtastic` now turns a decrypted payload into typed values for sixteen ports: text, position, node info, telemetry (device, environment, air quality, power, local stats, health, host, traffic management), routing, traceroute, waypoint, neighbour info, key verification (sizes only), map report, admin (which request, not its content), ATAK, remote hardware, detection sensor, store-and-forward and paxcounter. A field that arrives with the wrong wire type is skipped, and a cut-short message keeps the groups that arrived whole. The `decode_iq` example prints them.
-- **Meshtastic: the decoding engine (no screen yet)** — new crate `sdroxide-meshtastic`: a LoRa chirp-spread-spectrum demodulator (SF7–SF12, any bandwidth, carrier and timing recovery, oversampled input), the matching modulator, the 16-byte Meshtastic header, AES-128/256-CTR channel decryption with the channel-hash dispatch, the default key, the presets and regions, and a protobuf reader. An example, `decode_iq`, reads a recorded IQ file. The panel, the radio switching and the transmit side follow in later changes.
+- **Meshtastic: payload decoders** — `sdrcrow-meshtastic` now turns a decrypted payload into typed values for sixteen ports: text, position, node info, telemetry (device, environment, air quality, power, local stats, health, host, traffic management), routing, traceroute, waypoint, neighbour info, key verification (sizes only), map report, admin (which request, not its content), ATAK, remote hardware, detection sensor, store-and-forward and paxcounter. A field that arrives with the wrong wire type is skipped, and a cut-short message keeps the groups that arrived whole. The `decode_iq` example prints them.
+- **Meshtastic: the decoding engine (no screen yet)** — new crate `sdrcrow-meshtastic`: a LoRa chirp-spread-spectrum demodulator (SF7–SF12, any bandwidth, carrier and timing recovery, oversampled input), the matching modulator, the 16-byte Meshtastic header, AES-128/256-CTR channel decryption with the channel-hash dispatch, the default key, the presets and regions, and a protobuf reader. An example, `decode_iq`, reads a recorded IQ file. The panel, the radio switching and the transmit side follow in later changes.
 - **Public SDRs: ADD AS RADIO, a map and an ONLINE/SILENT check** — the receiver becomes a radio of its own, named after its directory entry, and the radio in use is never touched (USE, + TAB and their confirmation are gone; stars and MINE stay). LIST | MAP shows the filtered receivers on the world map; a click picks the receivers under the pointer and checks whether they answer. Ported from upstream dividebysandwich/sdroxide#799 (Hans-Dieter Zucht). Protocol 277.
 - **Public SDRs can dock under the waterfall** — like Radio Classic, in the voice modes that have nothing there (not CW, not a digital mode, not on a phone): the ⤓ chip on the list or Settings → UI → *Window: Public SDRs* docks it, ↗ puts it back in a window. Where the slot is taken it stays a window. Five messages in eleven languages.
 
@@ -46,7 +46,7 @@ and the [README](https://github.com/madmedicnl/sdroxide-brown#readme).
 
 ### Fixed
 - **S-meter of a paired radio** — with a transceiver (e.g. a Wolf on CAT + sound card) whose panadapter is another radio (e.g. an RSP1), the transceiver's S-meter or its audio level was shown; it is only the transmitter and cannot be right. The S-meter is now the attached receiver's, measured on its I/Q and calibrated with S-Meter calib.
-- **`sdroxide-config` builds again** — the Aoki index error message passed a redundant `url, e` to `format!` ("redundant argument"), which stopped `sdroxide-ui` from compiling.
+- **`sdrcrow-config` builds again** — the Aoki index error message passed a redundant `url, e` to `format!` ("redundant argument"), which stopped `sdrcrow-ui` from compiling.
 - **Choppy audio and a stuttering waterfall in the web client on a healthy network** — the server now sets `TCP_NODELAY` on every connection, serves audio ahead of the other lanes, gives the audio lane twice the room, and logs when it has to drop audio packets. Plan and the native/Linux checks still owed: `docs/WEB-LAG-PLAN.md`.
 - **MEMORIES panel no longer overflows on the right** — the name and folder boxes now take what their button leaves ("Nouveau dossier" was wider than the 100 pt the row assumed, so the window grew and the button stuck out). The colour swatch wears a chip frame and PST is chip height. Opens at 510 pt; still resizable and detachable.
 - **PROGRAMS list no longer overflows on the right** — the columns were sized for the full width while the scroll bar took 9 pt of it, and the name column had a floor that did not follow the language, so in German (922 pt) and Russian (1055 pt) the row outgrew the window and the LOG chip was cut off. The list is now built for the width it really gets, the window's floor follows what the list needs in the language on screen, spare width goes first to the name (longest name + 40 characters at most, a longer name is still shown whole), then to the language/target/site columns (capped), and what is left sits before the colour/PST/LISTEN/LOG group, which stays against the right edge — so the gap after the name never exceeds 40 characters. The Sort menus stop at 120 pt. The header is now a spreadsheet's: Sort menus and the colour controls on one row, the column names right against the first line of data (the frequency column left-aligned like the others, each Sort menu exactly as wide as its column and every column at least as wide as its Sort menu), and a thin rule between the columns.
@@ -90,7 +90,7 @@ and the [README](https://github.com/madmedicnl/sdroxide-brown#readme).
 - **WEFAX: one press centres a detuned chart** — and a chart that is off by a few hundred Hz is no longer a blank page. — madmedicnl, #258
 - **In Classic, the strip no longer repeats the column** — it drew every control again under the frequency beside a column holding the same ones. — madmedicnl
 - **TUNE in the satellite window follows the VFO you are using**, not always VFO A. — madmedicnl, issue #244
-- **Four `sdroxide-ui` tests that were red on `main`.** — madmedicnl
+- **Four `sdrcrow-ui` tests that were red on `main`.** — madmedicnl
 
 ### Needs feedback
 - **ALE (2G)** decodes a synthesized word exactly and has never copied a real burst: a minute of WAV on 11175 / 8992 / 15016 kHz USB would finish the mode (manual, §3.29). — madmedicnl
@@ -453,7 +453,7 @@ audio — is answered in it, and the first — the sign-in nag — was 2.0.2.
   again, and its size and place are remembered. The windows are owned by the
   shell rather than by a radio, so changing radio or mode does not tear one down
   and have a tiling compositor re-place it. On Wayland the operator decides where
-  a window goes: the manual has the app-id table (`sdroxide-panadapter`,
+  a window goes: the manual has the app-id table (`sdrcrow-panadapter`,
   `-aux`, `-panel`, `-controls`) and a **niri `window-rule`** example to float
   and pin them.
 - **The Controls console — SDRuno's RX control.** Undocking the Controls moves
@@ -472,7 +472,7 @@ audio — is answered in it, and the first — the sign-in nag — was 2.0.2.
   top (instead of floating over the middle of the waterfall), a **DISP** chip
   opening the layer menu, and a **DOCK** chip to send the window home.
 - **AUX SP — a second spectrum.** A second spectrum and waterfall in a window
-  of its own (`sdroxide-panadapter-aux`), the same receiver seen twice, with its
+  of its own (`sdrcrow-panadapter-aux`), the same receiver seen twice, with its
   own toolbar and geometry.
 - **The WINDOWS menu on the radio strip.** SDRuno's MAIN is the window whose
   buttons open the others; ours is the radio-tab strip, and it now carries a
@@ -485,7 +485,7 @@ audio — is answered in it, and the first — the sign-in nag — was 2.0.2.
   DRM, the Morse trainer, the signal-id guide, the contest logger, the bands
   window, known stations, RDS, HD Radio, Enigma, ISM, mail, satellite, and the
   awards, logbook, grid tracker, memories and SWL log. Their app-ids are
-  `sdroxide-tool-<name>`.
+  `sdrcrow-tool-<name>`.
 - **Workspaces.** Save a whole window arrangement under a name and put it back:
   Settings → UI → **Workspaces** (up to ten, SDRuno's limit), stored in
   `workspaces.json`. Applying one re-docks and re-opens the modules with no
@@ -719,7 +719,7 @@ browser fixes are the only pieces not driven by hand.
   ensemble, and the service list. DAB (not DAB+) is MPEG-1 Layer II and decodes
   in pure Rust; DAB+ hands its Access Units to the same **faad2** the DRM
   receiver already carries. `Mode::Dab` is appended to the mode enum and the
-  whole thing is behind one switch, `sdroxide_dab::DAB_ENABLED`.
+  whole thing is behind one switch, `sdrcrow_dab::DAB_ENABLED`.
   **It is experimental and not proven on air** — see *Not proven* — and the
   chip's hover says what it takes: about **3 Msps** of front-end bandwidth
   before there is any audio, because at the 1.536 MHz an ensemble occupies the
@@ -897,7 +897,7 @@ a smaller version of the same code.
   silence. This needed a change to when the transmit path stops asking for audio,
   because anything generated after the last character was never played at all.
 - **A probe writes out exactly what we would send.**
-  `cargo run -p sdroxide-dsp --example olivia_tx_probe -- "CQ CQ DE W1AW" out.wav`
+  `cargo run -p sdrcrow-dsp --example olivia_tx_probe -- "CQ CQ DE W1AW" out.wav`
   Open that in **fldigi** or **MultiPSK** and what it decodes is what a station
   would have copied — with nobody's air time spent and nobody else needed at the
   other end. **Receiving was already confirmed off the air** (discussion #5);
@@ -1233,7 +1233,7 @@ must be on the same version.
   failed and nothing was published. The read is now gated exactly as the
   straight-key read beside it, so the browser reports both contacts open and the
   (portable) engine side simply sends nothing. `cargo check --target
-  wasm32-unknown-unknown -p sdroxide-ui` is the check that would have caught it;
+  wasm32-unknown-unknown -p sdrcrow-ui` is the check that would have caught it;
   run it for any UI change. Same release otherwise.
 
 ## [1.9.14_brown] - 2026-10-02

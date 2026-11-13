@@ -6,7 +6,7 @@
 #   headless-install/
 #   ├── install.sh                 ← this file
 #   ├── install.py                 (same job, macOS and Windows as well)
-#   ├── sdroxide-2.0.13.1-linux-x86_64.deb     ← the package, any of the shapes below
+#   ├── sdrcrow-2.0.13.1-linux-x86_64.deb     ← the package, any of the shapes below
 #   └── config/                    ← a copy of a *configured* ~/.config/sdroxide-brown
 #
 # It is written for the club's software manager: configure one machine properly,
@@ -54,11 +54,11 @@ usage() {
 Headless install of SDR Oxide Brown. Nothing is asked; everything is taken
 from this directory.
 
-  --package PATH   the package to install (default: the first sdroxide-* file
+  --package PATH   the package to install (default: the first sdrcrow-* file
                    beside this script — .deb, .rpm, .pkg.tar.*, .AppImage,
                    .tar.gz)
   --config PATH    the configuration to install (default: ./config, or the
-                   first sdroxide-config*.tar.gz beside this script)
+                   first sdrcrow-config*.tar.gz beside this script)
   --user NAME      whose configuration to replace (default: the user who ran
                    sudo, or the current user)
   --server-unit    also install and enable a systemd unit running
@@ -89,8 +89,8 @@ done
 
 # ── the package ────────────────────────────────────────────────────────────
 if [ -z "$PACKAGE" ]; then
-    for f in "$HERE"/sdroxide-*.deb "$HERE"/sdroxide-*.rpm "$HERE"/sdroxide-*.pkg.tar.* \
-             "$HERE"/sdroxide-*.AppImage "$HERE"/sdroxide-*.tar.gz; do
+    for f in "$HERE"/sdrcrow-*.deb "$HERE"/sdrcrow-*.rpm "$HERE"/sdrcrow-*.pkg.tar.* \
+             "$HERE"/sdrcrow-*.AppImage "$HERE"/sdrcrow-*.tar.gz; do
         [ -e "$f" ] && { PACKAGE="$f"; break; }
     done
 fi
@@ -102,7 +102,7 @@ if [ -z "$CONFIG_SRC" ]; then
     if [ -d "$HERE/config" ]; then
         CONFIG_SRC="$HERE/config"
     else
-        for f in "$HERE"/sdroxide-config*.tar.gz "$HERE"/sdroxide-config*.tgz; do
+        for f in "$HERE"/sdrcrow-config*.tar.gz "$HERE"/sdrcrow-config*.tgz; do
             [ -e "$f" ] && { CONFIG_SRC="$f"; break; }
         done
     fi

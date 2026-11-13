@@ -73,5 +73,5 @@ produces and is reported as upstream would have reported the first one.
 When upstream classifies `ERROR_IO_PENDING` as a timeout — or moves off
 `SO_RCVTIMEO` altogether, which its own `read_timeout` docs call a TODO — delete
 `vendor/ewebsock`, drop the `ewebsock` line from `[patch.crates-io]` and from
-the workspace `exclude`, and bump the version in `crates/sdroxide-ui/Cargo.toml`
+the workspace `exclude`, and bump the version in `crates/sdrcrow-ui/Cargo.toml`
 to whatever carries it.

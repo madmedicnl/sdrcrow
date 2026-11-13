@@ -7,7 +7,7 @@ every machine it owns. Put it beside what it should install and run it:
     headless-install/
     ├── install.sh                 Linux, bash
     ├── install.py                 ← this file (any of the three systems)
-    ├── sdroxide-2.0.13.1-linux-x86_64.deb     ← the package, any of the
+    ├── sdrcrow-2.0.13.1-linux-x86_64.deb     ← the package, any of the
     │                                              shapes listed below
     └── config/                    ← a copy of a *configured* config directory
 
@@ -44,14 +44,14 @@ HERE = Path(__file__).resolve().parent
 # The package shapes this understands, most specific first. A `.deb` is Linux,
 # a `.dmg` is macOS, an `.msi` is Windows; the archives are unpacked instead.
 PACKAGE_GLOBS = [
-    "sdroxide-*.deb",
-    "sdroxide-*.rpm",
-    "sdroxide-*.pkg.tar.*",
-    "sdroxide-*.AppImage",
-    "sdroxide-*.msi",
-    "sdroxide-*.dmg",
-    "sdroxide-*.zip",
-    "sdroxide-*.tar.gz",
+    "sdrcrow-*.deb",
+    "sdrcrow-*.rpm",
+    "sdrcrow-*.pkg.tar.*",
+    "sdrcrow-*.AppImage",
+    "sdrcrow-*.msi",
+    "sdrcrow-*.dmg",
+    "sdrcrow-*.zip",
+    "sdrcrow-*.tar.gz",
 ]
 
 
@@ -95,7 +95,7 @@ class Installer:
                 return found[-1].resolve()
         die(
             "no package here. Put the release file beside this script "
-            "(sdroxide-*.deb, .rpm, .pkg.tar.*, .AppImage, .msi, .dmg, .zip, "
+            "(sdrcrow-*.deb, .rpm, .pkg.tar.*, .AppImage, .msi, .dmg, .zip, "
             ".tar.gz) or use --package PATH"
         )
 
@@ -107,7 +107,7 @@ class Installer:
             return path.resolve()
         if (HERE / "config").is_dir():
             return HERE / "config"
-        for pattern in ("sdroxide-config*.tar.gz", "sdroxide-config*.tgz"):
+        for pattern in ("sdrcrow-config*.tar.gz", "sdrcrow-config*.tgz"):
             found = sorted(HERE.glob(pattern))
             if found:
                 return found[-1].resolve()
@@ -119,7 +119,7 @@ class Installer:
 
         It is `directories::ProjectDirs::from("org", "sdroxide", "sdroxide")`
         with `-brown` appended to the last component — see
-        `sdroxide_config::config_dir`. Getting this wrong is the one mistake
+        `sdrcrow_config::config_dir`. Getting this wrong is the one mistake
         that silently does nothing: the program would not read what was
         written.
         """
@@ -279,7 +279,7 @@ class Installer:
         source = self.config_src
         unpacked: tempfile.TemporaryDirectory | None = None
         if source.is_file():
-            unpacked = tempfile.TemporaryDirectory(prefix="sdroxide-config-")
+            unpacked = tempfile.TemporaryDirectory(prefix="sdrcrow-config-")
             with tarfile.open(source) as tf:
                 _extract_stripped(tf, Path(unpacked.name))
             root_dir = Path(unpacked.name)

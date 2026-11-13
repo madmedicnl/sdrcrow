@@ -19,8 +19,8 @@ $ErrorActionPreference = "Stop"
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $root = (Resolve-Path (Join-Path $here "..\..")).Path
 $port = if ($env:PORT) { $env:PORT } else { "8733" }
-$build = Join-Path $env:TEMP "sdroxide-web-audio-latency-$port"
-$raw = Join-Path $env:TEMP "sdroxide-web-audio-latency-$port.txt"
+$build = Join-Path $env:TEMP "sdrcrow-web-audio-latency-$port"
+$raw = Join-Path $env:TEMP "sdrcrow-web-audio-latency-$port.txt"
 $long = if ($env:LONG) { $env:LONG } else { "0" }
 $jitter = if ($env:JITTER) { $env:JITTER } else { "0" }
 # Which context rates to run. By default both, with the long phase on 48 kHz
@@ -43,8 +43,8 @@ if (-not $browser) {
 Remove-Item $build -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item $raw -Force -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force -Path $build | Out-Null
-Copy-Item (Join-Path $root "crates\sdroxide-web\assets\audio_bridge.js") $build
-Copy-Item (Join-Path $root "crates\sdroxide-web\assets\pcm_worklet.js") $build
+Copy-Item (Join-Path $root "crates\sdrcrow-web\assets\audio_bridge.js") $build
+Copy-Item (Join-Path $root "crates\sdrcrow-web\assets\pcm_worklet.js") $build
 Copy-Item (Join-Path $here "page.html") $build
 Copy-Item (Join-Path $here "harness.js") $build
 Copy-Item (Join-Path $here "tap_worklet.js") $build

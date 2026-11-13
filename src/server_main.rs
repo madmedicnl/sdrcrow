@@ -5,13 +5,13 @@ use std::path::PathBuf;
 use std::sync::Arc;
 
 use anyhow::Result;
-use sdroxide_config::Settings;
-use sdroxide_radio::rtrb;
-use sdroxide_radio::{
+use sdrcrow_config::Settings;
+use sdrcrow_radio::rtrb;
+use sdrcrow_radio::{
     AudioParams, EngineConfig, IqSource, MicParams, RadeWatch, StoreSync, TrSwitch, TxGate,
     start_engine,
 };
-use sdroxide_server::{RadioParams, ServerParams};
+use sdrcrow_server::{RadioParams, ServerParams};
 
 use crate::RadioBoot;
 
@@ -118,12 +118,12 @@ pub fn run(
     let add_sync = sync.clone();
     let add_rade = rade.clone();
     let add_tr = tr.clone();
-    let add_radio: sdroxide_server::AddRadioFn = Box::new(move |name: &str| {
-        let slot = sdroxide_config::create_radio(name).map_err(|e| e.to_string())?;
+    let add_radio: sdrcrow_server::AddRadioFn = Box::new(move |name: &str| {
+        let slot = sdrcrow_config::create_radio(name).map_err(|e| e.to_string())?;
         // Read fresh: this is minutes or days after startup, and the operator
         // may have changed the station's settings from a client since.
         let settings = Settings::load();
-        let store = sdroxide_config::Store::radio(slot.id);
+        let store = sdrcrow_config::Store::radio(slot.id);
         let mut c = factory_cli.clone();
         let initial_mode = c.apply_session(store.load_session());
         let (source, caps) =
@@ -181,7 +181,7 @@ pub fn run(
         })
     });
 
-    sdroxide_server::run_blocking(ServerParams {
+    sdrcrow_server::run_blocking(ServerParams {
         radios: params,
         bind: settings.server_bind.clone(),
         port,
@@ -191,7 +191,7 @@ pub fn run(
         // their password — by hand, or from the settings dialog of the GUI
         // running beside this server — should not have to restart the server
         // and drop whoever is on it for the change to hold.
-        access: Some(Box::new(sdroxide_config::load_remote_access)),
+        access: Some(Box::new(sdrcrow_config::load_remote_access)),
         // The same enumeration the local settings dialog uses, offered to
         // whoever is connected. Without it the Rescan / Discover / Test buttons
         // on a remote or browser client have nothing to answer them, and a
@@ -204,10 +204,10 @@ pub fn run(
         // scope stays on disk — closing a radio is not a request to destroy
         // what it was set up as, here any more than at the station.
         remove_radio: Some(Box::new(|id| {
-            sdroxide_config::remove_radio(id).map_err(|e| e.to_string())
+            sdrcrow_config::remove_radio(id).map_err(|e| e.to_string())
         })),
         rename_radio: Some(Box::new(|id, name| {
-            sdroxide_config::rename_radio(id, name).map_err(|e| e.to_string())
+            sdrcrow_config::rename_radio(id, name).map_err(|e| e.to_string())
         })),
         // The roster file again, in both directions. The switch has to live
         // there and nowhere else: the factory that opens a radio's interface
@@ -217,15 +217,15 @@ pub fn run(
         // — dropping everyone on the air to free one dongle.
         radio_power: Some(Box::new(|id, set| {
             if let Some(on) = set {
-                sdroxide_config::set_radio_enabled(id, on).map_err(|e| e.to_string())?;
+                sdrcrow_config::set_radio_enabled(id, on).map_err(|e| e.to_string())?;
             }
-            Ok(sdroxide_config::load_radios().is_enabled(id))
+            Ok(sdrcrow_config::load_radios().is_enabled(id))
         })),
         // The station reaches the internet for its clients' aircraft cards unless
         // its operator turned that off (the "En ligne" switch, or `=0` here, which
         // no client can undo). `=1` holds it on.
-        aircraft_online: sdroxide_server::aircraft_online_forced_by(
-            std::env::var(sdroxide_server::AIRCRAFT_ONLINE_ENV).ok().as_deref(),
+        aircraft_online: sdrcrow_server::aircraft_online_forced_by(
+            std::env::var(sdrcrow_server::AIRCRAFT_ONLINE_ENV).ok().as_deref(),
         ),
     })?;
     Ok(())

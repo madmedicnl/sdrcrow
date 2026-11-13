@@ -1,0 +1,5071 @@
+//! WebSocket wire protocol between the sdroxide server and remote clients.
+//!
+//! Framing: every binary WS message is `[PROTO_VERSION_BYTE][postcard bytes]`.
+//! The version byte is a fast sanity check; the real version negotiation
+//! happens in `Hello`/`HelloAck`.
+//!
+//! Compiles for native and `wasm32-unknown-unknown`.
+
+pub mod solar;
+
+use serde::{Deserialize, Serialize};
+
+use sdrcrow_types::{
+    CallsignInfo, Command, Decode, DeviceCaps, DigiStatus, ImageEntry, ImageKind, ImageListing,
+    ImagePresets, MemoryChannel, MemoryFolder, Meters, QsoRecord, RadioState, RifpMeta, RifpStatus,
+    SkimmerSpot, SpectrumFrame, Spot, SstvMode, SstvStatus, StationConfig, TleSubStatus,
+    UploadResult, VoiceStatus,
+};
+
+/// Bump on any incompatible change to the message enums (this includes the
+/// payload structs from `sdrcrow-types` that ride the wire, e.g. `QsoRecord`).
+/// v3: `QsoRecord` gained `id` + `comment` fields.
+/// v4: added `ServerMsg::SkimmerSpots` + `Command::SetSkimmerEnabled` + a
+/// `RadioState.skimmer_enabled` field.
+/// v5: added SSTV — `Mode::Sstv`, `ServerMsg::Sstv*`, and
+/// `Command::SstvTx`/`SstvSetMode`.
+/// v6: added audio noise reduction + auto-notch — `Command::SetNoiseReduction`,
+/// `Command::SetAutoNotch`, and `RxState.noise_reduction` / `RxState.auto_notch`.
+/// v7: added keyboard modes Olivia/Thor/FSQ — new `Mode` variants, `DigiConfig`
+/// submode fields (Olivia tones/bw, THOR submode, FSQ speed/call), `DigiStatus`
+/// FSQ heard-list + directed-message fields, and a mode-agnostic digi image path
+/// (`Command::DigiImageTx` / `RadioEvent::DigiImage` for the FSQ image sub-mode).
+/// v8: added the audio recorder — `Command::SetRecording` and
+/// `RadioState.recording` / `RadioState.recording_file`.
+/// v9: FT8/FT4 QSO handling — `QsoStep::WaitCq` / `Confirming` and
+/// `Command::DigiStartQso.wait_for_cq`.
+/// v10: neural (RNNoise) noise reduction — new `NrLevel::Ai{Low,Med,High}`
+/// variants can appear in `RxState.noise_reduction`.
+/// v11: network cockpit — spot feeds, callsign lookup, and uploads. New
+/// `Command::SetNetworkConfig`/`SpotDialHint`/`LookupCallsign`/`UploadQso`/
+/// `SyncConfirmations` and `ServerMsg::Spots`/`NetStatus`/`CallsignResult`/
+/// `Upload`/`Confirmations`, plus new `QsoRecord` fields.
+/// v12: per-kind skimmer control — `RadioState.skimmer_enabled` became
+/// `RadioState.skimmer: SkimmerSettings` (CW/PSK/RTTY enables + squelch) and
+/// `Command::SetSkimmerEnabled` became `Command::SetSkimmerConfig`.
+/// v13: built-in TCI server — `Command::SetTciServerConfig` and
+/// `ServerMsg::TciServerStatus`.
+/// v14: FreeDV Reporter — new `SpotKind::FreeDv` (extends the postcard
+/// discriminant space of `ServerMsg::Spots`) and `NetworkConfig`'s new
+/// `freedv_reporter` field. `NetworkConfig` also lost `my_call`/`my_grid`: the
+/// operator identity is `DigiConfig`'s alone, so both ends must agree on the
+/// shape `Command::SetNetworkConfig` carries.
+/// v15: built-in Hamlib rigctld server — `Command::SetRigctldConfig` and
+/// `ServerMsg::RigctldStatus` (both extend the postcard discriminant space).
+/// v16: FT8 message handling and reporting. `Decode` gained `cq_dx` and
+/// `free_text`, `TranscriptLine` gained `overheard`, and `PskConfig` gained the
+/// upload fields — postcard is not self-describing, so every added field
+/// changes the layout of the messages carrying them. Also new:
+/// `Command::SetWsjtxConfig` (WSJT-X UDP broadcast).
+/// v17: manual FT8 message control — `Command::DigiSetStep` and
+/// `Command::DigiSendText` (both extend the postcard discriminant space).
+/// v18: FT8 transmit watchdog — `DigiStatus.tx_watchdog` plus `DigiConfig`'s
+/// `tx_watchdog_min` / `max_tx_repeats`, which both ends must agree on.
+/// v19: voice keyer — `Command::VoiceRecord`/`VoicePlay`/`VoicePreview`/
+/// `VoiceClear`/`VoiceRename` and `ServerMsg::VoiceStatus` (both extend the
+/// postcard discriminant space).
+/// v20: Hellschreiber — `ServerMsg::HellColumns` plus `DigiConfig`'s
+/// `hell_variant` / `hell_rx_agc`, which both ends must agree on because
+/// `DigiStatus` carries the config. (`Mode::Hell` alone would have been
+/// compatible: it is appended to the enum, so no existing discriminant moves.)
+/// v21: FT8 DXpedition mode — `DigiConfig`'s `dxped_mode` / `fox_slots`,
+/// `DigiStatus.fox_queue`, and `Decode.rr73_to` (the RR73 half of a Fox
+/// message, which is how a Hound learns its contact completed). Postcard is not
+/// self-describing, so both ends must agree on every one of those fields.
+/// v22: clock-offset monitoring — `DigiStatus.clock_offset_s`.
+/// v23: directed CQs — `Decode.cq_dx` became `Decode.cq_to`, the modifier
+/// itself (`DX`, `EU`, `JA`, `POTA`, …) rather than a single DX flag.
+/// v24: the FT8/FT4 call queue — `Command::DigiQueueAdd`/`DigiQueueRemove` and
+/// `DigiStatus.call_queue`.
+/// v25: automatic transmit-frequency choice — `DigiConfig.auto_tx_freq`.
+/// v26: RIFP (draft-dulaunoy-rifp-00) — `Mode::Rifp` and `Band::M70` (both
+/// appended, so no existing discriminant moves), `Command::RifpTx` /
+/// `RifpDropSession`, `ServerMsg::RifpRows` / `RifpImage` / `RifpStatus`, and
+/// `DigiConfig`'s `rifp_*` fields, which both ends must agree on because
+/// `DigiStatus` carries the config.
+/// v27: WFM broadcast stereo — `RxState.wfm_stereo`, `Meters.stereo` and
+/// `Command::SetWfmStereo`. The command is appended so no existing discriminant
+/// moves, but postcard is not self-describing, so the two added struct fields
+/// change the layout of every message carrying `RadioState` or `Meters`.
+/// v28: JS8 — `Mode::Js8`, the `js8_*` fields on `DigiConfig`, and
+/// `DigiStatus.js8` carrying the heard list, the reassembled conversation and
+/// transmit-queue progress. No message enum gained a variant, but postcard is
+/// not self-describing and the added struct fields change the layout of every
+/// message carrying `DigiConfig` or `DigiStatus`.
+/// v29: JS8 beaconing — `DigiConfig`'s `js8_hb_ack` (answer a heard heartbeat
+/// with a signal report) and `js8_hb_anywhere` (beacon on the working frequency
+/// instead of the 500–1000 Hz sub-band), plus `Js8Status.hb_hz`, the frequency
+/// the last beacon actually went out on. `Js8Status.next_hb_in_s` is now
+/// populated rather than always `None`, which is a behaviour change but not a
+/// layout one. Both ends must agree on the three added fields, postcard being
+/// what it is.
+/// v30: broadcast station labels — new `SpotKind::Broadcast`, which extends the
+/// postcard discriminant space of `ServerMsg::Spots` exactly as `FreeDv` did in
+/// v14. The engine never emits it (the stations are synthesised client-side from
+/// a bundled table), but the enum both ends decode has changed shape, so they
+/// must agree on it.
+/// v31: the full-band panadapter — a new `ServerMsg::WideSpectrum`, carrying an
+/// ordinary `SpectrumFrame` on its own lane. Appended at the end of the enum so
+/// no existing postcard discriminant moves, but an older client cannot decode
+/// the new message, so the handshake has to reject it.
+/// v32: engine notices reach remote clients — a new `ServerMsg::Notice`,
+/// likewise appended at the end. What a notice says is the operator's business
+/// wherever they are sitting: a radio refusing a tune, or an interface that has
+/// dropped and is reconnecting, is not a local-console detail.
+/// v33: the picture stores moved server-side — five new `ServerMsg`s
+/// (`ImagePresets`, `ImageSlotSource`, `ImageListing`, `ImageFile`,
+/// `ImageSaved`) and six new `Command`s (`ImageSetSlot`, `ImageClearSlot`,
+/// `ImageSetMessage`, `ImageGetSlot`, `ImageList`, `ImageGet`), all appended so
+/// no existing discriminant moves. The transmit slots, their overlay messages
+/// and the received galleries used to be client state, which meant a browser
+/// tab and the console attached to the same radio disagreed about both — and
+/// the browser, having no filesystem, had neither. They belong to the radio:
+/// the engine owns the files and hands out metadata, thumbnails and pixels on
+/// request. Composition stays client-side, and transmit still rides the
+/// existing `SstvTx` / `RifpTx`.
+/// v34: the station configuration reaches remote clients — two new `ServerMsg`s
+/// (`StationConfig`, `TleSubStatus`) and two new `Command`s (`SetSatConfig`,
+/// `RefreshTleSubs`), all appended so no existing discriminant moves. The
+/// network cockpit, the two built-in servers, the WSJT-X broadcast and the
+/// satellite additions all describe the *station*, and all of them are files in
+/// the engine host's config directory. A remote settings dialog used to read
+/// its own machine's copy — nonexistent in a browser — so those tabs opened on
+/// defaults, and pressing APPLY wrote the defaults back over the operator's
+/// real configuration. The engine announces them instead, and the server caches
+/// and replays them like the digi config.
+/// v35: received pictures can be deleted — one new `ServerMsg` (`ImageDeleted`)
+/// and one new `Command` (`ImageDelete`), both appended so no existing
+/// discriminant moves. The store is on the engine host, so until now the only
+/// way to clear out a season of half-decoded charts and noise-only frames was to
+/// go to that machine with a file manager; a browser tab could not do it at all.
+/// The deletion is broadcast rather than answered, because a picture that has
+/// gone is gone from every gallery, not just the one that asked.
+/// v36: sign-in — one new `ClientMsg` (`Auth`) and two new `ServerMsg`s
+/// (`AuthRequired`, `AuthRejected`), all appended so no existing discriminant
+/// moves. A server with credentials configured answers `Hello` with
+/// `AuthRequired` instead of `HelloAck` and waits; everything that used to
+/// happen next happens after the credentials are accepted. The version still
+/// has to be bumped despite the appends: a v35 client cannot decode
+/// `AuthRequired`, so it would report a protocol error rather than the truth,
+/// which is that it needs a password and cannot ask for one.
+/// v37: manual audio gain — `RxState.manual_gain_db` and a new
+/// `Command::SetManualGain`, which is *not* appended: it sits with the other
+/// receiver commands, so the discriminants after it move. Both ends must agree
+/// on the added field anyway, postcard not being self-describing, so the
+/// version has to be bumped either way. AGC off used to mean unity gain on the
+/// demodulator's own output, which for an SSB signal 60 dB down is silence at
+/// any volume setting; it now means this fixed gain instead.
+/// v38: a finished FT8/FT4 contact says so — `TranscriptLine` gained `done`,
+/// the flag on the line that marks the QSO complete and logged. Appended to the
+/// struct, but postcard is not self-describing, so every message carrying a
+/// `DigiStatus` changes layout and both ends have to agree on the field.
+/// v39: `QsoStep::Done` is gone. Nothing ever set it — `Confirming` is the
+/// state a finished contact sits in — so no engine has ever put it on the wire.
+/// It was the last variant, so no surviving discriminant moves, but the enum
+/// both ends decode has changed shape and this codebase bumps for that.
+/// v40: sub-audible squelch signalling on NFM — `Meters.tone` carries the CTCSS
+/// tone or DCS code being received, `RxState.tone_sql` the one the operator
+/// requires before the audio gate opens, and `Command::SetToneSquelch` sets it.
+/// The command is appended, so no surviving discriminant moves, but postcard is
+/// not self-describing and the two added struct fields change the layout of
+/// every message carrying `RadioState` or `Meters`.
+/// v41: the frequency scanner — `RadioState.scan` says whether it is running
+/// and whether it has stopped on something, `RadioEvent::Scanner` carries the
+/// settings the way `Memories` carries the memory list, and four appended
+/// commands (`SetScannerConfig`, `SetScanning`, `ScanNext`, `ScanSkip`) drive
+/// it. The commands are appended, but the added `RadioState` field changes the
+/// layout of every message carrying one, postcard not being self-describing.
+/// v42: recording both sides of the QSO (RX left, TX right) instead of just
+/// the receiver, plus an optional mono downmix — `Command::SetRecordingMono`
+/// (appended) and `RadioState.recording_mono` (changes the layout of every
+/// message carrying `RadioState`).
+/// v43: two more noise-reduction engines. `NrLevel` gained
+/// `Spec{Low,Med,High}` (a Rust port of libspecbleach's adaptive denoiser) and
+/// `Df{Low,Med,High}` (DeepFilterNet3), both appended so no surviving
+/// discriminant moves — but a v42 client cannot decode discriminants 7..12 at
+/// all, so it would report a protocol error rather than the truth, which is
+/// that the operator picked an engine it has never heard of. The `Ai*`
+/// variants were also renamed `Rnn*`, which the wire cannot see (postcard is
+/// positional and this enum is persisted nowhere else) but the labels can: the
+/// chip reads "NR RNN Med" where it read "NR AI Med".
+/// v44: WSPR. `Mode::Wspr` is appended, as is `SpotKind::Wspr`, so no surviving
+/// discriminant moves — but `DigiConfig` gained five fields and `DigiStatus` a
+/// `wspr: Option<WsprStatus>`, and postcard is not self-describing, so every
+/// message carrying either changes layout and both ends have to agree. The new
+/// `ServerMsg::WsprSpots` carries what a slot decoded: a WSPR reception is a
+/// measurement of a path rather than a message somebody sent, so it travels as
+/// its own event instead of being squeezed into `Decode`. `WsprStatus` also
+/// carries `tx_blocked`, the engine's own answer to "can this station transmit
+/// as configured" — the panel used to work that out for itself and got it
+/// wrong, and one authority is the point.
+/// v45: the CW skimmer's decoder is the operator's choice. `SkimmerSettings`
+/// gained `cw_decoder` (DeepCW or the envelope-timing decoder) and `cw_slots`
+/// (how many stations the neural one reads at once), so a receiver that cannot
+/// spare the cores for a Conformer per station can still skim. Both are
+/// appended, but `SkimmerSettings` is a field of `RadioState` as well as the
+/// payload of `Command::SetSkimmerConfig`, and postcard is not self-describing:
+/// the layout of every state broadcast changes and both ends have to agree.
+/// v46: memory folders — `MemoryChannel` gained `folder`, which changes the
+/// layout of every `Memories` message, postcard not being self-describing. The
+/// folder list itself rides the new `ServerMsg::MemoryFolders` (appended last,
+/// so no surviving discriminant moves), and four appended `Command`s
+/// (`CreateMemoryFolder` / `RenameMemoryFolder` / `DeleteMemoryFolder` /
+/// `MoveMemoryToFolder`) manage them.
+/// v47: an RTTY memory carries its modem setup — `MemoryChannel` gained
+/// `rtty: Option<RttyMemory>` (baud / shift / reverse / AFC), captured when a
+/// memory is stored in RTTY mode and re-applied on recall. Changes the layout
+/// of every `Memories` message, postcard not being self-describing.
+/// v48: the satellite lock. Two appended `Command`s (`SetSatLock`,
+/// `SetRotatorConfig`) and two appended `ServerMsg`s (`SatTrack`,
+/// `RotatorStatus`), so no surviving discriminant moves — but `SatLink` gained
+/// `inverting` and `StationConfig` gained `rotator`, and postcard is not
+/// self-describing, so every message carrying either (`SetSatConfig`, the
+/// `StationConfig` bundle) changes layout and both ends have to agree.
+///
+/// v49: `DeviceCaps` gained `shared_lo_rx` (a Pluto 2R2T's chains share one
+/// LO). Appended field, but postcard is not self-describing, so every message
+/// carrying capabilities changes layout and both ends have to agree.
+/// v50: the band plan became data. `StationConfig` gained `region` (which of
+/// the three IARU regions the station is in) and `band_plan` (the edges and
+/// sub-segments themselves, from the engine machine's `bandplan.json`), so the
+/// bundle changes layout and both ends have to agree. `Command::SetRegion` and
+/// `Command::ReloadBandPlan` are appended last, so no surviving discriminant
+/// moves.
+/// v51: the interface configuration reaches remote clients — a new
+/// `ServerMsg::RadioConfig` and a new `Command::SetRadioConfig`, both appended
+/// last, so no surviving discriminant moves. What an SDR can be told about
+/// itself is not all expressible as a gain stage: an RTL-SDR's AGC mode, its
+/// ppm correction, its HF path and its bias tee ride `SetGain` pseudo-elements
+/// to the running device, but the panel that drives them reads and writes
+/// `radio.json` — a file in the engine host's config directory, which a remote
+/// client had no copy of and was therefore shown "only available in the native
+/// app" instead of. A headless server's dongle could only be configured by
+/// editing that file by hand and restarting. The engine announces it instead,
+/// and the server caches and replays it like the station config. The version
+/// still has to be bumped despite the appends: a v50 client cannot decode the
+/// announcement, so it would report a protocol error rather than the truth,
+/// which is that the server is offering it something it has never heard of.
+/// v52: Winlink radio email. Five appended `Command`s (`WinlinkConnect`,
+/// `MailList`, `MailGet`, `MailCompose`, `MailDelete`, `MailMove`) and five
+/// appended `ServerMsg`s (`WinlinkStatus`, `MailListing`, `MailMessage`,
+/// `MailSaved`, `MailDeleted`), so no surviving discriminant moves — but
+/// `NetworkConfig` gained `winlink`, and postcard is not self-describing, so
+/// every message carrying it changes layout and both ends have to agree. The
+/// mailbox itself stays on the engine host and is read a page and a message at
+/// a time, like the picture store: mirroring a mailbox with attachments in it
+/// to every client on connect is not something a phone link would survive.
+/// v53: AX.25 packet radio. Two appended `Mode` variants — `Packet` (VHF/UHF
+/// FM) and `PacketHf` (HF sideband) — so no surviving discriminant moves and a
+/// v52 client decodes every mode it already knew. The bump is for the other
+/// direction: a v53 engine on a packet mode sends a discriminant a v52 client
+/// has never heard of, and postcard is not self-describing, so what it would
+/// report is a protocol error rather than the truth. Same reasoning as v51's.
+/// `DigiConfig` also gained the `packet_*` settings and `DigiStatus` an
+/// `Option<PacketStatus>` carrying the heard list, which changes the layout of
+/// every message either of them rides in — the same reason v52 had to bump for
+/// `NetworkConfig`. The heard list is capped (`PACKET_HEARD_MAX`) and travels
+/// whole rather than as a delta: it is a rolling view of a busy channel, not a
+/// log, and a client that reconnects wants what is on the air now.
+/// `WinlinkConfig` also gained `lane`, `gateway` and `gateway_via`, so the
+/// operator picks the radio lane in settings rather than the client picking it
+/// per connect — which keeps `Command::WinlinkConnect` unchanged and means an
+/// older client still forwards by telnet instead of failing to encode a command
+/// it has never heard of.
+/// v54: the 4 m band. `Band::M4` is appended to the enum, so no postcard
+/// discriminant moves and every band stack and memory already on disk still
+/// decodes — but `Band::ALL` puts it between 6 m and 2 m, where it belongs on
+/// screen, and that list's *position* is what the propagation messages index by
+/// (`SolarServerMsg`'s per-band planes, and the band masks the globe and map
+/// carry). A v53 client would file 2 m's plane under 4 m and 70 cm's under 2 m,
+/// which is the one thing a version byte exists to prevent.
+/// v55: SpyServer, as two interfaces. `Backend::SpyServer` and
+/// `Backend::SpyServerVfo` are appended so no existing discriminant moves, and
+/// `RadioConfig` gained a `spyserver` and a `spyserver_vfo` block. Both halves
+/// force the bump, for the two reasons v51 and v53 already set out: a new
+/// `Backend` discriminant is a value a v54 client has never heard of, and two
+/// new `RadioConfig` fields change the layout of every message that struct
+/// rides in — which is `ServerMsg::RadioConfig`, the message the settings
+/// dialog is built from. Postcard is not self-describing, so a v54 client
+/// would not fail to find them; it would decode the fields after them from the
+/// wrong offset.
+/// v56: device questions travel. A new `ClientMsg::Probe` and a new
+/// `ServerMsg::ProbeAnswer`, both appended last, so no surviving discriminant
+/// moves. Every other setting in `radio.json` describes a device and therefore
+/// means the same thing wherever it is read; the discovery controls beside them
+/// ask about a *machine* — what is on its USB bus, which serial ports it has,
+/// what a broadcast finds on its network, which sound cards the rig could be
+/// plugged into — and a client that answered those locally would be describing
+/// the wrong computer. So they were greyed out, and with them the interface
+/// selector: with no list to pick from there was nothing to choose. Now the
+/// question is asked of the machine the radio is attached to and the answer
+/// comes back over the session, which is what makes changing the radio on a
+/// `--server` instance possible from a remote or browser client at all. The
+/// version bump is for the usual reason: a v55 client cannot decode an answer
+/// it has never heard of, and would report a protocol error instead of the
+/// truth, which is that the server is offering it something new. `ServerMsg`
+/// also gained `Capabilities`, appended after it: with the interface
+/// changeable from a client, the radio a session is talking to can become a
+/// different one mid-session, and what it can do has to follow.
+///
+/// **57** — a station serves every radio in its roster, each on its own
+/// address, so a session now says which radio it is on and what else the
+/// station has: [`ServerMsg::Radios`], sent once, right after `HelloAck`.
+/// Without it a client could reach a second radio only if somebody typed its
+/// address in by hand, and could never put the station's radios in tabs the
+/// way it does with the ones plugged into this machine.
+/// **58** — RDS/RBDS on WFM broadcast: [`ServerMsg::Rds`], appended last. A
+/// remote client gets the station name, programme type, radio text and
+/// now-playing tags the same way the local one does, because the decoding
+/// happens where the radio is and only the result travels. Cached and replayed
+/// on connect like the other announced-once state: the station being listened to
+/// is a *condition*, not an event, and a browser tab that attaches after the
+/// dial stopped moving would otherwise sit blank until the text next changed.
+///
+/// **59** — an RMS gateway carries its own speed and channel. `WinlinkConfig`
+/// gained `gateway_baud` and `gateway_freq_hz`, so picking a 9600 gateway from
+/// the list calls it at 9600 instead of in silence at 1200. `WinlinkConfig`
+/// travels inside `Command::SetNetworkConfig`, and postcard is not
+/// self-describing: two appended fields shift every byte after them, so a v58
+/// client and a v59 server would disagree about where the gateway list starts.
+/// `#[serde(default)]` covers the config file on disk, not the wire — hence
+/// the bump.
+///
+/// **60** — the microwave bands: 1.25 m and 33 cm (Region 2's alone, like 4 m is
+/// Region 1's), and 23 cm, 13 cm, 9 cm and 6 cm. `Band::M125`, `Band::Cm33`,
+/// `Band::Cm23`, `Band::Cm13`, `Band::Cm9` and `Band::Cm6` are appended to the
+/// enum, so no postcard discriminant moves and every band stack and memory
+/// already on disk still decodes. The bump is for the same reason v54's was:
+/// `Band::ALL` puts each new band where it belongs on screen — 1.25 m between
+/// 2 m and 70 cm, the rest above it — and that list's *position* is what the
+/// propagation messages index by (`SolarServerMsg`'s per-band planes, and the
+/// band masks the globe and the flat map carry). A v59 client would file 70 cm's
+/// plane under 1.25 m and every plane above it one band low.
+///
+/// **61** — a second radio used as this one's panadapter. `DeviceCaps` gained
+/// `rx_audio_external` and `RadioConfig` gained a whole `panadapter` block, and
+/// both travel over the wire — `DeviceCaps` in `ServerMsg::Capabilities`,
+/// `RadioConfig` in `ServerMsg::RadioConfig` and `Command::SetRadioConfig`.
+/// Both are appended last, so nothing already on disk moves, but postcard is
+/// positional and not self-describing: a v60 client reading a v61
+/// `RadioConfig` would run off the end of the message, and `#[serde(default)]`
+/// covers the file, not the stream.
+///
+/// **62** — the panadapter's gestures say so. `Command::TuneInSpan` is appended
+/// last, so no surviving discriminant moves, but a v61 engine would answer a
+/// command it cannot decode with a protocol error. It separates tuning inside
+/// the span already on screen (click, drag, wheel on the panadapter) from
+/// setting the dial (`Command::SetVfo` — the readout, a memory, an external
+/// controller), which are the same thing on an SDR and are not on a rig whose
+/// own synthesiser is the centre of what we capture. (The semantic split has
+/// since been retired — the engine answers both commands identically, see
+/// `Command::TuneInSpan` — but the discriminant is on the wire and stays.)
+///
+/// **63** — the ISM decoder. `RadioState` gained an `ism` block, which puts it in
+/// *every* state broadcast, so this is not an append a v62 client can survive:
+/// it would run off the end of the first state message it received. The new
+/// `ServerMsg::IsmReports` / `IsmStatus` and `Command::SetIsmConfig` are appended
+/// last as usual. `IsmSettings` carries its per-family switches as a bitmask
+/// rather than a fixed-length array precisely so that the *next* protocol family
+/// added does not force this bump again.
+///
+/// **64** — the ELAD backend. `Backend`, `DeviceProbe`, `ProbeAnswer` and
+/// `ReportKind` each gained a variant and `RadioConfig` an `elad` block. All
+/// appends, but a v63 client asked to decode the new `Backend::Elad` — or handed
+/// a `RadioConfig` with one more field on the end — has nowhere to put it, and
+/// the config is what a client reads to draw the settings dialog.
+///
+/// **65** — the LimeSDR backend and LimeRFE control. `Backend`, `DeviceProbe`,
+/// `ProbeAnswer` and `ReportKind` each gained a variant and `RadioConfig` a
+/// `lime` block, which carries a nested `LimeRfeConfig` of its own. Appends
+/// again, and again not survivable: a v64 client handed a `RadioConfig` with
+/// the new block on the end stops at the wrong byte, and the LimeRFE settings
+/// it cannot decode are the ones that decide whether an amplifier is switched
+/// into the transmit path.
+///
+/// **66** — the transmit tone can be held. `DigiConfig` gained `hold_tx_freq`,
+/// and `DigiConfig` travels inside `DigiStatus`, so this is not an append a v65
+/// client can survive: postcard is positional and every field after it shifts.
+/// `#[serde(default)]` covers the config file on disk, not the wire. The engine
+/// gained `Settings.tx_guard_offset`, but that is local and not on the wire.
+///
+/// **67** — the transmit tone is remembered per band. `DigiConfig` gained
+/// `tx_audio_hz`, a map from `Band` to the offset last chosen there, and the
+/// same reasoning as 66 applies unchanged: it sits inside `DigiStatus`,
+/// postcard is positional, and a v66 client reading a v67 status runs into the
+/// wrong field. `#[serde(default)]` again covers the config file and not the
+/// wire. The engine's `digi_tx_band` is local state and is not sent.
+///
+/// **68** — the rig's own power-output meter. `TxMeters` gained `po`, a
+/// `0.0..=1.0` fraction of the rig's own scale, and `TxMeters` is not the last
+/// field of `Meters`: `stereo` and `tone` follow it. So this is not even an
+/// append a client can stop short of — every byte after `tx` shifts, and a v67
+/// client handed a v68 `Meters` with the transmitter keyed reads the new
+/// `Option` tag as `stereo` and then runs off the end of the message. Same
+/// reasoning as v27 and v40, which bumped for exactly this struct.
+///
+/// The ALC reading that landed alongside it is NOT a wire change: it went into
+/// `TxTelemetry`, which the engine folds into `TxMeters::alc` — an existing
+/// field — and which never leaves the process on its own.
+///
+/// **69** — the SoapySDR settings panel. `DeviceCaps` gained `bandwidths`,
+/// `bandwidth_ranges` and `settings`, so that a driver's own controls can be
+/// drawn from what the device says about itself rather than from per-driver
+/// code. They are appended last and `#[serde(default)]`, but postcard is not
+/// self-describing and `DeviceCaps` is sent whole: a v68 client would stop
+/// reading where the struct used to end and treat the remainder as the next
+/// message. Same reasoning as every other `DeviceCaps` append.
+///
+/// **70** — the flrig CAT family. `CatConfig` gained `flrig_addr` and
+/// `CatFamily` a trailing `Flrig` variant. The variant alone would be safe —
+/// postcard numbers variants by declaration index, and nobody sends a value
+/// they don't have — but the field sits mid-struct and `CatConfig` rides
+/// `Command::SetRadioConfig` whole, so for a v69 peer every byte after it
+/// shifts. `#[serde(default)]` covers the config file on disk, not the wire.
+///
+/// **71** — the serial CI-V scope (issue #96 on USB). `CatConfig` gained
+/// `scope` and `scope_span`, appended last — but postcard is not
+/// self-describing and `CatConfig` rides `Command::SetRadioConfig` whole, so a
+/// v70 peer stops reading where the struct used to end and treats the two new
+/// fields as the next message. Same reasoning as v69's `DeviceCaps` append.
+///
+/// **72** — the embedded rtl_433 ISM decoders. Four changes, any one of which
+/// would force the bump: `IsmSettings` gained an `rtl433` block and it rides
+/// inside every `RadioState`, so a v71 peer misreads everything after it;
+/// `IsmStatus` gained a trailing `rtl433` field, and postcard is not
+/// self-describing, so the old reader stops where the struct used to end;
+/// `IsmProtocol` gained `Rtl433` and `IsmQuantity` four energy quantities,
+/// appended so existing discriminants keep their numbers, but a v71 client
+/// handed one has nowhere to put it. No new `ServerMsg` or `Command`: the lane
+/// reuses `IsmReports`, `IsmStatus` and `SetIsmConfig`.
+///
+/// **73** — the station's roster is editable from a client. Three appended
+/// `ClientMsg`s (`AddRadio`, `RemoveRadio`, `RenameRadio`), which alone would
+/// be survivable — postcard numbers variants by declaration index and nobody
+/// sends a message they don't have — but `ServerMsg::Radios` gained `editable`
+/// mid-variant, and postcard is not self-describing: a v72 client reading it
+/// would take the flag for the start of the next message. Configuring a
+/// station's radios from away already worked; what did not was *how many* it
+/// has, which meant a headless station's second radio could only be added by
+/// editing `radios.json` on that machine and restarting it.
+///
+/// **74** — HamQTH joins eQSL/QRZ/Club Log as an upload target. Two appended
+/// fields and two appended variants, and the fields are what force the bump:
+/// `NetworkConfig` gained `auto_upload_hamqth` and `QsoRecord` gained
+/// `hamqth_sent`, both of which ride whole inside `Command::SetNetworkConfig`
+/// and `RadioEvent::Ft8QsoLogged`, so a v73 peer stops reading where each
+/// struct used to end and takes the new field for the start of the next
+/// message. `UploadTarget` and `LoginTarget` gained `HamQth` last, so existing
+/// discriminants keep their numbers, but a v73 client handed one has nowhere to
+/// put it. No new `ServerMsg` or `Command`: the lane reuses `SetNetworkConfig`,
+/// `UploadQso` and `TestLogin`.
+///
+/// **75** — a radio's power switch reaches a client. `RadioInfo` gained
+/// `enabled`, and it rides inside `ServerMsg::Radios` ahead of that message's
+/// `editable` flag, so a v74 client reading the announcement would take the
+/// new field for the roster's next entry. Appended beside it:
+/// `ClientMsg::SetRadioEnabled`, and `Command::ReopenSource` — which the
+/// station sends its own engine, but which shares the discriminant space every
+/// command rides in. Switching a radio off already worked at the station; what
+/// did not was doing it from away, which meant the browser client — a headless
+/// station's *only* screen — could not put a radio down and pick it back up.
+///
+/// **76** — a stored memory can be edited (issue #138).
+/// `Command::EditMemory` carries the channel's new name, dial and mode.
+/// Appended last, so no surviving discriminant moves and a v75 *engine* would
+/// simply never be sent one — but the handshake is an equality test, and the
+/// client that does send one has no way to find out beforehand that the
+/// station on the other end has never heard of it. Correcting a typo used to
+/// mean deleting the memory and storing it again from the frequency itself.
+///
+/// The sort that landed with it is not on the wire at all: which order a
+/// screen lists its memories in is a client preference (`UiSettings`), the
+/// store keeps them in the order they were stored, and the engine is never
+/// told.
+///
+/// **77** — repeater operation (issue #137). [`sdrcrow_types::RadioState`]
+/// carries a `RepeaterState`: the transmit shift, the CTCSS/DCS tone that goes
+/// out under the voice, and the 1750 Hz burst. `Command::SetRepeater` and
+/// `Command::ToneBurst` set and fire them, `Command::EditMemory` gained the
+/// setup a memory stores, and `MemoryChannel` gained the field it stores it in.
+///
+/// A field added to a struct in the state, so this is not a variant append that
+/// an older peer could simply never be sent: a v76 client decoding a v77 state
+/// would read the tail of it as garbage. The handshake is an equality test and
+/// catches that before a single frame is exchanged, which is what it is for.
+/// **78** — the ISM decoder's rtl_433 lane gained a chosen bandwidth and a
+/// fifth band (issue #141). `Rtl433Settings` carries `bandwidth_hz`, which is
+/// the width to watch or zero for the band's own, and `Rtl433Status` carries
+/// `rate_hz`, the width actually being decoded. Both are fields added to
+/// structs — the settings ride in [`sdrcrow_types::RadioState`] and the status
+/// in an event — so a v77 peer would read the tail of either as garbage, and
+/// the handshake's equality test is what stops it trying.
+///
+/// The 345 MHz band itself is not on the wire: it is a row in a table both
+/// sides already have.
+///
+/// **79** — dragging the panadapter past the end of the captured window moves
+/// the window (issue #133). [`sdrcrow_types::DeviceCaps`] carries
+/// `center_is_dial`, which says whether the front end has a centre that can be
+/// commanded on its own; a client needs it to know whether the pan may ask for
+/// one, or whether the dial it is already turning moves the window by itself.
+/// A field appended to a struct that rides in an event, so a v78 client would
+/// read the tail of the capabilities as garbage — the handshake's equality test
+/// is what stops it trying.
+///
+/// **80** — the banner across the top of a transmitted SSTV/RIFP picture is
+/// the operator's to write (issue #145). [`sdrcrow_types::DigiConfig`] gained
+/// `sstv_banner`, `sstv_banner_left`, `sstv_banner_right`, `sstv_banner_fill`,
+/// `sstv_banner_ink` and `sstv_banner_height`: what the strip prints at each
+/// end, what colour it and its text are, and how tall it is. The two texts
+/// carry `{call}` / `{grid}` / `{version}` placeholders, resolved by whichever
+/// client composes the picture.
+///
+/// On the station rather than in this screen's `UiSettings`, where the
+/// waterfall's own colours live, because this one is drawn *into* the picture
+/// that goes on the air — it is the station identifying itself, and the
+/// browser tab and the console have to compose the same slot identically.
+///
+/// Fields added to a struct that rides in both a command and an event, so a
+/// v79 peer would read the tail of either as garbage; the handshake's equality
+/// test is what stops it trying.
+///
+/// **81** — the HydraSDR RFOne is an interface of its own (issue #144).
+/// [`sdrcrow_types::Backend`] gained `HydraSdr` and
+/// [`sdrcrow_types::RadioConfig`] a `hydrasdr` block, with `DeviceProbe`,
+/// `ProbeAnswer` and `ReportKind` gaining the variants that enumerate one and
+/// fetch its session trace.
+///
+/// A field appended to the radio configuration, which rides in both a command
+/// and an event, so a v80 peer would read the tail of either as garbage — the
+/// handshake's equality test is what stops it trying. The new `Backend` variant
+/// on its own would have been harmless (an older peer is simply never sent
+/// one); the config block is not.
+///
+/// **82** — a LimeSDR's second receive chain can carry a second aerial, and
+/// the two are combined (issue #98). [`sdrcrow_types::LimeConfig`] gained an
+/// `aux` block — [`sdrcrow_types::LimeAuxConfig`] — carrying what the chain is
+/// for, its socket and gain, and the adaptive filter's mode, length, rate and
+/// hold.
+///
+/// A field appended to the radio configuration, which rides in both a command
+/// and an event, so a v81 peer would read the tail of either as garbage — the
+/// handshake's equality test is what stops it trying.
+/// **83** — that second chain can instead carry a directional coupler, and
+/// linearise the transmitter from a sample of what it emitted — PureSignal
+/// (issue #98). [`sdrcrow_types::LimeAuxRole`] gained a `PureSignal` variant
+/// and [`sdrcrow_types::LimeAuxConfig`] the `ps_bins`, `ps_rate` and
+/// `ps_frozen` that drive the correction.
+///
+/// Fields appended to the radio configuration, which rides in both a command
+/// and an event, so a v82 peer would read the tail of either as garbage — the
+/// handshake's equality test is what stops it trying. The new role variant
+/// would have been survivable on its own; the fields are not.
+///
+/// **84** — a PlutoSDR can key an external amplifier, LNA or transmit-receive
+/// switch from its own GPO pins (issue #135). [`sdrcrow_types::PlutoConfig`]
+/// gained `duplex` ([`sdrcrow_types::PlutoDuplex`]) and `ptt_gpo`
+/// ([`sdrcrow_types::PlutoPtt`]): which duplex the AD9361's enable state
+/// machine runs in, and which pair of pins follows the radio.
+///
+/// Fields appended to the radio configuration, which rides in both a command
+/// and an event, so a v83 peer would read the tail of either as garbage — the
+/// handshake's equality test is what stops it trying.
+/// v85: DRM (Digital Radio Mondiale) — `Mode::Drm`, `ServerMsg::Drm` carrying
+/// `DrmStatus`, and `Command::SetDrmService` / `SetDrmConstellation`. All are
+/// appended, so no existing discriminant moves.
+///
+/// **86** — a rig's I/Q sound card gets the front-end correction every other
+/// quadrature interface here already had (issue #147).
+/// [`sdrcrow_types::CatConfig`] gained `iq_correction` and `iq_dc_block_hz`:
+/// whether the mirror image and the DC spike are cancelled, and how wide a
+/// notch to take out of the centre.
+///
+/// Fields in the radio configuration, which rides in both a command and an
+/// event, so a v85 peer would read the tail of either as garbage — the
+/// handshake's equality test is what stops it trying.
+///
+/// **87** — an RSPduo can run *both* of its tuners and combine them, the same
+/// way a LimeSDR's second chain is combined at v82 (issue #153).
+/// [`sdrcrow_types::SdrPlayConfig`] gained a `diversity` block —
+/// [`sdrcrow_types::SdrPlayDuo`] — carrying whether the second tuner
+/// runs at all, its own two gains, and the adaptive filter's mode, length,
+/// rate and hold.
+///
+/// A field appended to the radio configuration, which rides in both a command
+/// and an event, so a v86 peer would read the tail of either as garbage — the
+/// handshake's equality test is what stops it trying.
+///
+/// **88** — QRP Labs radios (QMX, QMX+, QDX) are a CAT family of their own
+/// (issue #95). [`sdrcrow_types::CatFamily`] gained a trailing `QrpLabs`
+/// variant.
+///
+/// Nothing moved: postcard numbers variants by declaration index and the new
+/// one went on the end, so every existing family keeps its number and a v87
+/// peer's own configuration still round-trips. What forces the bump is the
+/// other direction — a v87 client handed `QrpLabs` has no such variant to put
+/// it in, and postcard is not self-describing, so it does not fail on the field
+/// but on everything after it. Same reasoning as v72's `IsmProtocol` append.
+///
+/// **89** — APRS is a mode of its own (issue #150). Three appends, all at the
+/// tail of their type: [`sdrcrow_types::Mode`] gained `Aprs`,
+/// [`sdrcrow_types::Command`] gained `AprsBeacon` and `AprsSendMessage`, and
+/// [`sdrcrow_types::DigiStatus`] gained an `aprs` field carrying the map, the
+/// messages and the channel.
+///
+/// The `Mode` append is the one that forces the bump, and it is the same trap
+/// as v88's: postcard numbers variants by declaration index, so every existing
+/// mode keeps its number — but a v88 client handed `Aprs` has no variant to
+/// decode it into and desynchronises on everything after it, rather than
+/// failing on the field itself.
+///
+/// **90** — an RSPduo's two tuners can be two *radios* rather than two aerials
+/// combined, and the diversity filter's controls have moved to the main strip
+/// (issue #165). [`sdrcrow_types::SdrPlayDuo`] gained `role`
+/// ([`sdrcrow_types::SdrPlayDuoRole`]): whether the second tuner is combined
+/// with the first or handed to a radio of its own.
+/// [`sdrcrow_types::DeviceCaps`] gained `diversity`, which is what tells the
+/// strip that a filter is running without it having to know which backend has
+/// one.
+///
+/// Fields appended to the radio configuration and to the capabilities. Both
+/// ride the wire — the configuration in a command and an event, the
+/// capabilities in an event of their own — so a v89 peer would read the tail
+/// of any of them as garbage; the handshake's equality test is what stops it
+/// trying.
+///
+/// The block itself is written under a new name with this version — `duo`
+/// rather than `diversity`, since combining is no longer all it does — which
+/// is invisible here: postcard numbers fields by position and never sends a
+/// name. It is `radio.json` that the old name matters to, and a serde alias
+/// keeps those files loading.
+///
+/// **91** — the panadapter's horizontal resolution is the client's to ask for
+/// (issue #172). [`sdrcrow_types::SpectrumConfig`] gained `bins`: how many
+/// columns the emitted frames carry, which until now was a constant 2048 on
+/// both sides of the wire and so never needed saying.
+///
+/// It is the *client* that knows the number — its screen's pixel width and its
+/// own renderer's limits — so it has to travel, and it travels in the same
+/// command as the FFT size and the frame rate. Inserted after `fft_size`
+/// rather than appended, because it belongs next to it: postcard numbers
+/// fields by position, so a v90 peer would read `bins` as `fps` and everything
+/// after it as garbage either way. The handshake's equality test is what stops
+/// it trying.
+///
+/// **92** — the waterfall's *time* axis is the client's to ask for too, and the
+/// engine now clocks it. [`sdrcrow_types::SpectrumConfig`] gained
+/// `rows_per_sec`, and [`sdrcrow_types::SpectrumFrame`] gained `rows`: the
+/// waterfall lines the engine clocked since the last frame, each of them the
+/// per-bin peak over its own slice of time.
+///
+/// Until now a frame *was* a row, so the waterfall could not advance faster
+/// than the screen redrew — a fast scroll simply wrote the same numbers two or
+/// three times and the operator saw lines two or three pixels tall, while a
+/// front end streaming megahertz had hundreds of transforms a second going
+/// spare. The two rates are now separate all the way down the wire.
+///
+/// The frame also gained `rows_clocked`, which is not the same as `rows` being
+/// non-empty and has to be said separately: below the frame rate most frames
+/// carry no rows at all, and a client that read that as "this lane does not
+/// clock rows" would scroll them on its own wall clock *as well* and run the
+/// waterfall at twice the rate of its own time labels. `false` is the shape for
+/// a lane that really cannot clock them — a radio's own sweep, a transmit
+/// monitor — and only then does the client scroll on its own.
+///
+/// All three ride in the frame or the config, both of which cross the wire, and
+/// `rows_per_sec` sits after `display_bins` rather than at the tail, so a v91
+/// peer would desynchronise on any of them. The handshake's equality test is
+/// what stops it trying.
+///
+/// **93** — the digital modes' transmit-audio level split in two.
+/// [`sdrcrow_types::DigiConfig`] lost `tx_audio_level` and gained
+/// `tx_audio_level_fm` and `tx_audio_level_ssb`: the one number was doing two
+/// unrelated jobs — deviation into an FM rig, drive into a sideband rig's
+/// modulator — and a level set for 1200 baud packet was quietly taking 8 dB off
+/// FT8 as well, which is issue #131's symptom by another road.
+///
+/// The configuration rides the wire in a command and comes back in an event, so
+/// one field becoming two moves everything after it: postcard numbers fields by
+/// position, and a v92 peer would read the new sideband level as the field that
+/// used to follow and the rest as garbage. The handshake's equality test is what
+/// stops it trying. `digi.json` is migrated rather than versioned — the old key
+/// carries into both new ones on load, so nobody's signal changes level.
+///
+/// **94** — packet radio grew an operator's terminal, so the panel needs to know
+/// more about the link than the callsign at the far end.
+/// [`sdrcrow_types::PacketStatus::link`] changes from `Option<String>` to
+/// `Option<PacketLink>`: the state machine's own name for where it is, the peer,
+/// the digipeater path, the sequence width, the frames outstanding, the retry
+/// count against N2, and which of the two things that can drive one link is
+/// driving it — the packet panel or the MAIL window. That last one is the answer
+/// to "why was I refused", which an operator otherwise has to guess at.
+///
+/// `term` and `term_partial` are new beside it: the session's lines, and the
+/// tail of one that has arrived without its terminator. The tail is carried
+/// separately because it is the most important thing on the screen — a BBS
+/// prompt has no carriage return after it, so a terminal that printed only whole
+/// lines would sit showing nothing while the far end waited for an answer to a
+/// question the operator never saw.
+///
+/// [`sdrcrow_types::Command`] gains `PacketConnect`, `PacketSend`,
+/// `PacketDisconnect` and `PacketTermClear`, appended for the usual reason, and
+/// [`sdrcrow_types::DigiConfig`] gains `packet_connect_text`,
+/// `packet_connect_via` and `packet_ext_seq` beside the packet settings they
+/// belong with rather than at the tail — postcard numbers fields by position and
+/// a v93 peer desynchronises on either placement, so they go where they read.
+/// The handshake's equality test is what stops it trying. `digi.json` needs no
+/// migration: all three carry `#[serde(default)]`, so a config written by v93
+/// loads unchanged.
+///
+/// **95** — the digital modes' transmit-audio level is per mode (issue #186).
+/// [`sdrcrow_types::DigiConfig`] gains `tx_audio_levels`, a map from
+/// [`Mode`](sdrcrow_types::Mode) to the level the operator set for it, placed
+/// beside the two carrier levels it overrides rather than at the tail — the same
+/// reasoning as v94's placement, since postcard numbers fields by position and a
+/// v94 peer desynchronises either way. `DigiConfig` rides inside `DigiStatus` and
+/// inside `Command::SetDigiConfig`, so this is not an append a v94 client can
+/// survive; the handshake's equality test is what stops it trying.
+///
+/// The two carrier levels **stay**, as the level for a mode with no entry of its
+/// own, which is what makes this the rare wire change that needs no config
+/// migration at all: an empty map is exactly v94's behaviour, so nobody's signal
+/// changes level on the update, and a mode appended in a later release inherits
+/// the level the operator actually runs instead of springing back to full scale.
+///
+/// [`sdrcrow_types::Command`] gains `SetDigiTxLevel`, appended for the usual
+/// reason. It carries the mode rather than letting the engine read it off the
+/// dial, because the control is a rail dragged while transmitting and a mode
+/// change landing mid-drag would otherwise write one mode's level onto another's.
+///
+/// [`sdrcrow_types::DeviceCaps`] gains `cw_audio_keyed`, appended: a client has
+/// to know whether CW leaves as audio or as text over the control port before it
+/// can decide whether that level reaches CW at all.
+///
+/// **96** — xHE-AAC decoding for DRM. Two changes to `DrmStatus`, which rides in
+/// [`ServerMsg::Drm`].
+///
+/// [`sdrcrow_types::DrmCodec`] lost its `Celp` and `Hvxc` variants. Both were
+/// withdrawn from the DRM standard and neither can be signalled, and the two
+/// slots they occupied now mean Opus and "reserved" — so the old table read an
+/// Opus service as CELP. Postcard numbers a fieldless enum by declaration
+/// order, so every remaining variant moved: a v95 peer would read xHE-AAC as
+/// HVXC.
+///
+/// [`sdrcrow_types::DrmService`] gained `codec_supported`, which is not
+/// appended but sits beside `codec` where it reads. A locked receiver whose
+/// codec has no decoder reports a healthy signal, a service label and silence,
+/// and this is the only field that distinguishes that from an audio decode
+/// that is merely failing.
+/// **97** — converter overload is a reading of its own (issue #173).
+/// [`sdrcrow_types::Meters`] gained `adc_clip`, the fraction of converter
+/// samples sitting at full scale, beside the `adc_peak_dbfs` it completes
+/// rather than at the tail — postcard numbers fields by position and a v96 peer
+/// desynchronises on either placement, so it goes where it reads.
+///
+/// `adc_peak_dbfs` was on the wire from the start and had never been measured:
+/// the engine filled it with a literal `0.0`. It now carries the real peak, so
+/// a v96 client shown a v97 reading would not merely mis-parse the tail — it
+/// would read a field that used to be a constant. The handshake's equality test
+/// is what stops it trying.
+///
+/// Two figures rather than one because neither answers alone. The peak cannot
+/// tell a signal that fills the converter from one twice too large for it, and
+/// the fraction saturates as soon as a constant-envelope signal passes √2 of
+/// full scale — every sample of an FM carrier clips from there on. Together
+/// they say whether the front end is into its rails and roughly how far.
+///
+/// `Meters` rides in an event only, never in a command, so this is a one-way
+/// change: nothing a client sends carries it.
+/// **98** — an IC-9700 on macOS, three ways (issue #192).
+///
+/// `Mode::SstvFm` — SSTV on an FM carrier, the way slow-scan is sent on VHF
+/// and UHF — is appended to [`sdrcrow_types::Mode`]. Appended, so every mode
+/// already on the wire keeps its number; but the variant itself is new, and a
+/// v97 peer handed one decodes it as nothing at all.
+///
+/// [`sdrcrow_types::RadioState`] gained `rig_squelch`, the radio's *own*
+/// squelch threshold as a `0..1` fraction of its scale, and
+/// [`sdrcrow_types::Command`] gained `SetRigSquelch` to move it. A rig that
+/// hands sdroxide audio it has already gated has the only squelch that can
+/// open — `Command::SetSquelch` is a threshold on what got through — so the
+/// SQL control follows [`sdrcrow_types::DeviceCaps::commands_squelch`], also
+/// new here, to whichever of the two the front end actually has.
+///
+/// Three appended fields and one appended variant: postcard numbers both by
+/// position, so a v97 peer desynchronises on the tail of every `RadioState`
+/// and every `DeviceCaps` regardless. The handshake's equality test is what
+/// stops it trying.
+///
+/// **99** — ADS-B (issue #160).
+///
+/// `Mode::Adsb` is appended to [`sdrcrow_types::Mode`], which is on its own
+/// enough to force this bump: every mode already on the wire keeps its number,
+/// but a v98 peer handed the new one has no variant to decode it into and
+/// desynchronises on the rest of the message. That is the same reasoning as
+/// v98's `Mode::SstvFm` and v89's `Mode::Aprs`.
+///
+/// With it: `ServerMsg::AdsbStatus` carrying the aircraft table,
+/// `Command::SetAdsbConfig` to change how the decoder behaves, and
+/// [`sdrcrow_types::RadioState::adsb`] holding what it was set to — all
+/// appended, all at the end of their respective enums and structs.
+///
+/// The table is re-sent whole a couple of times a second rather than
+/// incrementally, like the ISM device table and for the same reasons; the
+/// per-aircraft position history is `f32` (about two metres at any latitude)
+/// because it is the bulk of that message and a history dot on a map has no use
+/// for more.
+///
+/// **100** — one appended field, `AdsbStatus::degraded` (issue #160).
+///
+/// A receiver can be able to run the ADS-B decoder and still be too narrow to
+/// carry the waveform properly — below about 2.4 Msps a Mode S chip and a
+/// sample are the same width, and the aircraft at the edge of range are lost to
+/// arithmetic rather than to propagation. That is not the same statement as
+/// `unavailable`, which means nothing is running at all, so it is a field of
+/// its own rather than a reuse.
+///
+/// Appended at the end of the struct; postcard numbers fields by position, so a
+/// v99 peer desynchronises on the tail of every `AdsbStatus` and the
+/// handshake's equality test is what stops it trying.
+///
+/// **101** — the QO-100 beacon calibration decoder.
+///
+/// [`sdrcrow_types::RadioState`] gained `qo100`
+/// ([`sdrcrow_types::Qo100Settings`]) holding whether the decoder runs and how
+/// wide it searches, and [`sdrcrow_types::Command`] gained `SetQo100Config` to
+/// move it — the ISM decoder's shape, no apply step, the engine echoes the
+/// setting back in the state. Both are appended at the tail of their type, so
+/// every field and variant already on the wire keeps its number; a v100 peer
+/// desynchronises on the tail of every `RadioState` regardless, and the
+/// handshake's equality test is what stops it trying.
+///
+/// The live side — [`sdrcrow_types::Qo100Status`] (lock, measured offset,
+/// decoded telemetry text) — is a native-engine `RadioEvent` only and never
+/// reaches the wire: `sdrcrow-server` maps it to no `ServerMsg`, the same as
+/// the spectrum lanes that travel their own way. So there is no new `ServerMsg`
+/// here, and a remote client's window shows that the reading is local-only
+/// rather than sitting on "starting…". If it is bridged later that is its own
+/// append and its own bump.
+/// **102** — RTTY on an FM carrier (issue #214).
+///
+/// `Mode::RttyFm` is appended to [`sdrcrow_types::Mode`]: the same Baudot
+/// modem, the same tone pair and the same panel as `Mode::Rtty`, into an FM
+/// transmitter rather than onto a sideband. Appending a mode is on its own
+/// enough to force this bump — every mode already on the wire keeps its number,
+/// but a v101 peer handed the new one has no variant to decode it into and
+/// desynchronises on the rest of the message. Same reasoning as v99's
+/// `Mode::Adsb`, v98's `Mode::SstvFm` and v89's `Mode::Aprs`.
+///
+/// Nothing else changed: every table the new mode needs an answer in is
+/// derived from the mode, not carried beside it.
+/// **103** — recording the raw I/Q (issue #217).
+///
+/// [`sdrcrow_types::Command`] gained `SetIqRecording`, and
+/// [`sdrcrow_types::RadioState`] gained `iq_recording`, `iq_recording_file`
+/// and `iq_recording_mb` beside the audio recorder's three, so a remote client
+/// can start a capture and watch it grow. Both appended at the tail of their
+/// type, so every variant and field already on the wire keeps its number; a
+/// v102 peer desynchronises on the tail of every `RadioState` regardless, and
+/// the handshake's equality test is what stops it trying.
+///
+/// The file is written by the *engine*, on the machine the receiver is plugged
+/// into — a remote client's capture lands on the station, not on the laptop
+/// that asked for it, because the alternative is a gigabyte a minute over the
+/// link. That is a property of the feature and not of the wire, so nothing here
+/// carries the samples.
+/// **104** — NAVTEX (issue #212).
+///
+/// `Mode::Navtex` is appended to [`sdrcrow_types::Mode`] and
+/// [`sdrcrow_types::DigiStatus`] gains `navtex`
+/// ([`sdrcrow_types::NavtexStatus`]) beside the other per-mode panes, carrying
+/// the messages received, the one arriving and the loose text.
+/// [`sdrcrow_types::DigiConfig`] gains `navtex_reverse`, the tone-sense
+/// control — the mode's only setting, since there is nothing to transmit and no
+/// callsign to give.
+///
+/// Appending a mode is on its own enough to force the bump, for the reason
+/// v102's `Mode::RttyFm` and v99's `Mode::Adsb` were: a v103 peer handed the
+/// new one has no variant to decode it into and desynchronises on the rest of
+/// the message.
+/// **105** — EU VHF contest operation (issue #223).
+///
+/// [`sdrcrow_types::DigiConfig`] gains `contest` (a new `ContestMode` enum)
+/// and `contest_serial`, and [`sdrcrow_types::Command`] gains
+/// `SetContestSerial` — the number's own write route, because the engine
+/// advances it as each contact is logged and a client's copy of the
+/// configuration is stale the moment one completes.
+///
+/// Both config fields are appended at the tail of the struct and the command at
+/// the tail of the enum, so every field and variant already on the wire keeps
+/// its number; a v104 peer desynchronises on the tail of every `DigiConfig`
+/// regardless — it rides inside `Command::SetDigiConfig` and
+/// `DigiStatus.config` — and the handshake's equality test is what stops it
+/// trying.
+///
+/// The `i3 = 5` message layout the mode transmits is not on this wire at all:
+/// it is packed and unpacked inside the engine, and what crosses the link is
+/// the decoded text, exactly as for every other 77-bit layout.
+/// **106** — browsing the public-SDR directories.
+///
+/// [`sdrcrow_types::DeviceProbe`] gains `PublicSdrs { refresh }` and
+/// [`sdrcrow_types::ProbeAnswer`] gains `PublicSdrs`, carrying a
+/// [`sdrcrow_types::PublicSdrDirectory`] — the KiwiSDR and SpyServer listings,
+/// fetched by the machine the radio is attached to.
+///
+/// The probe lane rather than a route of its own, and for one reason: a browser
+/// client has no HTTP client and could not reach either directory across
+/// origins if it had. Asking the station is the only way the web UI gets this
+/// feature at all, and the station is also the end that will hold the
+/// connection, so it is the end that should be reading the list.
+///
+/// [`sdrcrow_types::Backend`] gains `KiwiSdr` and [`sdrcrow_types::RadioConfig`]
+/// gains `kiwi` ([`sdrcrow_types::KiwiConfig`]) at its tail. Both are appended,
+/// so every variant and field already on the wire keeps its number — but a v105
+/// peer has no `KiwiSdr` variant to decode into and desynchronises on the rest
+/// of any `RadioConfig`, which is what the handshake's equality test prevents.
+/// Same shape of bump as v81's HydraSDR and v64/v65's ELAD and Lime.
+/// **107** — zooming the panadapter out past the I/Q.
+///
+/// [`sdrcrow_types::DeviceCaps`] gains `wide_span_hz` at its tail: how wide the
+/// front end's full-band lane is, or zero where it has none.
+///
+/// On the capabilities rather than on the frame because it is what bounds the
+/// client's zoom-out, and a client that had to wait for a picture to learn it
+/// would spend the first frames of every session believing the passband was the
+/// limit — long enough to shrink a restored window to it. The *position* of the
+/// lane still rides each frame, where it belongs: that moves with the receiver.
+///
+/// Appended, so every field already on the wire keeps its number; `DeviceCaps`
+/// is sent whole, so a v106 peer desynchronises on the tail of it regardless,
+/// which is what the handshake's equality test prevents.
+/// **108** — the antenna a memory channel was stored on.
+///
+/// [`sdrcrow_types::MemoryChannel`] gains `antenna` at its tail: which socket
+/// the radio was on when the channel was stored, so recalling a 2 m repeater
+/// puts the beam back and recalling a 40 m net puts the wire back (issue #235).
+/// `None` there means "leave the antenna alone", which is deliberately not how
+/// the neighbouring `repeater` field reads an absent value — see the field.
+///
+/// Appended, so every field already on the wire keeps its number; the memory
+/// list is sent whole, so a v107 peer desynchronises on the tail of any channel
+/// regardless, which is what the handshake's equality test prevents.
+/// **109** — switching the radio itself off and on again.
+///
+/// [`sdrcrow_types::Command`] gains `SetRigPower(bool)` and
+/// [`sdrcrow_types::DeviceCaps`] gains `commands_rig_power` at its tail: the
+/// radio's own power switch, over its control link, on a front end that has one
+/// (issue #239).
+///
+/// The command variant is appended, so every variant already on the wire keeps
+/// its number, and the caps field likewise; `DeviceCaps` is sent whole, so a
+/// v108 peer desynchronises on the tail of it regardless, which is what the
+/// handshake's equality test prevents.
+/// **110** — importing a channel list.
+///
+/// [`sdrcrow_types::Command`] gains `ImportMemories(Vec<MemoryChannel>)`: a
+/// repeater directory or a channel table read from a CHIRP CSV file, appended
+/// to the station's memories (issue #234). Appended, so every variant already
+/// on the wire keeps its number.
+/// **111** — the antenna a memory is stored on becomes a field the operator can
+/// set, rather than only whatever the radio happened to be on when the channel
+/// was stored (issue #246).
+///
+/// [`sdrcrow_types::Command`]'s `EditMemory` gains `antenna`, beside the
+/// `repeater` setup it already carried, and reads an absent one the same way
+/// [`sdrcrow_types::MemoryChannel::antenna`] does: recall this channel without
+/// moving the antenna. A field added to an existing variant rather than a new
+/// variant, so a v110 peer would decode the tail of one as garbage — which the
+/// handshake's equality test catches before a frame is exchanged.
+/// **112** — a memory scan can be pointed at chosen folders (issue #236).
+///
+/// [`sdrcrow_types::ScannerConfig`] gains `folders`, the folders a
+/// [`sdrcrow_types::ScanKind::Memories`] scan runs over — empty for all of
+/// them, which is what every existing setting means. The config rides both ways
+/// (`Command::SetScannerConfig`, `RadioEvent::Scanner`), so a v111 peer would
+/// read the tail of it as garbage; the handshake's equality test is what stops
+/// one ever seeing it.
+/// **113** — a memory scan can read its channels off the spectrum (issue #228).
+///
+/// [`sdrcrow_types::ScannerConfig`] gains `mem_fast`, which puts every channel
+/// inside one receiver window on the transform the panadapter is already made
+/// from and visits only the ones something is on. Appended to the same struct
+/// as 112's `folders`, and with the same consequence: it rides both ways, so
+/// the handshake's equality test is what keeps a v112 peer from reading the
+/// tail of it as garbage.
+/// **114** — VDL Mode 2 (the datalink half of what an aeroplane broadcasts).
+///
+/// `Mode::Vdl2` is appended to [`sdrcrow_types::Mode`], which on its own is
+/// enough to force this bump for the reason v99's `Mode::Adsb` and v104's
+/// `Mode::Navtex` were: a v113 peer handed the new one has no variant to decode
+/// it into and desynchronises on the rest of the message.
+///
+/// With it: `ServerMsg::Vdl2Status` carrying the message log, the station table
+/// and what each of the seven channels is doing, `Command::SetVdl2Config` to
+/// change how the decoder behaves, and [`sdrcrow_types::RadioState::vdl2`]
+/// holding what it was set to — all appended, all at the end of their respective
+/// enums and structs.
+///
+/// The log and the table are re-sent whole a couple of times a second rather
+/// than incrementally, like the ADS-B aircraft table and for the same reasons; a
+/// dropped snapshot costs nothing because the next carries the same
+/// information, and a client that connects mid-session gets the whole log
+/// rather than whatever happens to arrive next.
+/// **115** — stated tuning ranges follow the interface they were stated for
+/// (issue #254).
+///
+/// [`sdrcrow_types::RadioConfig`] gains `freq_ranges_parked`, the RX/TX ranges
+/// belonging to interfaces this radio is not on at the moment — what
+/// `RadioConfig::set_backend` puts the old interface's numbers into when a tab
+/// is moved to another device, so that a public receiver's published coverage
+/// stops clamping the transceiver that was there before it. Appended to the end
+/// of the struct, like every field above it, and the struct rides
+/// `ServerMsg::RadioConfig` and `Command::SetRadioConfig` whole: a v114 peer
+/// would read the tail of one as garbage, which is what the handshake's
+/// equality test stops before a frame is exchanged.
+/// **116** — binaural (pseudo-stereo) CW audio (issue #263).
+///
+/// [`sdrcrow_types::RxState`] gains `binaural`, and with it
+/// `Command::SetBinaural`. The field is appended to the end of the struct and
+/// the command to the end of its enum, as everything above them is — but
+/// `RxState` rides inside `RadioState`, which is sent whole a few times a
+/// second, so a v115 peer would read the tail of every state message one byte
+/// out. That is what the handshake's equality test stops before a frame is
+/// exchanged.
+///
+/// Nothing else on the wire moves: the widener runs on the *speaker* path of
+/// whichever end is doing the listening, and the audio a remote client is sent
+/// is the mono downmix, which binaural leaves untouched by construction.
+/// **117** — the station's external transmit/receive switch (issue #227).
+///
+/// A relay board, a handshake line or a sound-card GPIO pin that grounds the
+/// SDR's antenna while the station transmits, and sequences an amplifier with
+/// it. [`sdrcrow_types::StationConfig`] gains `relay`, `Command` gains
+/// `SetRelayConfig` and `TestRelay`, and `ServerMsg` gains `RelayStatus`.
+///
+/// The command and the message are appended to the end of their enums as
+/// always, but the config field is the reason this is a bump rather than a
+/// free addition: `StationConfig` rides `RadioEvent::StationConfig` and
+/// `ServerMsg::StationConfig` **whole**, so a v116 peer would read the tail of
+/// every station bundle one field out — and that bundle carries the band plan
+/// the client draws its band edges from. The handshake's equality test stops
+/// that before a frame is exchanged.
+/// **118** — the RigExpert Fobos SDR backend (issue #273).
+///
+/// [`sdrcrow_types::Backend`] gains `Fobos`, [`sdrcrow_types::DeviceProbe`]
+/// and [`sdrcrow_types::ProbeAnswer`] each gain a `Fobos` variant that
+/// enumerates one, and [`sdrcrow_types::RadioConfig`] gains a `fobos` block.
+///
+/// The three enum variants are appended to the end of their own enums as
+/// always, so no surviving discriminant moves and none of them is the reason
+/// for this bump. The config field is: `RadioConfig` rides
+/// `ServerMsg::RadioConfig` and `Command::SetRadioConfig` **whole**, so a v117
+/// peer handed one with a `FobosConfig` on the end has nowhere to put it and
+/// reads the tail of every one of those messages out of step — the same
+/// not-survivable addition every backend before this one made (v64 ELAD, v65
+/// LimeSDR). `#[serde(default)]` rescues a `radio.json` written before this
+/// existed, because JSON is self-describing; postcard is not, so it rescues
+/// nothing on the wire. The handshake's equality test is what stops that
+/// before a frame is exchanged.
+///
+/// v119: independent sideband — [`sdrcrow_types::Mode::Isb`], appended to the
+/// end of `Mode` so no existing discriminant moves. Nothing in the message set
+/// changed shape, and that is exactly why the bump is needed: postcard decodes
+/// a discriminant it has never heard of as an error, so a v118 client handed a
+/// `RadioState` whose mode is 36 fails the whole frame rather than one field.
+/// The handshake refuses the pairing instead (issue #280).
+///
+/// v120: the transverter table — [`sdrcrow_types::RadioConfig`] gains
+/// `transverters`, a list with a band and an offset per box. `RadioConfig`
+/// rides `ServerMsg::RadioConfig` and `Command::SetRadioConfig` **whole**, so a
+/// v119 peer handed one with a list on the end reads the tail of every one of
+/// those messages out of step — the same not-survivable addition every config
+/// field before it made (issue #278).
+///
+/// v121: where the antenna is — [`sdrcrow_types::RadioConfig`] gains
+/// `rx_site`, which says whether this radio listens on the station's own
+/// antenna or on somebody else's, and where that one is. Reception reports are
+/// posted from it rather than from the operator's locator (issue #284). Same
+/// not-survivable shape change as every config field before it: `RadioConfig`
+/// rides `ServerMsg::RadioConfig` and `Command::SetRadioConfig` whole, so a
+/// v120 peer handed one with an enum on the end reads the tail of every one of
+/// those messages out of step.
+///
+/// v122: the VDL2 decoder's two new counters (issue #265).
+/// [`sdrcrow_types::Vdl2Status`] gains `hdlc_bad` and `fec_bypassed`, which
+/// say whether the data field unwrapped and whether the frame came through on
+/// its check sequence alone. The struct rides `ServerMsg::Vdl2Status` whole and
+/// is re-sent a couple of times a second, so a v121 peer would read the tail of
+/// every one of them out of step.
+///
+/// v123: who sent the picture — [`sdrcrow_types::SstvStatus`] gains `rx_id`,
+/// the callsign a station sent as an FSK ID after its transmission (issue
+/// #287). The struct rides `ServerMsg::SstvStatus` whole and is re-sent several
+/// times a second while the mode is up, so a v122 peer handed one with an
+/// option on the end reads the tail of every one of them out of step.
+///
+/// v124: the operator's own frequencies —
+/// [`sdrcrow_types::StationConfig`] gains `digi_presets`, the list a station
+/// has added to the digital modes' own tables, and
+/// [`sdrcrow_types::Command`] gains `SetDigiPresets` to edit it (issue #268).
+/// The config rides `ServerMsg::StationConfig` whole, so a v123 peer handed one
+/// with a list on the end reads the tail of it out of step; the command is
+/// appended last, so no surviving discriminant moved.
+///
+/// v125: controlled-envelope SSB — [`sdrcrow_types::TxState`] gains
+/// `cessb_db`, and [`sdrcrow_types::Command`] gains `SetCessb` to move it
+/// (issue #283). `TxState` sits in the middle of `RadioState`, which travels
+/// whole on every change, so a v124 peer desynchronises on everything after it;
+/// the command is appended last, so no surviving discriminant moved.
+///
+/// v126: PureSignal on an HPSDR board —
+/// [`sdrcrow_types::HpsdrConfig`] gains `puresignal`, `ps_bins`, `ps_rate`
+/// and `ps_frozen` at its tail (issue #283). `HpsdrConfig` is part of
+/// `RadioConfig`, which rides `ServerMsg::RadioConfig` and
+/// `Command::SetRadioConfig` whole, so a v125 peer handed one with four fields
+/// on the end of that block reads the tail of every one of those messages out
+/// of step.
+///
+/// v127: the QO-100 spectral tracker — [`sdrcrow_types::Qo100Settings`] gains
+/// `park_lo_hz`, `park_hi_hz`, `decode_telemetry` and `auto_apply`, the
+/// parking window the tracker searches and the two things it may do with what
+/// it finds (issue #291). The struct sits inside `RadioState` with `vdl2`
+/// after it, and `RadioState` rides `ServerMsg::State` whole on every change,
+/// so a v126 peer handed one with four fields in the middle of that block
+/// reads `vdl2` — and the tail of every state update — out of step. It also
+/// rides `Command::SetQo100Config`, which a remote client sends whole when the
+/// operator touches any of the page's chips.
+///
+/// [`sdrcrow_types::Qo100Status`] grows in the same commit, but it is not on
+/// the wire yet: `sdrcrow_server` maps `RadioEvent::Qo100Status` to `None`
+/// and the QO-100 readout is local to the receiving station.
+/// v128: AIS — the ship-reporting system on the two 162 MHz channels.
+///
+/// `Mode::Ais` is appended to [`sdrcrow_types::Mode`], which on its own is
+/// survivable in one direction and not the other: postcard writes an enum's
+/// discriminant positionally, so a v127 peer handed a mode it has no variant
+/// for fails to decode the message carrying it — and `Mode` is inside
+/// `RxState`, inside `RadioState`, which travels whole on every change.
+///
+/// With it: `ServerMsg::AisStatus` carrying the vessel table and what each
+/// channel is doing, `Command::SetAisConfig` to change how the decoder
+/// behaves, and [`sdrcrow_types::RadioState::ais`] holding what it was set to
+/// — the settings field appended at the tail of `RadioState`, so a v127 peer
+/// would read the end of every state update out of step. Both the message and
+/// the command are appended last in their enums, so no surviving discriminant
+/// moved.
+///
+/// v129: per-band transmit drive calibration —
+/// [`sdrcrow_types::RadioConfig`] gains `tx_drive_trim` at its tail, the
+/// table that makes one Drive setting mean one output power on every band
+/// (issue #295). `RadioConfig` rides `ServerMsg::RadioConfig` and
+/// `Command::SetRadioConfig` whole, so a v128 peer handed one with a field on
+/// the end reads the tail of every one of those messages out of step.
+///
+/// v130: operator-defined open-collector control words —
+/// [`sdrcrow_types::HpsdrConfig`] gains `oc_table` at its tail and
+/// [`sdrcrow_types::HpsdrFilterBoard`] gains a `Custom` variant (issue #296).
+/// The block sits in the middle of `RadioConfig`, which rides
+/// `ServerMsg::RadioConfig` and `Command::SetRadioConfig` whole, so a v129 peer
+/// reads every field after `hpsdr` out of step; and the enum's new variant is
+/// appended, so no surviving discriminant moved but a v129 peer handed one
+/// fails to decode the message carrying it.
+///
+/// v131: the SDRplay gain controls say what they are and what they may reach.
+/// [`sdrcrow_types::GainElement`] gains a `unit`, because decibels are wrong
+/// for one of them: an RSP's RF gain is a step into a band-dependent table and
+/// a control that appended dB to it reported a number three times too small.
+/// The struct rides `DeviceCaps` inside `ServerMsg::Capabilities`, which an RSP
+/// now re-sends on every retune — the ladder's length belongs to the band — so
+/// a v130 peer would read the tail of each one out of step rather than merely
+/// missing a field.
+///
+/// With it, [`sdrcrow_types::SdrPlayConfig`] gains `hdr_bw` (which filter the
+/// RSPdx's HDR path runs, previously left at the API's default because nothing
+/// ever wrote it) and `extended_if_gr` (whether the IF gain reduction may go
+/// below the API's 20 dB floor). Both sit at that block's tail, and
+/// `RadioConfig` rides `ServerMsg::RadioConfig` and `Command::SetRadioConfig`
+/// whole, so a v130 peer handed one reads the tail of each of those out of step.
+///
+/// v132: [`ServerMsg::CapabilitiesUpdated`], which says the front end revised
+/// what it said about itself rather than that there is a different one. The
+/// distinction was free while the only thing that moved mid-session was an
+/// antenna list a rig answered for once; the RSP's band-dependent LNA ladder
+/// republishes on every crossing of a band edge, and a client that reads each
+/// of those as a new radio throws away its wideband waterfall mid-QSY. The
+/// variant is appended, so no surviving discriminant moved — but a v131 peer
+/// handed one fails to decode the message carrying it.
+/// v133: [`sdrcrow_types::KiwiConfig`] gains `wf_zoom`, how far the
+/// receiver's own waterfall is zoomed into its band (issue #303). `RadioConfig`
+/// rides `ServerMsg::RadioConfig` and `Command::SetRadioConfig` whole and
+/// postcard describes nothing about itself, so a v132 peer handed one reads the
+/// tail of every field after it out of step — the serde default that covers a
+/// stored `radio.json` does nothing on the wire.
+/// v134: `Command::TuneWidebandTo`, which points the front end so a wideband
+/// decoder's *window* lands on a frequency rather than its dial (issue #310).
+/// The ISM band buttons send it instead of `Command::SetVfo`. Appended, so no
+/// surviving discriminant moved — but a v133 peer handed one fails to decode.
+/// v135: the VDL2 channel plan is the whole 25 kHz raster rather than every
+/// other slot of it, so [`sdrcrow_types::Vdl2Settings::channels`] is fourteen
+/// bits and not seven (issue #265). A `u8` on the wire where a `u16` is
+/// expected does not simply carry the wrong channels — postcard varints them,
+/// so a v134 peer reads the following fields out of step.
+/// v136: [`sdrcrow_types::RadioConfig`] gains `rx_audio_gain_db`, a fixed trim
+/// on the receive audio for a rig whose own codec is quiet — the AF rail's top
+/// is unity and could only turn such a radio down (issue #315). It sits among
+/// that struct's sound-card fields, near its head, and `RadioConfig` rides
+/// `ServerMsg::RadioConfig` and `Command::SetRadioConfig` whole, so a v135 peer
+/// handed one reads almost every field after it out of step.
+/// v137: the receiving antenna. [`sdrcrow_types::DeviceCaps`] gains
+/// `has_rx_antenna` and [`sdrcrow_types::RadioState`] gains `rx_antenna` — an
+/// Icom's `0x12` reply carries that connector's in/out flag behind the socket,
+/// and sdroxide had been writing the byte as zero on every antenna command,
+/// switching an operator's receive aerial out of circuit on every band change
+/// (issue #229). Both fields sit at their struct's tail, and both structs ride
+/// whole inside `ServerMsg::Capabilities`, `ServerMsg::CapabilitiesUpdated` and
+/// `ServerMsg::State`, so a v136 peer handed one reads the tail of every one of
+/// those out of step rather than merely missing a field. With them,
+/// [`sdrcrow_types::Command`] gains `SetRxAntenna`, appended, so no surviving
+/// discriminant moved — but a v136 peer handed one fails to decode the message
+/// carrying it.
+/// v138: a session's worth of new wire, all of it appended and none of it
+/// separable — a v137 peer handed any one of these reads the tail of the
+/// message carrying it out of step.
+///
+/// * [`sdrcrow_types::Band`] gains `Cm3`, the 3 cm band an IC-905 reaches
+///   through the 10 GHz unit inside it (issue #326). A band rides inside
+///   `RadioState`, the band stack, every memory and `DigiConfig::tx_audio_hz`,
+///   and a discriminant a v137 peer has no name for stops it decoding any of
+///   them.
+/// * [`sdrcrow_types::Meters`] gains `pa_temp_c`, a radio's own temperature
+///   where it measures one — a Hermes-Lite 2 does (issue #333). It sits among
+///   that struct's fields and `Meters` rides `ServerMsg::Meters` whole.
+/// * [`sdrcrow_types::QsoRecord`] gains `wrl_sent` and
+///   [`sdrcrow_types::NetworkConfig`] gains `wrl_api_key` and
+///   `auto_upload_wrl`; `UploadTarget` and `LoginTarget` each gain `Wrl`, the
+///   World Radio League logbook (issue #337). Both structs ride whole inside
+///   `Command::SetNetworkConfig` and `RadioEvent::Ft8QsoLogged`, and the two
+///   new variants are appended so no surviving discriminant moved — but a v137
+///   client handed one has nowhere to put it.
+/// * [`sdrcrow_types::Command`] gains `LogQso`, which carries a hand-entered
+///   contact to the WSJT-X UDP listeners the way the sequencer's own contacts
+///   already went (issue #341). Appended, so no surviving discriminant moved.
+/// v139: [`sdrcrow_types::Meters`] gains `adc_overload`, the front end's own
+/// converter-overflow flag where the radio reports one — a Hermes-Lite 2 does,
+/// and on a direct-sampling board it is the only thing that can say the
+/// converter is being driven into its rails by something outside the window
+/// (issue #362). It sits among that struct's fields and `Meters` rides
+/// `ServerMsg::Meters` whole, so a v138 peer handed one reads the tail of it
+/// out of step. [`sdrcrow_types::HpsdrConfig`] gains the loop that acts on it
+/// — `auto_gain` and its five settings — appended to a struct that rides inside
+/// `RadioConfig`, with the same consequence.
+///
+/// v140: the operator's own CW message buttons —
+/// [`sdrcrow_types::DigiConfig`] gains `cw_macros`, a list of the new
+/// [`sdrcrow_types::CwMacro`], each a label and the text that button sends
+/// (issue #374). It sits with the other `cw_*` fields rather than at the tail,
+/// so a v139 peer reads every field after it out of step; `DigiConfig` rides
+/// inside `Command::SetDigiConfig` and `DigiStatus`, both of which cross the
+/// link whole.
+///
+/// v141: the CW panel picks its decoder —
+/// [`sdrcrow_types::DigiConfig`] gains `cw_engine`, the existing
+/// [`sdrcrow_types::CwEngine`] the skimmer already chose between, because
+/// DeepCW's output layer has no class for an accented letter and only the
+/// timing decoder can copy one (issue #382). It sits with the other `cw_*`
+/// fields rather than at the tail, so a v140 peer reads every field after it
+/// out of step; `DigiConfig` rides inside `Command::SetDigiConfig` and
+/// `DigiStatus`, both of which cross the link whole.
+///
+/// v142: [`sdrcrow_types::Js8Msg`] gains `speed`, the submode a decoded
+/// message actually arrived on. With multi-speed decoding on, four waveforms
+/// share the sub-band and the conversation list was the one place that did not
+/// say which of them carried a message (issue #389). It sits at that struct's
+/// tail, and `Js8Msg` rides inside `Js8Status` and so inside `DigiStatus`,
+/// which crosses the link whole — so a v141 peer handed one reads the tail of
+/// every status update out of step rather than merely missing a field.
+///
+/// v143: [`sdrcrow_types::Meters`] gains `passband_dbfs`, the level the
+/// software squelch actually compares its threshold against — which is not
+/// `s_dbm` beside it, and on a rig reporting its own meter is not the same
+/// measurement at all, so there was nothing on screen to set the SQL rail
+/// against (issue #394). It sits at that struct's tail and `Meters` rides
+/// `ServerMsg::Meters` whole, so a v142 peer handed one reads the end of it out
+/// of step.
+///
+/// v144: [`sdrcrow_types::Band`] gains `M11`, the 11 m citizens' band — on the
+/// bar so it can be tuned and listened to, and flagged as not an amateur
+/// allocation so the transmit lockout still holds there (issue #396). A band
+/// rides inside `RadioState`, the band stack, every memory and
+/// `DigiConfig::tx_audio_hz`, and a discriminant a v143 peer has no name for
+/// stops it decoding any of them.
+///
+/// v145: [`sdrcrow_types::CatFamily`] gains `RsHfiq`, the HobbyPCB RS-HFIQ —
+/// an I/Q transceiver whose whole control interface is a frequency command and
+/// a transmit command (issue #383). The variant is appended, so no surviving
+/// discriminant moved, but `CatFamily` rides inside `RadioConfig` and so inside
+/// `ServerMsg::RadioConfig` and `Command::SetRadioConfig`: a v144 peer handed
+/// one fails to decode the message carrying it.
+///
+/// v146: `Command::SstvRestartRx` — abandon the SSTV picture being received and
+/// hunt for the next header, so a VIS misread as a four-minute mode no longer
+/// costs every picture sent while it runs out (issue #397). Appended, so no
+/// surviving discriminant moved, but a v145 station has no name for it and
+/// fails to decode the message carrying it.
+///
+/// v147: [`sdrcrow_types::Backend`] gains `UsbAudio`, a radio with no control
+/// port — receive and transmit over two sound cards, keyed by the rig's own
+/// VOX (PR #456). Appended, so no surviving discriminant moved, but `Backend`
+/// rides inside `RadioConfig` and so inside `ServerMsg::RadioConfig` and
+/// `Command::SetRadioConfig`: a v146 peer handed one fails to decode the
+/// message carrying it.
+///
+/// v148: HD Radio reception — the FM digital sidecar (issue #437). `Mode::HdRadio`,
+/// `ServerMsg::Hd` carrying `HdRadioStatus`, and `Command::SetHdProgram` for the
+/// HD-2 subchannels, all appended last so no surviving discriminant moved, but a
+/// v147 peer handed any of them fails to decode the message carrying it.
+///
+/// v149: [`sdrcrow_types::Meters`] gains `puresignal`, what the adaptive
+/// predistortion loop is doing on a radio running one (issue #441). Appended
+/// last, but `Meters` is a struct in a non-self-describing encoding: a v148
+/// peer reads the extra bytes as the start of the next field and fails to
+/// decode every meter update.
+///
+/// v150: the SSTV vocabulary grows — [`sdrcrow_types::SstvMode`] gains the PD
+/// family and the two Wraase SC-2 modes, and [`sdrcrow_types::SstvStatus`]
+/// gains `unsupported`, the name of a mode a header arrived for and this build
+/// cannot draw (issue #421). The variants are appended so no surviving
+/// discriminant moved, but a v149 peer has no name for the new ones and reads
+/// the status's extra field as the start of the next, so every SSTV update
+/// fails to decode.
+///
+/// v151: [`sdrcrow_types::PublicSdrNetwork`] gains `SdrList`, the
+/// `sdr-list.xyz` directory of PhantomSDR-Plus and friends (issue #482).
+/// Appended, so no surviving discriminant moved, but it rides inside
+/// `ProbeAnswer::PublicSdrs`: a v150 client handed a receiver from that
+/// directory fails to decode the whole answer, and its browse window stays
+/// empty rather than showing the two lists it does know.
+///
+/// v152: the CW keyboard straight key (issue #322). `Command::CwStraight` and
+/// `Command::CwKey`, appended last so no surviving discriminant moved, but a
+/// v151 peer has no name for either and fails to decode the message carrying it.
+///
+/// v153: station profiles (issue #197). `Command` gains `ProfileSave`,
+/// `ProfileApply` and `ProfileDelete`, appended last so no surviving
+/// discriminant moved, but a v152 station has no name for them and fails to
+/// decode the message carrying one. `ServerMsg` gains `Profiles`, the names
+/// to offer, appended last for the same reason: a v152 client handed the list
+/// fails to decode it.
+///
+/// v154: ACARS, the VHF airband airline datalink (issue #436). `Mode::Acars` is
+/// appended last, so no surviving discriminant moved, but a v153 peer has no
+/// name for it. The status rides the existing `RadioEvent::Ft8Status` /
+/// `ServerMsg::Ft8Status`, so there is no new message — but `DigiStatus` gains
+/// a trailing `acars` field, and postcard numbers struct fields by position, so
+/// a v153 peer desynchronises on the tail of every `DigiStatus`. The field is
+/// last, so no surviving field moved.
+///
+/// v155: per-mode settings. The engine applies AGC, squelch, noise reduction
+/// and the rest from a profile when the mode changes, and remembers what the
+/// operator changes while a mode is selected, so `Command` gains
+/// `ResetModeDefaults` — appended, so no surviving discriminant moved. The
+/// profiles themselves travel as receiver state, so a v154 peer's state decode
+/// is unchanged; it just cannot ask for a reset. Numbered after ACARS because
+/// that landed upstream first (the two were in flight together).
+///
+/// v156: HD Radio's decoder is `libnrsc5`, loaded at run time rather than built
+/// in (issue #488), so whether the mode works is the station's to say.
+/// [`sdrcrow_types::RadioState`] gains `hd_radio_unavailable`, the reason to
+/// show on the greyed-out mode. Appended last, but postcard numbers struct
+/// fields by position: a v155 peer reads the extra bytes as the start of
+/// whatever follows the state, and fails to decode `HelloAck` and every state
+/// update.
+///
+/// v157: the fork's listener identity, alongside upstream's own v157 (SSTV
+/// styling): `NetworkConfig::swl_id` (the reception-report identity) plus
+/// `RadioConfig::callsign` and `RadioConfig::hide_tx` (the per-radio callsign
+/// and per-radio SWL switch). Each is appended to its struct's tail, so no
+/// surviving field moved, but the structs that carry them ride whole, so a
+/// v156 peer handed one with a field it has no name for fails to decode the
+/// message. A downstream (fork) addition: upstream has never carried these.
+/// The two registers sharing this number is the usual result of a fork and
+/// upstream both adding at the same version — the fields are appended, so
+/// nothing collides on the wire between these and upstream's SSTV fields.
+///
+/// v158: the (tr)uSDX family. [`sdrcrow_types::CatConfig`] gains
+/// `trusdx_audio`, which picks between audio in the CAT stream and a USB sound
+/// card. `CatConfig` rides `Command::SetRadioConfig` whole, so the field sits
+/// mid-struct on the wire even appended last in the struct, and a peer without
+/// it runs off the end. Upstream took this as #498; the fork's own (tr)uSDX
+/// copy dropped out on the merge that carried it.
+///
+/// v159: NR2, the fifth noise-reduction engine — WDSP's Ephraim-Malah denoiser
+/// ported to `sdrcrow-dsp` (upstream #515). [`sdrcrow_types::NrLevel`] gains
+/// `Nr2Low`, `Nr2Med` and `Nr2High`, appended last so no surviving discriminant
+/// moved. `NrLevel` rides `RadioState::noise_reduction` and
+/// `Command::SetNoiseReduction`, so a v158 peer has no name for the three and
+/// fails to decode the state or the command carrying one — but only once NR2 is
+/// actually selected, since nothing else emits them.
+///
+/// v160: the CW panel is told whether the radio keys itself.
+/// [`sdrcrow_types::CwStatus`] gains `rig_keys_itself`, appended last, so the
+/// panel can grey the straight key out with a reason instead of lighting it on
+/// a rig that will never hand-key (issue #495). `CwStatus` rides
+/// `DigiStatus::cw`, which is sent whenever a CW engine is running, so a v159
+/// peer reads the extra byte as the start of the next field and fails to decode
+/// every digital status.
+///
+/// v161: the HFDL ground-network decoder's settings, [`sdrcrow_types::RadioState`]
+/// gains `hfdl` (issue #497). Appended to `RadioState`'s tail, and `RadioState`
+/// crosses whole, so a v160 peer reads the extra bytes as the start of the next
+/// field and fails to decode every state — the same break `RadioState`'s other
+/// appended decoders caused, and the same fix (the two sides must run in
+/// lockstep). The live decode log is engine-side only
+/// (`RadioEvent::HfdlStatus`), bridged nowhere.
+///
+/// v162: two CW conveniences from the same report (issue #495).
+/// `DigiConfig::cw_sidetone` plays the keyed tone through the local speakers so
+/// a `Sound card (MCW)` operator hears what they are sending, and
+/// `DigiConfig::cw_tx_idle_s` makes the transmit-hold after the last character
+/// or key release configurable. Both appended to `DigiConfig`'s tail, and
+/// `DigiConfig` rides `Command::SetDigiConfig` and `DigiStatus` whole, so a
+/// v161 peer reads the extra bytes as the start of the next field and fails to
+/// decode every digital status.
+///
+/// v163: the CW straight key's self-decode, `CwStatus::sent_text` — what the
+/// operator's own keying decoded to, so the straight key shows its characters
+/// the way the text keyer shows typed ones (issue #495 follow-up). Appended to
+/// `CwStatus`'s tail, after `rig_keys_itself`; `CwStatus` rides inside
+/// `DigiStatus`, which crosses whole, so a v162 peer reads the extra bytes as
+/// the start of the next field and fails to decode every digital status.
+///
+/// v164: PI4, the "Next Generation Beacon" propagation-beacon mode.
+/// `Mode::Pi4` is appended, as is `ServerMsg::Pi4Spots`, so no surviving
+/// discriminant moves; `DigiStatus` gained `pi4: Option<Pi4Status>` on its
+/// tail, the same shape `wspr` already has, and `DigiStatus` rides whole, so
+/// a v163 peer reads the extra bytes as the start of the next field and
+/// fails to decode every digital status.
+///
+/// v165: band-decoder relay outputs (issue #442) — the HPSDR OC table's idea
+/// (a per-band RX/TX output word), generalised to the generic T/R-switch
+/// relay bank so a USB relay board, GPIO header, HID relay or external
+/// command can switch an outboard filter or transverter by band too, not
+/// only HPSDR's own seven-pin bus. `RelayRole` gains `BandDecoder`, appended,
+/// so no surviving discriminant moves; `RelayConfig` gains
+/// `band_table: Vec<RelayBandRow>` on its tail, and `RelayConfig` rides
+/// whole inside `Command::SetRelayConfig`, so a v164 peer reads the extra
+/// bytes as the start of the next field and fails to decode the command.
+///
+/// v166: MSK144, the meteor-scatter mode. `Mode::Msk144` is appended to that
+/// enum, so no surviving discriminant moves. No new wire type: a decode is an
+/// ordinary `Decode` with the burst's time into the slot as its `dt`, and the
+/// mode is receive-only. `Mode` rides `RadioState`, so a v165 peer handed one
+/// runs off the end of the enum — the same break every appended `Mode` causes.
+///
+/// v167: JT65 and JT9, the weak-signal slotted modes from mfsk-core.
+/// `Mode::Jt65` and `Mode::Jt9` are appended to that enum, so no surviving
+/// discriminant moves. No new wire type: a JT decode is an ordinary
+/// `Decode` and rides the existing `RadioEvent::Ft8Decodes` path, and the modes
+/// are receive-only so nothing else is added. `Mode` is postcard-encoded by
+/// declaration index and rides `RadioState`, so a v166 peer handed one runs
+/// off the end of the enum — the same break every appended `Mode` causes, and
+/// the same fix (the two sides run in lockstep).
+///
+/// v168: FST4, the slow weak-signal mode. `Mode::Fst4` is appended to that
+/// enum and `DigiConfig` gains `fst4_period` (`Fst4Period`) on its tail, since
+/// the period is a setting rather than part of the mode. `DigiConfig` rides
+/// `Command::SetDigiConfig` and `DigiStatus` whole, so a v167 peer reads the
+/// extra bytes as the start of the next field and fails to decode every
+/// digital status — the same break as v162's appended CW settings.
+///
+/// v169: Q65, the modern weak-signal mode. `Mode::Q65` is appended to that
+/// enum and `DigiConfig` gains `q65_mode` (`Q65Mode`) on its tail, since the
+/// sub-mode fixes the period and the tone spacing rather than being part of the
+/// mode. `DigiConfig` rides `Command::SetDigiConfig` and `DigiStatus` whole, so
+/// a v168 peer reads the extra bytes as the start of the next field and fails
+/// to decode every digital status — the same break as v162's appended CW
+/// settings.
+///
+/// v170: FSK441, the original meteor-scatter mode. `Mode::Fsk441` is appended
+/// to that enum and `DigiConfig` gains `fsk441_period` (`Fsk441Period`) on its
+/// tail, since the period is a setting rather than part of the mode. The
+/// decoder is the fork's own — mfsk-core has no FSK441 — so it lives in
+/// `sdrcrow-dsp`; on the wire a decode is an ordinary `Decode` with the ping's
+/// time into the slot as its `dt`. `DigiConfig` rides
+/// `Command::SetDigiConfig` and `DigiStatus` whole, so a v169 peer reads the
+/// extra bytes as the start of the next field and fails to decode every
+/// digital status — the same break as v162's appended CW settings.
+///
+/// v171: auto mode's per-radio inactivity stop, `RadioConfig::auto_idle_stop_min`
+/// — how long the unattended FT8/FT4/FT2 sequencer may run with no operator
+/// input before it disarms. Appended to `RadioConfig`'s tail, and it rides
+/// `ServerMsg::RadioConfig` and `Command::SetRadioConfig` whole, so a v170 peer
+/// handed one runs off the end of the struct. A downstream (fork) addition.
+///
+/// v172: the "who heard me" PSK Reporter overlay. A new `SpotKind::HeardMe`
+/// appended to that enum, so the `Spot` sets in `RadioEvent::Spots` shift — a
+/// v171 peer misreads them, and the two sides run in lockstep as always. The
+/// overlay itself is a client view toggle, not a config field: the engine
+/// polls the reports whenever the PSK feed is on, and the client decides
+/// whether to draw them. A downstream (fork) addition.
+///
+/// v173: the (tr)uSDX nG CAT family. `CatFamily::TrUsdxNg` is appended to that
+/// enum, so no surviving family moves; `CatConfig` gains the nG level fields
+/// (`trusdx_ng_volume`, `trusdx_ng_agc`, `trusdx_ng_speaker`) on its tail, and
+/// `CatConfig` rides `Command::SetCatConfig` and `ServerMsg::CatConfig` whole,
+/// so a v172 peer handed one runs off the end of the struct. A downstream
+/// (fork) addition.
+///
+/// v174: live band-opening detections, `ServerMsg::BandOpenings` appended to
+/// that enum (no surviving discriminant moves). Like every network update it is
+/// relay, not handshake, so a v173 peer simply never learns about openings —
+/// but the added variant shifts the message stream's encoding, hence the bump.
+/// A downstream (fork) addition.
+///
+/// v175: DSC, the marine Digital Selective Calling decoder. `Mode::Dsc` is
+/// appended to that enum and `DigiStatus` gains `dsc: Option<DscStatus>` on its
+/// tail (after `acars`), the same shape NAVTEX and ACARS already have — and
+/// `DigiStatus` rides whole, so a v174 peer reads the extra bytes as the start
+/// of the next field and fails to decode every digital status. Cannot be
+/// bundled upstream with the mode alone, so it is a downstream (fork) addition
+/// until the decoder is proven on a real burst.
+///
+/// v176: UVPacket, the packet byte-pipe protocol. `Mode::UvPacket` is appended
+/// to that enum, so no surviving discriminant moves, and `DigiStatus` gains
+/// `uvpacket` (`Option<UvPacketStatus>`) on its tail, since a decoded frame
+/// carries an application tag and raw payload rather than a WSJT message.
+/// `DigiStatus` rides `RadioState` whole, so a v175 peer reads the extra bytes
+/// as the start of the next field and fails to decode every digital status —
+/// the same break as v175's appended `dsc`. A downstream (fork) addition.
+///
+/// v177: the ATS Mini receive source. `Backend::AtsMini` is appended to that
+/// enum and `RadioConfig` gains `atsmini` (`AtsMiniConfig`) on its tail. The
+/// enum is serialised by name in `radio.json`, but it also rides
+/// `RadioConfig`/`StationConfig`/`Command::SetRadioConfig` as a postcard
+/// discriminant, so it may only go at the end; `RadioConfig` rides whole, so a
+/// v176 peer reads the extra `atsmini` bytes as the start of the next field
+/// and fails to decode every radio config — the same break as v176's appended
+/// `uvpacket`. Fork-only (an SWL extra), like the schedule and the log.
+///
+/// v178: FSK441's transmit half. `DigiStatus` gains `tx_refused`
+/// (`Option<String>`) on its tail — the reason a key-up was refused, an empty
+/// message box most often — so a panel can say why rather than looking armed
+/// and doing nothing. `DigiStatus` rides `RadioState` whole, so a v177 peer
+/// reads the extra bytes as the start of the next field and fails to decode
+/// every digital status. No new wire type: FSK441's transmit runs through the
+/// ordinary digi engine seam (`DigiTxText`/`DigiTxActive`).
+///
+/// v179: the CW key. `DigiConfig` gains `cw_key_source`, `cw_key_device`,
+/// `cw_key_mode`, `cw_key_reverse` and `cw_key_tx` on its tail — which key the
+/// operator is using, whether a USB device and which, iambic or straight, the
+/// paddle-reverse switch, and whether the key drives the transmitter or only the
+/// local trainer. `DigiConfig` rides whole in `SetDigiConfig`/`DigiStatus`, so a
+/// v178 peer reads the extra bytes as the start of the next field and fails to
+/// decode every config — the same break as v178's appended status field. No new
+/// wire type: the key drives the existing manual-key seam
+/// (`CwStraight`/`CwKey`).
+///
+/// v180: JTTY, the WSJT-X 3.2 asynchronous RTTY-like text mode.
+/// `Mode::Jtty` is appended to that enum, so no surviving discriminant moves,
+/// and `DigiStatus` gains `jtty` (`Option<JttyStatus>`) on its tail — the
+/// messages decoded and the audio level. `DigiStatus` rides `RadioState` whole,
+/// so a v179 peer reads the extra bytes as the start of the next field and
+/// fails to decode every digital status, the same break as v178's appended
+/// field. No new wire type: JTTY is receive-only and reports through the
+/// ordinary `DigiStatus` seam.
+///
+/// v181: the experimental wide CB callsign grammar. `DigiConfig` gains
+/// `cb_wide_callsigns` (`bool`) on its tail — whether to accept
+/// `N{1,3}L{1,3}N{1,4}` alongside WSJT-CB's `N{1,3}L{1,2}N{1,3}`, opt-in and
+/// off by default. `DigiConfig` rides whole in `SetDigiConfig`/`DigiStatus`, so
+/// a v180 peer reads the extra byte as the start of the next field and fails to
+/// decode every config — the same break as v179's appended CW-key fields. No
+/// new wire type: the flag only widens a validator the codec gate already
+/// calls.
+/// v182: editable message buttons for the keyboard modes (PSK / RTTY / Olivia
+/// / THOR — upstream issue #463, offered as an upstream PR and carried here
+/// until it lands). `DigiConfig` gains `text_macros` (`Vec<CwMacro>`) just
+/// after `cw_macros` — the upstream PR's own placement, kept so the field sits
+/// in the same spot when that PR merges. The same label-and-text buttons the CW
+/// panel has, on a list of their own. `DigiConfig` rides
+/// `Command::SetDigiConfig` and `DigiStatus` whole, so
+/// a v181 peer reads the extra bytes as the start of the next field and fails
+/// to decode every config — the same break as v181's appended wide-CB flag.
+/// A downstream (fork) addition until the upstream PR merges.
+///
+/// v183: the ALE decoder. `Mode::Ale` is appended to that enum and
+/// `DigiStatus` gains `ale` (`Option<AleStatus>`) on its tail — the words
+/// decoded and the audio level. `DigiStatus` rides `RadioState` whole, so a
+/// v182 peer reads the extra bytes as the start of the next field and fails to
+/// decode every digital status. No new wire type: ALE reports through the
+/// ordinary `DigiStatus` seam. A downstream (fork) addition for now.
+/// v184: selectable FT8 decode depth. `DigiConfig` gains `ft8_depth`
+/// (`Ft8Depth`) on its tail — `Fast` / `Normal` / `Deep`, how hard the decoder
+/// works for weak signals (no subtraction / flat multi-pass SIC / WSJT-X's
+/// checkpointed pass). `DigiConfig` rides `Command::SetDigiConfig` and
+/// `DigiStatus` whole, so a v183 peer reads the extra byte as the start of the
+/// next field and fails to decode every config — the same break as v183's
+/// appended ALE status. A downstream (fork) addition.
+///
+/// v185: the serial FT8 contest. `ContestMode` gains `RttyRoundup` **appended
+/// last** — the ARRL RTTY Roundup / CQ WPX serial exchange, so a serial
+/// contest runs over FT8 as EU VHF already does. `ContestMode` rides
+/// `DigiConfig::contest`, which rides the config whole, so a v184 peer reads
+/// the new discriminant as an unknown value (postcard still decodes the enum
+/// by index) — the variant is appended so no existing discriminant moves.
+///
+/// v186: a client of `--server` can keep its screen settings on the server,
+/// against the profile it signed in as (`UiSettings::client_save_scope`). New
+/// `ClientMsg::SetClientSettings` and `ServerMsg::ClientSettings`, both
+/// **appended last**. Only the presentation half of `UiSettings` travels, and
+/// never the control bindings — which v188 later makes an opt-in of its own. A
+/// downstream (fork) addition.
+///
+/// v187: the ALC reading is optional, and the per-band gain switch. Two
+/// changes, either of which forces the bump. `TxMeters::alc` became
+/// `Option<f32>`, so a rig that never answers an ALC read shows *not reported*
+/// rather than a confident `0%` — the two were indistinguishable, which is
+/// issue #600. That is not an append: `TxMeters` sits **mid** `Meters` (`po`
+/// follows it), `Meters` rides whole inside `RadioState`, and the extra
+/// `Option` tag shifts every byte after it — a v186 client with the transmitter
+/// keyed reads `alc`'s tag as `po` and runs off the end. Appended beside it:
+/// `RadioState::gain_by_band` and `Command::SetGainByBand` (issue #605), the
+/// opt-in per-band front-end gain memory. Same reasoning as v68, which bumped
+/// for this very struct. A downstream (fork) addition.
+///
+/// v188: a remote client may **opt in** to carrying its **control bindings** in
+/// the server profile, beside its screen. New `ClientMsg::SetClientBindings`
+/// and `ServerMsg::ClientBindings`, both **appended last**. Fork-only, and
+/// deliberately gated: a shared station's keyboard is shared, so a client sends
+/// nothing and applies nothing unless its operator enabled it and acknowledged
+/// the risk. Kept as its own message pair rather than a field on the screen
+/// messages so the default-off path cannot send a binding by accident.
+///
+/// The payload is `InputSettings` **whole**, and that puts an `Action`
+/// discriminant on the wire for the first time. Both ends already have to agree
+/// on `PROTO_VERSION` to get this far, so the bump covers it — but an `Action`
+/// variant inserted mid-enum now shifts what the other end reads, so **append
+/// `Action` variants only**, and treat one as a wire change like any other. The
+/// same struct travels in `RadioEvent`, which never leaves the process.
+///
+/// v189: a client can ask **which callsigns the decoder's hash table can
+/// currently resolve**. New `Command::GetKnownCalls` and `ServerMsg::KnownCalls`,
+/// both **appended last**. An FT8 message addresses a station by a one-way hash,
+/// so a `<...>` is unresolvable by arithmetic and the only way to name the
+/// station is to have heard it spelled out; this shows the operator the set they
+/// have accumulated, which is otherwise invisible.
+///
+/// Its own message pair rather than a field on a status, because the answer is
+/// up to a thousand callsigns and must not ride every status frame. The list is
+/// a **shadow** of mfsk-core's `CallsignHashTable`, which is lookup-only and
+/// cannot be enumerated, kept in step by the two places that feed it. A
+/// downstream (fork) addition.
+///
+/// v190: the CW **paddle contacts** travel, so the iambic keyer can live on the
+/// engine. New `Command::CwContacts { dot, dah }`, **appended last**.
+///
+/// The unit is deliberate and is the fix: the client has a paddle and the engine
+/// has the transmitter, so what crosses the wire is *which contacts are closed*,
+/// once per change — not the edges a client would make of them. A client-side
+/// keyer quantises every element to whatever the UI thread sampled (a 20 wpm dit
+/// is 60 ms, inside one 50 ms transmit block), and cannot reach a rig that keys
+/// itself at all, since on that route the sidetone is never transmitted. With
+/// the keyer here it keys through every route, and the operator's only remaining
+/// choice is where the tone goes.
+///
+/// Straight keying does **not** come through this: `Command::CwKey` already
+/// carries the down edge and the engine reads it directly, so a keyer on this
+/// side for straight keying would be a second implementation of the same path.
+/// A downstream (fork) addition.
+///
+/// v191: a signed-in client can be told **which profile it is on** before it has
+/// saved a screen to the server. [`ClientSettingsReply`] gains `has_stored`
+/// (appended last), following discussion #4: `for_profile` falls back to the
+/// station default and reported `None`, so a client on a password server was
+/// told it was on `default` and every save wrote the shared bucket — the client
+/// could never create its own profile. The reply now names the signed-in
+/// profile always, and `has_stored` distinguishes a real stored set from a
+/// name-only offer (which the client records without adopting). The struct
+/// rides `ServerMsg::ClientSettings` whole. A downstream (fork) addition.
+/// v192: the contest logger can set the FT8 contest layout without rewriting
+/// the digi configuration. [`sdrcrow_types::Command`] gains `SetDigiContest`,
+/// appended last so no surviving discriminant moves, and it carries only the
+/// one `ContestMode`. This exists instead of a `SetDigiConfig` from the
+/// contest panel: the whole struct rides positionally and in kilobytes, so
+/// writing it from a panel whose copy is stale rolls back every field a build
+/// adds — including the FT8 contest layout the operator had already set, since
+/// every contest but EU VHF maps to `ContestMode::None`. A v191 peer reads the
+/// added variant as the start of the next command and misreads the rest of the
+/// stream. A downstream (fork) addition.
+/// v193: the **Retro Radio** faceplate is removed — a display skin over the
+/// workspace that did not work the way it was meant to. Two wire fields go with
+/// it, and both were the *last* of their kind, which is the only reason this is a
+/// version bump and not a decoding incident: [`sdrcrow_types::ClientScreen`]
+/// loses its trailing `retro_radio` bool, and [`sdrcrow_types::Action`] loses
+/// its trailing `ToggleRetroRadio` variant. Nothing above either moves, so a
+/// v193 peer talking to a v192 one is caught by the version gate rather than
+/// silently misreading. Note what is *not* claimed: the faceplate held no state
+/// of its own and reached the engine through ordinary commands, so no command
+/// and no engine state changes here — the removal is the flag, the action and
+/// the window. `input.json` is self-describing JSON, so a stored binding naming
+/// the removed action would fail the whole struct; the loader now keeps the
+/// bindings it can read and names the ones it drops. A downstream (fork) change.
+/// v194: `ClientScreen` gains three fields on its tail — `center_on_vfo`
+/// (bool), `fft_size` (u32) and `tune_step_round_first` (bool). These are the
+/// panadapter's *view* settings, which live in the client's `ViewState` and
+/// were therefore never carried by a profile: a phone that lost its browser
+/// storage lost them for good, and no server copy could bring them back
+/// (fork discussion #9 — "CT and FFT are never remembered"). `ClientScreen`
+/// rides `ServerMsg::ClientSettings` whole, so this is the same appended-fields
+/// break as every version before it. The first two are filled by the client
+/// from `ViewState`, since `sdrcrow-types` cannot name that type. A downstream
+/// (fork) change, appended last.
+/// v195: the **DAB / DAB+ receiver**. `Mode::Dab` is appended to that enum,
+/// `RadioState` gains `dab` (`DabSettings`) on its **tail**, and there are new
+/// `Command::SetDabConfig` and `ServerMsg::DabStatus` — all appended last.
+/// `RadioState` rides whole, so a v194 peer reads the extra bytes as the start
+/// of the next field. A downstream (fork) addition. (The branch this came from
+/// numbered it 187, but `main` had already spent 187 on the ALC/per-band-gain
+/// work and 188 on the client screen, so the whole change moved up rather than
+/// renumbering anything already shipped.)
+///
+/// v196: `DigiConfig` gains `sstv_keep_dial` (bool) on its tail — choosing SSTV
+/// leaves the dial where the operator tuned instead of moving it onto the
+/// band's published SSTV frequency. `DigiConfig` rides whole in
+/// `SetDigiConfig`/`DigiStatus`, so this is the same appended-field break as
+/// v184. A downstream (fork) change, appended last.
+///
+/// v197: `NetworkConfig` gains `eqsl_qth_nickname` (String) on its tail — the
+/// eQSL QTH profile an upload is filed into, for an account that owns more than
+/// one (upstream issue #647). `NetworkConfig` rides `Command::SetNetworkConfig`
+/// whole, so this is the same appended-field break as every version before it.
+/// A downstream (fork) change, appended last.
+///
+/// v198: `UiTheme` gains `Calm`, the blue/white SDRuno-style theme. A fieldless
+/// enum is encoded by discriminant, and the catch-all [`UiTheme::Default`] must
+/// stay the **last** variant for serde's `#[serde(other)]`, where a typo in a
+/// hand-edited config degrades to the default theme — so `Calm` is inserted
+/// before it and **`Default`'s discriminant moves 16 → 17**. `UiTheme` rides
+/// [`ClientScreen`]'s `theme` field, so this is a wire change: a v197 peer
+/// would read the moved `Default` as `Calm`. A downstream (fork) change.
+/// v199: [`Action`] gains `Workspaces` on its tail — the Ctrl+W shortcut that
+/// opens the Settings window on the UI page, where the saved window
+/// arrangements are listed. An `Action` discriminant is on the wire for the
+/// first time only because it rides `InputSettings`, which travels whole inside
+/// [`ClientMsg::SetClientBindings`] / [`ServerMsg::ClientBindings`] behind the
+/// operator's opt-in; the new variant is last, so every action below it keeps
+/// its number. A v198 peer that reads a `Workspaces` key has no variant for
+/// it and refuses the whole bindings document — which is why this is a version
+/// bump rather than a silent loss of the operator's key map. `PROTO_VERSION`
+/// 198 → 199, `VERSION_BYTE` 0x13 → 0x14. A downstream (fork) change.
+///
+/// v200: the antenna rotator gains a manual side. Three appended `Command`s
+/// (`PointRotator`, `SetRotatorAuthority`, `StopRotator`), so no surviving
+/// discriminant moves — and `RotatorConfig` gained three fields (`transport`,
+/// `serial_port`, `baud`), which changes the layout of every message carrying it
+/// (`StationConfig::rotator`) and postcard is not self-describing, so both ends
+/// have to agree. `RotatorTransport` and `RotatorAuthority` are new enums that
+/// only the rotator's own messages ride. `PROTO_VERSION` 199 → 200,
+/// `VERSION_BYTE` 0x14 → 0x15. A downstream (fork) change.
+///
+/// v201: the receive tone and LOUDNESS are per-mode settings of the main
+/// receiver. `RadioState::rx_tone` moves into [`sdrcrow_types::RxState`] as
+/// `tone`, `RxState` gains `loudness` (bool) after it, and `Command` gains
+/// `SetRxLoudness(bool)` last. Removing a mid-struct field from `RadioState`
+/// shifts every field after it and `RxState` rides it twice, so a v200 peer
+/// would misread the whole state — hence the bump. `PROTO_VERSION` 200 → 201,
+/// `VERSION_BYTE` unchanged at 0x15. A downstream (fork) change.
+///
+/// v202: `ClientMsg::SetClientAcks` and `ServerMsg::ClientAcks`, both
+/// appended last — the "do not ask me again" answers (the bindings offer, the
+/// dismissed advisories, the CB transmit acknowledgement, the receive-only
+/// banner) kept on the server per login and browser, because browser storage
+/// could not hold them and the questions came back every session.
+/// `PROTO_VERSION` 201 → 202, `VERSION_BYTE` 0x15 → 0x16. A downstream (fork)
+/// change.
+///
+/// v203: playing a recording back into the decoders (fork discussion #10).
+/// `Command` gains `Playback(PlaybackCommand)` and `ListRecordings`, both last;
+/// `ServerMsg` gains `Recordings(RecordingListing)` last; and `RadioState`
+/// gains `playback: Option<PlaybackStatus>` at its tail, which changes the
+/// layout of every state frame. `PROTO_VERSION` 202 → 203, `VERSION_BYTE`
+/// 0x16 → 0x17. A downstream (fork) change.
+///
+/// v204: deleting a recording from the playback window.
+/// `PlaybackCommand` gains `Delete { name }` last. `PROTO_VERSION` 203 → 204,
+/// `VERSION_BYTE` 0x17 → 0x18, so a v203 station refuses the client cleanly
+/// instead of failing to read a variant it does not have. A downstream (fork)
+/// change.
+///
+/// v205: the web client's welcome message for the sound, and the wake lock
+/// kept with the profile. `ClientScreen` gains `sound_welcome: bool` and
+/// `keep_screen_on: bool` at its tail, so the screen a profile carries changes
+/// layout. `PROTO_VERSION` 204 → 205, `VERSION_BYTE` 0x18 → 0x19. A
+/// downstream (fork) change.
+///
+/// v206: the DAB receiver panel. `DabSettings` gains `stations` and `presets`
+/// at its tail, which changes the layout of every state frame; `DabService`
+/// gains `pty` at its tail and `DabStatus` gains `audio_rms_db` and `dls` at
+/// its tail; `ServerMsg` gains `DabSlide(DabSlide)` last. `PROTO_VERSION`
+/// 205 → 206, `VERSION_BYTE` 0x19 → 0x1A. A downstream (fork) change.
+///
+/// v207: the per-radio S-meter calibration. `RadioConfig` gains
+/// `smeter_cal: i8` at its tail (S-units, `-5..=5`, display only), and
+/// `RadioConfig` rides `ServerMsg::RadioConfig` and `Command::SetRadioConfig`
+/// whole. `PROTO_VERSION` 206 → 207, `VERSION_BYTE` 0x1A → 0x1B. A downstream
+/// (fork) change.
+/// v208: the UDP audio stream. `RadioConfig` gains `udp_audio: String` at its
+/// tail — `host:port`, empty for off — and `RadioConfig` rides
+/// `ServerMsg::RadioConfig` and `Command::SetRadioConfig` whole.
+/// `PROTO_VERSION` 207 → 208, `VERSION_BYTE` 0x1B → 0x1C. A downstream (fork)
+/// change, for the listener rather than the amateur: an external decoder, a
+/// recorder or a second machine on the radio's audio.
+///
+/// v209: the colour under the spectrum trace. `ClientScreen` gains
+/// `spectrum_fill: bool` and `spectrum_fill_color: [u8; 3]` at its tail, so
+/// the screen a profile carries changes layout. `PROTO_VERSION` 208 → 209,
+/// `VERSION_BYTE` 0x1C → 0x1D. A downstream (fork) change.
+///
+/// **It was written as 210 and moved back.** That branch took 210 to dodge a
+/// collision with issue #72, which had reserved 209 — but #72 was then solved
+/// without touching the wire at all (the value it needed lives in `session.json`,
+/// which is local), so 209 was never taken and 210 would have been a hole. The
+/// version a branch reserves has to be re-checked when the branch changes shape,
+/// which is the register working rather than failing.
+///
+/// v210: how the colour under the spectrum trace is shaded. `ClientScreen`
+/// gains `spectrum_fill_style: SpectrumFillStyle` (Fixed / Gradient / Mixed)
+/// at its tail. `PROTO_VERSION` 209 → 210, `VERSION_BYTE` 0x1D → 0x1E. A
+/// downstream (fork) change.
+/// v211: [`sdrcrow_types::RotatorConfig`] gains `RotatorTransport::PsRotator`
+/// — PSTRotator's own UDP control port, as an arm on the transport enum this
+/// fork already has rather than a second enum beside it (issue #638). Appended
+/// as a variant, so a v210 peer reads the discriminant it knows.
+/// v212: [`sdrcrow_types::ClientScreen`] gains `broadcast_scope`
+/// ([`sdrcrow_types::BroadcastScope`]) at its tail — which broadcast stations
+/// a listener's screen may show, the panadapter's span or the whole band
+/// (issue #80). It rides `ClientScreen` because it is what the listener sees,
+/// and travels with the theme for the same reason. Appended last.
+/// v213: [`sdrcrow_types::NetworkConfig`] gains `rbn2`
+/// ([`sdrcrow_types::RbnConfig`]) at its tail — a second skimmer connection,
+/// by default the FT8/FT4 feed on 7001 beside the first on 7000. Off by
+/// default. `PROTO_VERSION` 212 → 213, `VERSION_BYTE` 0x20 → 0x21. A downstream
+/// (fork) change.
+/// v214: [`sdrcrow_types::DigiConfig`] gains `hell_slant_ppm` at its tail — a
+/// sample-clock trim for the Hellschreiber receiver, the same control WEFAX
+/// already carries. A sender whose clock differs from ours draws the glyphs
+/// leaning, and re-framing cannot straighten them. `PROTO_VERSION` 213 → 214,
+/// `VERSION_BYTE` 0x21 → 0x22. A downstream (fork) change.
+/// v215: [`sdrcrow_types::DigiConfig`] gains `psk_speed` at its tail — PSK31's
+/// four symbol rates, which were a compile-time constant until now and so could
+/// not be tuned to at all. `PROTO_VERSION` 214 → 215, `VERSION_BYTE` 0x22 → 0x23.
+/// A downstream (fork) change.
+/// v216: [`sdrcrow_types::UiTheme`] gains `Calmer` before the serde
+/// catch-all, so `Default`'s discriminant moves and the enum rides
+/// [`sdrcrow_types::ClientScreen`] — the same trade as `Calm` at v198.
+/// `PROTO_VERSION` 215 → 216, `VERSION_BYTE` 0x23 → 0x24. A downstream (fork)
+/// change.
+/// v217: [`sdrcrow_types::UiTheme`] gains `Compline` and `Lauds` before the
+/// serde catch-all, so `Default`'s discriminant moves again and the enum rides
+/// [`sdrcrow_types::ClientScreen`]. `PROTO_VERSION` 216 → 217,
+/// `VERSION_BYTE` 0x24 → 0x25. A downstream (fork) change.
+/// v218: [`sdrcrow_types::DigiConfig`] gains `psk_modulation` at its tail —
+/// BPSK or QPSK, a separate axis from `psk_speed` because QPSK is a different
+/// constellation *and* carries a convolutional code. `PROTO_VERSION`
+/// 217 → 218, `VERSION_BYTE` 0x25 → 0x26. A downstream (fork) change.
+/// v219: [`sdrcrow_types::DigiConfig`] gains `olivia_reverse` at its tail.
+/// Olivia's tone order can be inverted, and a reversed station reads as noise
+/// with no way to try the other polarity. Appended, so nothing above it moves.
+/// `PROTO_VERSION` 218 → 219, `VERSION_BYTE` 0x26 → 0x27. A downstream (fork)
+/// change.
+/// v220: the audio recording's container is the operator's choice.
+/// [`sdrcrow_types::RadioState`] gains `recording_format`
+/// ([`sdrcrow_types::RecordingFormat`]) at its tail, and `Command` gains
+/// `SetRecordingFormat(RecordingFormat)` last. `RadioState` rides the state
+/// frames whole, so the appended field moves their layout; the same value is
+/// stored in `session.json` so it survives a restart. `PROTO_VERSION` 219 →
+/// 220, `VERSION_BYTE` 0x27 → 0x28. A downstream (fork) change.
+/// v221: MFSK — [`sdrcrow_types::Mode::Mfsk`] appended to the mode enum, and
+/// [`sdrcrow_types::DigiConfig`] gains `mfsk_mode` and `mfsk_reverse` at its
+/// tail: which of fldigi's eleven variants, and whether the tone order is
+/// inverted. The mode variant alone would have been compatible; the two config
+/// fields ride `DigiConfig` whole, so they are not. `PROTO_VERSION` 220 → 221,
+/// `VERSION_BYTE` 0x28 → 0x29. A downstream (fork) change.
+/// v222: Contestia — [`sdrcrow_types::Mode::Contestia`] appended. It is the
+/// same engine as Olivia (a different scrambling code), so it adds no config
+/// fields: its tones, bandwidth and polarity are `olivia_tones`,
+/// `olivia_bw_hz` and `olivia_reverse`. The mode variant alone does not move an
+/// existing discriminant, but both ends must agree on what the number means, so
+/// the register takes the bump. `PROTO_VERSION` 221 → 222, `VERSION_BYTE` 0x29
+/// → 0x2A. A downstream (fork) change.
+/// v223: MT63 — [`sdrcrow_types::Mode::Mt63`] appended, and
+/// [`sdrcrow_types::DigiConfig`] gains `mt63_mode` at its tail: which of the
+/// 2000 Hz variants, short or long interleave. `PROTO_VERSION` 222 → 223,
+/// `VERSION_BYTE` 0x2A → 0x2B. A downstream (fork) change.
+/// v224: ARDOP — [`sdrcrow_types::Mode::Ardop`] appended. It adds no config
+/// fields: an ARDOP frame carries its own leader, type and CRC, and the carrier
+/// grid is fixed, so there is nothing for the operator to set. `PROTO_VERSION`
+/// 223 → 224, `VERSION_BYTE` 0x2B → 0x2C. A downstream (fork) change.
+/// v225: [`sdrcrow_types::PskSpeed`] gains `Bps500` and `Bps1000` at its tail —
+/// the two fast speeds the same modem already runs, now selectable. The enum
+/// rides `DigiConfig`, so a peer that knows four speeds would misread a sixth.
+/// `PROTO_VERSION` 224 → 225, `VERSION_BYTE` 0x2C → 0x2D. A downstream (fork)
+/// change.
+/// v226: [`sdrcrow_types::Mt63Mode`] gains `Mt6500S` at its tail — the 500 Hz
+/// short-interleave variant, which the live receiver now reads whole once the
+/// lock scores on the median per-symbol SNR. The enum rides `DigiConfig`, so a
+/// peer that knows two variants would misread a third. `PROTO_VERSION` 225 →
+/// 226, `VERSION_BYTE` 0x2D → 0x2E. A downstream (fork) change.
+/// v227: STANAG 4285 — [`sdrcrow_types::Mode::Stanag4285`] appended, and
+/// [`sdrcrow_types::DigiStatus`] gains `stanag` at its tail: the receiver's own
+/// measurements (the folded sync and its null, the frame ACF, the three
+/// reference concentrations, the constellation and the rate verdict) rather than
+/// a lamp. `PROTO_VERSION` 226 → 227, `VERSION_BYTE` 0x2E → 0x2F. A downstream
+/// (fork) change.
+/// v228: `DigiConfig::thor_reverse` — THOR's tone *steps* inverted, for a station
+/// received on the other sideband (IFK+ carries its data in the step, so a
+/// mirrored signal has every step negative). Appended last, so `PROTO_VERSION`
+/// 227 → 228, `VERSION_BYTE` 0x2F → 0x30. A downstream (fork) change: the field
+/// rides `SetDigiConfig`/`DigiStatus` whole.
+/// v229: `DigiConfig::psk_coded` — fldigi's coded PSK families (BPSK63F, the `R`
+/// set and the `C`/`RC` banks) as one appended enum, so 32 waveforms ride
+/// `SetDigiConfig`/`DigiStatus` whole. `PROTO_VERSION` 228 → 229, `VERSION_BYTE`
+/// 0x30 → 0x31. A downstream (fork) change.
+/// v230: [`sdrcrow_types::Mode::DominoEx`] appended — the IFK family's other
+/// half, nine variants on [`sdrcrow_types::DigiConfig::domino_mode`].
+/// `PROTO_VERSION` 229 → 230, `VERSION_BYTE` 0x31 → 0x32. A downstream (fork)
+/// change. `DigiConfig` gained `domino_mode`; `Mode` is an enum on the wire.
+/// v231: [`sdrcrow_types::Mode::Dtmf`] appended — the eight touch tones, decoded
+/// to the digits they carry. `PROTO_VERSION` 230 → 231, `VERSION_BYTE` 0x32 →
+/// 0x33. A downstream (fork) change.
+/// v232: [`sdrcrow_types::MemoryChannel`] gains a `color` field at its tail
+/// (per-memory label colour on the waterfall) and `Command` gains
+/// `SetMemoryColor { id, color }` last. `MemoryChannel` rides the memory list
+/// whole, so the appended field moves its layout. `#[serde(default)]`, so a
+/// memory written before this existed loads unchanged. `PROTO_VERSION` 231 →
+/// 232, `VERSION_BYTE` 0x33 → 0x34. F4NRM's, renumbered above this fork's
+/// register (his branch numbered it 215, from a base before the mode work).
+/// v233: [`sdrcrow_types::RadioConfig`] gains `swap_iq` at its tail — a per-radio
+/// I/Q inversion flag for receivers whose I and Q are the other way round, so
+/// SSB comes out on the wrong sideband. `RadioConfig` rides
+/// `ServerMsg::RadioConfig` and `Command::SetRadioConfig` whole, so the appended
+/// field moves their layout. `#[serde(default)]`, so a `radio.json` written
+/// before this existed loads unchanged. `PROTO_VERSION` 232 → 233,
+/// `VERSION_BYTE` 0x34 → 0x35. F4NRM's, renumbered like v232.
+/// v234: [`sdrcrow_types::Action::BroadcastLabels`] appended — a bindable key
+/// for what the waterfall names, between the tuned station and the whole band.
+/// `Action`'s discriminants are positional and `InputSettings` rides
+/// `SetClientBindings`/`ClientBindings` whole, so a new variant is a wire change
+/// even though appending it moves nothing else. No new message and no new field.
+/// `PROTO_VERSION` 233 → 234, `VERSION_BYTE` 0x35 → 0x36. A downstream (fork)
+/// change.
+/// v235: **Wavelog**, the operator's own web logbook (upstream #666), ported by
+/// hand. All of it appended, and none of it separable — a v234 peer handed any
+/// one of these reads the tail of the message carrying it out of step:
+///
+/// * [`sdrcrow_types::NetworkConfig`] gains `wavelog`
+///   ([`sdrcrow_types::WavelogConfig`]: address, API key, pinned certificate,
+///   default station location, auto-upload, which locations to download and how
+///   often, and the live radio status). It rides whole inside
+///   `Command::SetNetworkConfig`.
+/// * [`sdrcrow_types::DigiConfig`] gains `wavelog_station_id` — the location is
+///   part of the operating identity, since Wavelog refuses a QSO whose station
+///   callsign is not the location's. It rides `SetDigiConfig`/`DigiStatus`.
+/// * [`sdrcrow_types::QsoRecord`] gains `wavelog_sent` and `wavelog_origin`,
+///   and [`sdrcrow_types::UploadResult`] gains `retryable`. Both ride inside
+///   `RadioEvent`s that cross the link.
+/// * `UploadTarget` and `LoginTarget` each gain `Wavelog`, appended, so no
+///   surviving discriminant moved.
+/// * [`sdrcrow_types::Command::WavelogSync`] appended. Its answers,
+///   `RadioEvent::WavelogBatch` and `RadioEvent::WavelogProbe`, stay on the
+///   machine the engine runs on and have no `ServerMsg`.
+///
+/// `PROTO_VERSION` 234 → 235, `VERSION_BYTE` 0x36 → 0x37. Upstream's change,
+/// brought in by hand.
+/// v236: the **ELAD FDM-DUO's own power controls** (upstream #717, by AJ3G),
+/// ported by hand. [`sdrcrow_types::CatConfig`] gains `elad_tx_power` — menu
+/// 34's `TP` parameter, 0 to 8 for its watt steps and 9 for MAX — which rides
+/// `SetRadioConfig`/`RadioConfig` whole. [`sdrcrow_types::TxMeters`] gains
+/// `rfl_w` at its tail, the reflected power the DUO reports (`RP`), which rides
+/// every meter frame. [`sdrcrow_types::Command::SetRigPowerStep`] is appended
+/// for the live half — the buttons beside Drive.
+///
+/// None of it is separable from the rest: a v235 peer handed a `TxMeters` frame
+/// reads its tail out of step. `PROTO_VERSION` 235 → 236, `VERSION_BYTE`
+/// 0x37 → 0x38.
+/// v237: **received pictures to an FTP server** (upstream, by joscandreu),
+/// ported by hand. [`sdrcrow_types::StationConfig`] gains `picture_upload`
+/// on its tail — the station decodes and saves the pictures, so that is where
+/// they are sent from, and a remote screen only edits the settings.
+/// [`sdrcrow_types::Command`] gains `SetPictureUploadConfig` and
+/// `TestPictureUpload`, [`sdrcrow_types::RadioEvent`] gains `PictureUpload`,
+/// and `ServerMsg` gains `PictureUpload` so a remote screen can see the answer.
+/// All appended. `PROTO_VERSION` 236 → 237, `VERSION_BYTE` 0x38 → 0x39.
+/// v238: [`sdrcrow_types::DigiConfig`] gains `sstv_rx_sensitivity` (i8) and
+/// `sstv_rx_auto` (bool) on its tail, after `wavelog_station_id` — an SSTV
+/// receive sensitivity control (-5..=+5) with an Auto mode. `DigiConfig` rides
+/// `SetDigiConfig`/`DigiStatus` whole, so the appended fields move both.
+/// Appended by hand under the register's own rule (the number was taken twice
+/// on two branches; the later one moves). `PROTO_VERSION` 237 → 238,
+/// `VERSION_BYTE` 0x39 → 0x3A.
+/// v237: [`sdrcrow_types::DigiConfig`] gains `wefax_rx_sensitivity` (i8) and
+/// `wefax_rx_auto` (bool) on its tail — a receive sensitivity control for the
+/// WEFAX decoder, -5 to +5, with Auto meaning the reference thresholds. Unlike
+/// SSTV's, it does not scale the audio: a fax is frequency modulated, so it
+/// scales the detector's thresholds instead. `DigiConfig` rides
+/// `SetDigiConfig`/`DigiStatus` whole, so the appended fields move their layout.
+/// `#[serde(default)]`, so a stored config loads unchanged.
+/// `PROTO_VERSION` 238 → 239, `VERSION_BYTE` 0x3A → 0x3B. A downstream (fork)
+/// change.
+/// v240: [`sdrcrow_types::NetworkConfig`] gains `decode_udp` (String) on its
+/// tail — where the station's decoded text may be sent, `host:port`, one JSON
+/// line per decode over UDP, empty meaning off. `NetworkConfig` rides
+/// `SetNetworkConfig` whole, so the appended field moves its layout;
+/// `#[serde(default)]`, so a stored `net.json` loads unchanged.
+/// `PROTO_VERSION` 239 → 240, `VERSION_BYTE` 0x3B → 0x3C. A downstream (fork)
+/// change.
+/// v241: [`sdrcrow_types::Mode`] gains `Cis11` (discriminant 60) on its tail —
+/// CIS-11, the Russian meteorological teleprinter, receive only. A mode
+/// discriminant is on the wire in [`sdrcrow_types::Command::SetMode`] and in
+/// every mode field of a status, so appending one moves them.
+/// `PROTO_VERSION` 240 → 241, `VERSION_BYTE` 0x3C → 0x3D. A downstream (fork)
+/// change.
+/// v242: [`sdrcrow_types::PskModulation`] gains `Psk8` (appended) — eight-phase
+/// differential PSK on the same baud rates and front end as the rest of the
+/// plain PSK family, receive only. It rides `DigiConfig`, which crosses the wire
+/// whole in `SetDigiConfig`/`DigiStatus`, so appending a variant moves it.
+/// `PROTO_VERSION` 241 -> 242, `VERSION_BYTE` 0x3D -> 0x3E. A downstream (fork)
+/// change.
+/// v243: **voice hunting** — the scanner learns to stop only on channels that
+/// sound like somebody talking. [`sdrcrow_types::ScannerConfig`] gains
+/// `voice_only` on its tail, and [`sdrcrow_types::ScanState`] gains `voice`,
+/// the last reading the detector took and the channel it was taken on, so a
+/// remote screen can say why the scan went past a strong signal. Both ride
+/// whole — `ScannerConfig` in `SetScannerConfig`/`ServerMsg::Scanner`,
+/// `ScanState` inside every `RadioState` — so a v242 peer handed either reads
+/// its tail out of step. `#[serde(default)]` on both, so a stored
+/// `scanner.json` and a settings file written before this existed load
+/// unchanged. **This branch took 242 first and then moved**: PR #174
+/// (`fork/psk8`) had claimed it, and the later of two colliding branches moves,
+/// so the gap at 242 is that PR's to fill.
+/// `PROTO_VERSION` 242 → 243, `VERSION_BYTE` 0x3E → 0x3F. A downstream (fork)
+/// change.
+/// v245: **revert of PR #163** (SSTV receive sensitivity control). The
+/// `sstv_rx_sensitivity` (i8) and `sstv_rx_auto` (bool) fields are removed
+/// from [`sdrcrow_types::DigiConfig`], the audio gain in `SstvController` is
+/// dropped, and the Sensitivity slider/Auto chip is removed from the SSTV
+/// panel. The WEFAX receive sensitivity fields added afterwards are untouched.
+/// `DigiConfig` rides `SetDigiConfig`/`DigiStatus` whole, so removing the
+/// appended fields moves the layout; `#[serde(default)]` keeps a stored config
+/// loading. `PROTO_VERSION` 244 → 245, `VERSION_BYTE` 0x40 → 0x41.
+/// v246: **revert of PR #164** (WEFAX receive sensitivity control). The
+/// `wefax_rx_sensitivity` (i8) and `wefax_rx_auto` (bool) fields are removed
+/// from [`sdrcrow_types::DigiConfig`], the threshold handling in the WEFAX
+/// DSP and controller is dropped, and the Sensitivity slider/Auto chip is
+/// removed from the WEFAX panel. The SSTV receive sensitivity fields removed
+/// earlier stay removed. `DigiConfig` rides `SetDigiConfig`/`DigiStatus`
+/// whole, so removing the appended fields moves the layout; `#[serde(default)]`
+/// keeps a stored config loading. `PROTO_VERSION` 245 → 246,
+/// `VERSION_BYTE` 0x41 → 0x42.
+/// v247: **revert of PR #202** (NAVTEX receive sensitivity control). The
+/// `navtex_rx_sensitivity` (i8) and `navtex_rx_auto` (bool) fields are removed
+/// from [`sdrcrow_types::DigiConfig`], the threshold handling in the NAVTEX
+/// DSP and controller is dropped, and the Sensitivity slider/Auto chip is
+/// removed from the NAVTEX panel. `DigiConfig` rides `SetDigiConfig`/
+/// `DigiStatus` whole, so removing the inserted fields moves the layout;
+/// `#[serde(default)]` keeps a stored config loading. `PROTO_VERSION` 246 →
+/// 247, `VERSION_BYTE` 0x42 → 0x43.
+/// v248: **the Airspy HF+'s usable span** — [`sdrcrow_types::RadioState`] gains
+/// `usable_hz` at its tail: the part of `sample_rate` the front end's own
+/// decimation filter leaves as spectrum (the HF+ at 768 kSPS carries about
+/// 660 kHz of it), or `0.0` for "no opinion, use the rate". A display built on
+/// the raw rate showed filter skirt as band, could be panned into it, and the
+/// auto-fit averaged it into the noise floor. Appended last, and postcard is
+/// positional — so a v247 peer's payload does not decode and the version byte is
+/// what refuses it; `#[serde(default)]` covers the paths that read a bare value
+/// (a stored blob, a fixture). **This branch took 247 first and then moved**:
+/// #233 (the NAVTEX sensitivity revert) claimed it and landed while this was in
+/// review, so the later of two colliding branches moves. `PROTO_VERSION`
+/// 247 → 248, `VERSION_BYTE` 0x43 → 0x44. A downstream (fork) change.
+/// v251: **the receive sensitivity controls come back** — SSTV, WEFAX and
+/// NAVTEX. [`sdrcrow_types::DigiConfig`] regains `sstv_rx_sensitivity` /
+/// `sstv_rx_auto`, `wefax_rx_sensitivity` / `wefax_rx_auto` and
+/// `navtex_rx_sensitivity` / `navtex_rx_auto`, where each pair was when it
+/// first shipped: 0 with Auto on is the reference behaviour, so a stored config
+/// that never touched the sliders loads and behaves exactly as it does now.
+/// The setting is the operator's answer to two different faults — "a faint
+/// chart never starts" and "a noisy channel starts a page on nothing" — and it
+/// is the reason the phasing calibration exists at all. `DigiConfig` rides
+/// `SetDigiConfig`/`DigiStatus` whole, so the layout moves and every end has to
+/// be rebuilt together: `PROTO_VERSION` 250 → 251, `VERSION_BYTE` 0x46 → 0x47.
+/// (250 is PR #242's, 249 PR #240's — neither is merged here, so this branch
+/// would move again if they land first.) A downstream (fork) change.
+/// v253: **the Auto CQ run's own bound** — [`sdrcrow_types::DigiConfig`] gains
+/// `auto_cq_repeats` and `auto_cq_then_listen` at its tail, so an unattended CQ
+/// run can end after a set number of calls instead of only on the watchdog's
+/// clock (issue #236). Appended last, and postcard is positional — a v248 peer's
+/// payload does not decode and the version byte is what refuses it;
+/// `#[serde(default)]` covers a stored config loading. This branch took **250**
+/// when it was opened; #245 and then #240 landed first, so the later of the
+/// colliding branches moves again — `PROTO_VERSION` 252 → 253,
+/// `VERSION_BYTE` 0x48 → 0x49. A downstream (fork) change.
+/// v252: **the picture composer's document** —
+/// [`sdrcrow_types::ImageSlotInfo`] gains `composer` at its tail and
+/// [`sdrcrow_types::Command`] gains `ImageSetComposer` last: each transmit
+/// preset now carries the layers drawn over its picture, so every client
+/// composes the same picture instead of one caption drawn where it likes.
+/// Appended last, and postcard is positional — so a v248 peer's payload does not
+/// decode and the version byte is what refuses it; `#[serde(default)]` covers the
+/// paths that read a bare value (a stored blob, a fixture). This branch took
+/// **249** when it was opened; #245 (the receive sensitivity controls) landed
+/// first and took 251, so the later of the two moved, as the register says it
+/// must. `PROTO_VERSION` 251 → 252, `VERSION_BYTE` 0x47 → 0x48. A downstream
+/// (fork) change.
+/// v254: **the composer's overlay, its template library and the mosaic's
+/// picture** — [`sdrcrow_types::ImageSlotInfo`] gains `apply_overlay` at its
+/// tail, [`sdrcrow_types::ImagePresets`] gains `templates`, and
+/// [`sdrcrow_types::Command`] gains `ImageSetOverlay`, `ImageSaveTemplate` and
+/// `ImageDeleteTemplate` last. The station-wide overlay lets one layout identify
+/// every picture while each preset keeps its own layers under it; the templates
+/// are named layouts the operator saves and recalls, and they ride the presets
+/// so the console and a browser tab keep the same library.
+///
+/// **253 belongs to PR #242** (the Auto CQ split), which took it while this one
+/// was in review; the later of the colliding branches moves, so this takes 254.
+/// `PROTO_VERSION` 252 → 254, `VERSION_BYTE` 0x48 → 0x4A. A downstream (fork)
+/// change.
+/// v255: **the unattended run's own limits** —
+/// [`sdrcrow_types::DigiConfig`] gains `auto_call_retries` and
+/// `auto_session_min` at its tail: how many times one station is called before
+/// the run passes it over, and how long the run may last at all. With the
+/// continuous role this makes the automatic operator a bounded one: a station
+/// that never answers stops costing slots, and a run that nobody stops stops
+/// itself (issue #251). Appended last, so the layout moves: `PROTO_VERSION`
+/// 254 → 255, `VERSION_BYTE` 0x4A → 0x4B. A downstream (fork) change.
+/// v256: **the composer and auto fields are re-appended at the true tail.**
+///
+/// v252/v254/v255 each said "appended last" for the fields they added to
+/// [`sdrcrow_types::DigiConfig`] — `sstv_banner_bottom`,
+/// `sstv_banner_text_pct`, `station_overlay`, `auto_call_retries`,
+/// `auto_session_min` — but they were actually inserted *before* the existing
+/// `sstv_rx_sensitivity`/`sstv_rx_auto`/`wefax_rx_sensitivity`/`wefax_rx_auto`,
+/// so the sensitivity fields moved down in the positional postcard layout for
+/// no reason and the register entries no longer described the struct. They now
+/// sit after `wefax_rx_auto`, where the entries always claimed they were; the
+/// wire layout moves again, so the version does too. `PROTO_VERSION` 255 → 256,
+/// `VERSION_BYTE` 0x4B → 0x4C. A downstream (fork) change.
+/// v257: **the main receiver's audio level.** `ServerMsg` gains
+/// `AudioLevel(Box<AudioLevel>)` last: the speaker feed's left/right level and
+/// 48 spectrum bars, about thirty times a second, for the Radio Classic panel's
+/// VU and bars. Until now only the DAB status carried a level. It is sent only
+/// while a screen holds a lease: `Command` gains `WantAudioLevel` last, renewed
+/// about once a second by an open panel. `PROTO_VERSION` 256 → 257, `VERSION_BYTE` 0x4C → 0x4D. A downstream (fork) change.
+/// v258: **NAVTEX drop limits.** The NAVTEX settings gained adjustable drop
+/// limits (loss/disagree), which moved the layout. `PROTO_VERSION` 257 → 258,
+/// `VERSION_BYTE` 0x4D → 0x4E.
+/// v259: **the transmit band list.** [`sdrcrow_types::RadioConfig`] gains
+/// `tx_band_enable` and `tx_bands_confirmed` at its tail: the bands the operator
+/// has switched TX on for, and whether they have confirmed the list. The engine
+/// refuses a key-down on any other band, ahead of every other rail.
+/// `RadioConfig` rides `ServerMsg::RadioConfig` and `Command::SetRadioConfig`
+/// whole, so the appended fields move their layout. `#[serde(default)]`, so a
+/// `radio.json` written before this loads unchanged — and is carried over
+/// unconfirmed. `PROTO_VERSION` 258 → 259, `VERSION_BYTE` 0x4E → 0x4F.
+/// v260: **the transmit refusal is typed.** [`sdrcrow_types::TxBlock`] gains
+/// serde, `RadioEvent::TxRefused(TxBlock, f64)` and `ServerMsg::TxRefused(TxBlock,
+/// f64)` are appended last: a key-down refused by the band list used to travel as
+/// an English `Notice`; now it carries the reason and the frequency, and the
+/// screen words it in the operator's language. `PROTO_VERSION` 259 → 260,
+/// `VERSION_BYTE` 0x4F → 0x50.
+/// v264: decoded CW over UDP. [`sdrcrow_types::WsjtxConfig`] gains `cw_text`
+/// ([`sdrcrow_types::CwTextConfig`]) on its tail, beside the N1MM broadcast it
+/// sits with. `WsjtxConfig` rides `Command::SetWsjtxConfig` whole, so a v263
+/// peer handed one reads the extra bytes as the start of the next message. The
+/// same change as upstream's v171. `PROTO_VERSION` 263 → 264, `VERSION_BYTE`
+/// 0x53 → 0x54.
+/// v265: **an HPSDR board's second ADC as a second aerial.**
+/// [`sdrcrow_types::HpsdrConfig`] gains `diversity`, `div_mode`, `div_taps`,
+/// `div_rate` and `div_frozen` at its tail, for a Protocol 2 board that streams its two ADCs as a
+/// synced DDC pair (the TRX-DUO firmware v0.7.0, piHPSDR, Thetis). The struct
+/// rides inside `RadioConfig`, which crosses the link whole in
+/// `ServerMsg::RadioConfig` and `Command::SetRadioConfig`, so a v264 peer reads
+/// every field after it out of step. `#[serde(default)]`, so a `radio.json`
+/// written before this loads unchanged, with Diversity off. `PROTO_VERSION`
+/// 264 → 265, `VERSION_BYTE` 0x54 → 0x55.
+///
+/// v266: a band-plan sub-segment carries an optional `label` (the operator's
+/// own name for it on the waterfall strip), so the `band_plan` in
+/// `StationConfig` changes layout and both ends have to agree.
+///
+/// v267: [`sdrcrow_types::Command`] gains `ClearMemories`, appended; a v266
+/// peer has no variant to decode it into.
+///
+/// v268: **what an aircraft says about its own flight.**
+/// [`sdrcrow_types::AdsbAircraft`] gains, at its tail, `selected_altitude_ft`,
+/// `selected_heading_deg`, `qnh_hpa`, `ias_kt`, `tas_kt`, `heading_deg`,
+/// `nav_modes`, `adsb_version`, `nac_p`, `nac_v` and `sil`, read from the
+/// target-state, operational-status and airspeed squitters. The struct rides in
+/// the aircraft table every half second, so a v267 peer reads the table out of
+/// step. `PROTO_VERSION` 267 → 268, `VERSION_BYTE` 0x57 → 0x58.
+///
+/// v269: **the CW peak filter.** [`sdrcrow_types::RxState`] gains `cw_peak`
+/// ([`sdrcrow_types::CwPeak`]: on, width, gain) at its tail, and `Command`
+/// gains `SetCwPeak` last. `RxState` rides `RadioState` twice, so a v268 peer
+/// reads the whole state out of step. `PROTO_VERSION` 268 → 269,
+/// `VERSION_BYTE` 0x58 → 0x59.
+///
+/// v270: **the radiosonde decoder.** [`sdrcrow_types::RadioState`] gains
+/// `sonde` ([`sdrcrow_types::SondeSettings`]: on, channel) at its tail, and
+/// `Command` gains `SetSondeConfig` last. `RadioState` crosses the link whole,
+/// so a v269 peer reads the extra bytes as the start of the next field. The
+/// live tracks are engine-side only (`RadioEvent::SondeStatus`), bridged
+/// nowhere. `PROTO_VERSION` 269 → 270, `VERSION_BYTE` 0x59 → 0x5A.
+///
+/// v271: the radiosonde lane can scan the window. [`sdrcrow_types::SondeSettings`]
+/// gains `scan` at its tail. The struct rides `RadioState` and
+/// `Command::SetSondeConfig` whole, so a v270 peer reads the extra byte as the
+/// start of the next field. `PROTO_VERSION` 270 → 271, `VERSION_BYTE` 0x5A → 0x5B.
+///
+/// v272: **the VOR read-out.** `ServerMsg` gains `VorStatus(Box<VorStatus>)`
+/// last: the radial, the ident and the lock of the beacon the receiver is
+/// parked on ([`sdrcrow_types::VorStatus`]), twice a second while the lane
+/// runs and once when it starts, stops or is refused. Cached by the server and
+/// replayed on connect. A v271 peer has no variant to decode it into.
+/// `PROTO_VERSION` 271 → 272, `VERSION_BYTE` 0x5B → 0x5C.
+/// v273: **the power per band.** [`sdrcrow_types::RadioConfig`] gains
+/// `tx_band_power_w` at its tail: the watts the station makes on each band at
+/// full drive, as the operator states them, so a radio with no power sensor can
+/// show its transmit power in watts. `RadioConfig` rides
+/// `ServerMsg::RadioConfig` and `Command::SetRadioConfig` whole, so the appended
+/// field moves its layout. `#[serde(default)]`, so a `radio.json` written before
+/// this loads unchanged. `PROTO_VERSION` 272 → 273, `VERSION_BYTE` 0x5C → 0x5D.
+///
+/// v274: **QO-100, HFDL and radiosonde read-outs reach remote and web clients.**
+/// `ServerMsg` gains `Qo100Status`, `HfdlStatus` and `SondeStatus(Box<..>)`,
+/// appended last in that order. They carried the beacon lock, the HFDL decode
+/// log and the sonde tracks, which stayed on the station until now. Cached by
+/// the server and replayed on connect. A v273 peer has no variant to decode
+/// them into. `PROTO_VERSION` 273 → 274, `VERSION_BYTE` 0x5D → 0x5E.
+///
+/// v275: **a receive band list per radio.** `RadioConfig` gains
+/// `rx_band_enable` and `rx_bands_confirmed` at its tail, the mirror of the
+/// transmit list. `RadioConfig` rides `ServerMsg::RadioConfig` and
+/// `Command::SetRadioConfig` whole, so the appended fields move its layout.
+/// `#[serde(default)]`, so a `radio.json` written before this loads unchanged.
+/// `PROTO_VERSION` 274 → 275, `VERSION_BYTE` 0x5E → 0x5F.
+///
+/// v276: **a library of band plans on the station.** `Command` gains
+/// `ImportBandPlan`, `SelectBandPlan` and `DeleteBandPlan`, appended last.
+/// `StationConfig` gains `band_plans` (the plans in the station's folder) and
+/// `band_plan_name` (the one it runs) at its tail, and the band plan it carries
+/// gains a `meta` block (name, country, author) after its readme, so the
+/// bundle's layout moves. `RadioConfig` gains `band_plan_fp` at its tail, the
+/// plan its band lists were confirmed against, and rides `ServerMsg::RadioConfig`
+/// and `Command::SetRadioConfig` whole. All `#[serde(default)]` in the files, so
+/// a `radio.json` or `config.toml` written before this loads unchanged.
+/// `PROTO_VERSION` 275 → 276, `VERSION_BYTE` 0x5F → 0x60.
+///
+/// v277: **a band plan manager.** `Command` gains `SaveCurrentBandPlan`,
+/// `ExportBandPlan` and `RestoreShippedBandPlans`, and `ServerMsg` gains
+/// `BandPlanExport { file, json }`, all appended last: the manager can keep the
+/// plan that runs, hand a plan's file to the screen that asked for it, and put
+/// the shipped plans back. `PROTO_VERSION` 276 → 277, `VERSION_BYTE` 0x60 → 0x61.
+///
+/// v278: **a band plan per radio.** `Command` gains `SelectRadioBandPlan`,
+/// appended last, and `RadioConfig` gains `band_plan` (the plan this radio runs
+/// on its own, `None` following the station's) at its tail. `RadioConfig` rides
+/// `ServerMsg::RadioConfig` and `Command::SetRadioConfig` whole, so the appended
+/// field moves its layout. `#[serde(default)]`, so a `radio.json` written before
+/// this loads unchanged. `PROTO_VERSION` 277 → 278, `VERSION_BYTE` 0x61 → 0x62.
+///
+/// v279: **what the S-meter measures.** [`sdrcrow_types::ClientScreen`] gains
+/// `smeter_view` (`MeterView`: auto, signal, power, SWR, ALC) at its tail, the
+/// choice the arrows on the meter make, kept with the profile like the face
+/// (`smeter_style`). `ClientScreen` rides `ClientMsg::SetClientSettings` and
+/// `ServerMsg::ClientSettings` whole, so the appended field moves its layout.
+/// `#[serde(default)]`, so a `config.toml` written before this loads unchanged.
+/// `PROTO_VERSION` 278 → 279, `VERSION_BYTE` 0x62 → 0x63.
+///
+/// v280: **11 m (CB) has its own refusal.** [`sdrcrow_types::TxBlock`] gains
+/// `CbOff` at its tail: the band is ticked and confirmed in the transmit list,
+/// but "Allow transmit on 11 m (CB)" is off. `RadioEvent::TxRefused` /
+/// `ServerMsg::TxRefused` carry it, so the screen says so in the operator's
+/// language. Nothing else moves. `PROTO_VERSION` 279 → 280, `VERSION_BYTE`
+/// 0x63 → 0x64.
+///
+/// v281: **a refused mode is typed.** `ServerMsg` gains `ModeRefused { mode,
+/// band }` at its tail, carrying `RadioEvent::ModeRefused`, so the screen says
+/// "X is not used on Y" in the operator's language (it was an English notice
+/// that a remote screen never received). `PROTO_VERSION` 280 → 281,
+/// `VERSION_BYTE` 0x64 → 0x65.
+///
+/// v282: **the interface language is kept with the profile.**
+/// [`sdrcrow_types::ClientScreen`] gains `language` (`UiLanguage`: a BCP 47
+/// tag, or empty for the system's) at its tail. The browser build carries only
+/// English and fetches the operator's language from the station, so the
+/// station has to know which one it is, and a browser with its storage cleared
+/// comes back in it. `ClientScreen` rides `ClientMsg::SetClientSettings` and
+/// `ServerMsg::ClientSettings` whole, so the appended field moves its layout.
+/// `#[serde(default)]`, so a profile written before this loads unchanged and
+/// names no language. `PROTO_VERSION` 281 → 282, `VERSION_BYTE` 0x65 → 0x66.
+///
+/// v283: the public-SDR map's receiver check.
+/// [`sdrcrow_types::DeviceProbe`] gains `PublicSdrCheck { network, address }`
+/// and [`sdrcrow_types::ProbeAnswer`] gains `PublicSdrCheck`, which carries
+/// the address back so several checks in flight each find their row. Both
+/// appended last; a v282 peer has no name for either.
+/// `PROTO_VERSION` 282 → 283, `VERSION_BYTE` 0x66 → 0x67.
+///
+/// v284: **the weather-satellite (NOAA APT) decoder.**
+/// [`sdrcrow_types::RadioState`] gains `wxsat` ([`sdrcrow_types::WxsatSettings`]:
+/// on, channel) at its tail, `Command` gains `SetWxsatConfig` last, and
+/// `ServerMsg` gains `WxsatStatus(Box<..>)` last, which carries the picture
+/// lines new since the previous one (the client builds the image). `RadioState`
+/// crosses the link whole, so the appended field moves its layout.
+/// `PROTO_VERSION` 283 → 284, `VERSION_BYTE` 0x67 → 0x68.
+///
+/// v285: **Meteor LRPT beside NOAA APT.** [`sdrcrow_types::WxsatSettings`]
+/// gains `kind` ([`sdrcrow_types::WxsatKind`]) at its tail and
+/// [`sdrcrow_types::WxsatStatus`] gains `kind`, `frames_ok`, `carrier_hz` and
+/// `rows` (finished rows of picture, one per channel) at its tail. Both ride
+/// whole (`RadioState` and `ServerMsg::WxsatStatus`), so the appended fields move
+/// their layouts. `PROTO_VERSION` 284 → 285, `VERSION_BYTE` 0x68 → 0x69.
+///
+/// v286: **the QRZ card.** [`sdrcrow_types::CallsignInfo`] gains `addr1`,
+/// `email`, `age`, `class`, `qsl_lotw`, `qsl_eqsl`, `qsl_paper` and `photo` (a
+/// small JPEG) at its tail, and [`sdrcrow_types::NetworkConfig`] gains
+/// `qrz_card` (bool) at its tail. `CallsignInfo` rides
+/// `ServerMsg::CallsignResult` and `NetworkConfig` rides `SetNetworkConfig`,
+/// both whole, so the appended fields move their layouts. The age is worked out
+/// on the station; the date of birth never crosses the link. `#[serde(default)]`
+/// on every new field, so a stored `net.json` loads unchanged.
+/// `PROTO_VERSION` 285 → 286, `VERSION_BYTE` 0x69 → 0x6A.
+///
+/// v287: **the Meshtastic receiver.** [`sdrcrow_types::RadioState`] gains
+/// `meshtastic` ([`sdrcrow_types::MeshtasticSettings`]: on, region, preset,
+/// channel, keys and where the radio was before the lane tuned it) at its tail,
+/// `Command` gains `SetMeshtasticConfig` last, and `ServerMsg` gains
+/// `MeshtasticStatus(Box<..>)` last (level, counters, nodes, packet log).
+/// `RadioState` crosses the link whole, so the appended field moves its layout.
+/// `PROTO_VERSION` 286 → 287, `VERSION_BYTE` 0x6A → 0x6B.
+///
+/// v288: **Meshtastic transmit, and the 868 MHz band.** `Band` gains `Ism868`
+/// last (863–870 MHz, on the transmit list like the other bands; `Band`
+/// is postcard-encoded by declaration index and rides `RadioConfig`, the band
+/// stacks and the memories). [`sdrcrow_types::MeshtasticSettings`] gains
+/// `node_id` at its tail, `Command` gains `SendMeshtastic` last, and
+/// [`sdrcrow_types::MeshtasticStatus`] gains `tx_refused`, `tx_busy`,
+/// `tx_sent`, `tx_used_ms` and `tx_budget_ms` at its tail.
+/// `PROTO_VERSION` 287 → 288, `VERSION_BYTE` 0x6B → 0x6C.
+///
+/// v289: **SAT lock on a CAT rig's split.** `SatLockConfig` (carried by
+/// `Command::SetSatLock`) gains `ctcss_hz: Option<f64>` last, so a CAT rig can
+/// set the tone on VFO B, and `TxState` gains `rig_keyed: bool` last, the rig
+/// transmitting under its own control. Both cross the link inside postcard
+/// structs. `PROTO_VERSION` 288 → 289, `VERSION_BYTE` 0x6C → 0x6D.
+///
+/// v290: **the profile no longer carries the interface language.** PR #579 is
+/// reverted: [`sdrcrow_types::ClientScreen`] loses `language` (added in v282),
+/// so the layout of `ClientScreen`, which rides `ClientMsg::SetClientSettings`
+/// and `ServerMsg::ClientSettings` whole, changes again.
+/// `PROTO_VERSION` 289 → 290, `VERSION_BYTE` 0x6D → 0x6E.
+///
+/// v291: **the QRZ card, second round.** [`sdrcrow_types::CallsignInfo`] gains
+/// `photo_pending`, `native_text` and `note` at its tail (it rides
+/// `ServerMsg::CallsignResult` whole), and [`sdrcrow_types::NetworkConfig`]
+/// gains `qrz_card_off` at its tail (it rides `SetNetworkConfig` whole): the
+/// card is now on by default and this is how it is switched off.
+/// `PROTO_VERSION` 290 → 291, `VERSION_BYTE` 0x6E → 0x6F.
+///
+/// v292: **channel lists keep their folders (issue #623).**
+/// [`sdrcrow_types::Command`] gains `ImportMemoriesFiled`, appended: a channel
+/// list with the folder name of each channel, so a CSV exported with its
+/// folders imports into them. A v291 station does not know the variant.
+/// `PROTO_VERSION` 291 → 292, `VERSION_BYTE` 0x6F → 0x70.
+///
+/// v293: **weather fax: undo the auto-slant.** [`sdrcrow_types::Command`]
+/// gains `WefaxRevertSlant`, appended, with no payload. A v292 station does
+/// not know the variant. `PROTO_VERSION` 292 → 293, `VERSION_BYTE` 0x70 → 0x71.
+///
+/// v294: **the QRZ card, third round.** [`sdrcrow_types::CallsignInfo`] gains
+/// `limited` at its tail (it rides `ServerMsg::CallsignResult` whole): QRZ cut
+/// the record short for lack of an XML subscription. A v293 client ignores it.
+/// `PROTO_VERSION` 293 → 294, `VERSION_BYTE` 0x71 → 0x72.
+///
+/// v295: **connection-test failures in the operator's language.**
+/// [`sdrcrow_types::ProbeAnswer`] gains `TestFailed(TestKind, ConnectFailure)`,
+/// appended: a failed TCP connect as data (why, host, port, the system's own
+/// words) instead of English text, so the interface words it itself. Only the
+/// TCI test sends it so far. A v294 client does not know the variant.
+///
+/// v296: **the SSTV date and time line (issue #650).**
+/// [`sdrcrow_types::TextLayer`] gains `clock` at its tail — the composer layer
+/// prints the time the picture is composed at instead of its own text, so a
+/// picture says when it went out, in UTC or in the station's own zone. Layers
+/// ride `Composer` whole inside `ImagePresets`, `Command::ImageSetComposer` and
+/// the template commands, so the appended field moves every one of those
+/// layouts. `#[serde(default)]` on the layer keeps a stored
+/// `sstv_presets.json` loading unchanged.
+/// `PROTO_VERSION` 294 → 295, `VERSION_BYTE` 0x72 → 0x73.
+///
+/// v297: **the height of the full-band strip.** [`sdrcrow_types::ClientScreen`]
+/// gains `wide_strip_height` (f32, points) at its tail: the strip above the
+/// panadapter can be dragged taller or shorter, and the height is kept on the
+/// server with the rest of the screen, not in the browser. `ClientScreen` rides
+/// `ServerMsg::ClientSettings` and `Command::SetClientSettings` whole, so this
+/// is the same appended-field break as v194.
+/// `PROTO_VERSION` 296 → 297, `VERSION_BYTE` 0x74 → 0x75.
+///
+/// v298: **scrolling the full-band strip.** `Command::SetWideWindow(Option<f64>)`
+/// is appended after `WefaxRevertSlant`: centre the strip's window on a
+/// frequency without tuning, or `None` to follow the dial again. A v297 station
+/// does not know the variant.
+/// `PROTO_VERSION` 297 → 298, `VERSION_BYTE` 0x75 → 0x76.
+///
+/// v299: **the weather-fax auto-slant switch.** [`sdrcrow_types::DigiConfig`]
+/// gains `wefax_auto_slant` (bool, on by default) at its tail: whether the
+/// receiver corrects the slant by itself, from the phasing signal and from the
+/// picture. With the existing `wefax_slant_ppm` it is kept for each radio on the
+/// server (`wefax.json`), not in the client. `DigiConfig` rides the status and
+/// `Command::SetDigiConfig` whole, so this is the same appended-field break as
+/// v214. `#[serde(default = ...)]` keeps a stored `digi.json` loading unchanged.
+/// `PROTO_VERSION` 298 → 299, `VERSION_BYTE` 0x76 → 0x77.
+///
+/// v300: **a look from a theme file, on the wire.**
+/// [`sdrcrow_types::ClientScreen`] gains `theme_file` at its tail: the name and
+/// the text of a theme that came from `themes/*.toml`. The text and not the four
+/// palettes, so the client parses it with the same loader the server used and a
+/// broken theme is refused by name at both ends; and not the name alone, because
+/// a browser has no `themes/` directory to read it from. `ClientScreen` rides
+/// `ServerMsg::ClientSettings` and `Command::SetClientSettings` whole, so this
+/// is the same appended-field break as v194 — with one further consequence: the
+/// screen is no longer `Copy`, because it now carries a `String`.
+/// `PROTO_VERSION` 299 → 300, `VERSION_BYTE` 0x77 → 0x78.
+///
+/// v301: **the desk microphone and the pedal (issue #636).**
+/// `Command::SetPttInputs` and `Command::RescanPttInputs`,
+/// `RadioEvent::PttInputsStatus` / `ServerMsg::PttInputsStatus`, and
+/// `StationConfig::ptt_inputs` at the tail of `StationConfig`. All appended, so
+/// no surviving discriminant moves. `PROTO_VERSION` 300 → 301, `VERSION_BYTE`
+/// 0x78 → 0x79.
+pub const PROTO_VERSION: u16 = 301;
+const VERSION_BYTE: u8 = 0x79;
+
+#[derive(Debug, thiserror::Error)]
+pub enum ProtoError {
+    #[error("empty message")]
+    Empty,
+    #[error("unsupported protocol version byte {0:#x}")]
+    Version(u8),
+    #[error("decode error: {0}")]
+    Decode(#[from] postcard::Error),
+}
+
+/// Audio codec for one stream direction, negotiated at Hello time.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum AudioCodec {
+    /// 20 ms Opus frames, 48 kHz mono.
+    Opus48kMono,
+    /// Little-endian PCM16, 48 kHz mono (fallback when WebCodecs is missing).
+    Pcm16_48k,
+}
+
+/// What the client can encode/decode (browser WebCodecs availability).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct AudioCaps {
+    pub opus_decode: bool,
+    pub opus_encode: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub enum ClientMsg {
+    Hello {
+        proto: u16,
+        audio: AudioCaps,
+    },
+    Command(Command),
+    /// 20 ms mic frame in the codec negotiated at Hello.
+    MicFrame {
+        seq: u32,
+        payload: Vec<u8>,
+    },
+    Ping(u64),
+    /// Answer to [`ServerMsg::AuthRequired`]. Appended last on purpose:
+    /// postcard encodes the variant as a positional discriminant, so inserting
+    /// anywhere else would silently renumber every message after it.
+    Auth {
+        username: String,
+        password: String,
+    },
+    /// A question about the machine the radio is attached to — which dongles
+    /// are on its bus, which serial ports it has, whether an address answers
+    /// from there. Answered with [`ServerMsg::ProbeAnswer`].
+    ///
+    /// Appended last, for the reason above. Only read from a signed-in session,
+    /// like every other command: these open sockets and scan buses on the
+    /// server's behalf, and the client that may do that is the one that may
+    /// already point the radio at any address it likes.
+    Probe(sdrcrow_types::DeviceProbe),
+    /// Put another radio in the station's roster. `name` is the operator's
+    /// name for it, empty for the usual case of one named after whatever
+    /// interface it ends up configured as.
+    ///
+    /// Not a [`Command`]: commands go to *a* radio's engine, and a station's
+    /// roster belongs to the station. The server acts on this itself, brings
+    /// the new radio up on its own address, and announces the whole roster
+    /// again ([`ServerMsg::Radios`]) — which is how the client that asked, and
+    /// every other client on the station, finds out.
+    ///
+    /// The radio arrives with no interface (`Backend::None`), exactly as one
+    /// added at the station itself does: what it is comes next, from the Radio
+    /// settings page, which a remote client can already drive.
+    AddRadio {
+        name: String,
+    },
+    /// Take a radio out of the station's roster. Its configuration is kept on
+    /// disk, as it is when a radio is closed at the station itself — this is
+    /// closing a radio, not destroying what it was set up as.
+    ///
+    /// The station's first radio is refused: it holds the shared network
+    /// services and the legacy configuration, and `/ws` has to keep meaning
+    /// something.
+    RemoveRadio {
+        id: u32,
+    },
+    /// Record the operator's name for one of the station's radios. Empty puts
+    /// it back on the default — named after its interface.
+    ///
+    /// On the wire rather than kept on the client because the roster is a file
+    /// on the *station*: a name typed here and remembered only here would be
+    /// gone at the next reconnect, and invisible to everybody else on it.
+    RenameRadio {
+        id: u32,
+        name: String,
+    },
+    /// Switch one of the station's radios on or off — the same switch the
+    /// station's own tab strip carries, thrown from away.
+    ///
+    /// Not a [`Command`], for the same reason as the three above: this decides
+    /// whether a radio has a front end at all, which is the station's business
+    /// and not that radio engine's. The station writes its roster, has the
+    /// engine rebuild its front end from it — an interface opened, or let go —
+    /// and announces the roster again, which is how the client that asked and
+    /// every other client on the station find out.
+    SetRadioEnabled {
+        id: u32,
+        on: bool,
+    },
+    /// Store this client's **screen settings** on the server, against the
+    /// profile it signed in as — the "save on the server" half of
+    /// [`sdrcrow_types::UiSettings::client_save_scope`].
+    ///
+    /// Only the **presentation** half of the settings travels (see
+    /// [`sdrcrow_types::presentation_only`]). Control bindings are *not* here:
+    /// a shared station's keyboard belongs to the machine, and sending bindings
+    /// would let one login rebind another's keys. They travel only through
+    /// [`ClientMsg::SetClientBindings`], which the client sends only when its
+    /// operator has opted in. Appended last, as ever — postcard encodes the
+    /// variant positionally.
+    SetClientSettings {
+        /// The profile to store against, or `None` for the station default
+        /// every client with no profile settings of its own falls back to.
+        profile: Option<String>,
+        settings: sdrcrow_types::ClientScreen,
+    },
+    /// Store this client's **control bindings** on the server, against the
+    /// profile it signed in as, so they follow the operator between browsers
+    /// and devices.
+    ///
+    /// **Sent only when the operator has enabled it** (`UiSettings::
+    /// client_share_bindings`), and only after acknowledging the risk. A shared
+    /// station's keyboard is a shared radio: one login carrying its bindings
+    /// would rebind another operator's PTT or Space. Appended last, as ever.
+    SetClientBindings {
+        /// The profile to store against, or `None` for the station default.
+        profile: Option<String>,
+        bindings: sdrcrow_types::InputSettings,
+    },
+    /// Store this client's "do not ask me again" answers on the server, against
+    /// the profile it signed in as. The server **merges** them into what it
+    /// holds (see [`sdrcrow_types::ClientAcks::merge`]) and echoes the result
+    /// with [`ServerMsg::ClientAcks`]. Appended last, as ever.
+    SetClientAcks(sdrcrow_types::ClientAcks),
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub enum ServerMsg {
+    HelloAck {
+        proto: u16,
+        caps: DeviceCaps,
+        state: RadioState,
+        /// Codec of server→client RX audio.
+        rx_codec: AudioCodec,
+        /// Codec expected for client→server mic frames.
+        tx_codec: AudioCodec,
+    },
+    State(RadioState),
+    Spectrum(SpectrumFrame),
+    Meters(Meters),
+    Memories(Vec<MemoryChannel>),
+    /// The scanner's settings, replayed on connect and re-sent on every change,
+    /// exactly as `Memories` is.
+    Scanner(sdrcrow_types::ScannerConfig),
+    RxAudio {
+        seq: u32,
+        payload: Vec<u8>,
+    },
+    Pong(u64),
+    /// Another client already holds the (single) session.
+    Busy,
+    Error(String),
+    // FT8/FT4 digital modes.
+    Ft8Decodes(Vec<Decode>),
+    Ft8Status(DigiStatus),
+    Ft8QsoLogged(QsoRecord),
+    // Skimmers (CW etc.).
+    SkimmerSpots(Vec<SkimmerSpot>),
+    // SSTV image mode.
+    SstvLine {
+        image_id: u32,
+        y: u16,
+        rgb: Vec<u8>,
+    },
+    SstvImage {
+        image_id: u32,
+        mode: SstvMode,
+        w: u16,
+        h: u16,
+        png: Vec<u8>,
+    },
+    SstvStatus(SstvStatus),
+    // Weather fax (receive only).
+    WefaxLine {
+        image_id: u32,
+        y: u16,
+        gray: Vec<u8>,
+    },
+    WefaxImage {
+        image_id: u32,
+        w: u16,
+        h: u16,
+        png: Vec<u8>,
+    },
+    WefaxStatus(sdrcrow_types::WefaxStatus),
+    // RIFP image mode.
+    /// Reassembled raster rows of an incoming picture (grayscale, `w` per row).
+    RifpRows {
+        image_id: u32,
+        y: u16,
+        w: u16,
+        h: u16,
+        rows: Vec<u8>,
+    },
+    /// A completed, digest-verified picture (PNG bytes) and its manifest facts.
+    RifpImage {
+        image_id: u32,
+        meta: RifpMeta,
+        png: Vec<u8>,
+    },
+    RifpStatus(RifpStatus),
+    /// FSQ image: a completed received picture (PNG bytes).
+    DigiImage {
+        png: Vec<u8>,
+    },
+    /// Hellschreiber: a batch of received dot columns, column-major, 0 = black.
+    /// `seq` is the absolute column index so a client can detect a dropped
+    /// batch — this lane drops rather than blocks when it backs up, and Hell has
+    /// no framing of its own to resynchronise against.
+    HellColumns {
+        seq: u64,
+        rows: u8,
+        cols: Vec<u8>,
+    },
+    /// Voice keyer: slot contents plus what is being recorded or transmitted.
+    VoiceStatus(VoiceStatus),
+    // Network cockpit.
+    Spots(Vec<Spot>),
+    /// Live band-opening detections, appended on `Spots`'s tail like the
+    /// network updates it accompanies.
+    BandOpenings(Vec<sdrcrow_types::BandOpening>),
+    NetStatus(Option<String>),
+    CallsignResult(CallsignInfo),
+    Upload(UploadResult),
+    Confirmations(Vec<QsoRecord>),
+    /// Built-in TCI server status (listener up, bind address, client count).
+    TciServerStatus {
+        running: bool,
+        addr: String,
+        clients: usize,
+        error: Option<String>,
+    },
+    /// Built-in rigctld server status, so the settings dialog on a remote
+    /// client can show what the engine's listener is doing.
+    RigctldStatus {
+        running: bool,
+        addr: String,
+        clients: usize,
+        error: Option<String>,
+    },
+    /// Full-band spectrum from a direct-sampling front end. Appended last on
+    /// purpose: postcard encodes the variant as a positional discriminant, so
+    /// inserting anywhere else would silently renumber every message after it.
+    WideSpectrum(SpectrumFrame),
+    /// A non-fatal operator notice from the engine, `None` to clear it — the
+    /// radio refusing a tune, an interface reconnecting. Unlike
+    /// [`ServerMsg::Error`] the session is intact and the client stays live.
+    /// Appended last, for the reason above.
+    Notice(Option<String>),
+    /// The transmit-image presets, announced at startup and on every change.
+    /// Cached by the server and replayed on connect, like the digi config and
+    /// the voice keyer — without it a browser tab opens on five empty slots
+    /// beside a console showing five full ones, and there is no second
+    /// announcement to wait for.
+    ImagePresets(ImagePresets),
+    /// A preset's stored source picture, answering `Command::ImageGetSlot`.
+    ImageSlotSource {
+        slot: u8,
+        version: u32,
+        png: Vec<u8>,
+    },
+    /// One page of a received store, answering `Command::ImageList`.
+    ImageListing(ImageListing),
+    /// One received picture at full size, answering `Command::ImageGet`. An
+    /// empty `png` means the store does not have it.
+    ImageFile {
+        kind: ImageKind,
+        name: String,
+        png: Vec<u8>,
+    },
+    /// A freshly received picture has been stored, as a gallery would list it.
+    ImageSaved(ImageEntry),
+    /// What the station is set up to do: the network cockpit, the two built-in
+    /// servers, the WSJT-X broadcast and the satellite additions. Cached by the
+    /// server and replayed on connect, like the digi config — these are files
+    /// in the engine host's config directory, and a client on another machine
+    /// has no other way to learn them.
+    StationConfig(Box<StationConfig>),
+    /// What each TLE subscription's cached listing holds. Replayed on connect
+    /// beside the config it annotates.
+    TleSubStatus(Vec<TleSubStatus>),
+    /// A received picture has been deleted from the store, answering
+    /// `Command::ImageDelete`. Sent to whichever client is attached, whether or
+    /// not it is the one that asked.
+    ImageDeleted {
+        kind: ImageKind,
+        name: String,
+    },
+    /// This server wants a username and password. Sent in place of
+    /// [`ServerMsg::HelloAck`] once `Hello` has been read and its version
+    /// accepted — after, so a client on the wrong protocol is told *that*
+    /// rather than being asked to sign in to a server it could not talk to
+    /// anyway. The client answers with [`ClientMsg::Auth`].
+    ///
+    /// Nothing else is sent, read or acted on until the credentials are
+    /// accepted: not the capabilities, not the state, and above all not the
+    /// single-client slot, which is claimed only afterwards so that a stranger
+    /// cannot lock the operator out of their own radio by connecting to it.
+    AuthRequired,
+    /// Those were not the credentials, and why not. The socket stays open so
+    /// the operator can correct a typo without redialling — but the server
+    /// takes its time before it will judge another attempt.
+    AuthRejected(String),
+    /// What a WSPR slot decoded.
+    ///
+    /// Not `Ft8Decodes`: a WSPR reception is a measurement of a path, not a
+    /// message addressed to anyone, and it carries the transmit power and drift
+    /// that make it one. Squeezing it into `Decode` would have meant throwing
+    /// both away. Appended last, so no surviving discriminant moves.
+    WsprSpots(Vec<sdrcrow_types::WsprSpot>),
+    /// The memory folders, replayed on connect and re-sent on every change,
+    /// exactly as `Memories` is. Appended last, for the usual reason.
+    MemoryFolders(Vec<MemoryFolder>),
+    /// What the satellite lock is doing — look angles, range, the Doppler
+    /// corrections as applied. The latest one is cached by the server and
+    /// replayed on connect, so a client arriving mid-pass sees the lock
+    /// immediately rather than at the next tick. `None` when the lock is
+    /// released. Appended last, for the usual reason.
+    SatTrack(Option<Box<sdrcrow_types::SatTrackStatus>>),
+    /// The rotctld client's health, mirrored from the engine's
+    /// `RadioEvent::RotatorStatus`. Appended last, for the usual reason.
+    RotatorStatus {
+        connected: bool,
+        az_deg: f64,
+        el_deg: f64,
+        error: Option<String>,
+    },
+    /// Which radio interface the engine host has open, and how every backend on
+    /// that machine is configured — its `radio.json`. Cached by the server and
+    /// replayed on connect, like the station config, and for the same reason:
+    /// it is a file in *that* machine's config directory, so a client here has
+    /// no other copy, and a settings panel opened on defaults would write those
+    /// defaults back over the operator's real configuration.
+    ///
+    /// Appended last, for the usual reason.
+    RadioConfig(Box<sdrcrow_types::RadioConfig>),
+
+    // ── Winlink radio email ──
+    //
+    // Appended for the usual reason: postcard numbers variants by position.
+    WinlinkStatus(sdrcrow_types::WinlinkStatus),
+    MailListing(sdrcrow_types::MailListing),
+    /// Boxed: a message carries its attachments, and every other variant here
+    /// would otherwise be as large as the biggest mail we can hold.
+    MailMessage(Box<sdrcrow_types::MailMessage>),
+    MailSaved(String),
+    MailDeleted {
+        folder: sdrcrow_types::MailFolder,
+        mid: String,
+    },
+    /// What this machine found, answering [`ClientMsg::Probe`].
+    ///
+    /// No request id: the answer names what it is an answer to, probes are run
+    /// one at a time in the order they arrive, and the socket preserves that
+    /// order — so a second Rescan cannot be overtaken by the first.
+    ProbeAnswer(Box<sdrcrow_types::ProbeAnswer>),
+    /// The radio's capabilities changed under a live session: the engine opened
+    /// a different front end.
+    ///
+    /// These used to ride [`ServerMsg::HelloAck`] alone, on the reasoning that
+    /// a session's radio is the one it connected to. That stopped being true
+    /// when the interface became changeable from here — swap a dongle for a
+    /// transceiver and the gain stages, the antenna ports, the tuning ranges
+    /// and whether there is a transmitter at all are different, and a client
+    /// still drawing the old ones would be offering controls the radio does not
+    /// have. It also covers the case that was always possible: an interface
+    /// that was not there at startup and attached later.
+    Capabilities(DeviceCaps),
+    /// Which radio this session is on, and every radio the station serves.
+    ///
+    /// Sent immediately after `HelloAck`, and again to every session whenever
+    /// the roster changes. A station has as many radios as its roster says,
+    /// each reached at an address of its own, and nothing else on the wire
+    /// would tell a client that the machine it just dialled has a second one —
+    /// leaving the operator to find out by reading the server's log. With it, a
+    /// client that can hold several radios at once opens the rest beside the
+    /// one it asked for, and follows the station when a radio is added or
+    /// taken away — by this client, by another one, or at the station itself.
+    ///
+    /// Appended last, like everything before it: postcard encodes the variant
+    /// as a positional discriminant, so inserting anywhere else would silently
+    /// renumber every message after it.
+    Radios {
+        /// The id of the radio this session is on, out of `radios` below.
+        ///
+        /// A roster that does *not* list it is how a client is told that the
+        /// radio it is on has just been taken out of the station: the roster
+        /// goes out on the reliable lane before the session is dropped, so the
+        /// tab can close itself rather than sit on a socket that is about to
+        /// shut and offer to dial an address that is now a 404.
+        me: u32,
+        radios: Vec<RadioInfo>,
+        /// Whether this station accepts roster edits from here —
+        /// [`ClientMsg::AddRadio`] and the two beside it. False for a station
+        /// whose host wired none of that up (or a client's own in-process
+        /// engine, which is not addressed this way at all), and the client
+        /// then leaves the controls off rather than offering buttons that
+        /// would be quietly ignored.
+        editable: bool,
+    },
+    /// What the RDS/RBDS decoder has made of the WFM station on the main
+    /// receiver. A snapshot, except for the group log inside it, which is a
+    /// delta the client accumulates — see [`sdrcrow_types::RdsData`].
+    Rds(sdrcrow_types::RdsData),
+    /// Every ISM device heard, as a whole table. A snapshot — see
+    /// [`sdrcrow_types::IsmReport`].
+    IsmReports(Vec<sdrcrow_types::IsmReport>),
+    /// Which ISM channels are live, and what the burst gate is seeing.
+    IsmStatus(sdrcrow_types::IsmStatus),
+    /// What the DRM decoder has made of the broadcast on the main receiver.
+    /// A snapshot — see [`sdrcrow_types::DrmStatus`].
+    Drm(sdrcrow_types::DrmStatus),
+    /// Every aircraft the ADS-B decoder is tracking, plus what the demodulator
+    /// is seeing and why it is not running when it is not. A whole snapshot,
+    /// twice a second — see [`sdrcrow_types::AdsbStatus`].
+    AdsbStatus(Box<sdrcrow_types::AdsbStatus>),
+    /// Everything the VDL Mode 2 decoder has: the message log, the station
+    /// table, what each channel of the plan is doing, and why it is not running
+    /// when it is not. A whole snapshot, twice a second — see
+    /// [`sdrcrow_types::Vdl2Status`].
+    Vdl2Status(Box<sdrcrow_types::Vdl2Status>),
+    /// The station's external T/R switch, mirrored from the engine's
+    /// `RadioEvent::RelayStatus`: whether one is configured, whether the
+    /// hardware is answering, what it is, and whether the contacts are in their
+    /// transmit state.
+    ///
+    /// Cached by the server and replayed on connect — unlike
+    /// [`ServerMsg::RotatorStatus`], which is not, and which therefore leaves a
+    /// client that attaches mid-session with a blank panel. This is a standing
+    /// condition and a safety one: an operator opening the settings dialog
+    /// remotely has to be told at once that the relay protecting the receiver
+    /// is not answering, rather than after the next thing that happens to
+    /// change.
+    ///
+    /// Appended last, for the usual reason.
+    RelayStatus(Box<sdrcrow_types::RelayStatus>),
+    /// Every vessel the AIS decoder is tracking, plus what both channels are
+    /// doing and why it is not running when it is not. A whole snapshot, twice
+    /// a second — see [`sdrcrow_types::AisStatus`].
+    AisStatus(Box<sdrcrow_types::AisStatus>),
+    /// The *same* front end, revising what it said about itself — as against
+    /// [`ServerMsg::Capabilities`], which is a different one.
+    ///
+    /// Two things a device says about itself are not constants. A rig on a
+    /// control port cannot say whether it has an antenna selector until the
+    /// link has been round; an RSP's LNA ladder is as long as the *band*
+    /// allows, so its length moves under the dial. Both have to reach the
+    /// client, and neither means the radio changed — read as a new front end,
+    /// a tune across a band edge wipes the client's wideband waterfall, makes
+    /// it re-read every image store and silences its announcer, in the middle
+    /// of a QSY.
+    ///
+    /// Appended last, for the usual reason.
+    CapabilitiesUpdated(DeviceCaps),
+
+    /// What the HD Radio decoder has made of the digital FM broadcast on the
+    /// main receiver. A snapshot — see [`sdrcrow_types::HdRadioStatus`].
+    ///
+    /// Like DRM, the decoding happens where the radio is and only the result
+    /// travels, because the whole decoder sits in a vendored C library that
+    /// never reaches the browser.
+    ///
+    /// Appended last, for the usual reason.
+    Hd(sdrcrow_types::HdRadioStatus),
+
+    /// `RadioEvent::Profiles`: the names of the station's saved profiles
+    /// (issue #197), the list the settings dialog's Profiles tab offers. Sent
+    /// on connect and after every save, apply and delete — without it a remote
+    /// screen showed "no profiles saved" beside a station full of them, and a
+    /// Save it made never appeared.
+    ///
+    /// Appended last, for the usual reason.
+    Profiles(Vec<String>),
+    /// `RadioEvent::Pi4Spots`: what a PI4 slot decoded — the same shape of
+    /// thing [`ServerMsg::WsprSpots`] is, for the same reason: a beacon
+    /// reception is a measurement, not a message addressed to anyone.
+    ///
+    /// Appended last, for the usual reason.
+    Pi4Spots(Vec<sdrcrow_types::Pi4Spot>),
+
+    /// `RadioEvent::PictureUpload`: how a received-picture FTP upload, or a
+    /// test of its settings, went. Forwarded, unlike `LoginTest`: the settings
+    /// are edited from whichever screen, but only the station connects, so a
+    /// remote screen has no other way to learn whether they work. It names the
+    /// server and the certificate it presented, nothing of the account.
+    ///
+    /// Appended last, for the usual reason.
+    PictureUpload(sdrcrow_types::PictureUploadStatus),
+
+    /// A client's stored screen settings, replayed on connect when it has any
+    /// on the server — the profile's own set, or the station default when the
+    /// profile has none (then `profile` is `None`). Also sent back after a
+    /// [`ClientMsg::SetClientSettings`], so the client knows what was stored.
+    ///
+    /// Appended last, for the usual reason.
+    ClientSettings(ClientSettingsReply),
+
+    /// A client's stored **control bindings**, replayed on connect when it has
+    /// any on the server. The client applies them only when its operator opted
+    /// in; a client that did not ignores them. Also sent back after a
+    /// [`ClientMsg::SetClientBindings`].
+    ///
+    /// Appended last, for the usual reason.
+    ClientBindings(ClientBindingsReply),
+
+    /// The answer to a [`Command::GetKnownCalls`](sdrcrow_types::Command::GetKnownCalls):
+    /// the callsigns the decoder's hash table can currently resolve, newest
+    /// first — or `None` when there is no table to ask. Sent once, when a client
+    /// asks and the window is open — never on a status frame, since the list is
+    /// up to a thousand callsigns long.
+    ///
+    /// Appended last, for the usual reason.
+    KnownCalls(Option<sdrcrow_types::KnownCallsReply>),
+
+    /// `RadioEvent::DabStatus`: the DAB ensemble, its services and the decode
+    /// counters — a snapshot, sent as the FIC fills in and on change.
+    ///
+    /// Appended last, for the usual reason.
+    DabStatus(Box<sdrcrow_types::DabStatus>),
+
+    /// The "do not ask me again" answers stored for this client's profile.
+    /// Sent on connect **before** [`ServerMsg::ClientBindings`] — and when the
+    /// answer to the bindings offer is "keep mine", those are not sent at all —
+    /// and echoed after a [`ClientMsg::SetClientAcks`].
+    ///
+    /// Appended last, for the usual reason.
+    ClientAcks(sdrcrow_types::ClientAcks),
+
+    /// `RadioEvent::Recordings`: the station's recordings directory, answering
+    /// a `Command::ListRecordings`. Sent once per question — the files are on
+    /// the station, so this is the only way a browser can see them.
+    ///
+    /// Appended last, for the usual reason.
+    Recordings(sdrcrow_types::RecordingListing),
+
+    /// `RadioEvent::DabSlide`: a slideshow picture the playing DAB station
+    /// sent, once per new picture.
+    ///
+    /// Appended last, for the usual reason.
+    DabSlide(Box<sdrcrow_types::DabSlide>),
+
+    /// `RadioEvent::AudioLevel`: the level and the bars of the main receiver's
+    /// speaker feed, about thirty times a second.
+    ///
+    /// Appended last, for the usual reason.
+    AudioLevel(Box<sdrcrow_types::AudioLevel>),
+
+    /// `RadioEvent::TxRefused`: the engine refused a key-down under the
+    /// operator's transmit band list — why, and the frequency in Hz.
+    ///
+    /// Appended last, for the usual reason.
+    TxRefused(sdrcrow_types::TxBlock, f64),
+
+    /// The dynamic-DNS worker's last answer.
+    ///
+    /// From the **engine**, because the name has to point at the address of the
+    /// machine that is heard: a headless station updates with no screen open,
+    /// and a screen on a laptop driving a remote station must not send its own
+    /// address to the provider. Only the provider's word travels — never the
+    /// update address, which carries the operator's token.
+    DyndnsAnswer {
+        at_unix: i64,
+        ok: bool,
+        text: String,
+    },
+    /// The VOR beacon the receiver is parked on: radial, ident and how well
+    /// the two 30 Hz signals are heard, with why the lane is not running when
+    /// it is not. A whole snapshot, twice a second while it runs — see
+    /// [`sdrcrow_types::VorStatus`]. Appended last.
+    VorStatus(Box<sdrcrow_types::VorStatus>),
+    /// The QO-100 beacon tracker: lock, measured offset and the auto-apply
+    /// bookkeeping. A whole snapshot. Appended last.
+    Qo100Status(sdrcrow_types::Qo100Status),
+    /// The HFDL decoder: level, counters and the rolling decode log, a whole
+    /// snapshot each time. Appended last.
+    HfdlStatus(sdrcrow_types::HfdlStatus),
+    /// The radiosonde decoder: level and the sondes heard with their tracks,
+    /// a whole snapshot each time. Appended last.
+    SondeStatus(Box<sdrcrow_types::SondeStatus>),
+    /// The file of a band plan, for the screen that asked to save it on its own
+    /// computer. Appended last.
+    BandPlanExport { file: String, json: String },
+    /// `RadioEvent::ModeRefused`: a mode the band the receiver is on does not
+    /// carry was asked for. Appended last (v281).
+    ModeRefused { mode: sdrcrow_types::Mode, band: sdrcrow_types::Band },
+    /// The weather-satellite decoder: its state and the picture lines new since
+    /// the previous message (the client builds the image). Appended last (v284).
+    WxsatStatus(Box<sdrcrow_types::WxsatStatus>),
+    /// The Meshtastic receiver: level, counters, the nodes heard and the packet
+    /// log, a whole snapshot each time. Appended last (v287).
+    MeshtasticStatus(Box<sdrcrow_types::MeshtasticStatus>),
+    /// The desk microphone and the pedal (issue #636), mirrored from the
+    /// engine's `RadioEvent::PttInputsStatus`. Cached by the server and
+    /// replayed on connect, so a settings dialog opened mid-session shows the
+    /// devices at once. Appended last (v301).
+    PttInputsStatus(Box<sdrcrow_types::PttInputsStatus>),
+}
+
+/// What [`ServerMsg::ClientSettings`] carries.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct ClientSettingsReply {
+    /// The profile these came from, or `None` when this is the station default.
+    ///
+    /// This is the profile the client **signed in as**, even when the settings
+    /// below came from the station-default fallback (discussion #4). It is what
+    /// the client's next Save is keyed on, so it must name the login rather than
+    /// the bucket the store answered from.
+    pub profile: Option<String>,
+    pub settings: sdrcrow_types::ClientScreen,
+    /// Whether `settings` is really this profile's stored set, or a placeholder
+    /// sent only so a signed-in client knows its profile name before it has
+    /// saved anything. `false` means "adopt none of this; it is not yours yet".
+    ///
+    /// Appended last, so the wire stays append-only.
+    #[serde(default)]
+    pub has_stored: bool,
+}
+
+/// What [`ServerMsg::ClientBindings`] carries.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct ClientBindingsReply {
+    /// The profile these came from, or `None` when this is the station default.
+    pub profile: Option<String>,
+    pub bindings: sdrcrow_types::InputSettings,
+}
+
+/// One radio in a station's roster, as a client sees it.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RadioInfo {
+    /// The station's own id for it, which is also what addresses it: `/ws/<id>`.
+    /// Not a position in the list — deleting a radio must not renumber the
+    /// others under whatever a client saved.
+    pub id: u32,
+    /// What to call it: the operator's name where they gave one, otherwise
+    /// what its interface calls itself, and failing both its number.
+    pub name: String,
+    /// Whether `name` is the operator's own, rather than one the station
+    /// derived from the radio's interface.
+    ///
+    /// The difference matters to a client that opens the radio: a derived name
+    /// goes stale the moment the interface changes — and every radio added from
+    /// away starts out as "No radio", because that is what a radio with no
+    /// interface yet calls itself. A client that knows the name was derived
+    /// leaves its tab unnamed and derives one of its own from the radio it is
+    /// then connected to, which follows the interface the way the station's own
+    /// tab strip does.
+    pub named: bool,
+    /// Whether the radio is switched on, where this station holds a switch a
+    /// client may throw ([`ClientMsg::SetRadioEnabled`]). `None` where it does
+    /// not — a host that wired none of it up — and the client then shows no
+    /// switch rather than one that would be quietly ignored.
+    ///
+    /// A radio that is off keeps its engine, its scope and its address: its
+    /// interface is simply not opened, which is what lets the device go and
+    /// leaves the radio one button away from coming back.
+    pub enabled: Option<bool>,
+}
+
+pub fn encode<T: Serialize>(msg: &T) -> Result<Vec<u8>, ProtoError> {
+    Ok(postcard::to_extend(msg, vec![VERSION_BYTE])?)
+}
+
+pub fn decode<'a, T: Deserialize<'a>>(bytes: &'a [u8]) -> Result<T, ProtoError> {
+    match bytes {
+        [] => Err(ProtoError::Empty),
+        [VERSION_BYTE, rest @ ..] => Ok(postcard::from_bytes(rest)?),
+        [v, ..] => Err(ProtoError::Version(*v)),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use sdrcrow_types::ImageSlotInfo;
+
+    #[test]
+    fn roundtrip_client_and_server_msgs() {
+        let msgs = [
+            ClientMsg::Hello {
+                proto: PROTO_VERSION,
+                audio: AudioCaps { opus_decode: true, opus_encode: false },
+            },
+            ClientMsg::Command(Command::SetPtt(true)),
+            // The rotator's manual side, both variants — appended, so a
+            // discriminant slip here would show as a decode error.
+            ClientMsg::Command(Command::PointRotator { az: 217.0, el: 43.0 }),
+            ClientMsg::Command(Command::SetRotatorAuthority(
+                sdrcrow_types::RotatorAuthority::Manual,
+            )),
+            ClientMsg::Command(Command::StopRotator),
+            // The recording container, appended last with a field on
+            // `RadioState`'s own tail — both a v213 peer would misread.
+            ClientMsg::Command(Command::SetRecordingFormat(sdrcrow_types::RecordingFormat::Wav)),
+            ClientMsg::MicFrame { seq: 7, payload: vec![1, 2, 3] },
+        ];
+        for m in &msgs {
+            let bytes = encode(m).unwrap();
+            let back: ClientMsg = decode(&bytes).unwrap();
+            assert_eq!(&back, m);
+        }
+
+        let m = ServerMsg::State(RadioState::default());
+        let bytes = encode(&m).unwrap();
+        let back: ServerMsg = decode(&bytes).unwrap();
+        assert_eq!(back, m);
+
+        // …and the new tail field carries a *number*, not only its default: a
+        // display narrowing itself to the usable span is the whole point of it.
+        let mut narrowed = RadioState::default();
+        narrowed.sample_rate = 768_000.0;
+        narrowed.usable_hz = 660_480.0;
+        let back: ServerMsg = decode(&encode(&ServerMsg::State(narrowed)).unwrap()).unwrap();
+        match back {
+            ServerMsg::State(s) => {
+                assert_eq!(s.usable_hz, 660_480.0, "the usable span did not ride the wire");
+                assert_eq!(s.sample_rate, 768_000.0);
+            }
+            other => panic!("expected a state, got {other:?}"),
+        }
+
+        let m = ServerMsg::Profiles(vec!["Contest".into(), "DX".into()]);
+        let back: ServerMsg = decode(&encode(&m).unwrap()).unwrap();
+        assert_eq!(back, m);
+
+        // The picture upload: both commands, the answer, and the settings
+        // riding the station bundle's tail. A remote screen edits them and has
+        // no other way to learn whether the station can reach the server.
+        let cfg = sdrcrow_types::PictureUploadConfig {
+            enabled: true,
+            host: "ftp.example.org".into(),
+            verify: sdrcrow_types::TlsVerify::Pinned,
+            pinned_sha256: "ab".repeat(32),
+            ..Default::default()
+        };
+        for c in [
+            ClientMsg::Command(Command::SetPictureUploadConfig(Box::new(cfg.clone()))),
+            ClientMsg::Command(Command::TestPictureUpload(Box::new(cfg.clone()))),
+        ] {
+            let back: ClientMsg = decode(&encode(&c).unwrap()).unwrap();
+            assert_eq!(back, c);
+        }
+        let m = ServerMsg::PictureUpload(sdrcrow_types::PictureUploadStatus {
+            ok: false,
+            message: "login: 530".into(),
+            unix: 1_700_000_000,
+            fingerprint: Some("cd".repeat(32)),
+            is_test: true,
+        });
+        let back: ServerMsg = decode(&encode(&m).unwrap()).unwrap();
+        assert_eq!(back, m);
+        let m = ServerMsg::StationConfig(Box::new(sdrcrow_types::StationConfig {
+            picture_upload: cfg,
+            ..Default::default()
+        }));
+        let back: ServerMsg = decode(&encode(&m).unwrap()).unwrap();
+        assert_eq!(back, m);
+
+        // A remote client's screen settings, both directions. Appended
+        // variants, so a discriminant slip here would show as a decode error.
+        let settings = sdrcrow_types::ClientScreen::default();
+        let ask = ClientMsg::SetClientSettings {
+            profile: Some("Contest".into()),
+            settings: settings.clone(),
+        };
+        assert_eq!(decode::<ClientMsg>(&encode(&ask).unwrap()).unwrap(), ask);
+        let answered = ServerMsg::ClientSettings(ClientSettingsReply {
+            profile: Some("Contest".into()),
+            settings,
+            has_stored: true,
+        });
+        assert_eq!(decode::<ServerMsg>(&encode(&answered).unwrap()).unwrap(), answered);
+
+        // The opt-in control bindings, both directions — also appended, so a
+        // discriminant slip in either would show here too.
+        let bindings = sdrcrow_types::InputSettings::default();
+        let ask = ClientMsg::SetClientBindings {
+            profile: Some("Contest".into()),
+            bindings: bindings.clone(),
+        };
+        assert_eq!(decode::<ClientMsg>(&encode(&ask).unwrap()).unwrap(), ask);
+        let answered = ServerMsg::ClientBindings(ClientBindingsReply {
+            profile: Some("Contest".into()),
+            bindings,
+        });
+        assert_eq!(decode::<ServerMsg>(&encode(&answered).unwrap()).unwrap(), answered);
+
+        // The known-calls question and its answer. Appended last on both sides,
+        // so this is also where a discriminant slip in either would show.
+        let ask_known = Command::GetKnownCalls;
+        assert_eq!(decode::<Command>(&encode(&ask_known).unwrap()).unwrap(), ask_known);
+        let known = ServerMsg::KnownCalls(Some(sdrcrow_types::KnownCallsReply {
+            calls: vec!["19DC373".into(), "19RF410".into()],
+            total: 340,
+        }));
+        assert_eq!(decode::<ServerMsg>(&encode(&known).unwrap()).unwrap(), known);
+        // The `None` half matters as much: it is how a client learns the mode
+        // keeps no table, rather than an empty band.
+        let no_table = ServerMsg::KnownCalls(None);
+        assert_eq!(decode::<ServerMsg>(&encode(&no_table).unwrap()).unwrap(), no_table);
+
+        // Playback (fork discussion #10): every control, the listing question
+        // and its answer, and a state carrying a playback at its tail. All
+        // appended, so a discriminant or field-order slip shows here.
+        for c in [
+            sdrcrow_types::PlaybackCommand::Open { name: "pass.mp3".into() },
+            sdrcrow_types::PlaybackCommand::Pause(true),
+            sdrcrow_types::PlaybackCommand::Seek(12.5),
+            sdrcrow_types::PlaybackCommand::Loop(true),
+            sdrcrow_types::PlaybackCommand::Stop,
+            sdrcrow_types::PlaybackCommand::Delete { name: "old.mp3".into() },
+        ] {
+            let cmd = Command::Playback(c);
+            assert_eq!(decode::<Command>(&encode(&cmd).unwrap()).unwrap(), cmd);
+        }
+        let ask_list = Command::ListRecordings;
+        assert_eq!(decode::<Command>(&encode(&ask_list).unwrap()).unwrap(), ask_list);
+        let listing = ServerMsg::Recordings(sdrcrow_types::RecordingListing {
+            dir: "/home/op/Music/sdroxide".into(),
+            files: vec![sdrcrow_types::RecordingFile {
+                name: "sdrcrow_2026-10-06_10-00-05Z_14.230000MHz_SSTV.mp3".into(),
+                bytes: 1_234_567,
+                modified_unix: 1_791_280_900,
+                iq: false,
+            }],
+            error: None,
+        });
+        assert_eq!(decode::<ServerMsg>(&encode(&listing).unwrap()).unwrap(), listing);
+        let mut state = sdrcrow_types::RadioState::default();
+        state.playback = Some(sdrcrow_types::PlaybackStatus {
+            name: "pass.mp3".into(),
+            position_s: 3.25,
+            duration_s: Some(120.0),
+            paused: false,
+            looping: true,
+            ended: false,
+            rate_hz: 48_000,
+            channels: 2,
+            stamp: sdrcrow_types::playback::parse_recording_name(
+                "sdrcrow_2026-10-06_10-00-05Z_14.230000MHz_SSTV.mp3",
+            ),
+            fault: None,
+        });
+        let frame = ServerMsg::State(state);
+        assert_eq!(decode::<ServerMsg>(&encode(&frame).unwrap()).unwrap(), frame);
+
+        // v206, the DAB receiver: the panel's memory at the tail of the state,
+        // the programme type, level and station text at the tails of the
+        // status, and the slideshow picture as a message of its own.
+        let known = sdrcrow_types::DabKnownStation {
+            channel: "8B".into(),
+            service_id: "0xF201".into(),
+            label: "BFM BUSINESS".into(),
+        };
+        let mut state = sdrcrow_types::RadioState::default();
+        state.dab.stations = vec![known.clone()];
+        state.dab.presets = vec![known];
+        let frame = ServerMsg::State(state);
+        assert_eq!(decode::<ServerMsg>(&encode(&frame).unwrap()).unwrap(), frame);
+        let status = ServerMsg::DabStatus(Box::new(sdrcrow_types::DabStatus {
+            services: vec![sdrcrow_types::DabService {
+                service_id: "0xF201".into(),
+                label: "BFM BUSINESS".into(),
+                subchannel: Some(3),
+                bitrate: Some(96),
+                protection: Some("EEP 3-A".into()),
+                pty: Some("News".into()),
+            }],
+            playing: Some("0xF201".into()),
+            audio_rms_db: Some([-14.0, -17.5]),
+            dls: Some("Le journal de l'économie".into()),
+            ..Default::default()
+        }));
+        assert_eq!(decode::<ServerMsg>(&encode(&status).unwrap()).unwrap(), status);
+        let slide = ServerMsg::DabSlide(Box::new(sdrcrow_types::DabSlide {
+            service_id: "0xF201".into(),
+            content_type: "image/jpeg".into(),
+            name: Some("slide1.jpg".into()),
+            data: vec![0xFF, 0xD8, 0xFF, 0xE0, 0, 16],
+        }));
+        assert_eq!(decode::<ServerMsg>(&encode(&slide).unwrap()).unwrap(), slide);
+        let level = ServerMsg::AudioLevel(Box::new(sdrcrow_types::AudioLevel {
+            rms_db: [-14.5, -17.0],
+            bands: (0..sdrcrow_types::AUDIO_BANDS as u8).map(|i| i * 5).collect(),
+        }));
+        assert_eq!(decode::<ServerMsg>(&encode(&level).unwrap()).unwrap(), level);
+
+        // The CW paddle contacts, and both closed at once — the case that
+        // matters, since it is the one where two contacts share an element.
+        // Appended last, so a discriminant slip shows here rather than as a
+        // client's paddle arriving as a straight key.
+        for (dot, dah) in [(false, false), (true, false), (false, true), (true, true)] {
+            let contacts = Command::CwContacts { dot, dah };
+            assert_eq!(decode::<Command>(&encode(&contacts).unwrap()).unwrap(), contacts);
+        }
+
+        // The station-roster edits, and the announcement that answers them.
+        // Appended variants, so this is also where a discriminant slip in the
+        // three of them would show.
+        let roster = [
+            ClientMsg::AddRadio { name: String::new() },
+            ClientMsg::RemoveRadio { id: 3 },
+            ClientMsg::RenameRadio { id: 3, name: "The Pluto".into() },
+            ClientMsg::SetRadioEnabled { id: 3, on: false },
+        ];
+        for m in &roster {
+            let bytes = encode(m).unwrap();
+            let back: ClientMsg = decode(&bytes).unwrap();
+            assert_eq!(&back, m);
+        }
+        let announced = ServerMsg::Radios {
+            me: 1,
+            radios: vec![
+                RadioInfo {
+                    id: 0,
+                    name: "Signal generator".into(),
+                    named: false,
+                    enabled: Some(true),
+                },
+                RadioInfo { id: 1, name: "The Pluto".into(), named: true, enabled: None },
+            ],
+            editable: true,
+        };
+        let bytes = encode(&announced).unwrap();
+        assert_eq!(decode::<ServerMsg>(&bytes).unwrap(), announced);
+
+        // SSTV image/status messages round-trip (binary pixel payloads).
+        let sstv = [
+            ServerMsg::SstvLine { image_id: 3, y: 7, rgb: vec![1, 2, 3, 4, 5, 6] },
+            ServerMsg::SstvImage {
+                image_id: 3,
+                mode: SstvMode::Martin1,
+                w: 320,
+                h: 256,
+                png: vec![0x89, 0x50, 0x4e, 0x47],
+            },
+            ServerMsg::SstvStatus(SstvStatus {
+                tx_mode: SstvMode::Robot36,
+                detected: Some(SstvMode::Scottie2),
+                // The FSK ID a station sent after its picture, which travels
+                // as a whole string rather than a code — it is a callsign.
+                rx_id: Some("OE1XYZ".to_string()),
+                // Why the last frame was not kept, which the panel says out
+                // loud — appended to the status rather than its own message
+                // (PROTO_VERSION 262 → 263).
+                not_saved: Some(sdrcrow_types::SstvDrop::NotAPicture),
+                ..SstvStatus::default()
+            }),
+        ];
+        for m in &sstv {
+            let bytes = encode(m).unwrap();
+            let back: ServerMsg = decode(&bytes).unwrap();
+            assert_eq!(&back, m);
+        }
+
+        // The scanner's settings cross the link whole, skip lists included — a
+        // remote client is where a range scan gets its SKIP pressed.
+        let scanner = ServerMsg::Scanner(sdrcrow_types::ScannerConfig {
+            kind: sdrcrow_types::ScanKind::Range,
+            skip: vec![3, 9],
+            skip_freq_hz: vec![145_312_500.0, 145_600_000.0],
+            skip_freq_for: (144_000_000.0, 146_000_000.0, 12_500.0),
+            voice_only: true,
+            ..Default::default()
+        });
+        let bytes = encode(&scanner).unwrap();
+        let back: ServerMsg = decode(&bytes).unwrap();
+        assert_eq!(back, scanner);
+
+        // The voice reading rides inside every state frame, which is the only
+        // way a remote screen can say why the scan went past a strong signal.
+        let state = ServerMsg::State(sdrcrow_types::RadioState {
+            scan: sdrcrow_types::ScanState {
+                running: true,
+                holding: false,
+                voice: Some(sdrcrow_types::ScanVoice { freq_hz: 27_555_000, score: 18 }),
+            },
+            ..Default::default()
+        });
+        let bytes = encode(&state).unwrap();
+        let back: ServerMsg = decode(&bytes).unwrap();
+        assert_eq!(back, state);
+
+        // RIFP carries pixels, a manifest summary, and a per-chunk map.
+        let rifp = [
+            ServerMsg::RifpRows { image_id: 2, y: 11, w: 4, h: 20, rows: vec![9, 8, 7, 6] },
+            ServerMsg::RifpImage {
+                image_id: 2,
+                meta: RifpMeta {
+                    session: "0123456789abcdef".into(),
+                    filename: "oe1test.png".into(),
+                    sender: Some("OE1TEST".into()),
+                    hint: None,
+                    media_type: "image/png".into(),
+                    content_encoding: "identity".into(),
+                    width: 320,
+                    height: 240,
+                    bits_per_pixel: 4,
+                    encoded_size: 9_000,
+                    chunk_count: 47,
+                    chunks_first_pass: 45,
+                },
+                png: vec![0x89, 0x50, 0x4e, 0x47],
+            },
+            ServerMsg::RifpStatus(RifpStatus {
+                tx_active: true,
+                tx_progress: 0.25,
+                sessions: vec![sdrcrow_types::RifpSession {
+                    session: "0123456789abcdef".into(),
+                    sender: None,
+                    have_manifest: true,
+                    have: 3,
+                    total: 47,
+                    map: vec![0b0000_0111],
+                    idle_s: 2,
+                }],
+                ..RifpStatus::default()
+            }),
+        ];
+        for m in &rifp {
+            let bytes = encode(m).unwrap();
+            let back: ServerMsg = decode(&bytes).unwrap();
+            assert_eq!(&back, m);
+        }
+
+        // The picture stores: metadata one way, thumbnails and whole pictures
+        // the other. Every one of these carries a binary payload, which is
+        // exactly what a length-prefixed non-self-describing encoding gets
+        // wrong when a field is added in the wrong place.
+        let pictures = [
+            ServerMsg::ImagePresets(ImagePresets {
+                slots: vec![
+                    ImageSlotInfo {
+                        message: "CQ SSTV de OE1TEST".into(),
+                        width: 1024,
+                        height: 768,
+                        version: 0xdead_beef,
+                        thumb: vec![0x89, 0x50, 0x4e, 0x47, 0x0d],
+                        // The composer's document: a turned line with a faded
+                        // band, which is the shape a misplaced field would
+                        // corrupt worst.
+                        apply_overlay: true,
+                        composer: sdrcrow_types::Composer {
+                            layers: vec![sdrcrow_types::TextLayer {
+                                text: "OE1TEST".into(),
+                                face: sdrcrow_types::Face::Mono,
+                                px: 30,
+                                ink: [255, 255, 0],
+                                outline: Some([0, 0, 0]),
+                                x: 0.07,
+                                y: 0.5,
+                                vertical: true,
+                                band: Some(sdrcrow_types::Strip {
+                                    thickness: 30,
+                                    fill: [0, 0, 120],
+                                    fill2: Some([0, 0, 20]),
+                                }),
+                                hidden: false,
+                                clock: None,
+                            }],
+                        },
+                    },
+                    ImageSlotInfo::default(),
+                ],
+                templates: vec![sdrcrow_types::LayoutTemplate {
+                    name: "CQ".into(),
+                    composer: sdrcrow_types::Composer::seeded(
+                        "19DCG373",
+                        "",
+                        "CQ CQ",
+                        sdrcrow_types::Face::Mono,
+                        26,
+                        None,
+                        320,
+                    ),
+                }],
+            }),
+            ServerMsg::ImageSlotSource {
+                slot: 3,
+                version: 0x1234_5678,
+                png: vec![0x89, 0x50, 0x4e, 0x47, 1, 2, 3],
+            },
+            ServerMsg::ImageListing(ImageListing {
+                kind: ImageKind::Wefax,
+                offset: 48,
+                total: 312,
+                entries: vec![ImageEntry {
+                    kind: ImageKind::Wefax,
+                    name: "wefax-20260729-141530Z-7878.1kHz-DWD.png".into(),
+                    unix: 1_785_075_330,
+                    width: 1809,
+                    height: 1200,
+                    bytes: 1_234_567,
+                    thumb: vec![0x89, 0x50, 0x4e, 0x47],
+                    rifp: None,
+                }],
+                dir: "/home/op/Pictures/sdroxide/wefax".into(),
+            }),
+            ServerMsg::ImageFile {
+                kind: ImageKind::Sstv,
+                name: "sstv-1753795200000.png".into(),
+                png: vec![0x89, 0x50, 0x4e, 0x47, 9, 9],
+            },
+            ServerMsg::ImageSaved(ImageEntry {
+                kind: ImageKind::Sstv,
+                name: "sstv-1753795200000.png".into(),
+                unix: 1_753_795_200,
+                width: 320,
+                height: 256,
+                bytes: 40_000,
+                thumb: vec![0x89, 0x50],
+                rifp: None,
+            }),
+            ServerMsg::ImageDeleted {
+                kind: ImageKind::Wefax,
+                name: "wefax-20260729-141530Z-7878.1kHz-DWD.png".into(),
+            },
+        ];
+        for m in &pictures {
+            let bytes = encode(m).unwrap();
+            let back: ServerMsg = decode(&bytes).unwrap();
+            assert_eq!(&back, m);
+        }
+
+        let cmds = [
+            ClientMsg::Command(Command::ImageSetSlot { slot: 2, bytes: vec![0xff, 0xd8, 0xff] }),
+            ClientMsg::Command(Command::ImageSetMessage { slot: 2, message: "73".into() }),
+            ClientMsg::Command(Command::ImageSetComposer {
+                slot: 4,
+                composer: sdrcrow_types::Composer {
+                    layers: vec![
+                        sdrcrow_types::TextLayer {
+                            text: "PSE K".into(),
+                            x: 0.5,
+                            y: 0.8,
+                            ..sdrcrow_types::TextLayer::default()
+                        },
+                        // A clock layer: an option field and an empty text, which
+                        // is the shape a misplaced field would corrupt worst.
+                        sdrcrow_types::TextLayer {
+                            clock: Some(sdrcrow_types::Clock {
+                                part: sdrcrow_types::ClockPart::Time,
+                                zone: sdrcrow_types::ClockZone::Local,
+                            }),
+                            x: 0.5,
+                            y: 0.94,
+                            px: 20,
+                            ..sdrcrow_types::TextLayer::default()
+                        },
+                    ],
+                },
+            }),
+            // ...and an empty one, which is what "this preset uses the banner"
+            // looks like on the wire.
+            ClientMsg::Command(Command::ImageSetComposer {
+                slot: 0,
+                composer: sdrcrow_types::Composer::default(),
+            }),
+            ClientMsg::Command(Command::ImageSetOverlay { slot: 3, on: false }),
+            ClientMsg::Command(Command::ImageSaveTemplate {
+                name: "Reply".into(),
+                composer: sdrcrow_types::Composer::seeded(
+                    "",
+                    "",
+                    "PSE K",
+                    sdrcrow_types::Face::Chakra,
+                    30,
+                    None,
+                    256,
+                ),
+            }),
+            ClientMsg::Command(Command::ImageDeleteTemplate { name: "Reply".into() }),
+            ClientMsg::Command(Command::WantAudioLevel),
+            ClientMsg::Command(Command::ImageGetSlot(4)),
+            ClientMsg::Command(Command::ImageClearSlot(0)),
+            ClientMsg::Command(Command::ImageList { kind: ImageKind::Wefax, offset: 0, count: 48 }),
+            ClientMsg::Command(Command::ImageGet {
+                kind: ImageKind::Sstv,
+                name: "sstv-1753795200000.png".into(),
+            }),
+            ClientMsg::Command(Command::ImageDelete {
+                kind: ImageKind::Sstv,
+                name: "sstv-1753795200000.png".into(),
+            }),
+            ClientMsg::Command(Command::WinlinkConnect),
+            ClientMsg::Command(Command::MailList {
+                folder: sdrcrow_types::MailFolder::Inbox,
+                offset: 0,
+                count: 50,
+            }),
+            ClientMsg::Command(Command::MailGet {
+                folder: sdrcrow_types::MailFolder::Sent,
+                mid: "TJKYEIMMHSRB".into(),
+            }),
+            ClientMsg::Command(Command::MailCompose(Box::new(sdrcrow_types::MailDraft {
+                to: vec!["OE1XYZ".into()],
+                cc: vec![],
+                subject: "hello".into(),
+                body: "body".into(),
+                // Attachments are raw bytes, which is exactly what a
+                // non-self-describing encoding is easiest to get wrong on.
+                attachments: vec![sdrcrow_types::MailAttachment {
+                    name: "a.bin".into(),
+                    data: vec![0, 1, 254, 255],
+                }],
+            }))),
+            ClientMsg::Command(Command::MailDelete {
+                folder: sdrcrow_types::MailFolder::Inbox,
+                mid: "TJKYEIMMHSRB".into(),
+            }),
+            ClientMsg::Command(Command::MailMove {
+                from: sdrcrow_types::MailFolder::Inbox,
+                to: sdrcrow_types::MailFolder::Archive,
+                mid: "TJKYEIMMHSRB".into(),
+            }),
+        ];
+        for m in &cmds {
+            let bytes = encode(m).unwrap();
+            let back: ClientMsg = decode(&bytes).unwrap();
+            assert_eq!(&back, m);
+        }
+
+        // Winlink: a listing, a whole message with a binary attachment, and the
+        // session status. The attachment is the part worth round-tripping —
+        // raw bytes through a non-self-describing encoding.
+        let winlink = [
+            ServerMsg::WinlinkStatus(sdrcrow_types::WinlinkStatus {
+                busy: false,
+                activity: String::new(),
+                last_error: Some("peer disconnected mid-session".into()),
+                last_session: Some(1_786_699_845),
+                last_received: 2,
+                last_sent: 1,
+                counts: [3, 0, 1, 0],
+                log: vec!["> FF".into(), "< FQ".into()],
+            }),
+            ServerMsg::MailListing(sdrcrow_types::MailListing {
+                folder: sdrcrow_types::MailFolder::Inbox,
+                offset: 0,
+                total: 3,
+                entries: vec![sdrcrow_types::MailEntry {
+                    mid: "TJKYEIMMHSRB".into(),
+                    date: "2026/08/14 09:30".into(),
+                    from: "OE1XYZ".into(),
+                    to: "OE3JJS".into(),
+                    subject: "hello".into(),
+                    folder: sdrcrow_types::MailFolder::Inbox,
+                    bytes: 512,
+                    attachments: 1,
+                    unread: true,
+                }],
+            }),
+            ServerMsg::MailMessage(Box::new(sdrcrow_types::MailMessage {
+                mid: "TJKYEIMMHSRB".into(),
+                date: "2026/08/14 09:30".into(),
+                msg_type: "Private".into(),
+                from: "OE1XYZ".into(),
+                to: vec!["OE3JJS".into()],
+                cc: vec![],
+                subject: "hello".into(),
+                body: "body".into(),
+                attachments: vec![sdrcrow_types::MailAttachment {
+                    name: "a.bin".into(),
+                    data: vec![0, 1, 254, 255],
+                }],
+                folder: sdrcrow_types::MailFolder::Inbox,
+            })),
+            ServerMsg::MailSaved("TJKYEIMMHSRB".into()),
+            ServerMsg::MailDeleted {
+                folder: sdrcrow_types::MailFolder::Inbox,
+                mid: "TJKYEIMMHSRB".into(),
+            },
+        ];
+        for m in &winlink {
+            let bytes = encode(m).unwrap();
+            let back: ServerMsg = decode(&bytes).unwrap();
+            assert_eq!(&back, m);
+        }
+    }
+
+    /// `AudioLevel` rides after `DabSlide`, the variant that was last before it:
+    /// the index postcard writes is the variant's position, so a variant slipped
+    /// in above shifts it and every client on the older number reads the wrong
+    /// message.
+    #[test]
+    fn the_audio_level_message_is_appended_last() {
+        let slide = ServerMsg::DabSlide(Box::new(sdrcrow_types::DabSlide {
+            service_id: String::new(),
+            content_type: String::new(),
+            name: None,
+            data: Vec::new(),
+        }));
+        let level = ServerMsg::AudioLevel(Box::new(sdrcrow_types::AudioLevel::silent()));
+        // Byte 0 is `VERSION_BYTE`; byte 1 is the variant index (< 128 here).
+        let (a, b) = (encode(&slide).unwrap()[1], encode(&level).unwrap()[1]);
+        assert_eq!(b, a + 1, "AudioLevel must directly follow DabSlide");
+    }
+
+    /// `TxRefused` rides last, after `AudioLevel`; the version is pinned here.
+    #[test]
+    fn the_tx_refused_message_is_appended_last() {
+        let level = ServerMsg::AudioLevel(Box::new(sdrcrow_types::AudioLevel::silent()));
+        let why = sdrcrow_types::TxBlock::BandOff(sdrcrow_types::Band::M40);
+        let refused = ServerMsg::TxRefused(why, 7_074_000.0);
+        let bytes = encode(&refused).unwrap();
+        let (a, b) = (encode(&level).unwrap()[1], bytes[1]);
+        assert_eq!(b, a + 1, "TxRefused must directly follow AudioLevel");
+        match decode::<ServerMsg>(&bytes).unwrap() {
+            ServerMsg::TxRefused(w, hz) => assert_eq!((w, hz), (why, 7_074_000.0)),
+            _ => panic!("TxRefused did not round-trip"),
+        }
+        // v296: the SSTV clock layer (`TextLayer::clock`) appended at the tail
+        // of a `Composer` layer, which rides the picture preset messages.
+        // v300: the theme-from-a-file at the tail of `ClientScreen`.
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (301, 0x79));
+        // v297: the strip height at the tail of `ClientScreen`, and it comes
+        // back as sent — with, since v300, the theme file's name and text.
+        let screen_text = "name = \"Vending machines\"\n".to_string();
+        let screen = sdrcrow_types::ClientScreen {
+            wide_strip_height: 180.0,
+            theme_file: Some(sdrcrow_types::ScreenThemeFile {
+                name: "Vending machines".into(),
+                text: screen_text.clone(),
+            }),
+            ..sdrcrow_types::ClientScreen::default()
+        };
+        let reply = ServerMsg::ClientSettings(ClientSettingsReply {
+            profile: Some("op".into()),
+            settings: screen,
+            has_stored: true,
+        });
+        match decode::<ServerMsg>(&encode(&reply).unwrap()).unwrap() {
+            ServerMsg::ClientSettings(r) => {
+                assert_eq!(r.settings.wide_strip_height, 180.0);
+                let file = r.settings.theme_file.expect("the theme file came back");
+                assert_eq!(file.name, "Vending machines");
+                assert_eq!(file.text, screen_text);
+            }
+            _ => panic!("ClientSettings did not round-trip"),
+        }
+        // v280: the CB refusal is a new tail variant of `TxBlock`; the ones
+        // before it keep their positions.
+        let cb = ServerMsg::TxRefused(sdrcrow_types::TxBlock::CbOff, 27_185_000.0);
+        match decode::<ServerMsg>(&encode(&cb).unwrap()).unwrap() {
+            ServerMsg::TxRefused(w, hz) => {
+                assert_eq!((w, hz), (sdrcrow_types::TxBlock::CbOff, 27_185_000.0))
+            }
+            _ => panic!("TxRefused(CbOff) did not round-trip"),
+        }
+        let (band_off, cb_off) = (encode(&refused).unwrap(), encode(&cb).unwrap());
+        assert_eq!(cb_off[2], band_off[2] + 1, "CbOff follows BandOff in TxBlock");
+    }
+
+    /// v281: a refused mode rides after the band plan export, whole.
+    #[test]
+    fn a_refused_mode_is_appended_after_the_band_plan_export() {
+        use sdrcrow_types::{Band, Mode};
+        let export = ServerMsg::BandPlanExport { file: "a".into(), json: "{}".into() };
+        let refused = ServerMsg::ModeRefused { mode: Mode::Wfm, band: Band::M11 };
+        let (a, b) = (encode(&export).unwrap()[1], encode(&refused).unwrap()[1]);
+        assert_eq!(b, a + 1, "ModeRefused must directly follow BandPlanExport");
+        match decode::<ServerMsg>(&encode(&refused).unwrap()).unwrap() {
+            ServerMsg::ModeRefused { mode, band } => assert_eq!((mode, band), (Mode::Wfm, Band::M11)),
+            other => panic!("did not round-trip: {other:?}"),
+        }
+    }
+
+    /// The dynamic-DNS answer rides last on [`ServerMsg`], and it has to: the
+    /// variant was appended, so an older peer reads every message it knows and
+    /// this one simply is not among them.
+    ///
+    /// It comes from the engine and not the screen on purpose — the name has to
+    /// point at the address of the machine that is heard, and a headless station
+    /// has no screen at all. Only the provider's word travels; the update
+    /// address carries the operator's token and never leaves the engine.
+    #[test]
+    fn the_dyndns_answer_is_appended_last() {
+        let answer =
+            ServerMsg::DyndnsAnswer { at_unix: 1_790_000_000, ok: true, text: "good".into() };
+        let bytes = encode(&answer).unwrap();
+        // The position, not just the round trip: a variant inserted mid-enum
+        // would round-trip perfectly and still shift every peer's reading of
+        // what follows. The last variant's index moves when one is appended,
+        // and this line is then the conscious edit that a bump requires.
+        // **The position, not just the round trip.** A variant inserted mid-enum
+        // would round-trip perfectly and still shift every peer's reading of
+        // what follows. 81 is where this one sits; appending another variant
+        // moves it, and this line is then the conscious edit a bump requires.
+        assert_eq!(bytes[1], 81, "DyndnsAnswer is no longer the last variant");
+        match decode::<ServerMsg>(&bytes).unwrap() {
+            ServerMsg::DyndnsAnswer { at_unix, ok, text } => {
+                assert_eq!((at_unix, ok, text.as_str()), (1_790_000_000, true, "good"));
+            }
+            other => panic!("the answer did not round-trip: {other:?}"),
+        }
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (301, 0x79));
+    }
+
+    /// v301: the desk microphone and the pedal (issue #636) ride the wire, and
+    /// their messages sit last in their enums.
+    #[test]
+    fn the_ptt_inputs_round_trip_and_are_appended_last() {
+        use sdrcrow_types::{
+            LineDrive, PttHold, PttInputConfig, PttInputSource, PttInputsConfig, PttInputsStatus,
+            SenseLine,
+        };
+        let mut cfg = PttInputsConfig::default();
+        cfg.desk_mic = PttInputConfig {
+            enabled: true,
+            source: PttInputSource::Serial,
+            port: "COM7".into(),
+            line: SenseLine::Dsr,
+            rts: LineDrive::On,
+            debounce_ms: 40,
+            hold: PttHold::Toggle,
+            ..PttInputConfig::default()
+        };
+        cfg.pedal = PttInputConfig {
+            enabled: true,
+            source: PttInputSource::UsbHid,
+            hid_key: "/dev/hidraw3".into(),
+            hid_byte: 2,
+            hid_mask: 0x04,
+            ..PttInputConfig::default()
+        };
+        for cmd in [
+            Command::SetPttInputs(Box::new(cfg.clone())),
+            Command::RescanPttInputs,
+        ] {
+            let m = ClientMsg::Command(cmd);
+            assert_eq!(decode::<ClientMsg>(&encode(&m).unwrap()).unwrap(), m);
+        }
+        let mut st = PttInputsStatus::default();
+        st.pedal.open = true;
+        st.pedal.hid_report = vec![0, 4];
+        st.serial_ports = vec!["COM7".into()];
+        let msg = ServerMsg::PttInputsStatus(Box::new(st));
+        let bytes = encode(&msg).unwrap();
+        assert_eq!(decode::<ServerMsg>(&bytes).unwrap(), msg);
+        // The position, not just the round trip: it directly follows the
+        // Meshtastic status, the last variant before it.
+        let prev = ServerMsg::MeshtasticStatus(Box::default());
+        assert_eq!(bytes[1], encode(&prev).unwrap()[1] + 1, "PttInputsStatus must be last");
+        // Riding `StationConfig` too: the config comes back as sent.
+        let station = sdrcrow_types::StationConfig { ptt_inputs: cfg.clone(), ..Default::default() };
+        let back: sdrcrow_types::StationConfig =
+            postcard::from_bytes(&postcard::to_allocvec(&station).unwrap()).unwrap();
+        assert_eq!(back.ptt_inputs, cfg);
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (301, 0x79));
+    }
+
+    /// v286: the QRZ card rides `CallsignResult` — photo, age and all.
+    #[test]
+    fn a_qrz_card_round_trips_in_a_callsign_result() {
+        let mut info = sdrcrow_types::CallsignInfo::for_call("f4abc");
+        info.name = Some("Jean Dupont".into());
+        info.addr1 = Some("12 rue des Lilas".into());
+        info.age = Some(58);
+        info.class = Some("Novice".into());
+        info.qsl_lotw = true;
+        info.photo = Some(vec![0xFF, 0xD8, 0xFF, 0xD9]);
+        info.photo_pending = true;
+        info.native_text = Some("山东省淄博市".into());
+        info.note = Some("subscription needed".into());
+        info.limited = true;
+        let bytes = encode(&ServerMsg::CallsignResult(info.clone())).unwrap();
+        match decode::<ServerMsg>(&bytes).unwrap() {
+            ServerMsg::CallsignResult(back) => assert_eq!(back, info),
+            other => panic!("the card did not round-trip: {other:?}"),
+        }
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (301, 0x79));
+    }
+
+    /// The VOR read-out rides the wire whole, locked or not, and the message is
+    /// the last variant, so a slip in the discriminant would show here.
+    #[test]
+    fn a_vor_status_round_trips() {
+        for st in [
+            sdrcrow_types::VorStatus {
+                running: true,
+                freq_hz: 114_100_000.0,
+                radial_deg: 138.5,
+                var_depth: 0.3,
+                ref_depth: 0.17,
+                deviation_hz: 480.0,
+                locked: true,
+                ident: Some("BBG".into()),
+                ..Default::default()
+            },
+            sdrcrow_types::VorStatus {
+                unavailable: Some(sdrcrow_types::VorUnavailable::OutsideWindow),
+                ..Default::default()
+            },
+        ] {
+            let m = ServerMsg::VorStatus(Box::new(st));
+            let back: ServerMsg = decode(&encode(&m).unwrap()).unwrap();
+            assert_eq!(back, m);
+        }
+    }
+
+    /// The QO-100, HFDL and radiosonde read-outs ride the wire whole, and the
+    /// three are the last variants, so a slip in a discriminant shows here.
+    #[test]
+    fn the_qo100_hfdl_and_sonde_statuses_round_trip() {
+        let q = ServerMsg::Qo100Status(sdrcrow_types::Qo100Status {
+            running: true,
+            locked: true,
+            offset_hz: -1234.5,
+            blocks_tried: 12,
+            blocks_locked: 9,
+            ..Default::default()
+        });
+        let h = ServerMsg::HfdlStatus(sdrcrow_types::HfdlStatus {
+            running: true,
+            level_dbfs: -71.5,
+            bursts: 40,
+            decodes: 3,
+            ..Default::default()
+        });
+        let s = ServerMsg::SondeStatus(Box::new(sdrcrow_types::SondeStatus {
+            running: true,
+            ..Default::default()
+        }));
+        for m in [q, h, s] {
+            let back: ServerMsg = decode(&encode(&m).unwrap()).unwrap();
+            assert_eq!(back, m);
+        }
+    }
+
+    /// What an aircraft says about its own flight crosses the wire with the
+    /// aircraft table, and a table with none of it still reads back.
+    #[test]
+    fn an_aircraft_with_its_own_flight_data_round_trips() {
+        let mut full = sdrcrow_types::AdsbAircraft::new(0xA05629, 1_000);
+        full.selected_altitude_ft = Some(16_992);
+        full.selected_heading_deg = Some(66.8);
+        full.qnh_hpa = Some(1012.8);
+        full.ias_kt = Some(250.0);
+        full.tas_kt = Some(375.0);
+        full.heading_deg = Some(243.98);
+        full.nav_modes = Some(sdrcrow_types::NAV_AUTOPILOT | sdrcrow_types::NAV_LNAV);
+        full.adsb_version = Some(2);
+        full.nac_p = Some(10);
+        full.nac_v = Some(2);
+        full.sil = Some(3);
+        let bare = sdrcrow_types::AdsbAircraft::new(0x484006, 1_000);
+        let status = sdrcrow_types::AdsbStatus {
+            aircraft: vec![full.clone(), bare.clone()],
+            ..Default::default()
+        };
+        let bytes = encode(&ServerMsg::AdsbStatus(Box::new(status))).unwrap();
+        match decode::<ServerMsg>(&bytes).unwrap() {
+            ServerMsg::AdsbStatus(s) => assert_eq!(s.aircraft, vec![full, bare]),
+            other => panic!("the table did not round-trip: {other:?}"),
+        }
+    }
+
+    /// postcard is positional: a field inserted mid-struct shifts every byte
+    /// after it and silently breaks every peer on the older layout — exactly
+    /// the DigiConfig mistake of `PROTO_VERSION 255 → 256`. Pin the serialized
+    /// form of the three structs that ride the wire whole, so such a change is
+    /// a failing test (and therefore a conscious bump), not a mystery.
+    #[test]
+    fn the_wire_layout_of_the_config_structs_is_pinned() {
+        fn fnv1a(bytes: &[u8]) -> u64 {
+            let mut h = 0xcbf2_9ce4_8422_2325u64;
+            for &b in bytes {
+                h = (h ^ u64::from(b)).wrapping_mul(0x0000_0100_0000_01b3);
+            }
+            h
+        }
+        let digi = postcard::to_allocvec(&sdrcrow_types::DigiConfig::default()).unwrap();
+        let radio = postcard::to_allocvec(&sdrcrow_types::RadioConfig::default()).unwrap();
+        let net = postcard::to_allocvec(&sdrcrow_types::NetworkConfig::default()).unwrap();
+        // 482 since `wefax_auto_slant` (a bool) was appended at the tail
+        // (PROTO_VERSION 298 → 299); 481 before, since SSTV's sync-pulse
+        // setting and its save-everything switch were appended at the tail
+        // (PROTO_VERSION 262 → 263). Appended, so an
+        // older peer reads the struct it knows and the new bytes are simply not
+        // there.
+        assert_eq!(
+            (digi.len(), fnv1a(&digi)),
+            (482, 1_063_270_805_729_231_186),
+            "DigiConfig's wire layout shifted — append fields, never insert them"
+        );
+        // 897 since `HpsdrConfig` gained its five Diversity fields (a bool, a
+        // mode, the taps, the rate and the hold: 8 bytes) at its own tail
+        // (PROTO_VERSION 264 → 265). `HpsdrConfig` sits inside `RadioConfig`,
+        // so this moves what follows it: that is what the bump is for.
+        //
+        // 904 since the receive band list (PROTO_VERSION 274 → 275), the plan
+        // fingerprint its confirmation is made against (275 → 276) and the radio's
+        // own band plan (277 → 278) were appended at its tail. The pin had not
+        // been moved since 265; this is the conscious edit those bumps owed it.
+        assert_eq!(
+            (radio.len(), fnv1a(&radio)),
+            (904, 13_554_492_482_937_614_926),
+            "RadioConfig's wire layout shifted — append fields, never insert them"
+        );
+        // 316 since the two Dynamic DNS fields were appended at the end
+        // (PROTO_VERSION 260 → 261). Appended, so an older peer reads the
+        // struct it knows and the two new bytes are simply not there.
+        //
+        // 318 since the QRZ card's two switches (`qrz_card`, `qrz_card_off`:
+        // a bool each) were appended after them. Same rule: the pin had not
+        // followed, this is the conscious edit those fields owed it.
+        assert_eq!(
+            (net.len(), fnv1a(&net)),
+            (318, 13_712_061_205_942_838_718),
+            "NetworkConfig's wire layout shifted — append fields, never insert them"
+        );
+    }
+
+    /// The station configuration, both ways.
+    ///
+    /// Worth its own test because `SatConfig` reaches types that were only ever
+    /// written to JSON before: `OrbitRings` deserialises tolerantly from a
+    /// config file (`untagged`, so `deserialize_any`), which postcard refuses
+    /// outright. It has to take a second, non-self-describing form here, and a
+    /// round trip is the only thing that says so.
+    #[test]
+    fn roundtrip_station_config() {
+        use sdrcrow_types::{
+            CustomTle, OrbitRings, Passband, SatConfig, SatFreqs, SatLink, StationConfig,
+            TleSubStatus, TleSubscription,
+        };
+
+        let sat = SatConfig {
+            tles: vec![CustomTle {
+                name: "NOAA 19".into(),
+                line1: "1 33591U 09005A   26031.51268519  .00000271  00000-0  16472-3 0  9992"
+                    .into(),
+                line2: "2 33591  99.0361 121.3384 0013431 262.5195  97.4595 14.13096410877269"
+                    .into(),
+                enabled: true,
+            }],
+            subs: vec![TleSubscription {
+                name: "Weather".into(),
+                url: "https://celestrak.org/NORAD/elements/gp.php?GROUP=weather&FORMAT=tle".into(),
+                enabled: true,
+                orbits: OrbitRings::All,
+                only: vec![33_591],
+            }],
+            freqs: vec![SatFreqs::new(
+                43_017,
+                "NOAA 19",
+                vec![SatLink::down("APT", "FM", Passband::at(137.1))],
+            )],
+            seeded: true,
+        };
+        let msgs = [
+            ServerMsg::StationConfig(Box::new(StationConfig { sat: sat.clone(), ..no_station() })),
+            ServerMsg::TleSubStatus(vec![TleSubStatus {
+                url: "https://celestrak.org/NORAD/elements/gp.php?GROUP=weather&FORMAT=tle".into(),
+                fetched_unix: 1_785_075_330,
+                count: 8,
+                curated: 0,
+                error: Some("connection reset".into()),
+            }]),
+        ];
+        for m in &msgs {
+            let bytes = encode(m).unwrap();
+            let back: ServerMsg = decode(&bytes).unwrap();
+            assert_eq!(&back, m);
+        }
+
+        let cmd = ClientMsg::Command(Command::SetSatConfig(sat));
+        let back: ClientMsg = decode(&encode(&cmd).unwrap()).unwrap();
+        assert_eq!(back, cmd);
+        let cmd = ClientMsg::Command(Command::RefreshTleSubs);
+        let back: ClientMsg = decode(&encode(&cmd).unwrap()).unwrap();
+        assert_eq!(back, cmd);
+    }
+
+    /// The rotator's program choice (#638) survives the wire, both ways, with
+    /// the park position before it off its default.
+    #[test]
+    fn roundtrip_rotator_config() {
+        use sdrcrow_types::{RotatorConfig, RotatorTransport, StationConfig};
+
+        let rotator = RotatorConfig {
+            enabled: true,
+            host: "shack-pc".into(),
+            port: 12000,
+            park: Some((180.0, 10.0)),
+            transport: RotatorTransport::PsRotator,
+            ..RotatorConfig::default()
+        };
+        let m = ServerMsg::StationConfig(Box::new(StationConfig {
+            rotator: rotator.clone(),
+            ..no_station()
+        }));
+        let back: ServerMsg = decode(&encode(&m).unwrap()).unwrap();
+        assert_eq!(back, m);
+        let cmd = ClientMsg::Command(Command::SetRotatorConfig(rotator));
+        let back: ClientMsg = decode(&encode(&cmd).unwrap()).unwrap();
+        assert_eq!(back, cmd);
+    }
+
+    /// Every orbit-ring position survives the wire, including the one a bare
+    /// index would land on by accident if the mapping ever slipped.
+    #[test]
+    fn orbit_rings_survive_the_wire() {
+        use sdrcrow_types::{OrbitRings, SatConfig, StationConfig, TleSubscription};
+
+        for orbits in OrbitRings::ALL {
+            let sat = SatConfig {
+                subs: vec![TleSubscription {
+                    name: "g".into(),
+                    url: "https://example.invalid/tle.txt".into(),
+                    enabled: true,
+                    orbits,
+                    only: Vec::new(),
+                }],
+                ..SatConfig::default()
+            };
+            let m = ServerMsg::StationConfig(Box::new(StationConfig { sat, ..no_station() }));
+            let back: ServerMsg = decode(&encode(&m).unwrap()).unwrap();
+            assert_eq!(back, m, "orbit rings {orbits:?} did not survive");
+        }
+    }
+
+    fn no_station() -> sdrcrow_types::StationConfig {
+        sdrcrow_types::StationConfig::default()
+    }
+
+    /// The T/R switch's configuration, both ways, with a band decoder in it
+    /// (issue #442). The role and the band table are its newest parts, and a
+    /// row that decoded onto the wrong band or into the wrong word would
+    /// switch the wrong filter. Filled in rather than defaulted, for
+    /// `roundtrip_radio_config`'s reason.
+    #[test]
+    fn roundtrip_relay_config() {
+        use sdrcrow_types::{
+            Band, RelayBandRow, RelayChannel, RelayConfig, RelayLink, RelayRole, StationConfig,
+        };
+
+        let relay = RelayConfig {
+            link: RelayLink::Hid,
+            device: "/dev/hidraw3".into(),
+            channels: vec![
+                RelayChannel {
+                    index: 1,
+                    role: RelayRole::SdrAntenna,
+                    label: "SDR".into(),
+                    active_high: true,
+                    lead_ms: 15,
+                    hold_ms: 30,
+                },
+                RelayChannel {
+                    index: 4,
+                    role: RelayRole::BandDecoder,
+                    label: "20 m BPF".into(),
+                    active_high: false,
+                    lead_ms: 8,
+                    hold_ms: 12,
+                },
+            ],
+            band_table: vec![
+                RelayBandRow { band: Band::M20, rx_mask: 0b1000, tx_mask: 0b1000 },
+                RelayBandRow { band: Band::Gen, rx_mask: 0, tx_mask: 0b1000 },
+            ],
+            ..RelayConfig::default()
+        };
+        let cmd = ClientMsg::Command(Command::SetRelayConfig(Box::new(relay.clone())));
+        let back: ClientMsg = decode(&encode(&cmd).unwrap()).unwrap();
+        assert_eq!(back, cmd);
+        let m = ServerMsg::StationConfig(Box::new(StationConfig { relay, ..no_station() }));
+        let back: ServerMsg = decode(&encode(&m).unwrap()).unwrap();
+        assert_eq!(back, m);
+    }
+
+    /// The WSJT-X / N1MM / decoded-CW output configuration, both ways.
+    ///
+    /// Worth its own test for `roundtrip_station_config`'s reason. It rides
+    /// `Command::SetWsjtxConfig` **whole**, and v264 appended `cw_text` to it:
+    /// a field the encoder carries but the decoder drops does not fail, it
+    /// silently arrives as its default, and the operator's setting is simply
+    /// never applied.
+    ///
+    /// Filled in rather than defaulted, and every field different from its
+    /// neighbour, so a field-order slip shows instead of hiding behind two
+    /// equal values.
+    #[test]
+    fn roundtrip_wsjtx_config() {
+        use sdrcrow_types::{CwTextConfig, N1mmConfig, WsjtxConfig};
+
+        let cfg = WsjtxConfig {
+            enabled: true,
+            host: "192.0.2.7".into(),
+            port: 2238,
+            id: "SDRCrow".into(),
+            n1mm: N1mmConfig {
+                enabled: true,
+                host: "192.0.2.8".into(),
+                port: 12060,
+                station: "SHACK-2".into(),
+            },
+            cw_text: CwTextConfig { enabled: true, host: "192.0.2.9".into(), port: 9998 },
+        };
+        let cmd = ClientMsg::Command(Command::SetWsjtxConfig(cfg));
+        let back: ClientMsg = decode(&encode(&cmd).unwrap()).unwrap();
+        assert_eq!(back, cmd);
+    }
+
+    /// The interface configuration, both ways.
+    ///
+    /// Worth its own test for `roundtrip_station_config`'s reason: every field
+    /// here has only ever been written to JSON before, and JSON forgives things
+    /// postcard does not. It is also the message where a silent mismatch would
+    /// be worst — a config that decodes into the wrong fields does not fail,
+    /// it reconfigures somebody's radio.
+    ///
+    /// Filled in rather than defaulted, and across several backends at once: a
+    /// field-order slip only shows where two neighbouring fields hold different
+    /// values, and `Default` is mostly zeros and empty strings.
+    #[test]
+    fn roundtrip_radio_config() {
+        use sdrcrow_types::{
+            Backend, LimeConfig, LimeRfeConfig, RadioConfig, RfeChannel, RfeLink, RfeModeControl,
+            RfePort, RtlSdrAgc, RtlSdrConfig, RtlSdrHfMode, RtlTcpConfig,
+        };
+
+        let cfg = RadioConfig {
+            backend: Backend::RtlSdr,
+            // The other enum with a payload on one variant only, near the end
+            // of the struct — so a slip anywhere above it lands here.
+            rx_site: sdrcrow_types::RxSite::Elsewhere("DO30db".into()),
+            // A `Vec` in the middle of the struct, of a struct carrying an enum
+            // — and the enum's own new variant, which is the pair that has to
+            // survive together. Two bands, one asserting different words on
+            // receive and transmit.
+            hpsdr: sdrcrow_types::HpsdrConfig {
+                filter_board: sdrcrow_types::HpsdrFilterBoard::Custom,
+                oc_table: vec![
+                    sdrcrow_types::HpsdrOcRow {
+                        band: sdrcrow_types::Band::M40,
+                        rx: 0x01,
+                        tx: 0x41,
+                    },
+                    sdrcrow_types::HpsdrOcRow {
+                        band: sdrcrow_types::Band::M2,
+                        rx: 0x7F,
+                        tx: 0x00,
+                    },
+                ],
+                ..sdrcrow_types::HpsdrConfig::default()
+            },
+            // The last field in the struct, and a `Vec` of a struct carrying an
+            // enum: a length, then variant indices and floats. Two rows, on
+            // bands far apart in `Band`'s declaration order, so a discriminant
+            // read a byte out of step cannot land on the right one by luck.
+            tx_drive_trim: vec![
+                sdrcrow_types::BandDriveTrim { band: sdrcrow_types::Band::M160, db: -4.5 },
+                sdrcrow_types::BandDriveTrim { band: sdrcrow_types::Band::M6, db: 2.0 },
+            ],
+            // The last field in the struct: a `Vec` of rows, a band and a
+            // float each. Two rows far apart in `Band`'s order, so a read a
+            // byte out of step cannot land on the right pair by luck.
+            tx_band_power_w: vec![
+                sdrcrow_types::BandPower { band: sdrcrow_types::Band::M20, watts: 100.0 },
+                sdrcrow_types::BandPower { band: sdrcrow_types::Band::Gen, watts: 4.5 },
+            ],
+            converter_offset_hz: 125_000_000.0,
+            // The transmit converter is an enum with a payload on one variant
+            // only — the shape a self-describing format forgives and postcard
+            // does not, so it is carried here rather than left at its default.
+            converter_tx: sdrcrow_types::ConverterTx::Own(-2_256_000_000.0),
+            freq_ranges_rx: vec![(0.0, 14_400_000.0), (24_000_000.0, 1_766_000_000.0)],
+            rtlsdr: RtlSdrConfig {
+                serial: Some("00000001".into()),
+                sample_rate_hz: 1_536_000.0,
+                ppm: -17,
+                tuner_gain_db: 32.8,
+                agc: RtlSdrAgc::Rtl,
+                hf_mode: RtlSdrHfMode::DirectQ,
+                bias_tee: true,
+                iq_correction: false,
+                transfers: 12,
+                transfer_kib: 32,
+            },
+            rtltcp: RtlTcpConfig {
+                address: "mast.local:1234".into(),
+                tuner_gain_db: 49.6,
+                agc: RtlSdrAgc::Both,
+                ..RtlTcpConfig::default()
+            },
+            // Two neighbouring enums that are *not* at their defaults: the
+            // scope span decides how wide the radio sweeps, and the receive
+            // source decides whether sdroxide demodulates at all.
+            icomnet: sdrcrow_types::IcomNetConfig {
+                address: "ic705.local".into(),
+                username: "sdroxide".into(),
+                password: "hunter2".into(),
+                rx_source: sdrcrow_types::IcomRxSource::If12k,
+                scope_span: sdrcrow_types::IcomScopeSpan::Khz500,
+                ..sdrcrow_types::IcomNetConfig::default()
+            },
+            // Both of an RSPduo's tuners, and the filter that combines them:
+            // like the LimeSDR's second chain below, this block decides
+            // whether a whole extra stream exists.
+            sdrplay: sdrcrow_types::SdrPlayConfig {
+                serial: "1809014C9B".into(),
+                sample_rate_hz: 1_000_000.0,
+                duo_tuner: sdrcrow_types::SdrPlayDuoTuner::Tuner2,
+                duo: sdrcrow_types::SdrPlayDuo {
+                    enabled: true,
+                    role: sdrcrow_types::SdrPlayDuoRole::SecondRadio,
+                    mode: sdrcrow_types::DiversityMode::Combine,
+                    lna_state: 6,
+                    if_gr_db: 27,
+                    taps: 24,
+                    rate: 0.35,
+                    frozen: true,
+                },
+                ..sdrcrow_types::SdrPlayConfig::default()
+            },
+            // The last block in the struct, and the one most worth filling in:
+            // every field here differs from its neighbours' defaults, because a
+            // field-order slip only shows where two adjacent fields disagree.
+            // The nested LimeRFE block is the part that decides whether an
+            // amplifier is switched into the transmit path, so it gets
+            // non-default ports, a non-default channel and a non-default mode.
+            lime: LimeConfig {
+                device: "LimeSDR-USB, serial=0009072C02873717".into(),
+                channel: 1,
+                sample_rate_hz: 15.36e6,
+                oversample: 4,
+                rx_gain_db: 52.0,
+                tx_gain_db: 31.0,
+                tx_enabled: true,
+                antenna_rx: "LNAH".into(),
+                antenna_tx: "BAND2".into(),
+                lpf_rx_hz: 18.0e6,
+                lpf_tx_hz: 20.0e6,
+                calibrate: false,
+                iq_correction: false,
+                fifo_ksamples: 512,
+                throughput_vs_latency: 0.25,
+                rfe: LimeRfeConfig {
+                    link: RfeLink::Board,
+                    serial: sdrcrow_types::SerialConfig {
+                        path: "/dev/ttyUSB7".into(),
+                        baud: 9600,
+                        ..sdrcrow_types::SerialConfig::default()
+                    },
+                    port_rx: RfePort::J5,
+                    port_tx: RfePort::J3,
+                    follow_band: false,
+                    channel: RfeChannel::Ham1280,
+                    mode: RfeModeControl::TxRx,
+                    notch: true,
+                    atten_steps: 5,
+                    fan: true,
+                },
+                // The second receive chain, likewise nothing at its default:
+                // this block decides whether a whole extra stream exists.
+                aux: sdrcrow_types::LimeAuxConfig {
+                    role: sdrcrow_types::LimeAuxRole::Diversity,
+                    antenna: "LNAW".into(),
+                    gain_db: 33.0,
+                    mode: sdrcrow_types::DiversityMode::Combine,
+                    taps: 24,
+                    rate: 0.35,
+                    frozen: true,
+                    ps_bins: 48,
+                    ps_rate: 0.8,
+                    ps_frozen: false,
+                },
+            },
+            // The last two fields in the struct: an `Option<Vec<Band>>` and a
+            // flag. Bands far apart in `Band`'s order, so a read a byte out of
+            // step cannot land on the right list by luck.
+            rx_band_enable: Some(vec![
+                sdrcrow_types::Band::M160,
+                sdrcrow_types::Band::M2,
+                sdrcrow_types::Band::Gen,
+            ]),
+            rx_bands_confirmed: true,
+            ..RadioConfig::default()
+        };
+
+        let m = ServerMsg::RadioConfig(Box::new(cfg.clone()));
+        assert_eq!(decode::<ServerMsg>(&encode(&m).unwrap()).unwrap(), m);
+
+        // And back the other way — this is the direction that writes the file.
+        for reopen in [false, true] {
+            let c =
+                ClientMsg::Command(Command::SetRadioConfig { cfg: Box::new(cfg.clone()), reopen });
+            assert_eq!(decode::<ClientMsg>(&encode(&c).unwrap()).unwrap(), c);
+        }
+    }
+
+    /// The contest logger's single-field command, over the wire.
+    ///
+    /// `SetDigiContest` carries a `ContestMode` and nothing else, which is the
+    /// property the engine arm depends on: it cannot roll back a field it does
+    /// not carry. Pinned here so the shape stays one enum, not a
+    /// `DigiConfig` in disguise.
+    #[test]
+    fn roundtrip_the_contest_mode_command() {
+        use sdrcrow_types::ContestMode;
+
+        for c in [ContestMode::None, ContestMode::EuVhf] {
+            let m = ClientMsg::Command(Command::SetDigiContest(c));
+            assert_eq!(decode::<ClientMsg>(&encode(&m).unwrap()).unwrap(), m);
+        }
+
+        // The configuration it does not carry still crosses whole, so the two
+        // routes stay distinguishable on the wire — a peer reading a
+        // `SetDigiContest` must not mistake it for a `SetDigiConfig`.
+        let cfg = sdrcrow_types::DigiConfig {
+            my_call: "OE1XYZ".into(),
+            contest: ContestMode::EuVhf,
+            ..sdrcrow_types::DigiConfig::default()
+        };
+        let whole = ClientMsg::Command(Command::SetDigiConfig(cfg));
+        let field = ClientMsg::Command(Command::SetDigiContest(ContestMode::EuVhf));
+        assert_ne!(encode(&whole).unwrap(), encode(&field).unwrap());
+        assert_eq!(decode::<ClientMsg>(&encode(&whole).unwrap()).unwrap(), whole);
+    }
+
+    /// LOUDNESS and the tone cross the wire both ways: the command, and the
+    /// receiver fields that tell a remote client their real position.
+    #[test]
+    fn roundtrip_rx_loudness() {
+        for on in [false, true] {
+            let m = ClientMsg::Command(Command::SetRxLoudness(on));
+            assert_eq!(decode::<ClientMsg>(&encode(&m).unwrap()).unwrap(), m);
+            let mut state = RadioState::default();
+            state.rx[0].loudness = on;
+            state.rx[0].tone.enabled = on;
+            state.rx[0].tone.low.gain_db = if on { 6.0 } else { 0.0 };
+            let st = ServerMsg::State(state);
+            assert_eq!(decode::<ServerMsg>(&encode(&st).unwrap()).unwrap(), st);
+        }
+    }
+
+    /// The CW peak filter crosses the wire both ways: the command, and the
+    /// receiver field that tells a remote client where it is. Set away from
+    /// its default on both receivers, so a field that decoded into its default
+    /// would fail here rather than pass silently.
+    #[test]
+    fn roundtrip_cw_peak() {
+        let peak = sdrcrow_types::CwPeak { on: true, width_hz: 50.0, gain_db: 12.5 };
+        for rx in [sdrcrow_types::RxId::Main, sdrcrow_types::RxId::Sub] {
+            let m = ClientMsg::Command(Command::SetCwPeak { rx, peak });
+            assert_eq!(decode::<ClientMsg>(&encode(&m).unwrap()).unwrap(), m);
+        }
+        let mut state = RadioState::default();
+        state.rx[0].cw_peak = peak;
+        state.rx[1].cw_peak = sdrcrow_types::CwPeak { on: true, width_hz: 180.0, gain_db: 3.0 };
+        let st = ServerMsg::State(state.clone());
+        let back = decode::<ServerMsg>(&encode(&st).unwrap()).unwrap();
+        assert_eq!(back, st);
+        let ServerMsg::State(back) = back else { panic!("not a state") };
+        assert_eq!(back.rx[0].cw_peak, peak);
+        assert_ne!(back.rx[1].cw_peak, sdrcrow_types::CwPeak::default());
+    }
+
+    /// The weather-satellite lane's settings cross the wire both ways, and its
+    /// picture lines ride the last `ServerMsg` variant.
+    #[test]
+    fn roundtrip_wxsat_config_and_status() {
+        let cfg = sdrcrow_types::WxsatSettings {
+            enabled: true,
+            frequency_hz: 137_900_000.0,
+            kind: sdrcrow_types::WxsatKind::Lrpt,
+        };
+        let m = ClientMsg::Command(Command::SetWxsatConfig(cfg));
+        let back: ClientMsg = decode(&encode(&m).unwrap()).unwrap();
+        assert_eq!(back, m);
+        let mut state = sdrcrow_types::RadioState::default();
+        state.wxsat = cfg;
+        let back: sdrcrow_types::RadioState = decode(&encode(&state).unwrap()).unwrap();
+        assert_eq!(back.wxsat, cfg);
+        let st = ServerMsg::WxsatStatus(Box::new(sdrcrow_types::WxsatStatus {
+            running: true,
+            locked: true,
+            pass: 3,
+            total_lines: 5,
+            first_line: 4,
+            new_lines: vec![vec![9; sdrcrow_types::WXSAT_LINE_PIXELS]],
+            kind: sdrcrow_types::WxsatKind::Lrpt,
+            frames_ok: 41,
+            carrier_hz: -812.5,
+            rows: vec![sdrcrow_types::WxsatRow {
+                apid: 65,
+                row: 7,
+                lines: vec![3; sdrcrow_types::WXSAT_LRPT_WIDTH * sdrcrow_types::WXSAT_LRPT_ROW_LINES],
+            }],
+            ..Default::default()
+        }));
+        let back: ServerMsg = decode(&encode(&st).unwrap()).unwrap();
+        assert_eq!(back, st);
+    }
+
+    /// The Meshtastic receiver's settings cross the wire both ways, with the
+    /// restore point they carry, and its status rides the last `ServerMsg`
+    /// variant. Set away from the defaults so a field that decoded into its
+    /// default would fail here.
+    #[test]
+    fn roundtrip_meshtastic_config_and_status() {
+        let cfg = sdrcrow_types::MeshtasticSettings {
+            enabled: true,
+            region: "US".into(),
+            preset: "MediumFast".into(),
+            frequency_hz: 913_125_000.0,
+            keys: "club=simple2".into(),
+            restore: Some(sdrcrow_types::MeshtasticRestore {
+                dial_hz: 14_074_000.0,
+                mode: sdrcrow_types::Mode::Usb,
+            }),
+            node_id: 0x1234_ABCD,
+        };
+        // The transmit side: the command, the new band, the status tail.
+        let send = ClientMsg::Command(Command::SendMeshtastic(sdrcrow_types::MeshtasticSend {
+            text: "73 de F4NRM".into(),
+            to: 0xFFFF_FFFF,
+        }));
+        let back: ClientMsg = decode(&encode(&send).unwrap()).unwrap();
+        assert_eq!(back, send);
+        let band = ClientMsg::Command(Command::SetBand(sdrcrow_types::Band::Ism868));
+        let back: ClientMsg = decode(&encode(&band).unwrap()).unwrap();
+        assert_eq!(back, band);
+        let m = ClientMsg::Command(Command::SetMeshtasticConfig(cfg.clone()));
+        let back: ClientMsg = decode(&encode(&m).unwrap()).unwrap();
+        assert_eq!(back, m);
+        let mut state = sdrcrow_types::RadioState::default();
+        state.meshtastic = cfg.clone();
+        let back: sdrcrow_types::RadioState = decode(&encode(&state).unwrap()).unwrap();
+        assert_eq!(back.meshtastic, cfg);
+        assert_ne!(back.meshtastic, sdrcrow_types::MeshtasticSettings::default());
+
+        let st = ServerMsg::MeshtasticStatus(Box::new(sdrcrow_types::MeshtasticStatus {
+            running: true,
+            in_window: true,
+            refused: Some(sdrcrow_types::RxBlock::BandOff(sdrcrow_types::Band::Gen)),
+            level_dbfs: -61.5,
+            preambles: 7,
+            frames: 5,
+            crc_bad: 2,
+            nodes: vec![sdrcrow_types::MeshNode {
+                id: 0xDEAD_BEEF,
+                long_name: "Seb".into(),
+                short_name: "SEB".into(),
+                last_heard: 1_700_000_000,
+                snr_db: -7.5,
+                packets: 3,
+                hops: Some(1),
+                lat_deg: Some(48.8584),
+                battery_pct: Some(87),
+                ..Default::default()
+            }],
+            log: vec![sdrcrow_types::MeshEntry {
+                time: 1_700_000_000,
+                from: 0xDEAD_BEEF,
+                to: 0xFFFF_FFFF,
+                port: 1,
+                channel: "LongFast".into(),
+                text: Some("73 de F4NRM".into()),
+                ..Default::default()
+            }],
+            tx_refused: Some(sdrcrow_types::MeshTxRefusal::DutyCycle(1234)),
+            tx_busy: true,
+            tx_sent: 3,
+            tx_used_ms: 21_500,
+            tx_budget_ms: Some(36_000),
+        }));
+        let back: ServerMsg = decode(&encode(&st).unwrap()).unwrap();
+        assert_eq!(back, st);
+        // Every refusal crosses the link.
+        for why in [
+            sdrcrow_types::MeshTxRefusal::Band(sdrcrow_types::TxBlock::BandOff(
+                sdrcrow_types::Band::Ism868,
+            )),
+            sdrcrow_types::MeshTxRefusal::TooLong,
+            sdrcrow_types::MeshTxRefusal::OffChannel,
+            sdrcrow_types::MeshTxRefusal::NoTransmitter,
+            sdrcrow_types::MeshTxRefusal::BadText,
+            sdrcrow_types::MeshTxRefusal::Busy,
+            sdrcrow_types::MeshTxRefusal::Rails,
+        ] {
+            let m = ServerMsg::MeshtasticStatus(Box::new(sdrcrow_types::MeshtasticStatus {
+                tx_refused: Some(why),
+                ..Default::default()
+            }));
+            let back: ServerMsg = decode(&encode(&m).unwrap()).unwrap();
+            assert_eq!(back, m);
+        }
+    }
+
+    /// The radiosonde lane's settings cross the wire both ways: the command,
+    /// and the state field that tells a remote client whether it runs and on
+    /// which channel. Set away from the default so a field that decoded into
+    /// its default would fail here.
+    #[test]
+    fn roundtrip_sonde_config() {
+        let cfg = sdrcrow_types::SondeSettings { enabled: true, frequency_hz: 404_500_000.0, scan: true };
+        let m = ClientMsg::Command(Command::SetSondeConfig(cfg));
+        assert_eq!(decode::<ClientMsg>(&encode(&m).unwrap()).unwrap(), m);
+        let mut state = RadioState::default();
+        state.sonde = cfg;
+        let st = ServerMsg::State(state);
+        let back = decode::<ServerMsg>(&encode(&st).unwrap()).unwrap();
+        assert_eq!(back, st);
+        let ServerMsg::State(back) = back else { panic!("not a state") };
+        assert_eq!(back.sonde, cfg);
+        assert_ne!(back.sonde, sdrcrow_types::SondeSettings::default());
+    }
+
+    /// A channel list that names folders crosses the wire (issue #623).
+    #[test]
+    fn roundtrip_import_memories_filed() {
+        let m = sdrcrow_types::MemoryChannel {
+            id: 0,
+            name: "7.194".into(),
+            freq_hz: 7_194_000.0,
+            mode: sdrcrow_types::Mode::Usb,
+            filter_lo: 300.0,
+            filter_hi: 2700.0,
+            folder: None,
+            rtty: None,
+            repeater: None,
+            antenna: None,
+            color: None,
+        };
+        let c = Command::ImportMemoriesFiled(vec![
+            (m.clone(), Some("TestfolderBrown".into())),
+            (m, None),
+        ]);
+        let msg = ClientMsg::Command(c);
+        assert_eq!(decode::<ClientMsg>(&encode(&msg).unwrap()).unwrap(), msg);
+    }
+
+    /// v293: the revert of the weather fax auto-slant was appended to
+    /// `Command` right after `ImportMemoriesFiled`, so the ones before it keep
+    /// their positions. Variants appended since sit after it; this test pins
+    /// its position, not that it is still the last one, and reads the version
+    /// byte from the crate so a later bump does not stale it.
+    #[test]
+    fn the_wefax_revert_slant_is_appended_last() {
+        let last = encode(&ClientMsg::Command(Command::WefaxRevertSlant)).unwrap();
+        let before = encode(&ClientMsg::Command(Command::ImportMemoriesFiled(vec![]))).unwrap();
+        assert_eq!(last[0], VERSION_BYTE);
+        // `before` is the version, the message and variant tags, then the empty
+        // list's length byte; `last` is the same tags with the variant one on.
+        // The variant number is a varint: its low byte is one more, the rest
+        // is the same.
+        let (n, m) = (last.len(), before.len());
+        assert_eq!(n, m - 1, "a bare variant has no payload");
+        assert_eq!(last[2], before[2] + 1, "must directly follow ImportMemoriesFiled");
+        assert_eq!(last[3..], before[3..m - 1]);
+        assert_eq!(decode::<ClientMsg>(&last).unwrap(), ClientMsg::Command(Command::WefaxRevertSlant));
+    }
+
+    /// v298: the strip scroll is a new `Command` variant after the ones before
+    /// it, and carries its frequency through.
+    #[test]
+    fn the_wide_window_command_is_appended_and_round_trips() {
+        let last = encode(&ClientMsg::Command(Command::SetWideWindow(None))).unwrap();
+        let before = encode(&ClientMsg::Command(Command::WefaxRevertSlant)).unwrap();
+        assert_eq!(last[0], VERSION_BYTE);
+        assert_eq!(last[2], before[2] + 1, "must directly follow WefaxRevertSlant");
+        for c in [Command::SetWideWindow(None), Command::SetWideWindow(Some(7_674_000.0))] {
+            let m = ClientMsg::Command(c);
+            assert_eq!(decode::<ClientMsg>(&encode(&m).unwrap()).unwrap(), m);
+        }
+    }
+
+    /// The band plan library crosses the wire: the three commands, the list the
+    /// station announces and the name of the plan it runs, and the fingerprint a
+    /// radio keeps beside its confirmed band lists. Filled rather than left at
+    /// the defaults, so a field that decoded into its default would fail here.
+    #[test]
+    fn roundtrip_band_plan_library() {
+        for c in [
+            Command::ImportBandPlan { name: "mine".into(), json: "{\"region1\":{}}".into() },
+            Command::SelectBandPlan { name: Some("mine".into()) },
+            Command::SelectBandPlan { name: None },
+            Command::DeleteBandPlan { name: "mine".into() },
+            Command::SaveCurrentBandPlan { name: "my copy".into() },
+            Command::ExportBandPlan { name: "mine".into() },
+            Command::RestoreShippedBandPlans,
+            Command::SelectRadioBandPlan { name: Some("mine".into()) },
+            Command::SelectRadioBandPlan { name: None },
+        ] {
+            let m = ClientMsg::Command(c);
+            assert_eq!(decode::<ClientMsg>(&encode(&m).unwrap()).unwrap(), m);
+        }
+        // The file of a plan, for the screen that asked to save it.
+        let m = ServerMsg::BandPlanExport { file: "mine".into(), json: "{\"region1\":{}}".into() };
+        assert_eq!(decode::<ServerMsg>(&encode(&m).unwrap()).unwrap(), m);
+        let plan = sdrcrow_types::BandPlan::iaru_defaults().with_meta(sdrcrow_types::PlanMeta {
+            name: "Narrow".into(),
+            country: "Nowhere".into(),
+            author: "Me".into(),
+        });
+        let station = StationConfig {
+            band_plan: plan.clone(),
+            band_plans: vec![sdrcrow_types::PlanInfo {
+                file: "narrow".into(),
+                name: "Narrow".into(),
+                country: "Nowhere".into(),
+                author: "Me".into(),
+                bytes: 4096,
+                modified: 1_790_000_000,
+                shipped: true,
+            }],
+            band_plan_name: Some("narrow".into()),
+            ..Default::default()
+        };
+        let m = ServerMsg::StationConfig(Box::new(station.clone()));
+        let ServerMsg::StationConfig(back) = decode::<ServerMsg>(&encode(&m).unwrap()).unwrap()
+        else {
+            panic!("not a station config")
+        };
+        assert_eq!(back.band_plans, station.band_plans);
+        assert_eq!(back.band_plan_name.as_deref(), Some("narrow"));
+        assert_eq!(back.band_plan.meta().author, "Me", "the plan's name rides along");
+        assert_eq!(back.band_plan, plan);
+
+        let cfg = sdrcrow_types::RadioConfig {
+            tx_bands_confirmed: true,
+            rx_bands_confirmed: true,
+            band_plan_fp: plan.fingerprint(),
+            band_plan: Some("narrow".into()),
+            ..Default::default()
+        };
+        let m = ServerMsg::RadioConfig(Box::new(cfg.clone()));
+        let ServerMsg::RadioConfig(back) = decode::<ServerMsg>(&encode(&m).unwrap()).unwrap()
+        else {
+            panic!("not a radio config")
+        };
+        assert_eq!(back.band_plan_fp, plan.fingerprint());
+        assert_eq!(back.band_plan.as_deref(), Some("narrow"), "the radio's own plan rides along");
+        assert_eq!(*back, cfg);
+    }
+
+    /// The per-mode transmit-audio level, over the wire in both directions
+    /// (issue #186).
+    ///
+    /// Filled rather than left at its default on purpose: `DigiConfig` rides
+    /// whole inside `DigiStatus`, postcard numbers fields by position, and a map
+    /// placed among the scalars is exactly the shape that decodes into garbage
+    /// rather than failing outright if the two ends disagree. An empty map would
+    /// encode as a length of zero and prove nothing.
+    #[test]
+    fn roundtrip_per_mode_tx_level() {
+        use sdrcrow_types::{DigiConfig, Mode};
+
+        let mut cfg = DigiConfig { my_call: "OE1XYZ".into(), ..DigiConfig::default() };
+        cfg.set_tx_level(Mode::Ft8, 0.25);
+        cfg.set_tx_level(Mode::Rtty, 0.4);
+        cfg.set_tx_level(Mode::Aprs, 0.6);
+
+        // The command that writes one, and the configuration that carries them
+        // all back.
+        let m = ClientMsg::Command(Command::SetDigiTxLevel { mode: Mode::Ft8, level: 0.25 });
+        assert_eq!(decode::<ClientMsg>(&encode(&m).unwrap()).unwrap(), m);
+
+        let m = ClientMsg::Command(Command::SetDigiConfig(cfg.clone()));
+        assert_eq!(decode::<ClientMsg>(&encode(&m).unwrap()).unwrap(), m);
+
+        let status = DigiStatus::idle(cfg);
+        let m = ServerMsg::Ft8Status(status);
+        let back = decode::<ServerMsg>(&encode(&m).unwrap()).unwrap();
+        assert_eq!(back, m);
+        let ServerMsg::Ft8Status(s) = back else { panic!("not a status") };
+        assert_eq!(s.config.tx_level_for(Mode::Ft8), 0.25);
+        assert_eq!(s.config.tx_level_for(Mode::Rtty), 0.4);
+        assert_eq!(s.config.tx_level_for(Mode::Aprs), 0.6);
+        // And a mode with no entry still reaches the carrier default across the
+        // wire, which is the property that makes the map need no migration.
+        assert_eq!(s.config.tx_level_for(Mode::Psk), 1.0);
+    }
+
+    /// The settings the slotted weak-signal modes keep in `DigiConfig` — FST4's
+    /// period, Q65's sub-mode, FSK441's period — cross the wire at values other
+    /// than their defaults, as do the modes themselves. A field appended in the
+    /// wrong place, or a `Mode` discriminant that moved, decodes into the wrong
+    /// setting rather than failing; only a non-default value shows it.
+    #[test]
+    fn roundtrip_weak_signal_mode_settings() {
+        use sdrcrow_types::{DigiConfig, Fsk441Period, Fst4Period, Mode, Q65Mode};
+
+        let cfg = DigiConfig {
+            my_call: "OE1XYZ".into(),
+            fst4_period: Fst4Period::P300,
+            q65_mode: Q65Mode::D120,
+            fsk441_period: Fsk441Period::P15,
+            ..DigiConfig::default()
+        };
+        let m = ClientMsg::Command(Command::SetDigiConfig(cfg.clone()));
+        assert_eq!(decode::<ClientMsg>(&encode(&m).unwrap()).unwrap(), m);
+
+        for mode in [Mode::Msk144, Mode::Jt65, Mode::Jt9, Mode::Fst4, Mode::Q65, Mode::Fsk441] {
+            let mut status = DigiStatus::idle(cfg.clone());
+            status.mode = mode;
+            let m = ServerMsg::Ft8Status(status);
+            let back = decode::<ServerMsg>(&encode(&m).unwrap()).unwrap();
+            assert_eq!(back, m, "{mode:?}");
+            let ServerMsg::Ft8Status(s) = back else { panic!("not a status") };
+            assert_eq!(s.mode, mode);
+            assert_eq!(s.config.fst4_period, Fst4Period::P300);
+            assert_eq!(s.config.q65_mode, Q65Mode::D120);
+            assert_eq!(s.config.fsk441_period, Fsk441Period::P15);
+        }
+    }
+
+    /// Why HD Radio is greyed out is the station's to say, and it reaches a
+    /// remote client on the state, in the connect reply and in every update.
+    #[test]
+    fn roundtrip_hd_radio_unavailable() {
+        let state = RadioState {
+            hd_radio_unavailable: Some("no libnrsc5 on the station".into()),
+            ..RadioState::default()
+        };
+        let msgs = [
+            ServerMsg::State(state.clone()),
+            ServerMsg::HelloAck {
+                proto: PROTO_VERSION,
+                caps: DeviceCaps::default(),
+                state,
+                rx_codec: AudioCodec::Opus48kMono,
+                tx_codec: AudioCodec::Pcm16_48k,
+            },
+        ];
+        for m in &msgs {
+            assert_eq!(&decode::<ServerMsg>(&encode(m).unwrap()).unwrap(), m);
+        }
+    }
+
+    /// Whether CW leaves as audio is a capability, and the client needs it to
+    /// decide whether the transmit-audio level reaches CW at all.
+    #[test]
+    fn roundtrip_cw_audio_keyed_capability() {
+        let caps = DeviceCaps { cw_audio_keyed: true, ..DeviceCaps::default() };
+        let m = ServerMsg::Capabilities(caps);
+        let back = decode::<ServerMsg>(&encode(&m).unwrap()).unwrap();
+        assert_eq!(back, m);
+        let ServerMsg::Capabilities(c) = back else { panic!("not capabilities") };
+        assert!(c.cw_audio_keyed);
+    }
+
+    /// Device questions and their answers, both ways.
+    ///
+    /// One of each shape rather than every variant: a payload-less request, one
+    /// carrying an address, one carrying a whole config block, and answers
+    /// holding a device list, a test outcome and a refusal. Those are the four
+    /// encodings; a variant added to any of them rides one of these.
+    #[test]
+    fn roundtrip_device_probes() {
+        use sdrcrow_types::{
+            DeviceProbe, IcomNetConfig, ProbeAnswer, ProbeTest, RtlSdrDevice, TestKind,
+        };
+
+        let asks = [
+            DeviceProbe::RtlSdr,
+            DeviceProbe::Test(ProbeTest::Tci("shack.local:40001".into())),
+            DeviceProbe::Test(ProbeTest::IcomNet(Box::new(IcomNetConfig {
+                address: "705.local".into(),
+                username: "oe1test".into(),
+                password: "pässwörd".into(),
+                ..IcomNetConfig::default()
+            }))),
+        ];
+        for a in asks {
+            let m = ClientMsg::Probe(a);
+            assert_eq!(decode::<ClientMsg>(&encode(&m).unwrap()).unwrap(), m);
+        }
+
+        let answers = [
+            ProbeAnswer::RtlSdr(vec![RtlSdrDevice {
+                serial: Some("00000001".into()),
+                name: "Generic RTL2832U OEM".into(),
+                vid: 0x0bda,
+                pid: 0x2838,
+            }]),
+            ProbeAnswer::Test(TestKind::Pluto, Ok("AD9364, 70 MHz – 6 GHz".into())),
+            ProbeAnswer::Test(TestKind::Tci, Err("connection refused".into())),
+            ProbeAnswer::TestFailed(
+                TestKind::Tci,
+                sdrcrow_types::ConnectFailure {
+                    why: sdrcrow_types::ConnectWhy::Refused,
+                    host: "192.168.1.9".into(),
+                    port: 50001,
+                    detail: "Connection refused (os error 10061)".into(),
+                },
+            ),
+            ProbeAnswer::Unsupported,
+        ];
+        for a in answers {
+            let m = ServerMsg::ProbeAnswer(Box::new(a));
+            assert_eq!(decode::<ServerMsg>(&encode(&m).unwrap()).unwrap(), m);
+        }
+    }
+
+    /// The sign-in exchange, both ways.
+    ///
+    /// These three are the only messages that cross before the handshake has
+    /// finished, so a client and server that disagree about their encoding
+    /// cannot recover — there is no established session to report the fault on.
+    #[test]
+    fn roundtrip_sign_in() {
+        let ask = ServerMsg::AuthRequired;
+        assert_eq!(decode::<ServerMsg>(&encode(&ask).unwrap()).unwrap(), ask);
+
+        let no = ServerMsg::AuthRejected("username or password not accepted".into());
+        assert_eq!(decode::<ServerMsg>(&encode(&no).unwrap()).unwrap(), no);
+
+        // Non-ASCII in either field: passwords are whatever the operator typed.
+        let answer =
+            ClientMsg::Auth { username: "oe1test".into(), password: "pässwörd ✓".into() };
+        assert_eq!(decode::<ClientMsg>(&encode(&answer).unwrap()).unwrap(), answer);
+    }
+
+    /// The receive-sensitivity pair crosses the wire at values other than its
+    /// defaults: WEFAX's fields (v237) sit at the very tail of `DigiConfig`, which
+    /// rides `SetDigiConfig` and `DigiStatus` whole. A field appended in the
+    /// wrong place decodes into another setting rather than failing, so only a
+    /// non-default value shows it — and Auto's default is `true`, which a zeroed
+    /// `bool` would silently turn off.
+    #[test]
+    fn roundtrip_receive_sensitivity() {
+        use sdrcrow_types::DigiConfig;
+
+        let cfg = DigiConfig {
+            my_call: "OE1XYZ".into(),
+            wefax_rx_sensitivity: 4,
+            wefax_rx_auto: false,
+            ..DigiConfig::default()
+        };
+        let m = ClientMsg::Command(Command::SetDigiConfig(cfg.clone()));
+        assert_eq!(decode::<ClientMsg>(&encode(&m).unwrap()).unwrap(), m);
+
+        let m = ServerMsg::Ft8Status(DigiStatus::idle(cfg));
+        let back = decode::<ServerMsg>(&encode(&m).unwrap()).unwrap();
+        assert_eq!(back, m);
+        let ServerMsg::Ft8Status(s) = back else { panic!("not a status") };
+        assert_eq!(s.config.wefax_rx_sensitivity, 4);
+        assert!(!s.config.wefax_rx_auto);
+
+        // A configuration that never set them still arrives at Auto and zero,
+        // which is the behaviour a station had before the field existed.
+        let d = DigiConfig::default();
+        assert_eq!((d.wefax_rx_sensitivity, d.wefax_rx_auto), (0, true));
+    }
+
+    #[test]
+    fn rejects_wrong_version_byte() {
+        assert!(matches!(decode::<ClientMsg>(&[0x7f, 0, 0]), Err(ProtoError::Version(0x7f))));
+        assert!(matches!(decode::<ClientMsg>(&[]), Err(ProtoError::Empty)));
+    }
+
+    /// v299: the weather-fax auto-slant switch rides the end of `DigiConfig`,
+    /// on by default; the version is pinned.
+    #[test]
+    fn the_wefax_auto_slant_switch_round_trips() {
+        use sdrcrow_types::DigiConfig;
+
+        assert!(DigiConfig::default().wefax_auto_slant, "on by default");
+        let cfg = DigiConfig {
+            wefax_auto_slant: false,
+            wefax_slant_ppm: -37.5,
+            ..DigiConfig::default()
+        };
+        let m = ClientMsg::Command(Command::SetDigiConfig(cfg.clone()));
+        assert_eq!(decode::<ClientMsg>(&encode(&m).unwrap()).unwrap(), m);
+        let m = ServerMsg::Ft8Status(DigiStatus::idle(cfg));
+        let back = decode::<ServerMsg>(&encode(&m).unwrap()).unwrap();
+        assert_eq!(back, m);
+        let ServerMsg::Ft8Status(s) = back else { panic!("not a status") };
+        assert!(!s.config.wefax_auto_slant);
+        assert_eq!(s.config.wefax_slant_ppm, -37.5);
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (301, 0x79));
+    }
+
+    /// v289: the satellite lock's CTCSS tone rides the end of `SatLockConfig`,
+    /// and the rig's own keying the end of `TxState`; the version is pinned.
+    #[test]
+    fn the_sat_lock_tone_and_the_rig_keyed_flag_round_trip() {
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (301, 0x79));
+        let cfg = sdrcrow_types::SatLockConfig {
+            norad_id: 25544,
+            ctcss_hz: Some(67.0),
+            ..Default::default()
+        };
+        let msg = ClientMsg::Command(Command::SetSatLock(Some(Box::new(cfg.clone()))));
+        match decode::<ClientMsg>(&encode(&msg).unwrap()).unwrap() {
+            ClientMsg::Command(Command::SetSatLock(Some(back))) => assert_eq!(*back, cfg),
+            _ => panic!("SetSatLock did not round-trip"),
+        }
+        // No tone encodes as one byte less than a tone: the field is the tail.
+        let none = sdrcrow_types::SatLockConfig { ctcss_hz: None, ..cfg.clone() };
+        let (a, b) = (
+            encode(&ClientMsg::Command(Command::SetSatLock(Some(Box::new(none))))).unwrap(),
+            encode(&msg).unwrap(),
+        );
+        assert!(b.len() > a.len());
+        let tx = sdrcrow_types::TxState { rig_keyed: true, ..Default::default() };
+        let back: sdrcrow_types::TxState = postcard::from_bytes(&postcard::to_allocvec(&tx).unwrap()).unwrap();
+        assert!(back.rig_keyed);
+    }
+}

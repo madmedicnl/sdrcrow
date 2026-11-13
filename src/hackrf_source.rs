@@ -1,5 +1,5 @@
 //! An [`IqSource`] for a HackRF driven over USB by the native driver in
-//! `sdroxide-hackrf` — no SoapySDR, no libusb, no libhackrf.
+//! `sdrcrow-hackrf` — no SoapySDR, no libusb, no libhackrf.
 //!
 //! The first native USB backend here that transmits, and it is half duplex:
 //! receive stops for the length of an over. Two consequences show up in this
@@ -21,12 +21,12 @@
 
 use std::time::{Duration, Instant};
 
-use sdroxide_dsp::IqCorrect;
-use sdroxide_hackrf::HackRfHandle;
-use sdroxide_hackrf::convert::{from_iq, sample_lut, to_iq};
-use sdroxide_hackrf::protocol::GainSetter;
-use sdroxide_radio::{Complex32, DC_BLOCK_HZ, IqSource, Result, lo_offset_for};
-use sdroxide_types::HackRfConfig;
+use sdrcrow_dsp::IqCorrect;
+use sdrcrow_hackrf::HackRfHandle;
+use sdrcrow_hackrf::convert::{from_iq, sample_lut, to_iq};
+use sdrcrow_hackrf::protocol::GainSetter;
+use sdrcrow_radio::{Complex32, DC_BLOCK_HZ, IqSource, Result, lo_offset_for};
+use sdrcrow_types::HackRfConfig;
 
 /// How long the radio may deliver nothing before the connection counts as
 /// dead. Same three seconds as the RTL-SDR and the Airspy HF+: this is a local
@@ -90,7 +90,7 @@ impl HackRfSource {
         let rate = handle.sample_rate_hz;
         let label = format!("{} @ {:.1} Msps", handle.label, rate / 1e6);
         // Computed once at open, from the filter the radio actually settled on
-        // rather than the one that was asked for. `sdroxide-hackrf`'s
+        // rather than the one that was asked for. `sdrcrow-hackrf`'s
         // `auto_filter_bw` has a test pinning the two together, because a
         // filter chosen too narrow silently withdraws this offset.
         let lo_offset = lo_offset_for(rate, handle.filter_bw_hz as f64);
@@ -121,7 +121,7 @@ impl HackRfSource {
 
     /// What this radio will tune: DC – 7.25 GHz, the firmware's own clamp and
     /// the same span libhackrf and SoapyHackRF publish. Not a per-board figure
-    /// — see `sdroxide_hackrf::protocol::TUNING_RANGE_HZ` for why a board's
+    /// — see `sdrcrow_hackrf::protocol::TUNING_RANGE_HZ` for why a board's
     /// *specified* coverage is the wrong thing to put in front of the dial.
     pub fn freq_range(&self) -> (f64, f64) {
         self.handle.freq_range
@@ -158,7 +158,7 @@ impl IqSource for HackRfSource {
 
     /// A zero-IF front end, so the LO is parked a quarter-span above the dial
     /// and the DC spike lands clear of the signal. This is the radio the policy
-    /// was measured on — see `sdroxide_radio::source`.
+    /// was measured on — see `sdrcrow_radio::source`.
     fn lo_offset_hz(&self) -> f64 {
         self.lo_offset
     }
@@ -265,14 +265,14 @@ impl IqSource for HackRfSource {
         let deadline = Instant::now() + Duration::from_secs(2);
         while !self.handle.is_transmitting() && Instant::now() < deadline {
             if !self.handle.is_alive() {
-                return Err(sdroxide_radio::RadioError::Msg(
+                return Err(sdrcrow_radio::RadioError::Msg(
                     "the HackRF stopped while keying up".into(),
                 ));
             }
             std::thread::sleep(Duration::from_millis(1));
         }
         if !self.handle.is_transmitting() {
-            return Err(sdroxide_radio::RadioError::Msg(
+            return Err(sdrcrow_radio::RadioError::Msg(
                 "the HackRF did not key up within two seconds".into(),
             ));
         }
@@ -286,7 +286,7 @@ impl IqSource for HackRfSource {
         let deadline = Instant::now() + TX_WRITE_TIMEOUT;
         let n = self.handle.tx_write(&self.tx_scratch, deadline);
         if n < self.tx_scratch.len() {
-            return Err(sdroxide_radio::RadioError::Msg(format!(
+            return Err(sdrcrow_radio::RadioError::Msg(format!(
                 "the HackRF took only {n} of {} transmit bytes — the USB link is not \
                  keeping up",
                 self.tx_scratch.len()

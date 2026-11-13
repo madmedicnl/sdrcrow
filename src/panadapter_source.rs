@@ -51,8 +51,8 @@
 use std::collections::VecDeque;
 use std::time::Instant;
 
-use sdroxide_radio::{Complex32, ControlUpdate, IqSource, Result};
-use sdroxide_types::{DeviceCaps, KiwiConfig, Mode, PanadapterAudio, PanadapterConfig};
+use sdrcrow_radio::{Complex32, ControlUpdate, IqSource, Result};
+use sdrcrow_types::{DeviceCaps, KiwiConfig, Mode, PanadapterAudio, PanadapterConfig};
 use tracing::{info, warn};
 
 /// How far in the lent KiwiSDR's own waterfall is zoomed while it is somebody's
@@ -222,8 +222,8 @@ impl PanadapterSource {
             gains: rx
                 .gains
                 .iter()
-                .filter(|g| g.direction == sdroxide_types::Direction::Rx)
-                .chain(ctrl.gains.iter().filter(|g| g.direction == sdroxide_types::Direction::Tx))
+                .filter(|g| g.direction == sdrcrow_types::Direction::Rx)
+                .chain(ctrl.gains.iter().filter(|g| g.direction == sdrcrow_types::Direction::Tx))
                 .cloned()
                 .collect(),
             antennas_rx: rx.antennas_rx.clone(),
@@ -665,7 +665,7 @@ impl IqSource for PanadapterSource {
 
     /// The *transceiver's*: predistortion corrects a transmitter, and the
     /// receiver lending its spectrum here has none.
-    fn puresignal(&mut self) -> Option<sdroxide_types::PsMeter> {
+    fn puresignal(&mut self) -> Option<sdrcrow_types::PsMeter> {
         self.ctrl.puresignal()
     }
 
@@ -733,7 +733,7 @@ impl IqSource for PanadapterSource {
         self.ctrl.commands_tx_power()
     }
 
-    fn tx_telemetry(&mut self) -> Option<sdroxide_types::TxTelemetry> {
+    fn tx_telemetry(&mut self) -> Option<sdrcrow_types::TxTelemetry> {
         self.ctrl.tx_telemetry()
     }
 
@@ -778,7 +778,7 @@ impl IqSource for PanadapterSource {
     /// sdroxide's A/B onto the transceiver's, and the dial with it — the
     /// transceiver is now on that VFO, and the next `set_dial` must not be
     /// skipped as a frequency it is already on.
-    fn select_vfo(&mut self, vfo: sdroxide_types::Vfo, hz: f64) {
+    fn select_vfo(&mut self, vfo: sdrcrow_types::Vfo, hz: f64) {
         let hz = hz + self.cw_offset_hz();
         self.ctrl.select_vfo(vfo, hz);
         self.dial_known = true;
@@ -891,7 +891,7 @@ impl IqSource for PanadapterSource {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use sdroxide_types::{IfModeClass, PanadapterTap};
+    use sdrcrow_types::{IfModeClass, PanadapterTap};
     use std::sync::{Arc, Mutex};
 
     /// What a fake source was asked to do, and what it should report back —

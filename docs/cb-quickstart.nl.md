@@ -65,7 +65,7 @@ reconnect**.
 
 - **Linux — USB-ontvangers:** installeer de meegeleverde udev-regels, anders
   ziet sdroxide het apparaat wel maar kan het niet openen:
-  `sudo cp 60-sdroxide-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, daarna opnieuw aansluiten.
+  `sudo cp 60-sdrcrow-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, daarna opnieuw aansluiten.
 - **Windows — RX-888:** bind het apparaat eenmalig aan **WinUSB** met
   [Zadig](https://zadig.akeo.ie/) — voor **beide** USB-id's (`04B4:00F3` en
   `04B4:00F1`).

@@ -2,14 +2,14 @@
 //!
 //! For checking the whole receive path — file source, receive chain, decoder,
 //! panel — without a receiver on 518 kHz and without waiting four hours for a
-//! slot. The signal is the one `sdroxide_dsp::navtex_test` builds, put on a
+//! slot. The signal is the one `sdrcrow_dsp::navtex_test` builds, put on a
 //! carrier 1700 Hz above the file's centre so a dial tuned to the centre in
 //! USB lands the tones where the decoder looks for them.
 //!
 //! `cargo run --release --example navtex_capture -- /tmp/navtex.wav`
 
-use sdroxide_dsp::navtex_test::{encode_bits, synth};
-use sdroxide_radio::{Complex32, iq_wav::IqWavWriter};
+use sdrcrow_dsp::navtex_test::{encode_bits, synth};
+use sdrcrow_radio::{Complex32, iq_wav::IqWavWriter};
 
 const RATE: u32 = 48_000;
 /// The dial a receiver would be on for the 518 kHz service.

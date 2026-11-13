@@ -1,7 +1,7 @@
 # An independent PSK-robust decoder, for telling a sample fault from a port fault
 
 `psk_ref.py` reads a BPSK/PSK-robust recording with a decoder written from
-fldigi's own `src/psk/psk.cxx`, and **shares no code with `sdroxide-dsp`**. That
+fldigi's own `src/psk/psk.cxx`, and **shares no code with `sdrcrow-dsp`**. That
 is the whole point of it: when our receiver cannot read a corpus sample, the
 question is whether the sample or the port is at fault, and a second
 implementation with a different front end — a fixed symbol phase instead of a
@@ -38,7 +38,7 @@ samples that read nothing — see `MODE-PROGRESS.md`.
 Two things it is not:
 
 - **not fast** — it is pure Python over a whole recording, seconds per file;
-- **not a gate** — the corpus gates are in `sdroxide-dsp`. This is the tie
+- **not a gate** — the corpus gates are in `sdrcrow-dsp`. This is the tie
   breaker, and it is the reason the PSK500R verdict is a measurement rather than
   a suspicion.
 

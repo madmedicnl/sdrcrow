@@ -1,0 +1,21 @@
+[package]
+name = "sdrcrow-config"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+directories = "6.0.0"
+sdrcrow-types.workspace = true
+serde.workspace = true
+serde_json = "1.0.151"
+thiserror.workspace = true
+toml = "1.1.4"
+tracing.workspace = true
+# Downloads the seasonal broadcast schedule into the config directory. Same
+# version `sdrcrow-solar` uses for its space-weather feeds, so it adds no build
+# time. Pure-Rust TLS.
+ureq = "3.4"
+# Both already in the tree (flate2 via ureq, encoding_rs via symphonia-metadata) —
+# added as direct deps for Aoki's zip and its Shift-JIS, not new downloads.
+flate2 = "1"
+encoding_rs = "0.8"

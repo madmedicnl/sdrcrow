@@ -1,5 +1,5 @@
 //! An [`IqSource`] for a HydraSDR RFOne driven over USB by the native driver in
-//! `sdroxide-hydrasdr` — no SoapySDR, no libhydrasdr, no libusb.
+//! `sdrcrow-hydrasdr` — no SoapySDR, no libhydrasdr, no libusb.
 //!
 //! Receive only: the trait's transmit methods already default to errors, which
 //! is the correct answer for this hardware.
@@ -10,10 +10,10 @@
 
 use std::time::Duration;
 
-use sdroxide_hydrasdr::HydraSdrHandle;
-use sdroxide_hydrasdr::protocol::{GainCurve, RfPort};
-use sdroxide_radio::{Complex32, IqSource, Result};
-use sdroxide_types::{HydraSdrConfig, HydraSdrGain, HydraSdrPort};
+use sdrcrow_hydrasdr::HydraSdrHandle;
+use sdrcrow_hydrasdr::protocol::{GainCurve, RfPort};
+use sdrcrow_radio::{Complex32, IqSource, Result};
+use sdrcrow_types::{HydraSdrConfig, HydraSdrGain, HydraSdrPort};
 
 /// How long the receiver may deliver nothing before the connection counts as
 /// dead. Same three seconds as the other native USB backends: this is a local

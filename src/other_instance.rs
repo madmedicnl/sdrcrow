@@ -42,7 +42,7 @@ pub fn classify(pid: u32, cmdline: &[u8]) -> Option<Instance> {
         .collect();
     let program = args.first()?;
     // The program itself, wherever it was started from — not a script whose
-    // path merely mentions it (`/bin/sh /usr/local/bin/sdroxide-local`, whose
+    // path merely mentions it (`/bin/sh /usr/local/bin/sdrcrow-local`, whose
     // first argument is the shell).
     let name = Path::new(program).file_name()?.to_str()?;
     if name != "sdroxide" && name != "sdroxide.exe" {
@@ -148,18 +148,18 @@ mod tests {
     #[test]
     fn launchers_clients_and_one_shot_tools_are_not_collisions() {
         // The shell running a launcher script is not sdroxide.
-        assert_eq!(classify(1, &cmd(&["/bin/sh", "/usr/local/bin/sdroxide-local"])), None);
+        assert_eq!(classify(1, &cmd(&["/bin/sh", "/usr/local/bin/sdrcrow-local"])), None);
         // A remote client opens no radio of its own.
         assert_eq!(classify(2, &cmd(&["sdroxide", "--connect", "host:4950"])), None);
         assert_eq!(classify(3, &cmd(&["sdroxide", "--version"])), None);
         // Nor does a program that merely has sdroxide in its name.
-        assert_eq!(classify(4, &cmd(&["/usr/bin/sdroxide-helper", "--server"])), None);
+        assert_eq!(classify(4, &cmd(&["/usr/bin/sdrcrow-helper", "--server"])), None);
         assert_eq!(classify(5, &[]), None);
     }
 
     #[test]
     fn the_scan_skips_ourselves_and_unreadable_entries() {
-        let root = std::env::temp_dir().join(format!("sdroxide-proc-test-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!("sdrcrow-proc-test-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
         let write = |pid: &str, args: &[&str]| {
             let dir = root.join(pid);

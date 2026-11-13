@@ -9,7 +9,7 @@ here and what is still Brown underneath.
 
 | Thing | Now |
 | --- | --- |
-| The program's name | `SDRCrow` (`sdroxide_version::FLAVOR`) |
+| The program's name | `SDRCrow` (`sdrcrow_version::FLAVOR`) |
 | `--version` | `sdrcrow SDRCrow 2.3.0` |
 | The binary and the crate | `sdrcrow` (`cargo build -p sdrcrow`, `target/release/sdrcrow`) |
 | The config directory | `~/.config/sdrcrow` on Linux, `org.sdrcrow.sdrcrow` on macOS |
@@ -22,13 +22,13 @@ here and what is still Brown underneath.
 
 ## What is still called sdroxide
 
-- Every crate (`sdroxide-types`, `sdroxide-radio`, `sdroxide-ui`, …) and the
+- Every crate (`sdrcrow-types`, `sdrcrow-radio`, `sdrcrow-ui`, …) and the
   imports between them. Mechanical, large, and safe to do on its own.
-- `SDROXIDE_VERSION`, the environment variable the build script sets.
+- `SDRCROW_VERSION`, the environment variable the build script sets.
 - `packaging/` (the `.desktop` file, the icons), `.github/workflows/`,
   and the update check's feed, which still points at the Brown repository.
 - The i18n domain (`sdroxide`) and the translations' ids.
-- The engine's internal log targets (`sdroxide_radio::…`).
+- The engine's internal log targets (`sdrcrow_radio::…`).
 
 ## Build and run
 

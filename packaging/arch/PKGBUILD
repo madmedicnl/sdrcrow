@@ -2,7 +2,7 @@
 #
 # Builds what the release workflow calls the Standard variant: --no-default-features
 # --features embed-web,rtl433, i.e. no SoapySDR at all. The web client is compiled
-# from crates/sdroxide-web with trunk and baked into the binary (embed-web), the
+# from crates/sdrcrow-web with trunk and baked into the binary (embed-web), the
 # DRM receiver (Dream + faad2 + the FFT) and RADE's FARGAN Opus are built from the
 # vendored sources in the tree, and rtl_433 is statically linked. The only runtime
 # requirement is ALSA.
@@ -51,7 +51,7 @@ build() {
   if ! command -v trunk >/dev/null 2>&1; then
     cargo +stable install trunk --version 0.21.14
   fi
-  (cd crates/sdroxide-web && trunk build --release)
+  (cd crates/sdrcrow-web && trunk build --release)
   cargo +stable build --release --locked -p sdroxide --no-default-features --features embed-web,rtl433
 }
 
@@ -66,7 +66,7 @@ package() {
     install -Dm644 "packaging/icons/sdroxide-brown-$s.png" "$pkgdir/usr/share/icons/hicolor/${s}x${s}/apps/sdroxide-brown.png"
   done
   # The .deb installs all ten udev rules; so does this package.
-  install -Dm644 packaging/linux/60-sdroxide-*.rules "$pkgdir/usr/lib/udev/rules.d/"
+  install -Dm644 packaging/linux/60-sdrcrow-*.rules "$pkgdir/usr/lib/udev/rules.d/"
   # The speech voice is read at run time (CC BY-NC-SA, so it is a data file,
   # not part of the binary); /usr/share/sdroxide/voices is the search path.
   install -Dm644 assets/voices/en_US-hfc_female-medium.onnx \
@@ -76,9 +76,9 @@ package() {
   # Notices that have to travel with the binary (see the comments in Cargo.toml).
   install -Dm644 LICENSE "$pkgdir/usr/share/doc/sdroxide/LICENSE"
   install -Dm644 assets/voices/LICENSE-voice.txt "$pkgdir/usr/share/doc/sdroxide/LICENSE-voice.txt"
-  install -Dm644 crates/sdroxide-speech/assets/LICENSE-cmudict.txt "$pkgdir/usr/share/doc/sdroxide/LICENSE-cmudict.txt"
-  install -Dm644 crates/sdroxide-rx888/firmware/LICENSE.txt "$pkgdir/usr/share/doc/sdroxide/LICENSE-rx888-firmware.txt"
-  install -Dm644 crates/sdroxide-deepcw/LICENSE "$pkgdir/usr/share/doc/sdroxide/LICENSE-deepcw.txt"
+  install -Dm644 crates/sdrcrow-speech/assets/LICENSE-cmudict.txt "$pkgdir/usr/share/doc/sdroxide/LICENSE-cmudict.txt"
+  install -Dm644 crates/sdrcrow-rx888/firmware/LICENSE.txt "$pkgdir/usr/share/doc/sdroxide/LICENSE-rx888-firmware.txt"
+  install -Dm644 crates/sdrcrow-deepcw/LICENSE "$pkgdir/usr/share/doc/sdroxide/LICENSE-deepcw.txt"
   install -Dm644 README.md "$pkgdir/usr/share/doc/sdroxide/README.md"
 }
 

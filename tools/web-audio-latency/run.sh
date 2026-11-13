@@ -19,8 +19,8 @@ set -eu
 
 here="$(cd "$(dirname "$0")" && pwd)"
 root="$(cd "$here/../.." && pwd)"
-build="${TMPDIR:-/tmp}/sdroxide-web-audio-latency-$port"
-raw="${TMPDIR:-/tmp}/sdroxide-web-audio-latency-$port.txt"
+build="${TMPDIR:-/tmp}/sdrcrow-web-audio-latency-$port"
+raw="${TMPDIR:-/tmp}/sdrcrow-web-audio-latency-$port.txt"
 port="${PORT:-8733}"
 long="${LONG:-0}"
 jitter="${JITTER:-0}"
@@ -40,8 +40,8 @@ fi
 
 rm -rf "$build" "$raw"
 mkdir -p "$build"
-cp "$root/crates/sdroxide-web/assets/audio_bridge.js" "$build/"
-cp "$root/crates/sdroxide-web/assets/pcm_worklet.js" "$build/"
+cp "$root/crates/sdrcrow-web/assets/audio_bridge.js" "$build/"
+cp "$root/crates/sdrcrow-web/assets/pcm_worklet.js" "$build/"
 cp "$here/page.html" "$here/harness.js" "$here/tap_worklet.js" "$build/"
 cp "$here/tests.html" "$here/worklet_tests.js" "$build/"
 cp "$root/tools/web-audio-recovery/serve.py" "$build/"

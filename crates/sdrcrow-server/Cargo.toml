@@ -1,0 +1,86 @@
+[package]
+name = "sdrcrow-server"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+axum = { version = "0.8.9", features = ["ws"] }
+crossbeam-channel.workspace = true
+futures-util = "0.3.34"
+mime_guess = "2.0.5"
+opus = "0.4.0"
+# Only ever built with `arm-no-simd` above — reached so that cargo will unify
+# `opusic-sys`'s `no-simd` feature into the `opus` build. See that feature.
+opusic-sys = { version = "0.7.5", optional = true }
+rtrb.workspace = true
+rust-embed = { version = "8.12.0", features = ["interpolate-folder-path"], optional = true }
+sdrcrow-proto = { path = "../sdrcrow-proto" }
+# The relay behind /aircraft-info (src/aircraft.rs): the questions to adsbdb
+# and Planespotters, and their 24 h cache, asked once for every client.
+sdrcrow-aircraft-online = { path = "../sdrcrow-aircraft-online", features = ["fetch"] }
+# The space-weather feed behind /solar-ws (src/solar.rs), including its
+# native-only network and cache half — which the server always is.
+sdrcrow-solar = { path = "../sdrcrow-solar" }
+# What the station remembers of each aircraft for a day (src/history.rs): the
+# model is pure, the file and the routes are this crate's.
+sdrcrow-aircraft-history = { path = "../sdrcrow-aircraft-history", features = ["gzip"] }
+sdrcrow-types = { path = "../sdrcrow-types" }
+# The sign-in cookie's signature (`session_cookie`): HMAC-SHA256, whose hash is
+# already in the tree through rustls, so this is a direct use of a crate the
+# build has rather than a new dependency in the download. `subtle` is the
+# constant-time comparison the MAC check needs — a byte-at-a-time one is a
+# timing oracle on the thing that authenticates every connection.
+sha2 = "0.11.0"
+subtle = "2.6.1"
+# The radio listing on /radios, which is the only JSON this server speaks —
+# everything on the sockets is postcard.
+serde = { workspace = true }
+serde_json = "1.0.151"
+thiserror.workspace = true
+tokio = { version = "1.53.1", features = ["rt-multi-thread", "macros", "net", "time", "sync"] }
+# For the one layer that has to run *before* routing rather than after it: the
+# reverse-proxy prefix strip (`strip_proxy_prefix`). `Router::layer` is applied
+# to matched routes, so it is too late to change which route matches.
+tower = { version = "0.5.3", default-features = false }
+tower-http = { version = "0.7.0", features = ["fs", "set-header"] }
+tracing.workspace = true
+triple_buffer = "9.0.0"
+# The remote client's screen settings are kept on the server in a JSON beside
+# the rest of the config, so the server writes them through the same store the
+# native program does rather than hand-rolling the file.
+sdrcrow-config = { path = "../sdrcrow-config" }
+# SondeHub relay (`sonde_online.rs`) asks it for the sonde list. Also a
+# dev-dependency below, for the sign-in test.
+ureq = "3.4.0"
+
+[dev-dependencies]
+# Only to POST to /signin in the end-to-end cookie test — the one thing here
+# that speaks plain HTTP. Already in the tree at this version.
+ureq = "3.4.0"
+# The server only uses the engine, not SoapySDR device handling — leave
+# `soapy` for the top-level binary to decide.
+sdrcrow-radio = { path = "../sdrcrow-radio", default-features = false }
+tokio-tungstenite = "0.30.0"
+# `start_paused` clocks, so the sign-in gate's three-second lockout is asserted
+# rather than waited out — the tests would otherwise take longer than the rest
+# of the suite put together.
+tokio = { version = "1.53.1", features = ["test-util"] }
+
+[features]
+embed-web = ["dep:rust-embed"]
+# A cross build for a **no-NEON 32-bit ARM** baseline. Debian's `armhf` is
+# ARMv7-A + VFPv3, and NEON is *not* part of that baseline — so a build that
+# needs it can die with SIGILL on hardware that is otherwise perfectly well
+# supported (fork discussion #13, ipaddr42).
+#
+# Opus is the crate that bites: it builds its runtime-detected NEON intrinsics
+# under cross-compilation without giving them `-mfpu=neon`, which is a hard
+# compile error ("target specific option mismatch"), and its build script
+# exposes no env var to turn them off — only this feature. `no-simd` is the
+# other half of the same switch (`OPUS_DISABLE_INTRINSICS=ON`), and it is the
+# correct build for that baseline rather than a workaround: there is no NEON
+# there to detect.
+#
+# Off by default and harmless to every other build: with the feature off,
+# `opusic-sys` is not even a dependency of this crate.
+arm-no-simd = ["dep:opusic-sys", "opusic-sys/no-simd"]

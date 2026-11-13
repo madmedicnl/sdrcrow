@@ -23,12 +23,12 @@ set -eu
 root="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$root"
 
-dist="crates/sdroxide-web/dist"
-config="${SDROXIDE_WEBTEST_CONFIG:-$HOME/.config/sdroxide-webtest}"
+dist="crates/sdrcrow-web/dist"
+config="${SDROXIDE_WEBTEST_CONFIG:-$HOME/.config/sdrcrow-webtest}"
 port="${SDROXIDE_WEBTEST_PORT:-4951}"
 
 echo "== building the browser client"
-(cd crates/sdroxide-web && trunk build --release)
+(cd crates/sdrcrow-web && trunk build --release)
 
 echo "== preparing a test station in $config"
 python3 - "$config" <<'PY'

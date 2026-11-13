@@ -74,9 +74,9 @@ for Raspberry Pi OS Bookworm. Download it on the Pi itself:
 
 ```sh
 cd /tmp
-wget https://github.com/madmedicnl/sdroxide-brown/releases/latest/download/sdroxide-linux-aarch64-compat.AppImage
-chmod +x sdroxide-linux-aarch64-compat.AppImage
-./sdroxide-linux-aarch64-compat.AppImage --version
+wget https://github.com/madmedicnl/sdroxide-brown/releases/latest/download/sdrcrow-linux-aarch64-compat.AppImage
+chmod +x sdrcrow-linux-aarch64-compat.AppImage
+./sdrcrow-linux-aarch64-compat.AppImage --version
 ```
 
 `--version` should print the **SDR Oxide Brown** build number. If it refuses to
@@ -87,13 +87,13 @@ Put it where you can call it by name:
 
 ```sh
 mkdir -p ~/bin
-mv sdroxide-linux-aarch64-compat.AppImage ~/bin/sdroxide
+mv sdrcrow-linux-aarch64-compat.AppImage ~/bin/sdroxide
 chmod +x ~/bin/sdroxide
 ```
 
 If you prefer a `.deb`, the same release page has
-`sdroxide-linux-aarch64-compat.deb`; install it with
-`sudo apt install ./sdroxide-…-aarch64-compat.deb` and the command is then simply
+`sdrcrow-linux-aarch64-compat.deb`; install it with
+`sudo apt install ./sdrcrow-…-aarch64-compat.deb` and the command is then simply
 `sdroxide`.
 
 > **The udev rules matter.** A Linux user needs permission to open a USB SDR. If

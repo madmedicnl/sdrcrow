@@ -12,7 +12,7 @@ deterministically with the audio-thread globals stubbed — and then the harness
 at 48 kHz and again at 44.1 kHz.
 
 The harness page is driven in a headless browser against the **real** bridge
-scripts (`crates/sdroxide-web/assets/audio_bridge.js` and `pcm_worklet.js`) so
+scripts (`crates/sdrcrow-web/assets/audio_bridge.js` and `pcm_worklet.js`) so
 that what is measured is the code the client runs, not a copy of it. Audio is
 handed over the way the wasm client hands it over: a lump per "frame", carrying
 everything the audio clock says is due since the last one — which is what
@@ -186,10 +186,10 @@ What the sources put there, by code:
 - SSB and CW: the demodulator's own passband, about 3 kHz.
 - AM: about 6 kHz.
 - WFM: a 383-tap 15 kHz low-pass ahead of the decimation — `WfmDemod` in
-  `crates/sdroxide-dsp/src/demod.rs` (`WFM_LPF_TAPS`, `RealFirDecim::new(…,
+  `crates/sdrcrow-dsp/src/demod.rs` (`WFM_LPF_TAPS`, `RealFirDecim::new(…,
   15_000.0, …)`), whose comment puts the pilot 111 dB down.
 - DAB/DAB+ and DRM: the AAC / xHE-AAC decoders' own bandwidth, about 20 kHz
-  (`sdroxide-dab`, `sdroxide-drm`); the tree does not filter the audio again.
+  (`sdrcrow-dab`, `sdrcrow-drm`); the tree does not filter the audio again.
 
 So nothing is *expected* above 22.05 kHz, and the kernel is chosen for its
 passband. It is not an anti-alias filter, and the harness measures what that

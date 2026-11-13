@@ -3336,15 +3336,15 @@ sets it on the station rather than on its own laptop. Files are named for when
 they started and what the radio was doing:
 
 ```
-sdroxide_2026-08-23_14-32-05Z_14.074000MHz_USB.mp3
-sdroxide_2026-08-23_14-32-05Z_14.074000MHz_USB.wav
+sdrcrow_2026-08-23_14-32-05Z_14.074000MHz_USB.mp3
+sdrcrow_2026-08-23_14-32-05Z_14.074000MHz_USB.wav
 ```
 
 — the UTC date and time, then the dial frequency and mode at the moment you
 pressed REC, and the extension of the format you chose. Tuning or changing mode
 later does not rename the file. All radios
 share the one folder, so the second and later radios of a multi-radio session
-put their number in the name (`sdroxide_radio1_…`); recording is per radio, and
+put their number in the name (`sdrcrow_radio1_…`); recording is per radio, and
 each tab has its own REC writing its own file.
 
 Both formats write 48 kHz audio on a thread of its own, so that neither the
@@ -4529,9 +4529,9 @@ manual entries. You can:
   tells you which one to say when you report it. Everything the log is really
   keyed on — callsign, date, band, mode, frequency — is plain ASCII in all of
   them and imports correctly either way. Exports are always UTF-8.
-- **ADIF** — export the whole log to `sdroxide-log.adi` (also the file you sign
+- **ADIF** — export the whole log to `sdrcrow-log.adi` (also the file you sign
   with TQSL for LoTW).
-- **TXT** — export the whole log to `sdroxide-log.txt`.
+- **TXT** — export the whole log to `sdrcrow-log.txt`.
 
 A small status column on each row shows QSL state: a green **✓** once a QSO is
 confirmed (LoTW, eQSL or card), a dim **↑** once it has been uploaded but not yet
@@ -6427,7 +6427,7 @@ standard provides for and nothing transmits.
 There is a signal generator in the source tree that synthesises a sky:
 
 ```
-cargo run --release -p sdroxide-adsb --example adsb_iq -- /tmp/sky.iq
+cargo run --release -p sdrcrow-adsb --example adsb_iq -- /tmp/sky.iq
 sdroxide --file /tmp/sky.iq --rate 2400000 --freq 1090000000 --mode ADS-B
 ```
 
@@ -6442,7 +6442,7 @@ decoder finds in them. Point it at a checkout of
 
 ```
 SDROXIDE_ADSB_IQ=/path/to/dump1090_rs/test_iq \
-  cargo test -p sdroxide-adsb --test reference_corpus -- --nocapture
+  cargo test -p sdrcrow-adsb --test reference_corpus -- --nocapture
 ```
 
 SDRoxide finds all fourteen messages in those three captures, and nothing the
@@ -6454,7 +6454,7 @@ Record a few seconds and look at what the receiver actually heard:
 
 ```
 sdroxide --server --freq 1090000000 --mode ADS-B --record-iq /tmp/air.iq
-cargo run --release -p sdroxide-adsb --example adsb_replay -- /tmp/air.iq <rate>
+cargo run --release -p sdrcrow-adsb --example adsb_replay -- /tmp/air.iq <rate>
 ```
 
 The summary line at the end distinguishes the two failures. **Preambles but no
@@ -6754,7 +6754,7 @@ they are.
 There is a signal generator in the source tree that synthesises a band:
 
 ```
-cargo run --release -p sdroxide-vdl2 --example vdl2_iq -- /tmp/vdl2.iq
+cargo run --release -p sdrcrow-vdl2 --example vdl2_iq -- /tmp/vdl2.iq
 sdroxide --file /tmp/vdl2.iq --rate 2400000 --freq 136825000 --mode VDL2
 ```
 
@@ -6780,7 +6780,7 @@ Record a minute and look at what the receiver actually heard:
 
 ```
 sdroxide --server --freq 136825000 --mode VDL2 --record-iq /var/tmp/air.iq
-cargo run --release -p sdroxide-vdl2 --example vdl2_replay -- /var/tmp/air.iq <rate> 136825000
+cargo run --release -p sdrcrow-vdl2 --example vdl2_replay -- /var/tmp/air.iq <rate> 136825000
 ```
 
 The replay prints the counters per channel and one sentence saying what to do
@@ -8013,7 +8013,7 @@ the outside.
 
    ```bash
    sdroxide --record-iq band.iq            # 8 bytes a sample: 16 MB/s at 2 Msps
-   cargo run --release -p sdroxide-ism --example ism_replay -- band.iq 868880000 2025000 --survey
+   cargo run --release -p sdrcrow-ism --example ism_replay -- band.iq 868880000 2025000 --survey
    ```
 
    `--survey` ignores the channel plan and tiles the *whole* window, finishing with
@@ -8032,7 +8032,7 @@ Two tools ship with the decoder. The first writes a synthetic 868 MHz band with
 four sensors whose readings are known, as an IQ file the radio can tune:
 
 ```bash
-cargo run --release -p sdroxide-ism --example ism_iq -- band.iq 10
+cargo run --release -p sdrcrow-ism --example ism_iq -- band.iq 10
 cargo run --release -- --file band.iq --rate 2025000 --freq 868880000 --mode NFM
 ```
 
@@ -8044,8 +8044,8 @@ or not — which is how you find out what your own neighbourhood is transmitting
 Capture one with `--record-iq` (see [5.6](#56-nothing-is-being-decoded)), then:
 
 ```bash
-cargo run --release -p sdroxide-ism --example ism_replay -- band.iq 868880000 2025000
-cargo run --release -p sdroxide-ism --example ism_replay -- band.iq 868880000 2025000 --survey
+cargo run --release -p sdrcrow-ism --example ism_replay -- band.iq 868880000 2025000
+cargo run --release -p sdrcrow-ism --example ism_replay -- band.iq 868880000 2025000 --survey
 ```
 
 The first listens on the channel plan, as the radio does. The second tiles the
@@ -10197,7 +10197,7 @@ so a spun dial cannot flood its I2C bus — and the receive code covers a whole
 band at a time, so ordinary tuning puts nothing on the bus at all. What the
 board's outputs then *do* is decided by the firmware **you** program into its
 Pico: by design, sdroxide sends the frequencies and nothing else. Run with
-`RUST_LOG=sdroxide_hpsdr=debug` to watch the board being found and each update
+`RUST_LOG=sdrcrow_hpsdr=debug` to watch the board being found and each update
 going out.
 
 - **IO board RX input** — the board's `REG_RF_INPUTS`, and the one thing about it
@@ -10216,10 +10216,10 @@ going out.
 > and reporting what you see:
 >
 > ```sh
-> RUST_LOG=sdroxide_hpsdr=debug sdroxide
+> RUST_LOG=sdrcrow_hpsdr=debug sdroxide
 > ```
 >
-> Use `sdroxide_hpsdr=trace` for per-packet detail. The log shows discovery
+> Use `sdrcrow_hpsdr=trace` for per-packet detail. The log shows discovery
 > replies (board, protocol, MAC, raw bytes), the protocol and sample rate chosen,
 > the first RX datagram's structure, and a periodic *RX throughput* line
 > (datagrams/samples/ksps). A plausible ksps close to the selected sample rate
@@ -10309,7 +10309,7 @@ Receive only — there is no transmit path in this hardware.
   You do not have to guess it: run
 
   ```sh
-  RUST_LOG=sdroxide_rtlsdr=debug sdroxide
+  RUST_LOG=sdrcrow_rtlsdr=debug sdroxide
   ```
 
   and after about twenty seconds the log prints a line like
@@ -10519,7 +10519,7 @@ the radio simply declines the key-down.
 >
 > If you do not have a FLEX either, you can still exercise the backend: a
 > wire-level radio simulator ships in the source tree. Run
-> `cargo run -p sdroxide-smartsdr --example sim`, then point this tab at
+> `cargo run -p sdrcrow-smartsdr --example sim`, then point this tab at
 > `127.0.0.1:4992`.
 
 #### 6.2.7 PlutoSDR (ADALM-Pluto)
@@ -10617,7 +10617,7 @@ configured in exactly the same way as one on your desk.
   sdroxide to every frequency it asks for. It is deliberately **not** written to
   the radio's own `xo_correction`, which is persistent and would outlive the
   session and surprise the next program to open the radio. Run with
-  `RUST_LOG=sdroxide_pluto=debug` and the log prints the measured clock error
+  `RUST_LOG=sdrcrow_pluto=debug` and the log prints the measured clock error
   after about twenty seconds — that is the number to enter.
 - **Duplex** — whether the AD9361 runs both directions at once (**FDD**, how a
   Pluto boots and what sdroxide has always left it in) or one at a time
@@ -10861,7 +10861,7 @@ a quiet signal but a chopped one: the envelope switches on and off at the buffer
 rate, which is buzzy and thin in SSB and completely unreadable in NFM, where
 every restart is a click in the receiver's discriminator. Nothing on screen
 shows this — sdroxide's own monitor sees the samples it sent, not the gaps
-between them — so run with `RUST_LOG=sdroxide_pluto=debug` if you suspect it and
+between them — so run with `RUST_LOG=sdrcrow_pluto=debug` if you suspect it and
 watch for the line that says the link is not carrying the full sample rate.
 The cure is to ask for less: **2.083 Msps**, the lowest a stock Pluto accepts,
 is plenty for voice and leaves the most headroom. Reaching the radio over real
@@ -10923,7 +10923,7 @@ symptom to report if that ever fails.
 > check:
 >
 > ```
-> RUST_LOG=sdroxide_pluto=debug cargo run -p sdroxide-pluto --example probe -- 192.168.2.1
+> RUST_LOG=sdrcrow_pluto=debug cargo run -p sdrcrow-pluto --example probe -- 192.168.2.1
 > ```
 >
 > It prints the limits the radio published, streams for two seconds, and reports
@@ -12412,7 +12412,7 @@ sidetone low and nobody came back.
 > its VFO A/B all checked out. Transmit, the serial CAT port on a bench, the
 > higher sample rates and the FDM-S1/S2 have not been. If it misbehaves, **Copy diagnostic report** on the Radio tab puts
 > every command exchanged with the device on the clipboard; `cargo run -p
-> sdroxide-elad --example probe` does the same from a terminal and also settles
+> sdrcrow-elad --example probe` does the same from a terminal and also settles
 > what rate the device is really in.
 >
 > One of the two things that wanted checking has now been answered on a real
@@ -12697,7 +12697,7 @@ If you change band often, use the cable.
 > program in the way:
 >
 > ```sh
-> cargo run -p sdroxide-limerfe --example rfe -- /dev/ttyUSB0
+> cargo run -p sdrcrow-limerfe --example rfe -- /dev/ttyUSB0
 > ```
 >
 > With no port named it lists the ports it can see. It only says hello and reads
@@ -12773,12 +12773,12 @@ comes through.
 > its datasheet in every case. **Copy diagnostic report** on this tab is the
 > thing to send: it dumps every library call this session made — what was asked
 > for and what LimeSuite said — with the LimeRFE's own transactions beside it,
-> on either of its cables. `cargo run -p sdroxide-lime --example probe` does the
+> on either of its cables. `cargo run -p sdrcrow-lime --example probe` does the
 > radio half from a terminal.
 >
 > The **console log** is the other half, and it is where an over is described:
 > start sdroxide from a terminal to see it. `RUST_LOG=info sdroxide` is enough
-> for the transmit and LimeRFE lines; `RUST_LOG=sdroxide_lime=debug,sdroxide_limerfe=debug,info`
+> for the transmit and LimeRFE lines; `RUST_LOG=sdrcrow_lime=debug,sdrcrow_limerfe=debug,info`
 > adds every retune. On Windows, run `sdroxide.exe` from `cmd` or PowerShell
 > rather than from Explorer, or the console goes nowhere.
 >
@@ -12889,7 +12889,7 @@ the spur goes when you do.
 > (which is where a span that is half or double what it should be would show, and
 > which of the two rate tables a rate came from), and the first samples both as
 > raw 12-bit values and decoded as I/Q pairs.
-> `cargo run -p sdroxide-hydrasdr --example probe` does the same from a terminal.
+> `cargo run -p sdrcrow-hydrasdr --example probe` does the same from a terminal.
 
 #### 6.2.19 KiwiSDR / Web-888 (network receivers)
 
@@ -13403,8 +13403,8 @@ a small **⇱ WINDOW** chip at its top-right: click it and the tool moves into i
 own OS window (where the chip reads **⇱ DOCK** to bring it back). Closing an
 undocked tool closes it, as the ✕ does when it is docked. A tool window is
 session-only, like its position inside the main window — where it sat is not
-remembered across a restart. Their app-ids are `sdroxide-tool-<name>` (e.g.
-`sdroxide-tool-scanner`, `sdroxide-tool-mail`), so one rule can float them all.
+remembered across a restart. Their app-ids are `sdrcrow-tool-<name>` (e.g.
+`sdrcrow-tool-scanner`, `sdrcrow-tool-mail`), so one rule can float them all.
 
 Every menu tool window has one, and each remembers its own size: **Settings**,
 SCHEDULE, RECORDINGS, SPOTS, PUBLIC SDRS, the voice keyer, and the AIS / ADS-B /
@@ -13419,17 +13419,17 @@ controls.
 
 | Tool window | Application id |
 |---|---|
-| Settings | `sdroxide-tool-settings` |
-| Schedule | `sdroxide-tool-schedule` |
-| Recordings | `sdroxide-tool-recordings` |
-| Spots | `sdroxide-tool-spots` |
-| Public SDRs | `sdroxide-tool-public-sdrs` |
-| Voice keyer | `sdroxide-tool-voice-keyer` |
-| AIS setup | `sdroxide-tool-ais-setup` |
-| ADS-B setup | `sdroxide-tool-adsb-setup` |
-| VDL2 setup | `sdroxide-tool-vdl2-setup` |
-| FSQ contacts | `sdroxide-tool-fsq-contacts` |
-| Digital-mode setup | `sdroxide-tool-digi-setup` |
+| Settings | `sdrcrow-tool-settings` |
+| Schedule | `sdrcrow-tool-schedule` |
+| Recordings | `sdrcrow-tool-recordings` |
+| Spots | `sdrcrow-tool-spots` |
+| Public SDRs | `sdrcrow-tool-public-sdrs` |
+| Voice keyer | `sdrcrow-tool-voice-keyer` |
+| AIS setup | `sdrcrow-tool-ais-setup` |
+| ADS-B setup | `sdrcrow-tool-adsb-setup` |
+| VDL2 setup | `sdrcrow-tool-vdl2-setup` |
+| FSQ contacts | `sdrcrow-tool-fsq-contacts` |
+| Digital-mode setup | `sdrcrow-tool-digi-setup` |
 
 **The app does not place the window on Wayland.** A Wayland client is given no
 absolute position, so on niri, sway or GNOME the window opens where the
@@ -13438,33 +13438,33 @@ rule** matching its application id:
 
 | Module | Application id |
 |---|---|
-| Panadapter (SP1) | `sdroxide-panadapter` |
-| AUX SP (second spectrum) | `sdroxide-panadapter-aux` |
-| Operating panel | `sdroxide-panel` |
-| Controls | `sdroxide-controls` |
-| Band & mode selector | `sdroxide-bandmenu` |
-| Tool windows | `sdroxide-tool-<name>` |
+| Panadapter (SP1) | `sdrcrow-panadapter` |
+| AUX SP (second spectrum) | `sdrcrow-panadapter-aux` |
+| Operating panel | `sdrcrow-panel` |
+| Controls | `sdrcrow-controls` |
+| Band & mode selector | `sdrcrow-bandmenu` |
+| Tool windows | `sdrcrow-tool-<name>` |
 
 For **niri**, in `~/.config/niri/config.kdl` (use your own output names —
 `niri msg outputs`):
 
 ```kdl
 window-rule {
-    match app-id="sdroxide-panadapter"
+    match app-id="sdrcrow-panadapter"
     open-floating true
     open-on-output "HDMI-A-1"
     default-column-width { fixed 1200; }
     default-window-height { fixed 720; }
 }
 window-rule {
-    match app-id="sdroxide-controls"
+    match app-id="sdrcrow-controls"
     open-floating true
     open-on-output "HDMI-A-1"
     default-column-width { fixed 1400; }
     default-window-height { fixed 150; }
 }
 window-rule {
-    match app-id="sdroxide-panel"
+    match app-id="sdrcrow-panel"
     open-floating true
     open-on-output "DP-1"
     default-column-width { fixed 560; }
@@ -13479,7 +13479,7 @@ for_window [class="sdroxide" title="panadapter"] floating enable, move to worksp
 for_window [class="sdroxide" title="controls"] floating enable, move to workspace 2
 for_window [class="sdroxide" title="panel"] floating enable
 # All tool windows float
-for_window [class="sdroxide" title="sdroxide-tool-"] floating enable
+for_window [class="sdroxide" title="sdrcrow-tool-"] floating enable
 ```
 
 For **AwesomeWM**, in `~/.config/awesome/rc.lua` (inside the `awful.rules.rules`
@@ -13492,7 +13492,7 @@ table):
   properties = { floating = true, tag = "2" } },
 { rule = { class = "sdroxide", name = "panel" },
   properties = { floating = true } },
-{ rule = { class = "sdroxide", name = "sdroxide-tool-" },
+{ rule = { class = "sdroxide", name = "sdrcrow-tool-" },
   properties = { floating = true } },
 ```
 
@@ -14218,7 +14218,7 @@ put sdroxide's address in **TCI Server** (e.g. `127.0.0.1:50002`), set PTT to
 MSHV are configured the same way. Verified against WSJT-X on this address.
 
 If a client won't connect, run sdroxide with
-`RUST_LOG=sdroxide_tci=debug` — the whole TCI conversation is logged in both
+`RUST_LOG=sdrcrow_tci=debug` — the whole TCI conversation is logged in both
 directions, which is usually enough to see which command it gave up on. WSJT-X
 also records the reason in `~/.local/share/WSJT-X/wsjtx_syslog.log`
 (`handle_transceiver_failure: reason: …`).
@@ -14542,7 +14542,7 @@ On Linux the two USB kinds need permissions the distribution does not grant.
 Install the packaged rule and replug:
 
 ```
-sudo cp packaging/linux/60-sdroxide-relay.rules /usr/lib/udev/rules.d/
+sudo cp packaging/linux/60-sdrcrow-relay.rules /usr/lib/udev/rules.d/
 sudo udevadm control --reload
 ```
 
@@ -14681,7 +14681,7 @@ J16 open-collector outputs; see [6.2.3](#623-hpsdr-network-radios).
 #### 6.11.6 If it does not click
 
 - **The device is not in the list.** On Linux, install the udev rule above and
-  replug. `cargo run -p sdroxide-relay --example relay -- --list --all` prints
+  replug. `cargo run -p sdrcrow-relay --example relay -- --list --all` prints
   every HID device the machine can see, which separates "not permitted" from
   "not recognised".
 - **A CM108 card that is listed and does nothing.** Several clones carry a
@@ -15966,7 +15966,7 @@ If you are running a build without the embedded web UI, point the server at a
 trunk-built web directory:
 
 ```
-sdroxide --server --web-root path/to/sdroxide-web/dist
+sdroxide --server --web-root path/to/sdrcrow-web/dist
 ```
 
 ### 9.2 What works in the browser
@@ -16108,20 +16108,20 @@ and the microphone ([9.3](#93-audio-needs-a-secure-context)).
 Asked for on [fork discussion #17](https://github.com/madmedicnl/sdroxide-brown/discussions/17),
 and here it is so nobody has to ask again.
 
-The Debian package (`sdroxide`, or `sdroxide-soapysdr`) owns **exactly** this,
+The Debian package (`sdroxide`, or `sdrcrow-soapysdr`) owns **exactly** this,
 and every line of it goes with the package:
 
 | Path | What |
 | --- | --- |
 | `/usr/bin/sdroxide` | the binary — client and server are the same program |
 | `/usr/share/applications/sdroxide.desktop` | the desktop menu entry |
-| `/usr/lib/udev/rules.d/60-sdroxide-*.rules` | nine dongle rules, so no root is needed |
+| `/usr/lib/udev/rules.d/60-sdrcrow-*.rules` | nine dongle rules, so no root is needed |
 | `/usr/share/icons/hicolor/*/apps/sdroxide-brown.{png,svg}` | the icon, in nine sizes |
 | `/usr/share/sdroxide/voices/` | the speech voice, for spoken announcements |
 | `/usr/share/doc/sdroxide/` | README, `copyright`, and four licence notices |
 
 ```sh
-sudo apt purge sdroxide-soapysdr      # or sdroxide — removes every path above
+sudo apt purge sdrcrow-soapysdr      # or sdroxide — removes every path above
 rm -rf ~/.config/sdroxide-brown      # every setting, logbook and recording it wrote
 ```
 
@@ -16759,7 +16759,7 @@ tools/gen_broadcast_codes.py --season b26
 
 Longwave and the HF standard-time stations are not in EiBi's file — it starts at
 2300 kHz and skips time signals — and are maintained by hand in
-`crates/sdroxide-types/src/broadcast_seed.json`.
+`crates/sdrcrow-types/src/broadcast_seed.json`.
 
 #### The LISTEN window
 
@@ -16835,7 +16835,7 @@ settings page is opened; and it is not a property of the radio, so it stays on
 this screen rather than in Settings. Each reception captures it when it is
 logged. **REPORT** writes that reception out as a text report to save and send —
 the numbers, the **received-at** locator and the aerial, signed with your report
-identity — and names the program there as **sdroxide_SWL**, so a broadcaster can
+identity — and names the program there as **sdrcrow_SWL**, so a broadcaster can
 tell it apart from the amateur build.
 
 **MAIL REPORT…** in the entry form is the same report, written and opened in your
@@ -17380,7 +17380,7 @@ the only way the two builds can affect each other.
 You do not have to know any of that to copy a station's setup somewhere else.
 **Settings → General → Settings file** has **EXPORT…**, which writes every
 settings file below — the root ones and each radio's — into a single
-`sdroxide-settings.json`, and **IMPORT…**, which puts one back. Between two
+`sdrcrow-settings.json`, and **IMPORT…**, which puts one back. Between two
 machines, two user accounts on one machine, or a laptop being rebuilt, that is
 the whole job.
 
@@ -17603,7 +17603,7 @@ too: it is the one fault that leaves every other line green.
 The audio device is losing samples. The line in the diagnostics reads
 
 ```
-WARN sdroxide_audio: radio audio input: the audio stream from "…" glitched — the
+WARN sdrcrow_audio: radio audio input: the audio stream from "…" glitched — the
 host says samples were lost between two callbacks …
 ```
 
@@ -17628,7 +17628,7 @@ fifteen-second period misaligns and decodes nothing while the waterfall looks
 perfectly healthy. When that happens the FT8 panel says so directly:
 
 ```
-WARN sdroxide_digi: FT8: the last receive period arrived 0.4 s short of the
+WARN sdrcrow_digi: FT8: the last receive period arrived 0.4 s short of the
 15.0 s it should be — the audio device is losing samples …
 ```
 
@@ -17645,7 +17645,7 @@ a different fault — no audio is arriving at all, rather than audio arriving wi
 a hole in it:
 
 ```
-WARN sdroxide_digi: FT8: no receive audio is reaching the decoder — a whole
+WARN sdrcrow_digi: FT8: no receive audio is reaching the decoder — a whole
 15.0 s period arrived empty, so nothing can decode …
 ```
 
@@ -17723,7 +17723,7 @@ anything dropped really was dropped.
 On Linux, the USB HID relay boards and the CM108 sound cards need a udev rule
 that no distribution ships. Install it and replug the device — see
 [6.11.1](#6111-what-it-can-drive). If the device does not appear in the picker
-at all, `cargo run -p sdroxide-relay --example relay -- --list --all` prints
+at all, `cargo run -p sdrcrow-relay --example relay -- --list --all` prints
 every HID device the machine can see, which tells "not permitted" apart from
 "not recognised". Several CM108 *clones* carry a genuine C-Media id and ignore
 the GPIO report entirely; nothing but listening for the click separates those.
@@ -18353,7 +18353,7 @@ All in [§6.2.6](#626-smartsdr-flexradio-network-radios):
   the Q branch — a V3's HF port — with `Automatic` switching at the tuner's
   24 MHz floor. 17 m and 15 m come in on the ADC's second Nyquist zone, so
   they work, with `28.8 MHz - dial` folded on top of them.
-- **You do not have to guess ppm:** `RUST_LOG=sdroxide_rtlsdr=debug` prints a
+- **You do not have to guess ppm:** `RUST_LOG=sdrcrow_rtlsdr=debug` prints a
   measured figure after ~20 s. Over `rtl_tcp` that measurement is
   meaningless — calibrate on USB once and carry the number across.
 - Dongles ship with serial `00000001`; program distinct serials with

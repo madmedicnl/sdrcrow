@@ -49,7 +49,7 @@ name: armv7 probe
 # baseline, so a NEON build can die with SIGILL on hardware that is otherwise
 # supported. Opus's own switch for this is `OPUS_DISABLE_INTRINSICS`, which its
 # build script exposes only as the `no-simd` feature, so the build turns it on
-# through `sdroxide-server/arm-no-simd` — off by default, and the only thing
+# through `sdrcrow-server/arm-no-simd` — off by default, and the only thing
 # that pulls `opusic-sys` into that crate at all.
 
 on:
@@ -103,13 +103,13 @@ jobs:
           # Autotools triple, not the Rust one: rade_c's CMake passes
           # this to its ExternalProject opus `configure --host=`, and
           # with it empty configure tries to run the cross-built test
-          # programs. See crates/sdroxide-rade/build.rs.
+          # programs. See crates/sdrcrow-rade/build.rs.
           CMAKE_C_COMPILER_TARGET: arm-linux-gnueabihf
         run: |
           cross build --release --locked \
             --target armv7-unknown-linux-gnueabihf \
             -p sdroxide --no-default-features \
-            --features sdroxide-server/arm-no-simd
+            --features sdrcrow-server/arm-no-simd
 
       - name: What came out
         run: |
@@ -118,5 +118,5 @@ jobs:
 
       - uses: actions/upload-artifact@v7
         with:
-          name: sdroxide-linux-armv7-cat
+          name: sdrcrow-linux-armv7-cat
           path: target/armv7-unknown-linux-gnueabihf/release/sdroxide

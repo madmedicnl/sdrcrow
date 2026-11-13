@@ -1,8 +1,0 @@
-[package]
-name = "sdroxide-wsjtx"
-version.workspace = true
-edition.workspace = true
-
-[dependencies]
-sdroxide-types.workspace = true
-tracing.workspace = true

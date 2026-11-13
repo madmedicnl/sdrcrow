@@ -8,7 +8,7 @@
 # implementation and diff against it.
 #
 #   ./tools/gen_js8_varicode_vectors.sh ~/Development/js8call \
-#       > crates/sdroxide-digi/tests/js8_varicode_vectors/mod.rs
+#       > crates/sdrcrow-digi/tests/js8_varicode_vectors/mod.rs
 #
 # Needs Qt6 development files and a C++17 compiler. Only ever run when the
 # upstream commit in vendor/js8call/PROVENANCE.md changes; the output is

@@ -2,7 +2,7 @@
 """Refresh the compiled-in EiBi lookup tables and the offline fallback schedule.
 
 sdroxide downloads EiBi's seasonal schedule at runtime and parses it itself (see
-`sdroxide_types::broadcast::parse_schedule`), so this tool does *not* convert
+`sdrcrow_types::broadcast::parse_schedule`), so this tool does *not* convert
 schedule rows — doing that here as well would be a second implementation to keep
 in step with the first. It only produces the two things that cannot be fetched
 usefully at runtime:
@@ -29,7 +29,7 @@ import urllib.request
 from pathlib import Path
 
 EIBI = "http://www.eibispace.de/dx"
-OUT_DIR = Path(__file__).resolve().parent.parent / "crates/sdroxide-types/src"
+OUT_DIR = Path(__file__).resolve().parent.parent / "crates/sdrcrow-types/src"
 
 TARGET_PREFIX = {"C": "Central", "E": "East", "N": "North", "S": "South", "W": "West"}
 

@@ -62,7 +62,7 @@ capture) and `offset=` (Hz above the dial, the centre of the tone block).
 ```sh
 python3 cut.py /tmp/opencode/ale-8992.f32 123.0 47_000 8 /tmp/opencode/cand.f32
 SDROXIDE_ALE_SAMPLE=/tmp/opencode/cand.f32 \
-  cargo test -p sdroxide-dsp --release --lib ale:: -- --ignored --nocapture
+  cargo test -p sdrcrow-dsp --release --lib ale:: -- --ignored --nocapture
 ```
 
 `cut.py` mixes the offset down (the carrier is the block centre **minus
