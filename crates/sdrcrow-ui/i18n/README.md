@@ -5,8 +5,8 @@ per language:
 
 ```
 i18n/
-  en-US/sdroxide.ftl   the English reference — every message is defined here
-  es/sdroxide.ftl      a translation (any BCP 47 tag: es, de, pt-BR, …)
+  en-US/sdrcrow.ftl   the English reference — every message is defined here
+  es/sdrcrow.ftl      a translation (any BCP 47 tag: es, de, pt-BR, …)
 ```
 
 Files are embedded in the binary when it is built, so a new or changed file
@@ -17,7 +17,7 @@ client).
 ## Adding a language
 
 1. Make a folder named after the language's tag — `de`, `pt-BR` — and copy
-   `en-US/sdroxide.ftl` into it.
+   `en-US/sdrcrow.ftl` into it.
 2. Change `language-name` to the language's name *in that language*
    (`Deutsch`, `Português (Brasil)`). The picker lists every language under
    its own name.
@@ -132,6 +132,6 @@ Values from `sdrcrow-types` (a theme, a sort order, a relay role) have an
 English `label()` that is also written to files and logs. Draw them with
 `.tr()` from the `Tr` trait (`src/i18n/labels.rs`), never with `.label()`.
 
-When adding text: add the English message to `en-US/sdroxide.ftl` under the
+When adding text: add the English message to `en-US/sdrcrow.ftl` under the
 section for the file it is used in, name it after where it is shown
 (`settings-ui-…`, `topbar-…`), and write the casing it is shown in.

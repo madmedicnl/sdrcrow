@@ -1292,7 +1292,7 @@ mod fit_and_keep {
     /// One message's text from a language's `.ftl` file, so every language can be
     /// measured without switching the process-wide one under other tests.
     fn message(lang: &str, id: &str) -> String {
-        let path = format!("{}/i18n/{lang}/sdroxide.ftl", env!("CARGO_MANIFEST_DIR"));
+        let path = format!("{}/i18n/{lang}/sdrcrow.ftl", env!("CARGO_MANIFEST_DIR"));
         let text = std::fs::read_to_string(&path).unwrap();
         text.lines()
             .find_map(|l| l.strip_prefix(&format!("{id} = ")))

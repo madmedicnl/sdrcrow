@@ -1,6 +1,6 @@
 //! Translations: the interface's text, looked up by message id in Fluent files.
 //!
-//! The messages live in `i18n/<language>/sdroxide.ftl`, one file per language,
+//! The messages live in `i18n/<language>/sdrcrow.ftl`, one file per language,
 //! embedded in the binary. English (`en-US`) is the reference: every id is
 //! defined there first, the [`tr!`] macro checks each id and its arguments
 //! against it at compile time, and any message a translation lacks is drawn
@@ -267,7 +267,7 @@ mod tests {
     /// its text uses — parsed strictly, so a syntax error fails the test.
     fn messages(lang: &str) -> BTreeMap<String, BTreeSet<String>> {
         use fluent_syntax::ast;
-        let path = format!("{lang}/sdroxide.ftl");
+        let path = format!("{lang}/sdrcrow.ftl");
         let file = Localizations.get_files(&path).pop().expect("the file is embedded");
         let text = String::from_utf8(file.to_vec()).expect("the file is UTF-8");
         let res = match fluent_syntax::parser::parse(text.as_str()) {

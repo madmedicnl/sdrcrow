@@ -6,7 +6,7 @@ Reads JSON lines on stdin, one message per line:
     {"id": "radio-foo", "en": "Foo", "fr": "Foo", "es": "Foo", "de": "Foo", "nl": "Foo", "it": "Foo", "pt-BR": "Foo", "ru": "Foo", "tr": "Foo", "ja": "Foo", "zh-CN": "Foo",
      "note": "optional comment for translators"}
 
-and appends it to crates/sdrcrow-ui/i18n/{en-US,fr,es,de,nl,it,pt-BR,ru,tr,ja,zh-CN}/sdroxide.ftl under a
+and appends it to crates/sdrcrow-ui/i18n/{en-US,fr,es,de,nl,it,pt-BR,ru,tr,ja,zh-CN}/sdrcrow.ftl under a
 lock, so several people (or agents) can add messages at the same time. An id
 that already exists is reported and skipped. `{ $name }` placeables are kept as
 they are; a value with a newline is written as a Fluent multi-line value.
@@ -38,7 +38,7 @@ def fmt(id_, text, note=None):
 
 
 def existing(lang):
-    p = os.path.join(ROOT, LANGS[lang], "sdroxide.ftl")
+    p = os.path.join(ROOT, LANGS[lang], "sdrcrow.ftl")
     return set(re.findall(r"^([a-z0-9-]+) =", open(p, encoding="utf8").read(), re.M))
 
 
@@ -60,7 +60,7 @@ def main():
             text = m.get(lang) or (m["en"] if lang != "en" else None)
             if text is None:
                 raise SystemExit("missing en for " + m["id"])
-            with open(os.path.join(ROOT, LANGS[lang], "sdroxide.ftl"), "a", encoding="utf8") as f:
+            with open(os.path.join(ROOT, LANGS[lang], "sdrcrow.ftl"), "a", encoding="utf8") as f:
                 f.write("\n" + fmt(m["id"], text, m.get("note") if lang == "en" else None))
         have.add(m["id"])
         added += 1
@@ -69,7 +69,7 @@ def main():
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--check":
-        p = open(os.path.join(ROOT, "en-US", "sdroxide.ftl"), encoding="utf8").read()
+        p = open(os.path.join(ROOT, "en-US", "sdrcrow.ftl"), encoding="utf8").read()
         for i in sys.argv[2:]:
             m = re.search(r"^%s =(.*(?:\n    .*)*)" % re.escape(i), p, re.M)
             print(i, "=", m.group(1).strip() if m else "(missing)")

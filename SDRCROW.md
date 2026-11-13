@@ -46,7 +46,7 @@ there is no shared directory any more.
 ## What is still Brown
 
 - **The i18n domain** is `sdroxide` and the catalogues are
-  `i18n/*/sdroxide.ftl`. Internal, and a rename touches the loader and
+  `i18n/*/sdrcrow.ftl`. Internal, and a rename touches the loader and
   `tools/i18n_add.py` — worth doing in one quiet step.
 - **`SDROXIDE_CONFIG_DIR`** as a second accepted variable (test harness).
 - **The documentation**: `README.md`, `AGENTS.md`, `TODO.md`, `CHANGELOG.md`,
