@@ -54,7 +54,7 @@ pub(in crate::app) fn summary_text(
             None => out.push_str(&format!("{}\n", p.credit)),
         }
     }
-    out.push_str("Heard with SDR Oxide Brown\n");
+    out.push_str("Heard with SDRCrow\n");
     out
 }
 

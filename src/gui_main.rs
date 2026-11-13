@@ -189,7 +189,7 @@ pub fn run_multi(
             .with_min_inner_size([800.0, 500.0])
             // Matches StartupWMClass in packaging/linux/sdroxide.desktop, so
             // the window groups under the menu entry in taskbars and docks.
-            .with_app_id("sdroxide")
+            .with_app_id("sdrcrow")
             .with_icon(sdroxide_ui::app_icon())
             // Program, version, then what it is connected to — so a screenshot
             // says which build it came from (#664), and says *Brown* rather
@@ -484,7 +484,7 @@ pub fn run_screenshot(
             .with_fullscreen(false)
             .with_resizable(false)
             .with_visible(true)
-            .with_app_id("sdroxide")
+            .with_app_id("sdrcrow")
             .with_icon(sdroxide_ui::app_icon())
             .with_title(sdroxide_ui::window_title("")),
         centered: false,
@@ -590,7 +590,7 @@ pub fn run_remote(url: &str) -> Result<()> {
         viewport: eframe::egui::ViewportBuilder::default()
             .with_inner_size([1280.0, 800.0])
             .with_min_inner_size([800.0, 500.0])
-            .with_app_id("sdroxide")
+            .with_app_id("sdrcrow")
             .with_icon(sdroxide_ui::app_icon())
             .with_title(sdroxide_ui::window_title(&format!("remote {url}"))),
         // Centred on a first start, for the reason the local window is — see

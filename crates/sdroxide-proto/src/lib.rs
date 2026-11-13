@@ -4255,7 +4255,7 @@ mod tests {
             enabled: true,
             host: "192.0.2.7".into(),
             port: 2238,
-            id: "SDR Oxide Brown".into(),
+            id: "SDRCrow".into(),
             n1mm: N1mmConfig {
                 enabled: true,
                 host: "192.0.2.8".into(),

@@ -36,7 +36,7 @@ mod compose;
 /// What this build calls itself.
 pub const VERSION: &str = env!("SDROXIDE_VERSION");
 
-/// What this build calls itself on screen: **SDR Oxide Brown**.
+/// What this build calls itself on screen: **SDRCrow**.
 ///
 /// It began as "SDR Oxide CB/SWL", after what this fork adds. That worked as a
 /// way to tell two installed builds apart, but several operators run it as an
@@ -46,19 +46,19 @@ pub const VERSION: &str = env!("SDROXIDE_VERSION");
 /// says "this build, not upstream" without saying what is in it. One string, so
 /// the window title, the General tab's header and `--version` all name it the
 /// same way and cannot drift apart.
-pub const FLAVOR: &str = "SDR Oxide Brown";
+pub const FLAVOR: &str = "SDRCrow";
 
 /// The **release** suffix the tags carry: `v1.9.2_brown`. The crate version
 /// stays plain semver (`1.9.2`), because `1.9.2_brown` is not valid semver and
 /// cargo refuses it — the suffix is for people and for a tag, never for
 /// anything a machine parses.
-pub const RELEASE_SUFFIX: &str = "_brown";
+pub const RELEASE_SUFFIX: &str = "";
 
 /// The version as a person reads it, name and all: what `--version` prints, and
 /// what [`FLAVOR`] is for the places that compose their own line. The suffix is
 /// added here rather than in `Cargo.toml`, so a stamped nightly reads
 /// `…-nightly.…_brown` and a release reads `1.9.2_brown`.
-pub const LONG_VERSION: &str = concat!("SDR Oxide Brown ", env!("SDROXIDE_VERSION"), "_brown");
+pub const LONG_VERSION: &str = concat!("SDRCrow ", env!("SDROXIDE_VERSION"));
 
 /// The numeric release a **tag or a version string** names, as
 /// `(major, minor, patch)`, or `None` if it names none.
@@ -69,7 +69,7 @@ pub const LONG_VERSION: &str = concat!("SDR Oxide Brown ", env!("SDROXIDE_VERSIO
 /// version, it is the *same* one packaged differently.
 pub fn release_number(s: &str) -> Option<(u32, u32, u32)> {
     let t = s.trim().trim_start_matches('v');
-    let t = t.split(RELEASE_SUFFIX).next().unwrap_or(t);
+    let t = if RELEASE_SUFFIX.is_empty() { t } else { t.split(RELEASE_SUFFIX).next().unwrap_or(t) };
     let mut parts = t.split(|c: char| !c.is_ascii_digit()).filter(|p| !p.is_empty());
     let major = parts.next()?.parse().ok()?;
     let minor = parts.next().unwrap_or("0").parse().ok()?;
@@ -168,8 +168,8 @@ mod tests {
     /// plain semver.
     #[test]
     fn the_release_suffix_is_not_in_the_crate_version() {
-        assert_eq!(super::RELEASE_SUFFIX, "_brown");
-        assert!(!env!("CARGO_PKG_VERSION").contains("brown"));
-        assert!(super::LONG_VERSION.ends_with("_brown"));
+        assert_eq!(super::RELEASE_SUFFIX, "");
+        assert!(!env!("CARGO_PKG_VERSION").contains('_'));
+        assert!(super::LONG_VERSION.starts_with("SDRCrow "));
     }
 }

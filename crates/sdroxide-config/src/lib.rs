@@ -589,120 +589,34 @@ pub use publicsdr::public_sdr_directory;
 
 pub mod transfer;
 
-/// The config directory **upstream** uses, and the one this fork used before it
-/// had its own. Kept as a named function because the migration needs to find it
-/// and several places still reason about "the shared directory".
-fn upstream_config_dir() -> Option<PathBuf> {
-    directories::ProjectDirs::from("org", "sdroxide", "sdroxide")
-        .map(|d| d.config_dir().to_path_buf())
-}
-
-/// The config directory **this fork** uses: upstream's with a `-brown` suffix,
-/// so the two builds never read or write each other's settings.
+/// The config directory **SDRCrow** uses: its own, `sdrcrow`, so nothing
+/// upstream or the Brown build writes is ever read here and the reverse.
 ///
-/// This is the fix for the one thing a full rename could not do cheaply — the
-/// two installs sharing `config.toml` and `radio.json`, where upstream's
-/// read-modify-write silently drops the fork's extra fields. It lives beside
-/// upstream's rather than inside it, so a tester's two builds are completely
-/// independent with nothing to configure.
-fn brown_config_dir() -> Result<PathBuf, ConfigError> {
-    let base = upstream_config_dir().ok_or(ConfigError::NoConfigDir)?;
-    // `sdroxide` -> `sdroxide-brown`, and `org.sdroxide.sdroxide` ->
-    // `org.sdroxide.sdroxide-brown` on macOS, where the last component is the
-    // reverse-DNS id. Appending to the whole path rather than replacing a
-    // component does the right thing on both.
-    let name = base
-        .file_name()
-        .map(|n| format!("{}-brown", n.to_string_lossy()))
-        .ok_or(ConfigError::NoConfigDir)?;
-    Ok(base.with_file_name(name))
+/// This replaces the Brown fork's `-brown` suffix: a program of its own names
+/// its own directory rather than borrowing one.
+fn sdrcrow_config_dir() -> Result<PathBuf, ConfigError> {
+    directories::ProjectDirs::from("org", "sdrcrow", "sdrcrow")
+        .map(|d| d.config_dir().to_path_buf())
+        .ok_or(ConfigError::NoConfigDir)
 }
 
 pub fn config_dir() -> Result<PathBuf, ConfigError> {
     // The override exists for the integration tests, which must not write the
     // operator's real configuration, and works as a profile switch for anyone
     // who wants two independent installations.
-    if let Some(dir) = std::env::var_os("SDROXIDE_CONFIG_DIR") {
-        if !dir.is_empty() {
+    // `SDRCROW_CONFIG_DIR` first, `SDROXIDE_CONFIG_DIR` still honoured so the
+    // existing test harness and any script that sets it keep working.
+    for var in ["SDRCROW_CONFIG_DIR", "SDROXIDE_CONFIG_DIR"] {
+        if let Some(dir) = std::env::var_os(var)
+            && !dir.is_empty()
+        {
             return Ok(PathBuf::from(dir));
         }
     }
-    brown_config_dir()
+    sdrcrow_config_dir()
 }
 
-/// Move an existing installation into the fork's own config directory, once.
-///
-/// Called at startup **before** anything reads a setting. The fork used to share
-/// upstream's directory (`org.sdroxide.sdroxide`); this copies that directory's
-/// contents into the `-brown` one so an existing user's stations, logbook,
-/// memories and settings come with them, then leaves a marker so it never runs
-/// again.
-///
-/// **Copy, not move.** The shared directory is left exactly as it was, so running
-/// upstream afterwards still finds everything, and a half-finished copy cannot
-/// destroy a single file. The cost is disk space once; the alternative is a
-/// migration that can lose a logbook, which is not a trade worth making.
-///
-/// It does nothing when a custom `SDROXIDE_CONFIG_DIR` is set (that is already a
-/// deliberate, separate profile) or when the fork's own directory already exists
-/// (the migration has run, or this is a fresh install that made it).
-pub fn migrate_shared_config_once() {
-    if std::env::var_os("SDROXIDE_CONFIG_DIR").is_some_and(|v| !v.is_empty()) {
-        return;
-    }
-    let Ok(brown) = brown_config_dir() else { return };
-    let Some(shared) = upstream_config_dir() else { return };
-    // Already migrated, or nothing to migrate from.
-    if brown.exists() || !shared.is_dir() {
-        return;
-    }
-    // Only adopt a directory that is actually sdroxide's: a `config.toml` or a
-    // `radio.json` is the evidence, so an unrelated directory that happens to
-    // sit at that path is not copied over.
-    if !shared.join("config.toml").exists() && !shared.join("radio.json").exists() {
-        return;
-    }
-    if let Err(e) = copy_dir_recursive(&shared, &brown) {
-        // If the copy failed there is nothing safe to do but report it and let
-        // the fork start on defaults: a partial directory would look migrated
-        // and the next start would not retry.
-        let _ = fs::remove_dir_all(&brown);
-        eprintln!(
-            "sdroxide: could not move your settings to {} ({e}); starting with defaults. \
-             The original is untouched at {}.",
-            brown.display(),
-            shared.display()
-        );
-        return;
-    }
-    eprintln!(
-        "sdroxide: copied your existing settings to {} so this build keeps its own. \
-         Your original is untouched; other sdroxide builds are unaffected.",
-        brown.display()
-    );
-}
 
-/// Copy a directory tree, files and all. Plain and non-destructive: it never
-/// removes or overwrites the source, and a failure is returned rather than
-/// half-ignored.
-fn copy_dir_recursive(from: &std::path::Path, to: &std::path::Path) -> std::io::Result<()> {
-    fs::create_dir_all(to)?;
-    for entry in fs::read_dir(from)? {
-        let entry = entry?;
-        let src = entry.path();
-        let dst = to.join(entry.file_name());
-        let kind = entry.file_type()?;
-        if kind.is_dir() {
-            copy_dir_recursive(&src, &dst)?;
-        } else if kind.is_file() {
-            fs::copy(&src, &dst)?;
-        }
-        // Symlinks and anything else are skipped on purpose: a config directory
-        // has no legitimate symlink in it, and following one could copy
-        // something outside the tree.
-    }
-    Ok(())
-}
 
 /// A configuration scope: the station's root config directory, or one radio's
 /// subdirectory under it.

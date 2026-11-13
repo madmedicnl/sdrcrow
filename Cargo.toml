@@ -212,7 +212,7 @@ nusb = "0.2.7"
 libloading = "0.9"
 
 [package]
-name = "sdroxide"
+name = "sdrcrow"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
