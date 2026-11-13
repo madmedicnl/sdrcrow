@@ -9797,3 +9797,12 @@ app-config-close = Chiudi
 app-config-failed-title = Non è stato possibile copiare le impostazioni
 
 app-config-failed = Non è stato copiato nulla: { $why }. L'altro programma è intatto e questa installazione è invariata.
+
+
+ptt-intro-local = Il tasto PTT di un microfono o un pedale collegato a questo computer può mettere in trasmissione la stazione che hai davanti, locale o remota. Cabla l'interruttore da RTS a CTS, DSR o DCD su una porta seriale (basta un adattatore USB-seriale), oppure usa un dispositivo USB HID o una nota MIDI. Ciascun ingresso attiva il trasmettitore; cade quando entrambi sono rilasciati. Il dispositivo viene letto su questo computer, non sulla stazione.
+
+ptt-here-heading = SU QUESTO COMPUTER
+
+ptt-station-heading = SUL COMPUTER DELLA STAZIONE
+
+ptt-web-unavailable = Il browser non può ancora leggere qui una porta seriale, un dispositivo HID o una porta MIDI. Usa l'app desktop su questo computer, oppure la coppia cablata alla stazione nella pagina del commutatore T/R.

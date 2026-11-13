@@ -1026,6 +1026,10 @@ impl eframe::App for SdrcrowApp {
         // the focused radio alone. In a split view every visible radio runs
         // this frame loop, and without the gate one arrow key would tune all
         // of them at once.
+        //
+        // The desk microphone and pedal of this computer follow the same rule:
+        // the press keys the station on screen.
+        self.op_ptt.poll(self.focused, &self.state, &mut cmds);
         if self.focused {
             // F1 toggles the manual — handled here (not in
             // `keyboard_shortcuts`) so it works even while a text field has
@@ -1125,6 +1129,7 @@ impl eframe::App for SdrcrowApp {
         // Shutting down with a bound key, a footswitch or the compact layout's
         // PTT still held would otherwise leave the rig transmitting.
         if ctx.input(|i| i.viewport().close_requested()) {
+            self.op_ptt.poll(false, &self.state, &mut cmds);
             if self.input.any_held() {
                 self.release_held_controls(&mut cmds);
             }

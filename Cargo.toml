@@ -136,6 +136,7 @@ sdrcrow-config = { path = "crates/sdrcrow-config" }
 sdrcrow-ui = { path = "crates/sdrcrow-ui" }
 sdrcrow-cat = { path = "crates/sdrcrow-cat" }
 sdrcrow-midi = { path = "crates/sdrcrow-midi" }
+sdrcrow-pttin = { path = "crates/sdrcrow-pttin" }
 sdrcrow-rigctld = { path = "crates/sdrcrow-rigctld" }
 sdrcrow-rotator = { path = "crates/sdrcrow-rotator" }
 sdrcrow-picup = { path = "crates/sdrcrow-picup" }

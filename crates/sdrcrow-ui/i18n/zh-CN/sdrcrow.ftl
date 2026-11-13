@@ -9726,3 +9726,12 @@ app-config-close = 关闭
 app-config-failed-title = 无法复制设置
 
 app-config-failed = 未复制任何内容：{ $why }。另一个程序未受影响，此安装保持不变。
+
+
+ptt-intro-local = 接在本机上的话筒PTT键或脚踏开关可以让您面前的电台(本地或远程)发射。将开关接在串口的RTS与CTS、DSR或DCD之间(USB转串口适配器即可),或使用USB HID设备或MIDI音符。任一输入都会使发射机发射;两者都松开时才停止。设备在本机读取,而不是在电台上读取。
+
+ptt-here-heading = 本机
+
+ptt-station-heading = 电台的计算机
+
+ptt-web-unavailable = 浏览器目前还不能在此读取串口、HID设备或MIDI端口。请在本机使用桌面应用,或使用“收发切换”页面中接到电台的那一组。

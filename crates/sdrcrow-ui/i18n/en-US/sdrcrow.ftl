@@ -9817,3 +9817,12 @@ app-config-close = Close
 app-config-failed-title = The settings could not be copied
 
 app-config-failed = Nothing was copied: { $why }. The other program is untouched and this installation is unchanged.
+
+
+ptt-intro-local = A microphone's PTT bar or a footswitch on this computer can key the station in front of you, local or far away. Wire the switch from RTS to CTS, DSR or DCD on a serial port (a USB-serial adapter will do), or use a USB HID device or a MIDI note. Either input keys the transmitter; it drops when both are released. The device is read on this computer, not on the station.
+
+ptt-here-heading = ON THIS COMPUTER
+
+ptt-station-heading = ON THE STATION'S COMPUTER
+
+ptt-web-unavailable = The browser cannot read a serial port, a HID device or a MIDI port here yet. Use the desktop app on this computer, or the pair wired to the station on the T/R switch page.

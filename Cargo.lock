@@ -5861,6 +5861,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "sdrcrow-pttin"
+version = "1.0.0"
+dependencies = [
+ "sdrcrow-midi",
+ "sdrcrow-relay",
+ "sdrcrow-types",
+ "serialport",
+ "tracing",
+]
+
+[[package]]
 name = "sdrcrow-qo100"
 version = "1.0.0"
 dependencies = [
@@ -5923,6 +5934,7 @@ dependencies = [
  "sdrcrow-net",
  "sdrcrow-nrsc5",
  "sdrcrow-picup",
+ "sdrcrow-pttin",
  "sdrcrow-qo100",
  "sdrcrow-relay",
  "sdrcrow-rigctld",
@@ -6205,6 +6217,7 @@ dependencies = [
  "sdrcrow-meshtastic",
  "sdrcrow-midi",
  "sdrcrow-proto",
+ "sdrcrow-pttin",
  "sdrcrow-solar",
  "sdrcrow-speech",
  "sdrcrow-types",
