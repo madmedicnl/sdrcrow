@@ -240,6 +240,53 @@ pub(crate) enum ModuleWindow {
     OwnWindow,
 }
 
+/// **The configuration offered on a first start**, as the frame sees it.
+///
+/// The import belongs to a desktop: it looks beside this program's own
+/// directory and copies files into it. A browser has neither, so the offer is
+/// never built there — but the type still exists, empty and never filled, so
+/// the frame and its tests compile in both builds.
+#[cfg(not(target_arch = "wasm32"))]
+pub(in crate::app) use sdrcrow_config::ImportCandidate;
+
+#[cfg(target_arch = "wasm32")]
+#[derive(Debug, Clone)]
+#[allow(dead_code)] // the browser never fills one; the frame still asks it
+pub(in crate::app) struct ImportCandidate {
+    pub label: &'static str,
+    pub dir: std::path::PathBuf,
+}
+
+#[cfg(target_arch = "wasm32")]
+#[allow(dead_code)]
+impl ImportCandidate {
+    pub fn files(&self) -> usize {
+        0
+    }
+
+    pub fn has_settings(&self) -> bool {
+        false
+    }
+}
+
+/// Looked for once, at start-up, before the first frame: the answer is
+/// remembered in settings, and a test build must not offer to copy the
+/// operator's real files.
+#[cfg(not(target_arch = "wasm32"))]
+fn initial_config_offer(asked: bool) -> Vec<ImportCandidate> {
+    if cfg!(not(test)) && !asked {
+        sdrcrow_config::import_candidates()
+    } else {
+        Vec::new()
+    }
+}
+
+/// A browser has no configuration directory to look beside.
+#[cfg(target_arch = "wasm32")]
+fn initial_config_offer(_asked: bool) -> Vec<ImportCandidate> {
+    Vec::new()
+}
+
 pub struct SdrcrowApp {
     ctrl: Box<dyn RadioController>,
     caps: Option<DeviceCaps>,
@@ -508,7 +555,7 @@ pub struct SdrcrowApp {
     splash: crate::splash::Splash,
     /// **A configuration found beside this one**, offered once on a first
     /// start: the Brown build's, upstream's, or both. Empty once answered.
-    config_offer: Vec<sdrcrow_config::ImportCandidate>,
+    config_offer: Vec<ImportCandidate>,
     /// What the copy did, once it has: the file count and the source, so the
     /// offer can say what happened rather than vanishing.
     config_copied: Option<(usize, String)>,
@@ -2345,13 +2392,7 @@ impl SdrcrowApp {
             applied_look: (ui_settings.theme, ui_settings.button_style, ui_settings.window_style),
             applied_theme_file: ui_settings.theme_file.clone(),
             splash: crate::splash::Splash::new(),
-            // Looked for once, here: the answer is remembered in settings, and
-            // a test build must not offer to copy the operator's real files.
-            config_offer: if cfg!(not(test)) && !ui_settings.config_import_asked {
-                sdrcrow_config::import_candidates()
-            } else {
-                Vec::new()
-            },
+            config_offer: initial_config_offer(ui_settings.config_import_asked),
             config_copied: None,
             wire_theme: None,
             applied_theme_text: None,

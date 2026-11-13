@@ -2445,8 +2445,10 @@ impl eframe::App for SdrcrowApp {
             false
         };
         // Asked once the emblem has gone: a question behind a logo is a
-        // question nobody sees.
+        // question nobody sees. A browser has no configuration directory, so
+        // the offer never exists there.
         if !splash_up && self.radio_id == 0 {
+            #[cfg(not(target_arch = "wasm32"))]
             self.config_offer_ui(&ctx);
         }
     }
@@ -5459,8 +5461,11 @@ impl SdrcrowApp {
     /// question comes back.
     ///
     /// The copied files are read at start-up, so after a copy the program has
-    /// to start again; the dialog says so and offers the quit rather than
+    /// to start again; the dialog says so and offers the restart rather than
     /// pretending the settings are in force.
+    ///
+    /// Desktop only: a browser has no configuration directory to look beside.
+    #[cfg(not(target_arch = "wasm32"))]
     pub(in crate::app) fn config_offer_ui(&mut self, ctx: &egui::Context) {
         if let Some((files, source)) = self.config_copied.clone() {
             let failed = files == 0;
