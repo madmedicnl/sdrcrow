@@ -14,6 +14,10 @@ cargo build --release -p sdrcrow
 ./target/release/sdrcrow        # own config directory, created on first run
 ```
 
+Installed on this machine: `~/.local/bin/sdrcrow`, a `.desktop` entry with
+`Name=SDRCrow` and `StartupWMClass=sdrcrow`, and the emblem at every hicolor
+size — so it can be started from the launcher as well as from a shell.
+
 First start makes `~/.config/sdrcrow` and begins from defaults: no stations,
 no logbook, no themes. Copying a Brown installation over is a plain
 `cp -a ~/.config/sdroxide-brown/. ~/.config/sdrcrow/` and is a decision, not a
@@ -36,6 +40,7 @@ default — SDRCrow never reads the other directory by itself.
 | The splash | the emblem, 3 s, dismissed at once by a click or a key |
 | Packaging | `packaging/linux/sdrcrow.desktop`, `packaging/icons/sdrcrow-*.png` (from the emblem), udev rules `60-sdrcrow-*.rules` |
 | The update check | asks `madmedicnl/sdrcrow` for releases, and nothing else |
+| The i18n domain and catalogues | `sdrcrow`, `i18n/*/sdrcrow.ftl` |
 | The web client | its page, manifest and title say SDRCrow |
 | The Windows resource | `resource.rc` carries SDRCrow |
 | Git remotes | **none** in the copy; `origin` is the private repository |
