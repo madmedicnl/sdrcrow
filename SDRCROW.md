@@ -87,7 +87,7 @@ operator recognises one.
 | The environment override | `SDRCROW_CONFIG_DIR`, and only that name |
 | The Wayland/WM app id | `sdrcrow` |
 | The release suffix | none — tags are `vX.Y.Z` |
-| The splash | the emblem, 3 s, dismissed at once by a click or a key |
+| The splash | the SDRCrow logo (`crates/sdrcrow-ui/assets/splash.png`), 2 s, dismissed at once by a click or a key |
 | Packaging | `packaging/linux/sdrcrow.desktop`, `packaging/icons/sdrcrow-*.png` (from the emblem), udev rules `60-sdrcrow-*.rules`, `packaging/windows/sdrcrow.ico` and a fresh UpgradeCode, `packaging/macos/sdrcrow.icns` and bundle id `org.sdrcrow.sdrcrow`, headless installers naming SDRCrow |
 | The update check | asks `madmedicnl/sdrcrow` for releases, and nothing else |
 | The i18n domain and catalogues | `sdrcrow`, `i18n/*/sdrcrow.ftl` |

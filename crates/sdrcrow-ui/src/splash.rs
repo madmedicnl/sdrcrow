@@ -17,8 +17,9 @@
 
 use eframe::egui;
 
-/// How long the emblem stays up, in seconds.
-const SPLASH_S: f64 = 3.0;
+/// How long the emblem stays up, in seconds. Short on purpose: it is a
+/// greeting, not a wait — the radios come up behind it.
+const SPLASH_S: f64 = 2.0;
 
 /// The emblem, compiled in: it is part of the program, not an install asset.
 const EMBLEM: &[u8] = include_bytes!("../assets/splash.png");
@@ -60,7 +61,7 @@ impl Splash {
             self.wanted = false;
             return false;
         }
-        ctx.request_repaint(); // so the three seconds actually pass on screen
+        ctx.request_repaint(); // so the two seconds actually pass on screen
 
         let palette = crate::theme::palette();
         let screen = ctx.content_rect();
@@ -127,10 +128,11 @@ mod tests {
         assert_eq!(image.width(), image.height(), "the emblem is square");
     }
 
-    /// The three seconds are counted, and a click ends it early rather than
+    /// The two seconds are counted, and a click ends it early rather than
     /// waiting: the rule the module exists for.
     #[test]
-    fn the_picture_leaves_after_three_seconds_or_a_click() {
-        assert!(SPLASH_S >= 2.0 && SPLASH_S <= 5.0, "a splash longer than that is a delay");
+    fn the_picture_leaves_after_two_seconds_or_a_click() {
+        assert!(SPLASH_S >= 1.5 && SPLASH_S <= 3.0, "a splash longer than that is a delay");
+        assert_eq!(SPLASH_S, 2.0, "the operator asked for two seconds");
     }
 }
