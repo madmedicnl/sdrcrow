@@ -16,7 +16,7 @@ cargo build --release -p sdrcrow
 ```
 
 Installed on this machine: `~/.local/bin/sdrcrow`, a `.desktop` entry with
-`Name=SDRCrow` and `StartupWMClass=sdrcrow`, and the emblem at every hicolor
+`Name=SDRCrow` and `StartupWMClass=sdrcrow`, and the logo at every hicolor
 size — so it can be started from the launcher as well as from a shell.
 
 First start makes `~/.config/sdrcrow` and begins from defaults: no stations,
@@ -88,7 +88,7 @@ operator recognises one.
 | The Wayland/WM app id | `sdrcrow` |
 | The release suffix | none — tags are `vX.Y.Z` |
 | The splash | the SDRCrow logo (`crates/sdrcrow-ui/assets/splash.png`), 2 s, dismissed at once by a click or a key |
-| Packaging | `packaging/linux/sdrcrow.desktop`, `packaging/icons/sdrcrow-*.png` (from the emblem), udev rules `60-sdrcrow-*.rules`, `packaging/windows/sdrcrow.ico` and a fresh UpgradeCode, `packaging/macos/sdrcrow.icns` and bundle id `org.sdrcrow.sdrcrow`, headless installers naming SDRCrow |
+| Packaging | `packaging/linux/sdrcrow.desktop`, `packaging/icons/sdrcrow-*.png` (the logo, 16 to 512 px), udev rules `60-sdrcrow-*.rules`, `packaging/windows/sdrcrow.ico` and a fresh UpgradeCode, `packaging/macos/sdrcrow.icns` and bundle id `org.sdrcrow.sdrcrow`, headless installers naming SDRCrow |
 | The update check | asks `madmedicnl/sdrcrow` for releases, and nothing else |
 | The i18n domain and catalogues | `sdrcrow`, `i18n/*/sdrcrow.ftl` |
 | The web client | its page, manifest, JS bridge objects and title say SDRCrow |
