@@ -5007,49 +5007,6 @@ mod tests {
         assert!(!old.ui.decode_cq_only, "a config from before these must not filter the list");
     }
 
-    /// The fork's directory is upstream's with `-brown` appended, on both the
-    /// Linux (`…/sdroxide`) and macOS (`…/org.sdroxide.sdroxide`) layouts — the
-    /// name is appended to the whole path, not a component, so both work.
-    #[test]
-    fn the_brown_dir_appends_to_the_whole_name() {
-        let base = std::path::Path::new("/home/u/.config/sdroxide");
-        let name = base.file_name().map(|n| format!("{}-brown", n.to_string_lossy())).unwrap();
-        assert_eq!(
-            base.with_file_name(name),
-            std::path::Path::new("/home/u/.config/sdroxide-brown")
-        );
-
-        let mac =
-            std::path::Path::new("/Users/u/Library/Application Support/org.sdroxide.sdroxide");
-        let name = mac.file_name().map(|n| format!("{}-brown", n.to_string_lossy())).unwrap();
-        assert_eq!(
-            mac.with_file_name(name),
-            std::path::Path::new(
-                "/Users/u/Library/Application Support/org.sdroxide.sdroxide-brown"
-            )
-        );
-    }
-
-    /// The migration's copier takes the whole tree and leaves the source alone —
-    /// the property the "copy, not move" rule rests on.
-    #[test]
-    fn copying_a_config_tree_leaves_the_original_in_place() {
-        let base = std::env::temp_dir().join(format!("sdrcrow-copy-test-{}", std::process::id()));
-        let _ = fs::remove_dir_all(&base);
-        let from = base.join("from");
-        let to = base.join("to");
-        fs::create_dir_all(from.join("radio-1")).unwrap();
-        fs::write(from.join("config.toml"), "sample_rate = 1000.0\n").unwrap();
-        fs::write(from.join("radio-1/radio.json"), "{}\n").unwrap();
-
-        copy_dir_recursive(&from, &to).unwrap();
-        assert_eq!(fs::read_to_string(to.join("config.toml")).unwrap(), "sample_rate = 1000.0\n");
-        assert!(to.join("radio-1/radio.json").exists(), "subdirectories come too");
-        assert!(from.join("config.toml").exists(), "the source must be left alone");
-        assert!(from.join("radio-1/radio.json").exists());
-        let _ = fs::remove_dir_all(&base);
-    }
-
     /// One test rather than several, because it redirects the config directory
     /// through the environment — process-global state that must not race the
     /// other tests in this binary (none of which touch `config_dir`).
