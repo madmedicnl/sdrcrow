@@ -283,6 +283,15 @@ impl super::SdrcrowApp {
         // A floating panel carries the way back under the waterfall; the docked
         // one has the way out in its own header.
         if floating {
+            // **Bound the body to the window it sits in.** An `egui::Window`
+            // sizes itself to what its content asks for, and `available_width`
+            // inside one answers with the *screen's* width — so a field sized
+            // from it (the keys, the message) pulled the whole panel out to the
+            // cap the moment it was opened as a popup: reported from the bench
+            // on 2026-11-14 as "it resizes over the whole width". With a bound
+            // the fields and the tables lay out in the window's own width, and
+            // anything longer scrolls inside it.
+            ui.set_max_width(crate::layout::window_w(ui.ctx(), WINDOW_SIZE[0]));
             ui.horizontal(|ui| {
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                     if crate::chrome::chip_window_icon(ui, crate::chrome::WindowIcon::In)
@@ -566,7 +575,19 @@ impl super::SdrcrowApp {
         }
         let half = (ui.available_height() * 0.5).max(80.0);
         ui.label(RichText::new(tr!("meshtastic-nodes", n = st.nodes.len())).strong());
-        egui::ScrollArea::vertical().id_salt("meshtastic-nodes").max_height(half).show(ui, |ui| {
+        // Both areas take the width they are given (`auto_shrink` off): with
+        // it on they shrink to their content, a `Grid` cannot wrap, and one long
+        // node name widened the whole window instead of scrolling inside it.
+        // **Both ways**, not just down: a `Grid` cannot wrap, so seven columns
+        // with a long node name in one ask for a row wider than the window, and
+        // a vertical-only area hands that request to the window's own sizing.
+        // A horizontal scroll gives the grid the unbounded width it wants and
+        // keeps the request inside the viewport.
+        egui::ScrollArea::both()
+            .id_salt("meshtastic-nodes")
+            .auto_shrink([false, false])
+            .max_height(half)
+            .show(ui, |ui| {
             egui::Grid::new("meshtastic-node-grid").striped(true).num_columns(7).show(ui, |ui| {
                 for h in [
                     tr!("meshtastic-col-id"),
@@ -607,7 +628,10 @@ impl super::SdrcrowApp {
         });
         ui.add_space(6.0);
         ui.label(RichText::new(tr!("meshtastic-log", n = st.log.len())).strong());
-        egui::ScrollArea::vertical().id_salt("meshtastic-log").show(ui, |ui| {
+        egui::ScrollArea::vertical()
+            .id_salt("meshtastic-log")
+            .auto_shrink([false, false])
+            .show(ui, |ui| {
             for e in &st.log {
                 let what = match (&e.text, e.encrypted) {
                     (Some(t), _) => t.clone(),
@@ -619,7 +643,10 @@ impl super::SdrcrowApp {
                 } else {
                     String::new()
                 };
-                ui.label(format!(
+                // Wrapped, not one long line: a message is free text of up to
+                // a couple of hundred characters, and a label that never wraps
+                // asks for a window that is two screens wide.
+                ui.add(egui::Label::new(format!(
                     "{}  {} → {}  {:.1} dB  {}{}",
                     clock(e.time),
                     node_label(e.from),
@@ -631,7 +658,8 @@ impl super::SdrcrowApp {
                     e.snr_db,
                     what,
                     mqtt
-                ));
+                ))
+                .wrap());
             }
         });
     }
@@ -652,6 +680,87 @@ mod tests {
         assert!(!extras.contains("meshtastic_panel"));
         assert!(!settings.contains("meshtastic_panel"));
         assert!(!include_str!("settings/ui_tab.rs").contains("meshtastic_panel"));
+    }
+
+    /// **A long message must not stretch the panel across the window.**
+    ///
+    /// Reported from the bench (2026-11-14): opened as a popup, the panel grew
+    /// to the whole width once there was traffic in it. The body is a set of
+    /// `Grid`s and one label per message, and an `egui::Window` sizes itself to
+    /// what its content *asks for* — so one long node name or one long text
+    /// carried the window out to its own cap. The window is 780 pt wide when it
+    /// opens; this says it stays near that with a 200-character name and a
+    /// 400-character message on screen.
+    #[test]
+    fn a_long_message_does_not_stretch_the_panel() {
+        use crate::multi::frame_test_lock;
+        use sdrcrow_types::{MeshEntry, MeshNode, MeshtasticStatus};
+        let _guard = frame_test_lock();
+        let dir = std::env::temp_dir().join(format!("sdrcrow-mesh-wide-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        unsafe { std::env::set_var("SDRCROW_CONFIG_DIR", &dir) };
+
+        let (w, h) = (1280.0_f32, 800.0_f32);
+        let ctx = eframe::egui::Context::default();
+        crate::theme::apply(&ctx);
+        crate::layout::set_tier(&ctx, crate::layout::Tier::Desktop);
+        crate::theme::apply_metrics(&ctx, crate::layout::Tier::Desktop);
+        /// Nothing behind it: the panel is drawn from its own state.
+        struct NoRadio;
+        impl sdrcrow_types::RadioController for NoRadio {
+            fn send(&mut self, _cmd: sdrcrow_types::Command) {}
+            fn poll_event(&mut self) -> Option<sdrcrow_types::RadioEvent> {
+                None
+            }
+        }
+        let controller: Box<dyn sdrcrow_types::RadioController> = Box::new(NoRadio);
+        let mut app =
+            crate::SdrcrowApp::new_tab(&ctx, None, None, controller, 0, true);
+        app.show_meshtastic = true;
+        app.ui_settings.meshtastic_floating = true;
+        let mut st = MeshtasticStatus::default();
+        st.running = true;
+        st.nodes.push(MeshNode {
+            id: 0x1234_5678,
+            long_name: "a node with a name nobody would type by hand ".repeat(5),
+            short_name: "LONG".into(),
+            last_heard: 1_700_000_000,
+            snr_db: -7.5,
+            ..MeshNode::default()
+        });
+        st.log.push(MeshEntry {
+            time: 1_700_000_000,
+            from: 0x1234_5678,
+            to: sdrcrow_meshtastic::protocol::BROADCAST_NODE,
+            port: 1,
+            text: Some("a message long enough that a single line of it is wider than the window it sits in ".repeat(4)),
+            ..MeshEntry::default()
+        });
+        app.meshtastic_status = Some(Box::new(st));
+
+        let mut tex = crate::test_raster::Textures::default();
+        for i in 0..4 {
+            let input = eframe::egui::RawInput {
+                screen_rect: Some(eframe::egui::Rect::from_min_size(
+                    eframe::egui::Pos2::ZERO,
+                    eframe::egui::vec2(w, h),
+                )),
+                time: Some(10.0 + i as f64 / 30.0),
+                ..Default::default()
+            };
+            let mut full = ctx.run_ui(input, |ui| {
+                eframe::App::ui(&mut app, ui, &mut eframe::Frame::_new_kittest())
+            });
+            tex.apply(&full.textures_delta);
+            full.textures_delta.clear();
+        }
+        let rect = app.tool_rect.expect("the panel was drawn");
+        assert!(
+            rect.width() <= w * 0.7,
+            "the panel took {} of {w} pt — a long message stretched it",
+            rect.width()
+        );
     }
 
     #[test]

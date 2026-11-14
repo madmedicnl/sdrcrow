@@ -3246,6 +3246,7 @@ impl SdrcrowApp {
         let atsmini =
             self.radio_cfg.as_ref().is_some_and(|c| c.backend == sdrcrow_types::Backend::AtsMini);
         let mut radio = RadioChip::new(self.radio_classic_active());
+        let before = cmds.len();
         band_mode_menu(
             ui,
             &mut self.band_menu_tab,
@@ -3264,6 +3265,14 @@ impl SdrcrowApp {
         );
         if radio.clicked {
             self.toggle_radio_classic();
+        }
+        // **A mode chosen here is the operator saying what the radio does next.**
+        // The meshtastic panel is a companion, not a mode — its chip is a switch —
+        // so picking a mode used to leave it standing under a mode it has nothing
+        // to do with (reported from the bench, 2026-11-14). It steps aside
+        // instead; the chip in this menu and in EXTRAS brings it back.
+        if self.show_meshtastic && went_to_a_mode(&cmds[before..]) {
+            self.show_meshtastic = false;
         }
         // **LISTEN hides the transmit controls; OPERATE never grants them** —
         // and the half of issue #146 that says so lives in `swl_mode` and
@@ -9964,6 +9973,17 @@ pub(in crate::app) fn band_mode_menu(
     }
 }
 
+/// Whether a trip through the band/mode menu ended in a **mode** being chosen.
+///
+/// The menu pushes one `SetMode` for a mode chip and other commands for the
+/// rest (a band plan, a VFO, a wideband service), so this is the difference
+/// between "the operator changed what the radio does" and everything else the
+/// same menu offers. Its own function because the meshtastic panel's own chip
+/// lives in that menu too and must *not* be read as leaving it.
+fn went_to_a_mode(commands: &[Command]) -> bool {
+    commands.iter().any(|c| matches!(c, Command::SetMode { .. }))
+}
+
 /// The VFO A/B selector chips. In the frequency box on a desktop, in the VFO
 /// menu on a phone — one definition either way.
 ///
@@ -12614,6 +12634,28 @@ mod tests {
         assert_eq!(DockSide::of(false), DockSide::Right);
         assert_eq!(DockSide::of(UiSettings::default().band_dock_left), DockSide::Right);
         assert_eq!(DockSide::of(true), DockSide::Left);
+    }
+
+    /// **A mode chosen in the band menu closes the meshtastic panel.** The
+    /// panel's own chip in that menu is a switch, so choosing a mode used to
+    /// leave it standing under a mode it has nothing to do with. What counts as
+    /// "chose a mode" is the command the menu actually pushes.
+    #[test]
+    fn a_mode_chosen_in_the_band_menu_leaves_the_companion_panels() {
+        use sdrcrow_types::{Command, Mode};
+        let mode = |m: Mode| Command::SetMode { rx: sdrcrow_types::RxId::Main, mode: m };
+        assert!(!went_to_a_mode(&[]), "nothing pressed");
+        assert!(went_to_a_mode(&[mode(Mode::Usb)]));
+        assert!(went_to_a_mode(&[
+            Command::SetCbPlan(sdrcrow_types::CbPlan::World),
+            mode(Mode::Nfm),
+        ]));
+        // Everything else the same menu offers is not a mode change.
+        assert!(!went_to_a_mode(&[Command::SetCbPlan(sdrcrow_types::CbPlan::World)]));
+        assert!(!went_to_a_mode(&[Command::TuneInSpan {
+            vfo: sdrcrow_types::Vfo::A,
+            hz: 27_185_000.0,
+        }]));
     }
 
     /// The band selector docks as a column beside the waterfall on desktop and
