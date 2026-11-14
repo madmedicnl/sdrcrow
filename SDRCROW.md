@@ -53,11 +53,17 @@ cargo check --workspace --all-targets
 tools/check-names.sh                 # the old name has not crept back in
 ```
 
-- `refs/brown-synced` holds the last ported Brown commit. It is a git ref, not a
-  file, so it travels with the repository and cannot be lost in a merge.
-- Each commit keeps its message, author and date. A conflict stops the port on
-  that commit, leaving the tree for a person to resolve: `git am --continue`,
-  then run the tool again and it picks up the next one.
+- `refs/brown-synced` holds the last ported Brown commit, and
+  `docs/internal/BROWN-SYNCED` says the same thing in a file: a ref lives in one
+  clone, and without the file a fresh clone would take the merge base — the
+  commit this program was cut from — and offer months of commits it already
+  has.
+- Each commit keeps its message, author and date. `git am` is tried first; when
+  our edits have moved the context it hands over to `patch --merge`, which
+  merges against the files here instead of the blobs the patch was cut from.
+  A hunk neither can place, or conflict markers left in a file, stops the port
+  on that commit with the tree for a person to finish — then run the tool again
+  and it picks up the next one.
 - The rename is the list at the top of the tool: `sdroxide-` → `sdrcrow-`,
   `sdroxide_` → `sdrcrow_`, `SDRoxide`/`SDR Oxide` → `SDRCrow`,
   `SDROXIDE_VERSION` → `SDRCROW_VERSION`, and `sdroxide-brown` → `sdrcrow` for
