@@ -4359,6 +4359,7 @@ impl SdrcrowApp {
                 RadioEvent::WavelogProbe(p) => self.wavelog_probe = Some(*p),
                 RadioEvent::WavelogBatch(b) => self.on_wavelog_batch(*b),
                 RadioEvent::Notice(n) => {
+                    let n = n.map(super::playback::import_notice);
                     if self.focused {
                         self.speech.announcer.on_notice(n.as_deref(), now);
                     }
