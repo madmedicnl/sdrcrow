@@ -9820,3 +9820,18 @@ ptt-web-error = Apparaatfout: { $detail }
 topbar-band-dock-left-hint = Zet het bandenmenu links van de waterfall
 
 topbar-band-dock-right-hint = Zet het bandenmenu rechts van de waterfall
+
+
+remote-cert-untrusted = Het servercertificaat wordt niet vertrouwd. Certificaatvingerafdruk (SHA-256):
+
+remote-cert-compare = Vergelijk deze vingerafdruk met het certificaat van je server. Vertrouw het alleen als ze overeenkomen. Alleen dit exacte certificaat wordt voor deze server als uitzondering geaccepteerd.
+
+remote-cert-connect = Dit certificaat vertrouwen en verbinden
+
+remote-cert-trusted = Vertrouwde certificaten
+
+remote-cert-forget = Vergeten
+
+remote-cert-forget-hint = Normale certificaatcontrole herstellen. Als de server dit certificaat blijft gebruiken, wordt opnieuw om vertrouwen gevraagd.
+
+remote-cert-save-failed = De certificaatkeuze geldt voor deze sessie, maar kon niet worden opgeslagen: { $error }

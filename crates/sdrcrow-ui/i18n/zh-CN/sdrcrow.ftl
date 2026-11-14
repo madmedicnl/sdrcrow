@@ -9758,3 +9758,18 @@ ptt-web-error = 设备错误：{ $detail }
 topbar-band-dock-left-hint = 将波段菜单停靠在瀑布图左侧
 
 topbar-band-dock-right-hint = 将波段菜单停靠在瀑布图右侧
+
+
+remote-cert-untrusted = 服务器证书不受信任。证书指纹 (SHA-256)：
+
+remote-cert-compare = 请将此指纹与您服务器的证书进行比较。仅在一致时信任。此服务器仅将这个确切的证书作为例外接受。
+
+remote-cert-connect = 信任此证书并连接
+
+remote-cert-trusted = 受信任的证书
+
+remote-cert-forget = 忘记
+
+remote-cert-forget-hint = 恢复正常的证书验证。如果服务器仍使用此证书，将再次请求信任。
+
+remote-cert-save-failed = 证书选择在本次运行中有效，但无法保存：{ $error }

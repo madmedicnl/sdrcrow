@@ -9768,3 +9768,18 @@ ptt-web-error = デバイスエラー: { $detail }
 topbar-band-dock-left-hint = バンドメニューをウォーターフォールの左にドック
 
 topbar-band-dock-right-hint = バンドメニューをウォーターフォールの右にドック
+
+
+remote-cert-untrusted = サーバー証明書は信頼されていません。証明書のフィンガープリント (SHA-256):
+
+remote-cert-compare = このフィンガープリントを自分のサーバーの証明書と比較してください。一致する場合のみ信頼してください。このサーバーの例外として受け入れるのは、この証明書だけです。
+
+remote-cert-connect = この証明書を信頼して接続
+
+remote-cert-trusted = 信頼済みの証明書
+
+remote-cert-forget = 削除
+
+remote-cert-forget-hint = 通常の証明書検証に戻します。サーバーがこの証明書を引き続き使用している場合、再び信頼の確認が必要になります。
+
+remote-cert-save-failed = 証明書の選択は今回の実行中は有効ですが、保存できませんでした: { $error }

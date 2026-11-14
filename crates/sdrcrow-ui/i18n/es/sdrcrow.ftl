@@ -9811,3 +9811,18 @@ ptt-web-error = Error del dispositivo: { $detail }
 topbar-band-dock-left-hint = Acoplar el menú de bandas a la izquierda de la cascada
 
 topbar-band-dock-right-hint = Acoplar el menú de bandas a la derecha de la cascada
+
+
+remote-cert-untrusted = El certificado del servidor no es de confianza. Huella del certificado (SHA-256):
+
+remote-cert-compare = Compara esta huella con la del certificado de tu servidor. Confía en él solo si coinciden. Solo este certificado exacto se aceptará como excepción para este servidor.
+
+remote-cert-connect = Confiar en este certificado y conectar
+
+remote-cert-trusted = Certificados de confianza
+
+remote-cert-forget = Olvidar
+
+remote-cert-forget-hint = Restaurar la verificación normal de certificados. Si el servidor sigue usando este certificado, volverá a pedir confianza.
+
+remote-cert-save-failed = La elección del certificado se aplica en esta sesión, pero no se pudo guardar: { $error }

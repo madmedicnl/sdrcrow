@@ -120,6 +120,27 @@ def drop_ignored_files(patch: bytes) -> tuple[bytes, list[str]]:
     return b"".join(out), dropped
 
 
+def binary_files(sha: str) -> list[tuple[str, bool]]:
+    """Files the commit changes that `patch` cannot carry: `(path, deleted)`.
+
+    GNU `patch` does not understand git's binary hunks at all — it prints
+    `Binary files differ` and moves on — so a commit that *adds* a fixture (a
+    test certificate, an icon) lands with the file missing, and nothing says so
+    until something includes it. They are copied out of the commit by hand.
+    """
+    out = git_bytes("diff-tree", "-r", "--numstat", "--no-renames", f"{sha}^", sha)
+    found = []
+    for line in out.decode("utf-8", "replace").splitlines():
+        parts = line.split("\t")
+        if len(parts) == 3 and parts[0] == "-" and parts[1] == "-":
+            path = parts[2]
+            deleted = subprocess.run(
+                ["git", "cat-file", "-e", f"{sha}:{path}"], capture_output=True
+            ).returncode != 0
+            found.append((path, deleted))
+    return found
+
+
 def apply_commit(sha: str) -> bool:
     """Put one Brown commit on this branch, renamed. False if a person must look.
 
@@ -134,6 +155,7 @@ def apply_commit(sha: str) -> bool:
     could not settle, and prints `NOT MERGED` for a hunk it dropped on the floor;
     either stops the port right there, with the tree for a person to finish.
     """
+    binaries = binary_files(sha)
     patch, dropped = drop_ignored_files(rename_patch(
         git_bytes("format-patch", "-1", "--stdout", "--binary", sha)))
     for path in dropped:
@@ -175,6 +197,20 @@ def apply_commit(sha: str) -> bool:
         print("\nstopped here: these files hold conflict markers —", ", ".join(marked))
         print("resolve them, then run this script again.")
         return False
+
+    # The binaries `patch` could not carry.
+    for path, deleted in binaries:
+        target = path
+        for old_name, new_name in RENAMES:
+            target = target.replace(old_name, new_name)
+        dest = pathlib.Path(REPO, target)
+        if deleted:
+            dest.unlink(missing_ok=True)
+            print(f"   binary removed: {target}")
+            continue
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_bytes(git_bytes("show", f"{sha}:{path}"))
+        print(f"   binary copied from the commit: {target}")
 
     author = git("log", "-1", "--format=%an <%ae>", sha).strip()
     date = git("log", "-1", "--format=%aI", sha).strip()

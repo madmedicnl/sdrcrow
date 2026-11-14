@@ -9829,3 +9829,18 @@ ptt-web-error = Errore del dispositivo: { $detail }
 topbar-band-dock-left-hint = Aggancia il menu delle bande a sinistra del waterfall
 
 topbar-band-dock-right-hint = Aggancia il menu delle bande a destra del waterfall
+
+
+remote-cert-untrusted = Il certificato del server non è attendibile. Impronta del certificato (SHA-256):
+
+remote-cert-compare = Confronta questa impronta con il certificato del tuo server. Consideralo attendibile solo se coincidono. Solo questo preciso certificato sarà accettato come eccezione per questo server.
+
+remote-cert-connect = Considera attendibile e connetti
+
+remote-cert-trusted = Certificati attendibili
+
+remote-cert-forget = Dimentica
+
+remote-cert-forget-hint = Ripristina i normali controlli dei certificati. Se il server usa ancora questo certificato, verrà richiesta nuovamente la fiducia.
+
+remote-cert-save-failed = La scelta del certificato vale per questa sessione, ma non è stato possibile salvarla: { $error }

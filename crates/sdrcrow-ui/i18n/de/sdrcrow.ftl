@@ -9812,3 +9812,18 @@ ptt-web-error = Gerätefehler: { $detail }
 topbar-band-dock-left-hint = Das Bändermenü links neben dem Wasserfall andocken
 
 topbar-band-dock-right-hint = Das Bändermenü rechts neben dem Wasserfall andocken
+
+
+remote-cert-untrusted = Das Serverzertifikat ist nicht vertrauenswürdig. Zertifikat-Fingerabdruck (SHA-256):
+
+remote-cert-compare = Vergleiche diesen Fingerabdruck mit dem Zertifikat deines Servers. Vertraue ihm nur bei Übereinstimmung. Nur genau dieses Zertifikat wird für diesen Server als Ausnahme akzeptiert.
+
+remote-cert-connect = Diesem Zertifikat vertrauen und verbinden
+
+remote-cert-trusted = Vertrauenswürdige Zertifikate
+
+remote-cert-forget = Vergessen
+
+remote-cert-forget-hint = Normale Zertifikatsprüfung wiederherstellen. Verwendet der Server dieses Zertifikat weiterhin, wird erneut nach Vertrauen gefragt.
+
+remote-cert-save-failed = Die Zertifikatsauswahl gilt für diese Sitzung, konnte aber nicht gespeichert werden: { $error }
