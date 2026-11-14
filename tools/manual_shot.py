@@ -213,6 +213,8 @@ def take(name: str, tab: str | None, radio: str | None, out: str) -> pathlib.Pat
 
         Image.open(shot).convert("RGB").save(target, quality=92, subsampling=1)
         shot.unlink()
+    # The installation was for the picture only: the next run makes its own.
+    shutil.rmtree(dir, ignore_errors=True)
     print(f"{out}  <- {name}" + (f" [{tab}]" if tab else "") + (f" [{radio}]" if radio else ""))
     return target
 
