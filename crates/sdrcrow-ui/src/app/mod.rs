@@ -2384,8 +2384,18 @@ impl SdrcrowApp {
             probe_waiting: 0,
             probe_wait_until: 0.0,
             // A client that named a page (`?tab=radio`) gets it; otherwise the
-            // one the operator lands on.
-            settings_tab: OPEN_TAB.get().copied().unwrap_or(SettingsTab::General),
+            // one the operator lands on — or the one `SDRCROW_OPEN_SETTINGS`
+            // asked for, which is how the manual's pictures are taken without
+            // a hand on the mouse.
+            settings_tab: OPEN_TAB
+                .get()
+                .copied()
+                .or_else(|| {
+                    std::env::var("SDRCROW_OPEN_SETTINGS")
+                        .ok()
+                        .and_then(|key| SettingsTab::from_key(&key))
+                })
+                .unwrap_or(SettingsTab::General),
             profile_name_edit: String::new(),
             profiles: Vec::new(),
             profile_apply_pending: false,
@@ -2549,7 +2559,8 @@ impl SdrcrowApp {
             // and a screenshot of the numbers is the whole point.
             filter_presets: load_filter_presets(storage),
             preset_edit: None,
-            show_settings: crate::chrome::trace_on(),
+            show_settings: crate::chrome::trace_on()
+                || std::env::var("SDRCROW_OPEN_SETTINGS").is_ok(),
             settings_scroll_top: true,
             voice: sdrcrow_types::VoiceStatus::default(),
             show_voice: false,
