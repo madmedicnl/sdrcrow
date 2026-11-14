@@ -6,7 +6,8 @@ been changed to get there, how Brown's ongoing work is brought across, and
 what is still Brown underneath.
 
 Repository: private, `madmedicnl/sdrcrow`. One remote, `origin`. A second,
-`brown`, is read-only and exists only so its commits can be ported by hand.
+`brown`, is read-only — its push URL is disabled, so a stray push fails — and
+exists only so its commits can be fetched and ported by hand.
 
 ## Build and run
 
