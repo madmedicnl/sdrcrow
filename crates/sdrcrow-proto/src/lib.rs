@@ -3056,10 +3056,16 @@ pub enum ServerMsg {
     SondeStatus(Box<sdrcrow_types::SondeStatus>),
     /// The file of a band plan, for the screen that asked to save it on its own
     /// computer. Appended last.
-    BandPlanExport { file: String, json: String },
+    BandPlanExport {
+        file: String,
+        json: String,
+    },
     /// `RadioEvent::ModeRefused`: a mode the band the receiver is on does not
     /// carry was asked for. Appended last (v281).
-    ModeRefused { mode: sdrcrow_types::Mode, band: sdrcrow_types::Band },
+    ModeRefused {
+        mode: sdrcrow_types::Mode,
+        band: sdrcrow_types::Band,
+    },
     /// The weather-satellite decoder: its state and the picture lines new since
     /// the previous message (the client builds the image). Appended last (v284).
     WxsatStatus(Box<sdrcrow_types::WxsatStatus>),
@@ -3840,7 +3846,9 @@ mod tests {
         let (a, b) = (encode(&export).unwrap()[1], encode(&refused).unwrap()[1]);
         assert_eq!(b, a + 1, "ModeRefused must directly follow BandPlanExport");
         match decode::<ServerMsg>(&encode(&refused).unwrap()).unwrap() {
-            ServerMsg::ModeRefused { mode, band } => assert_eq!((mode, band), (Mode::Wfm, Band::M11)),
+            ServerMsg::ModeRefused { mode, band } => {
+                assert_eq!((mode, band), (Mode::Wfm, Band::M11))
+            }
             other => panic!("did not round-trip: {other:?}"),
         }
     }
@@ -3903,10 +3911,7 @@ mod tests {
             hid_mask: 0x04,
             ..PttInputConfig::default()
         };
-        for cmd in [
-            Command::SetPttInputs(Box::new(cfg.clone())),
-            Command::RescanPttInputs,
-        ] {
+        for cmd in [Command::SetPttInputs(Box::new(cfg.clone())), Command::RescanPttInputs] {
             let m = ClientMsg::Command(cmd);
             assert_eq!(decode::<ClientMsg>(&encode(&m).unwrap()).unwrap(), m);
         }
@@ -3922,7 +3927,8 @@ mod tests {
         let prev = ServerMsg::MeshtasticStatus(Box::default());
         assert_eq!(bytes[1], encode(&prev).unwrap()[1] + 1, "PttInputsStatus must be last");
         // Riding `StationConfig` too: the config comes back as sent.
-        let station = sdrcrow_types::StationConfig { ptt_inputs: cfg.clone(), ..Default::default() };
+        let station =
+            sdrcrow_types::StationConfig { ptt_inputs: cfg.clone(), ..Default::default() };
         let back: sdrcrow_types::StationConfig =
             postcard::from_bytes(&postcard::to_allocvec(&station).unwrap()).unwrap();
         assert_eq!(back.ptt_inputs, cfg);
@@ -4074,9 +4080,32 @@ mod tests {
             }
             h
         }
-        let digi = postcard::to_allocvec(&sdrcrow_types::DigiConfig::default()).unwrap();
-        let radio = postcard::to_allocvec(&sdrcrow_types::RadioConfig::default()).unwrap();
-        let net = postcard::to_allocvec(&sdrcrow_types::NetworkConfig::default()).unwrap();
+        // **The pin is taken over the fields, not over the program's name.**
+        //
+        // A handful of defaults carry the name this program gives itself — the
+        // SSTV banner's right-hand text, the mailbox greeting a packet station
+        // answers with, the name a FlexRadio lists us under, Winlink's client
+        // name and Wavelog's radio name. Those are *values*, and they change
+        // when the program is renamed: pinning them made a rename look like a
+        // field that had been inserted or dropped, twice over. Cleared here, so
+        // a rename cannot move the pin and a field still does.
+        fn without_the_program_name(
+        ) -> (sdrcrow_types::DigiConfig, sdrcrow_types::RadioConfig, sdrcrow_types::NetworkConfig)
+        {
+            let mut digi = sdrcrow_types::DigiConfig::default();
+            digi.sstv_banner_right.clear();
+            digi.packet_connect_text.clear();
+            let mut radio = sdrcrow_types::RadioConfig::default();
+            radio.smartsdr.station.clear();
+            let mut net = sdrcrow_types::NetworkConfig::default();
+            net.winlink.app_name.clear();
+            net.wavelog.radio_name.clear();
+            (digi, radio, net)
+        }
+        let (digi_cfg, radio_cfg, net_cfg) = without_the_program_name();
+        let digi = postcard::to_allocvec(&digi_cfg).unwrap();
+        let radio = postcard::to_allocvec(&radio_cfg).unwrap();
+        let net = postcard::to_allocvec(&net_cfg).unwrap();
         // 482 since `wefax_auto_slant` (a bool) was appended at the tail
         // (PROTO_VERSION 298 → 299); 481 before, since SSTV's sync-pulse
         // setting and its save-everything switch were appended at the tail
@@ -4084,14 +4113,12 @@ mod tests {
         // older peer reads the struct it knows and the new bytes are simply not
         // there.
         //
-        // **480 here, and it is the name, not the layout.** Two of this
-        // struct's defaults carry the program's own name — the SSTV banner's
-        // right-hand text and the mailbox's "Connected to …" line — and
-        // `SDRCrow` is a letter shorter than the name they were pinned under.
-        // Nothing was inserted or removed: the field list is Brown's.
+        // 410 rather than the 482 this reads under Brown's own name: the two
+        // name-bearing defaults are cleared above, and what is left is the
+        // field list. A field appended at the tail still moves this.
         assert_eq!(
             (digi.len(), fnv1a(&digi)),
-            (480, 7_595_453_736_056_440_688),
+            (410, 4_827_830_335_843_311_677),
             "DigiConfig's wire layout shifted — append fields, never insert them"
         );
         // 897 since `HpsdrConfig` gained its five Diversity fields (a bool, a
@@ -4103,12 +4130,11 @@ mod tests {
         // fingerprint its confirmation is made against (275 → 276) and the radio's
         // own band plan (277 → 278) were appended at its tail. The pin had not
         // been moved since 265; this is the conscious edit those bumps owed it.
-        // **903 here, and it is the name again**: `IcomNetConfig`'s station
-        // default is the program's own name, a letter shorter than the one this
-        // was pinned under. The fields are Brown's, unchanged.
+        // 896 with `SmartSDR`'s station name cleared (it defaults to this
+        // program's name); 904 reads under Brown's.
         assert_eq!(
             (radio.len(), fnv1a(&radio)),
-            (903, 13_296_918_946_523_390_343),
+            (896, 3_938_039_724_084_152_342),
             "RadioConfig's wire layout shifted — append fields, never insert them"
         );
         // 316 since the two Dynamic DNS fields were appended at the end
@@ -4118,12 +4144,11 @@ mod tests {
         // 318 since the QRZ card's two switches (`qrz_card`, `qrz_card_off`:
         // a bool each) were appended after them. Same rule: the pin had not
         // followed, this is the conscious edit those fields owed it.
-        // **316 here, and it is the name once more**: a couple of this
-        // struct's defaults name the program (the Winlink app name, Wavelog's
-        // radio name), one letter shorter than the name this was pinned under.
+        // 302 with the two name-bearing defaults cleared (the Winlink client
+        // name and Wavelog's radio name); 318 reads under Brown's.
         assert_eq!(
             (net.len(), fnv1a(&net)),
-            (316, 6_124_437_701_364_437_518),
+            (302, 9_221_900_018_849_427_190),
             "NetworkConfig's wire layout shifted — append fields, never insert them"
         );
     }
@@ -4355,11 +4380,7 @@ mod tests {
                         rx: 0x01,
                         tx: 0x41,
                     },
-                    sdrcrow_types::HpsdrOcRow {
-                        band: sdrcrow_types::Band::M2,
-                        rx: 0x7F,
-                        tx: 0x00,
-                    },
+                    sdrcrow_types::HpsdrOcRow { band: sdrcrow_types::Band::M2, rx: 0x7F, tx: 0x00 },
                 ],
                 ..sdrcrow_types::HpsdrConfig::default()
             },
@@ -4604,7 +4625,10 @@ mod tests {
             rows: vec![sdrcrow_types::WxsatRow {
                 apid: 65,
                 row: 7,
-                lines: vec![3; sdrcrow_types::WXSAT_LRPT_WIDTH * sdrcrow_types::WXSAT_LRPT_ROW_LINES],
+                lines: vec![
+                    3;
+                    sdrcrow_types::WXSAT_LRPT_WIDTH * sdrcrow_types::WXSAT_LRPT_ROW_LINES
+                ],
             }],
             ..Default::default()
         }));
@@ -4713,7 +4737,8 @@ mod tests {
     /// its default would fail here.
     #[test]
     fn roundtrip_sonde_config() {
-        let cfg = sdrcrow_types::SondeSettings { enabled: true, frequency_hz: 404_500_000.0, scan: true };
+        let cfg =
+            sdrcrow_types::SondeSettings { enabled: true, frequency_hz: 404_500_000.0, scan: true };
         let m = ClientMsg::Command(Command::SetSondeConfig(cfg));
         assert_eq!(decode::<ClientMsg>(&encode(&m).unwrap()).unwrap(), m);
         let mut state = RadioState::default();
@@ -4768,7 +4793,10 @@ mod tests {
         assert_eq!(n, m - 1, "a bare variant has no payload");
         assert_eq!(last[2], before[2] + 1, "must directly follow ImportMemoriesFiled");
         assert_eq!(last[3..], before[3..m - 1]);
-        assert_eq!(decode::<ClientMsg>(&last).unwrap(), ClientMsg::Command(Command::WefaxRevertSlant));
+        assert_eq!(
+            decode::<ClientMsg>(&last).unwrap(),
+            ClientMsg::Command(Command::WefaxRevertSlant)
+        );
     }
 
     /// v298: the strip scroll is a new `Command` variant after the ones before
@@ -5077,11 +5105,8 @@ mod tests {
         use sdrcrow_types::DigiConfig;
 
         assert!(DigiConfig::default().wefax_auto_slant, "on by default");
-        let cfg = DigiConfig {
-            wefax_auto_slant: false,
-            wefax_slant_ppm: -37.5,
-            ..DigiConfig::default()
-        };
+        let cfg =
+            DigiConfig { wefax_auto_slant: false, wefax_slant_ppm: -37.5, ..DigiConfig::default() };
         let m = ClientMsg::Command(Command::SetDigiConfig(cfg.clone()));
         assert_eq!(decode::<ClientMsg>(&encode(&m).unwrap()).unwrap(), m);
         let m = ServerMsg::Ft8Status(DigiStatus::idle(cfg));
@@ -5116,7 +5141,8 @@ mod tests {
         );
         assert!(b.len() > a.len());
         let tx = sdrcrow_types::TxState { rig_keyed: true, ..Default::default() };
-        let back: sdrcrow_types::TxState = postcard::from_bytes(&postcard::to_allocvec(&tx).unwrap()).unwrap();
+        let back: sdrcrow_types::TxState =
+            postcard::from_bytes(&postcard::to_allocvec(&tx).unwrap()).unwrap();
         assert!(back.rig_keyed);
     }
 }
