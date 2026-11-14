@@ -7,6 +7,10 @@ Brown keeps moving — it is where the work happens — so its commits are porte
 here, one by one, through the same rename, rather than merged: a merge would
 conflict in every file the rename touched.
 
+Always from Brown's **origin**, fetched into the `brown` remote: no working copy
+of his tree is built, tested or changed on this machine. What is decided here is
+decided by looking at the ported source, not at a build of his.
+
     tools/sync-from-brown.py            # port everything new, then stop
     tools/sync-from-brown.py --dry-run  # say what would be ported
     tools/sync-from-brown.py --base SHA # pretend the last ported commit is SHA

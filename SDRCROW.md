@@ -41,10 +41,15 @@ name, path and size — and copies the one chosen into `~/.config/sdrcrow`.
 
 ## Keeping up with Brown
 
-Brown is where the work happens, so its commits are brought here daily. Not by
-merging — the rename touched 1155 files, and a merge would conflict in every
-one Brown has also changed. They are *ported* instead, one commit at a time,
-through the rename:
+Brown is where the work happens, so its commits are brought here daily, **from
+its origin** — never from a working copy on this machine. We do not build, test
+or change SDR Oxide Brown locally any more: this repository is the only tree
+that is checked out, built and run. `brown/main` here is a fetched remote branch
+and nothing else.
+
+Not by merging, either — the rename touched 1155 files, and a merge would
+conflict in every one Brown has also changed. They are *ported* instead, one
+commit at a time, through the rename:
 
 ```sh
 tools/sync-from-brown.py --dry-run   # say what is new, change nothing
@@ -73,6 +78,10 @@ tools/check-names.sh                 # the old name has not crept back in
   packaging machinery and do not exist here.
 - Nothing is pushed and nothing is merged: the run leaves the tree for a person
   to test, which is the point of it being daily rather than automatic.
+- **Whether a failing test is Brown's or ours** is answered from the ported
+  source, not from a build of his tree: if a file here is byte-identical to
+  `brown/main`'s (after the rename), the fault came across with the commit and
+  is recorded as waiting on him; if it differs, it is ours.
 
 `tools/check-names.sh` is the rule as a gate: the old name may survive in the
 documentation's history, and in the two places that must spell it — the port
