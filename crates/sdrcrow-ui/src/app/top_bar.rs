@@ -3144,7 +3144,14 @@ impl SdrcrowApp {
             return;
         }
         let mut visible = true;
-        egui::Panel::right(crate::layout::salted_id(ui.ctx(), "band-dock"))
+        // The side the operator chose — left or right of the waterfall. One
+        // panel id either way, so the width they dragged is kept when the dock
+        // moves rather than arriving narrow on the other side.
+        let panel = match DockSide::of(self.ui_settings.band_dock_left) {
+            DockSide::Left => egui::Panel::left(crate::layout::salted_id(ui.ctx(), "band-dock")),
+            DockSide::Right => egui::Panel::right(crate::layout::salted_id(ui.ctx(), "band-dock")),
+        };
+        panel
             .resizable(true)
             .default_size((ui.available_width() * 0.4).clamp(BAND_DOCK_MIN_W, 280.0))
             // Re-applied every frame, so a column dragged wide on a big window
@@ -3176,6 +3183,24 @@ impl SdrcrowApp {
                         {
                             self.band_docked = false;
                             self.remember_band_dock();
+                        }
+                        // Which side it hangs on. The icon points at the side
+                        // the dock will move to, so one chip covers both and the
+                        // header keeps its width.
+                        let (icon, hint) = match DockSide::of(self.ui_settings.band_dock_left) {
+                            // The chip offers the *other* side, and points that way.
+                            DockSide::Left => (
+                                crate::chrome::WindowIcon::DockRight,
+                                tr!("topbar-band-dock-right-hint"),
+                            ),
+                            DockSide::Right => (
+                                crate::chrome::WindowIcon::DockLeft,
+                                tr!("topbar-band-dock-left-hint"),
+                            ),
+                        };
+                        if crate::chrome::chip_window_icon(ui, icon).on_hover_text(hint).clicked() {
+                            self.ui_settings.band_dock_left = !self.ui_settings.band_dock_left;
+                            crate::app::persist::persist_ui_settings(&self.ui_settings);
                         }
                         // The window is the wider surface: the docked column
                         // cannot show the modes in five columns without
@@ -8214,6 +8239,25 @@ const BAND_DOCK_MAX_W: f32 = 320.0;
 /// default share of a 730 pt window, the FT8 QSO pane ran on under it.
 const BAND_DOCK_WATERFALL_MIN_W: f32 = 600.0;
 
+/// **Which side the docked band/menu column hangs on.**
+///
+/// One value, read by the panel that draws it and by the chip that moves it, so
+/// the two cannot disagree about where the column is. The default is the side
+/// it has always been on: a station that upgrades without touching the new chip
+/// finds its dock exactly where it left it.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub(in crate::app) enum DockSide {
+    Left,
+    Right,
+}
+
+impl DockSide {
+    /// The side an operator's setting asks for.
+    pub(in crate::app) fn of(left: bool) -> Self {
+        if left { DockSide::Left } else { DockSide::Right }
+    }
+}
+
 /// How wide the band/mode selector may be docked beside the panadapter in a
 /// column `avail_w` points wide, or `None` where it cannot dock at all.
 ///
@@ -12552,6 +12596,20 @@ mod tests {
                 "{screen:?}: the band menu spans {r:?}"
             );
         }
+    }
+
+    /// **An upgrade must not move the dock.** The side is a new setting, and a
+    /// `config.toml` written before it existed deserialises to `false` — so the
+    /// column has to be on the right until the operator asks for the left. The
+    /// chip and the panel read the same value, which is what stops the icon
+    /// naming one side while the column hangs on the other.
+    #[test]
+    fn the_dock_starts_on_the_right_and_follows_the_setting() {
+        use sdrcrow_types::UiSettings;
+        assert!(!UiSettings::default().band_dock_left, "the default side moved");
+        assert_eq!(DockSide::of(false), DockSide::Right);
+        assert_eq!(DockSide::of(UiSettings::default().band_dock_left), DockSide::Right);
+        assert_eq!(DockSide::of(true), DockSide::Left);
     }
 
     /// The band selector docks as a column beside the waterfall on desktop and

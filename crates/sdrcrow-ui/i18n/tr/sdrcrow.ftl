@@ -9816,3 +9816,7 @@ ptt-web-permission = Erişim reddedildi. Cihazi yetkilendirmek için İzin ver d
 ptt-web-not-authorized = Cihaz yetkilendirilmedi veya bağlantısı kesildi. İzin verip listeden seçin.
 
 ptt-web-error = Cihaz hatası: { $detail }
+
+topbar-band-dock-left-hint = Bant menüsünü şelalenin soluna yerleştir
+
+topbar-band-dock-right-hint = Bant menüsünü şelalenin sağına yerleştir

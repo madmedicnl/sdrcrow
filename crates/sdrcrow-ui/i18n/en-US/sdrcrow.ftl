@@ -9845,3 +9845,7 @@ ptt-web-permission = Access refused. Use the Allow button to authorize the devic
 ptt-web-not-authorized = Device not authorized or disconnected. Allow it, then select it in the list.
 
 ptt-web-error = Device error: { $detail }
+
+topbar-band-dock-left-hint = Dock the band menu on the left of the waterfall
+
+topbar-band-dock-right-hint = Dock the band menu on the right of the waterfall

@@ -382,9 +382,11 @@ On a desktop layout the popup's **DOCK** chip keeps the selector open as a
 resizable column beside the waterfall rather than a popup that closes on the
 next click — handy while working a band plan or a set of channels. In the
 column, **UNDOCK** returns it to the popup and **×** hides it until the top-bar
-band chip brings it back; while docked, that chip toggles the column. Docking is
-offered on the desktop layouts alone: a window narrow enough to be a phone
-undocks and keeps the popup.
+band chip brings it back; while docked, that chip toggles the column. The
+arrow chip beside **×** moves the column to the other side of the waterfall —
+it points the way the column will go, so one chip covers both sides, and the
+side is remembered. Docking is offered on the desktop layouts alone: a window
+narrow enough to be a phone undocks and keeps the popup.
 
 **LISTEN can also carry the listening screen** (issue #146). Turn on *hide TX on
 the LISTEN tab* in Settings → UI and the transmit controls disappear while that

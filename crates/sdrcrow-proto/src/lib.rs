@@ -2453,8 +2453,14 @@ use sdrcrow_types::{
 /// A browser may not keep this in its own storage, so the server holds it per
 /// login, like the control bindings. `PROTO_VERSION` 301 → 302, `VERSION_BYTE`
 /// 0x79 → 0x7A.
-pub const PROTO_VERSION: u16 = 302;
-const VERSION_BYTE: u8 = 0x7A;
+///
+/// v303: **which side the band dock takes.** `ClientScreen` gains
+/// `band_dock_left` at its tail, so a browser and the station agree on the side
+/// instead of the dock moving between them. Appended, so an older peer reads the
+/// screen it knows and the new byte is simply not there. `PROTO_VERSION` 302 →
+/// 303, `VERSION_BYTE` 0x7A → 0x7B.
+pub const PROTO_VERSION: u16 = 303;
+const VERSION_BYTE: u8 = 0x7B;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ProtoError {
@@ -3798,7 +3804,7 @@ mod tests {
         // v296: the SSTV clock layer (`TextLayer::clock`) appended at the tail
         // of a `Composer` layer, which rides the picture preset messages.
         // v300: the theme-from-a-file at the tail of `ClientScreen`.
-        assert_eq!((PROTO_VERSION, VERSION_BYTE), (302, 0x7A));
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (303, 0x7B));
         // v297: the strip height at the tail of `ClientScreen`, and it comes
         // back as sent — with, since v300, the theme file's name and text.
         let screen_text = "name = \"Vending machines\"\n".to_string();
@@ -3808,6 +3814,8 @@ mod tests {
                 name: "Vending machines".into(),
                 text: screen_text.clone(),
             }),
+            // v303: which side the band dock takes, at the tail of the screen.
+            band_dock_left: true,
             ..sdrcrow_types::ClientScreen::default()
         };
         let reply = ServerMsg::ClientSettings(ClientSettingsReply {
@@ -3821,6 +3829,7 @@ mod tests {
                 let file = r.settings.theme_file.expect("the theme file came back");
                 assert_eq!(file.name, "Vending machines");
                 assert_eq!(file.text, screen_text);
+                assert!(r.settings.band_dock_left, "the dock's side came back as sent");
             }
             _ => panic!("ClientSettings did not round-trip"),
         }
@@ -3881,7 +3890,7 @@ mod tests {
             }
             other => panic!("the answer did not round-trip: {other:?}"),
         }
-        assert_eq!((PROTO_VERSION, VERSION_BYTE), (302, 0x7A));
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (303, 0x7B));
     }
 
     /// v301: the desk microphone and the pedal (issue #636) ride the wire, and
@@ -3932,7 +3941,7 @@ mod tests {
         let back: sdrcrow_types::StationConfig =
             postcard::from_bytes(&postcard::to_allocvec(&station).unwrap()).unwrap();
         assert_eq!(back.ptt_inputs, cfg);
-        assert_eq!((PROTO_VERSION, VERSION_BYTE), (302, 0x7A));
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (303, 0x7B));
     }
 
     /// v302: the browser's microphone and pedal are kept on the server, and their
@@ -3957,7 +3966,7 @@ mod tests {
         assert_eq!(decode::<ServerMsg>(&bytes).unwrap(), down);
         let prev = ServerMsg::PttInputsStatus(Box::default());
         assert_eq!(bytes[1], encode(&prev).unwrap()[1] + 1, "OperatorPtt must be last");
-        assert_eq!((PROTO_VERSION, VERSION_BYTE), (302, 0x7A));
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (303, 0x7B));
     }
 
     /// v286: the QRZ card rides `CallsignResult` — photo, age and all.
@@ -3979,7 +3988,7 @@ mod tests {
             ServerMsg::CallsignResult(back) => assert_eq!(back, info),
             other => panic!("the card did not round-trip: {other:?}"),
         }
-        assert_eq!((PROTO_VERSION, VERSION_BYTE), (302, 0x7A));
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (303, 0x7B));
     }
 
     /// The VOR read-out rides the wire whole, locked or not, and the message is
@@ -5115,14 +5124,14 @@ mod tests {
         let ServerMsg::Ft8Status(s) = back else { panic!("not a status") };
         assert!(!s.config.wefax_auto_slant);
         assert_eq!(s.config.wefax_slant_ppm, -37.5);
-        assert_eq!((PROTO_VERSION, VERSION_BYTE), (302, 0x7A));
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (303, 0x7B));
     }
 
     /// v289: the satellite lock's CTCSS tone rides the end of `SatLockConfig`,
     /// and the rig's own keying the end of `TxState`; the version is pinned.
     #[test]
     fn the_sat_lock_tone_and_the_rig_keyed_flag_round_trip() {
-        assert_eq!((PROTO_VERSION, VERSION_BYTE), (302, 0x7A));
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (303, 0x7B));
         let cfg = sdrcrow_types::SatLockConfig {
             norad_id: 25544,
             ctcss_hz: Some(67.0),

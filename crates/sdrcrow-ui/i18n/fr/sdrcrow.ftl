@@ -9819,3 +9819,7 @@ ptt-web-permission = Accès refusé. Utilisez le bouton Autoriser pour autoriser
 ptt-web-not-authorized = Appareil non autorisé ou débranché. Autorisez-le, puis choisissez-le dans la liste.
 
 ptt-web-error = Erreur de l'appareil : { $detail }
+
+topbar-band-dock-left-hint = Ancrer le menu des bandes à gauche de la cascade
+
+topbar-band-dock-right-hint = Ancrer le menu des bandes à droite de la cascade

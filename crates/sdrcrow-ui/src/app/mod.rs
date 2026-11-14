@@ -4130,6 +4130,12 @@ mod tests {
         let read = crate::app::persist::load_ui_settings(None);
         assert!(!read.band_dock_open.contains_key(&1), "an undocked radio leaves the map");
         assert_eq!(read.band_dock_open.get(&0), Some(&false), "radio 0 still there");
+
+        // Which side it hangs on is one answer for the window, not per radio,
+        // and it is written out at once so a restart puts it back where it was.
+        one.ui_settings.band_dock_left = true;
+        crate::app::persist::persist_ui_settings(&one.ui_settings);
+        assert!(crate::app::persist::load_ui_settings(None).band_dock_left, "the side is remembered");
     }
 
     /// A CW spot is tuned the **operator's own** sidetone pitch below its

@@ -9808,3 +9808,7 @@ ptt-web-permission = Zugriff verweigert. Geben Sie das Gerät mit der Schaltflä
 ptt-web-not-authorized = Gerät nicht freigegeben oder getrennt. Geben Sie es frei und wählen Sie es in der Liste.
 
 ptt-web-error = Gerätefehler: { $detail }
+
+topbar-band-dock-left-hint = Das Bändermenü links neben dem Wasserfall andocken
+
+topbar-band-dock-right-hint = Das Bändermenü rechts neben dem Wasserfall andocken

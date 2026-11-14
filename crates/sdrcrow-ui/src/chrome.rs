@@ -2289,6 +2289,12 @@ pub enum WindowIcon {
     /// **Close**: two strokes crossed. A drawn × rather than the font's `×`,
     /// for the same reason — one family, one stroke, one size.
     Close,
+    /// **The band dock on the left**: the column, and a chevron pointing at it.
+    /// The pair is one picture mirrored, so the chip says which side the dock
+    /// will move *to* without a word.
+    DockLeft,
+    /// **The band dock on the right** — the mirror of [`Self::DockLeft`].
+    DockRight,
 }
 
 /// A chip whose face is a **drawn** window icon rather than a word or a glyph.
@@ -2422,6 +2428,32 @@ fn paint_window_icon(p: &egui::Painter, r: Rect, ink: Color32, icon: WindowIcon)
             return;
         }
         _ => {}
+    }
+    if matches!(icon, WindowIcon::DockLeft | WindowIcon::DockRight) {
+        // The column, at the edge it docks to, and a chevron pointing into it.
+        let left = icon == WindowIcon::DockLeft;
+        let wide = s * 0.26;
+        let bar = if left {
+            Rect::from_min_size(
+                pos2(r.min.x + s * 0.04, r.min.y + s * 0.12),
+                vec2(wide, s * 0.76),
+            )
+        } else {
+            Rect::from_min_size(
+                pos2(r.max.x - s * 0.04 - wide, r.min.y + s * 0.12),
+                vec2(wide, s * 0.76),
+            )
+        };
+        p.rect_stroke(bar, 1.5, stroke, StrokeKind::Inside);
+        let tip = pos2(
+            if left { bar.max.x + s * 0.14 } else { bar.min.x - s * 0.14 },
+            r.center().y,
+        );
+        let back = s * 0.20;
+        let dir = if left { 1.0 } else { -1.0 };
+        p.line_segment([pos2(tip.x + dir * back, tip.y - back), tip], stroke);
+        p.line_segment([pos2(tip.x + dir * back, tip.y + back), tip], stroke);
+        return;
     }
     if icon == WindowIcon::Dock {
         // A panel, with a chevron pushing into it: the picture the operator

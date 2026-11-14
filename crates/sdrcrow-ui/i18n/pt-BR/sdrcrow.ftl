@@ -9816,3 +9816,7 @@ ptt-web-permission = Acesso negado. Use o botão Permitir para autorizar o dispo
 ptt-web-not-authorized = Dispositivo não autorizado ou desconectado. Autorize-o e selecione-o na lista.
 
 ptt-web-error = Erro do dispositivo: { $detail }
+
+topbar-band-dock-left-hint = Acoplar o menu de bandas à esquerda do waterfall
+
+topbar-band-dock-right-hint = Acoplar o menu de bandas à direita do waterfall

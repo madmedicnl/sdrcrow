@@ -9807,3 +9807,7 @@ ptt-web-permission = Acceso denegado. Use el botón Permitir para autorizar el d
 ptt-web-not-authorized = Dispositivo no autorizado o desconectado. Permítelo y selecciónalo en la lista.
 
 ptt-web-error = Error del dispositivo: { $detail }
+
+topbar-band-dock-left-hint = Acoplar el menú de bandas a la izquierda de la cascada
+
+topbar-band-dock-right-hint = Acoplar el menú de bandas a la derecha de la cascada

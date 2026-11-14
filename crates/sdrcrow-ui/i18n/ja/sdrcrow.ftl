@@ -9764,3 +9764,7 @@ ptt-web-permission = アクセスが拒否されました。許可ボタンで�
 ptt-web-not-authorized = デバイスが未許可または切断されています。許可してから一覧で選んでください。
 
 ptt-web-error = デバイスエラー: { $detail }
+
+topbar-band-dock-left-hint = バンドメニューをウォーターフォールの左にドック
+
+topbar-band-dock-right-hint = バンドメニューをウォーターフォールの右にドック

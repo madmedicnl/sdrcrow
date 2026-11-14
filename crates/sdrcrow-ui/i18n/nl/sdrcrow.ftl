@@ -9816,3 +9816,7 @@ ptt-web-permission = Toegang geweigerd. Gebruik de knop Toestaan om het apparaat
 ptt-web-not-authorized = Apparaat niet toegestaan of losgekoppeld. Sta het toe en kies het in de lijst.
 
 ptt-web-error = Apparaatfout: { $detail }
+
+topbar-band-dock-left-hint = Zet het bandenmenu links van de waterfall
+
+topbar-band-dock-right-hint = Zet het bandenmenu rechts van de waterfall

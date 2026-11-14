@@ -9754,3 +9754,7 @@ ptt-web-permission = 访问被拒绝。请点击允许按钮为设备授权。
 ptt-web-not-authorized = 设备未授权或已断开。请允许该设备，然后从列表选择。
 
 ptt-web-error = 设备错误：{ $detail }
+
+topbar-band-dock-left-hint = 将波段菜单停靠在瀑布图左侧
+
+topbar-band-dock-right-hint = 将波段菜单停靠在瀑布图右侧
