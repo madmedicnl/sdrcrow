@@ -42,7 +42,19 @@ if [ -n "$hits" ]; then
     status=1
 fi
 
+# A conflict block in a tracked file is worse than either side of it: the port
+# merges against this tree with `patch --merge`, which writes markers when it
+# cannot settle a hunk, and a marker left behind compiles in Markdown and not in
+# code. Root files included: the first scan of this kind missed AGENTS.md and
+# TODO.md because it only looked under `crates/`, `docs/` and `tools/`.
+markers=$(git grep -n -E "^(<<<<<<<|=======|>>>>>>>)$" -- . || true)
+if [ -n "$markers" ]; then
+    printf '%s\n' "$markers"
+    printf '%s\n' "a conflict block was left in a tracked file"
+    status=1
+fi
+
 if [ "$status" -eq 0 ]; then
-    printf '%s\n' "ok: only the documentation keeps the old name"
+    printf '%s\n' "ok: only the documentation keeps the old name, and no conflict block is left"
 fi
 exit "$status"
