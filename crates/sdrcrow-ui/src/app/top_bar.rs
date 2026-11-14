@@ -3220,6 +3220,10 @@ impl SdrcrowApp {
                     });
                 });
                 ui.separator();
+                // The narrowest column in the program, and a solid bar takes a
+                // tenth of it: the same thin floating one the Classic UI column
+                // wears, and for the same reason.
+                crate::theme::thin_floating_scroll(ui);
                 egui::ScrollArea::vertical()
                     .auto_shrink([false, false])
                     .id_salt("band-dock-scroll")

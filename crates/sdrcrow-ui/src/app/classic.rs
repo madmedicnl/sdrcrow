@@ -165,19 +165,9 @@ impl super::SdrcrowApp {
         // makes `available_width` *infinite*, so every row would stretch to
         // infinity and be clipped at the viewport — which reads as chips that
         // need wrapping and is in fact nothing being given a width at all.
-        // **The bar floats, and the content has air.** A scroll bar that
-        // allocates takes its width off every row it appears beside — the
-        // operator's *"it takes a lot of realestate and the padding is non
-        // existent with the chips"*, which is one complaint: the chips end up
-        // flush against the edge with the bar on top of them. Floating, the bar
-        // is drawn over the margin instead of beside the chips.
-        {
-            let style = ui.style_mut();
-            style.spacing.scroll.floating = true;
-            style.spacing.scroll.bar_width = 8.0;
-            style.spacing.scroll.content_margin =
-                egui::Margin { left: 6, right: 10, top: 2, bottom: 8 };
-        }
+        // **The bar floats, and the content has air** — see the helper for why
+        // this column gets the thin one and a logbook does not.
+        crate::theme::thin_floating_scroll(ui);
         egui::ScrollArea::vertical().auto_shrink([false, false]).id_salt("classic-column").show(
             ui,
             |ui| {

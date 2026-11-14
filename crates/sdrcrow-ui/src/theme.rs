@@ -2712,6 +2712,25 @@ fn scroll_palette(v: &mut egui::Visuals) {
     v.widgets.active.fg_stroke.color = p.scroll_handle_drag;
 }
 
+/// **The thin bar that floats**, for a narrow column of chips.
+///
+/// A solid bar allocates its width off every row beside it — the operator's
+/// *"it takes a lot of realestate and the padding is non existent with the
+/// chips"* — and in the narrowest columns of this program that is a tenth of
+/// the width taken from the controls. Floating, the bar is drawn over a content
+/// margin instead of beside the chips, so they keep their room; it is thinner
+/// besides, which a column this wide can afford because it is not a long list.
+///
+/// Used by the Classic UI column and by the docked band menu — the two narrow
+/// ones. Everywhere else keeps [`apply_metrics`]'s solid bar: in a logbook or a
+/// decode list a bar is a target and a position, not decoration.
+pub fn thin_floating_scroll(ui: &mut egui::Ui) {
+    let style = ui.style_mut();
+    style.spacing.scroll.floating = true;
+    style.spacing.scroll.bar_width = 8.0;
+    style.spacing.scroll.content_margin = egui::Margin { left: 6, right: 10, top: 2, bottom: 8 };
+}
+
 /// `ScrollArea::show` with themed scrollbars.
 pub trait ThemedScroll {
     /// Show the area, painting its bars in the [`scroll_palette`].
@@ -2989,6 +3008,33 @@ mod tests {
         assert!(phone.interact_size.y > desktop.interact_size.y);
         assert!(phone.button_padding.y > desktop.button_padding.y);
         assert!(phone.scroll.bar_width > desktop.scroll.bar_width);
+    }
+
+    /// **The thin bar is a choice, not a default.** It is set on the `Ui` that
+    /// owns the narrow column, so it covers that column's scroll areas and
+    /// nothing else: a logbook keeps the solid bar that is a target and a
+    /// position. Asserted here because the difference is four numbers in a
+    /// style and a screenshot of an unhovered bar shows nothing at all.
+    #[test]
+    fn the_narrow_columns_get_the_thin_floating_bar() {
+        let ctx = egui::Context::default();
+        // The program's own style, which is what the narrow columns override —
+        // a bare `Context` would be egui's floating hairline and prove nothing.
+        crate::theme::apply_visuals(&ctx);
+        crate::theme::apply_metrics(&ctx, crate::layout::Tier::Desktop);
+        let mut after = None;
+        let _ = ctx.run_ui(Default::default(), |ui| {
+            {
+                let solid = ui.style().spacing.scroll.clone();
+                crate::theme::thin_floating_scroll(ui);
+                after = Some((solid, ui.style().spacing.scroll.clone()));
+            }
+        });
+        let (solid, thin) = after.expect("a frame ran");
+        assert!(!solid.floating, "the default bar still takes its own width");
+        assert!(thin.floating, "the narrow columns float their bar");
+        assert_eq!(thin.bar_width, 8.0);
+        assert!(thin.bar_width < solid.bar_width, "and it is thinner than the solid one");
     }
 
     /// The look SDRCrow ships must not drift: it is what a fresh installation
