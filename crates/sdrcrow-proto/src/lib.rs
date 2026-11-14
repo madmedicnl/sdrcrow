@@ -4083,9 +4083,15 @@ mod tests {
         // (PROTO_VERSION 262 → 263). Appended, so an
         // older peer reads the struct it knows and the new bytes are simply not
         // there.
+        //
+        // **480 here, and it is the name, not the layout.** Two of this
+        // struct's defaults carry the program's own name — the SSTV banner's
+        // right-hand text and the mailbox's "Connected to …" line — and
+        // `SDRCrow` is a letter shorter than the name they were pinned under.
+        // Nothing was inserted or removed: the field list is Brown's.
         assert_eq!(
             (digi.len(), fnv1a(&digi)),
-            (482, 1_063_270_805_729_231_186),
+            (480, 7_595_453_736_056_440_688),
             "DigiConfig's wire layout shifted — append fields, never insert them"
         );
         // 897 since `HpsdrConfig` gained its five Diversity fields (a bool, a
@@ -4097,9 +4103,12 @@ mod tests {
         // fingerprint its confirmation is made against (275 → 276) and the radio's
         // own band plan (277 → 278) were appended at its tail. The pin had not
         // been moved since 265; this is the conscious edit those bumps owed it.
+        // **903 here, and it is the name again**: `IcomNetConfig`'s station
+        // default is the program's own name, a letter shorter than the one this
+        // was pinned under. The fields are Brown's, unchanged.
         assert_eq!(
             (radio.len(), fnv1a(&radio)),
-            (904, 13_554_492_482_937_614_926),
+            (903, 13_296_918_946_523_390_343),
             "RadioConfig's wire layout shifted — append fields, never insert them"
         );
         // 316 since the two Dynamic DNS fields were appended at the end
@@ -4109,9 +4118,12 @@ mod tests {
         // 318 since the QRZ card's two switches (`qrz_card`, `qrz_card_off`:
         // a bool each) were appended after them. Same rule: the pin had not
         // followed, this is the conscious edit those fields owed it.
+        // **316 here, and it is the name once more**: a couple of this
+        // struct's defaults name the program (the Winlink app name, Wavelog's
+        // radio name), one letter shorter than the name this was pinned under.
         assert_eq!(
             (net.len(), fnv1a(&net)),
-            (318, 13_712_061_205_942_838_718),
+            (316, 6_124_437_701_364_437_518),
             "NetworkConfig's wire layout shifted — append fields, never insert them"
         );
     }
