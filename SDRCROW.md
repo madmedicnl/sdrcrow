@@ -52,6 +52,11 @@ Not by merging, either — the rename touched 1155 files, and a merge would
 conflict in every one Brown has also changed. They are *ported* instead, one
 commit at a time, through the rename:
 
+**Run the dry run before starting a change that may touch the wire**, not after
+it: `PROTO_VERSION` is one counter between the two repositories, and both of us
+reach the same number independently — on 2026-11-14 the band dock's side and
+`PlaybackCommand::Import` both arrived as 303.
+
 ```sh
 tools/sync-from-brown.py --dry-run   # say what is new, change nothing
 tools/sync-from-brown.py             # port it, then stop
