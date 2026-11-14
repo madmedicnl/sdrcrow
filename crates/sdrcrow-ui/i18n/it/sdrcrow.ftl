@@ -17,7 +17,7 @@ layout-mode-tablet = Tablet
 layout-mode-small = Schermo piccolo
 layout-mode-phone = Telefono
 
-ui-theme-default = Predefinito
+ui-theme-default = SDRCrow
 ui-theme-light = Chiaro
 ui-theme-high-contrast = Alto contrasto
 ui-theme-green-phosphor = Fosforo verde
@@ -8584,7 +8584,7 @@ settings-xvtr-drive-hint =
 
     La tua impostazione Drive viene mantenuta sotto questo valore invece di essere spostata, così il numero che usi in HF ritorna quando il dial lascia la banda.
 
-settings-brown-build-note = La build Brown di sdrcrow: il programma di upstream, più la banda cittadina degli 11 m, l'ascolto in onde corte e la decodifica. Funziona come una normale stazione radioamatoriale con queste bande e strumenti aggiunti.
+settings-program-note = SDRCrow: una stazione radioamatoriale completa, più la banda cittadina degli 11 m, l'ascolto in onde corte e la decodifica: le bande e gli strumenti per cui è fatto questo programma.
 
 settings-gain-by-band = Ricorda il guadagno del front end per banda
 

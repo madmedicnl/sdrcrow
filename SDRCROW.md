@@ -93,6 +93,7 @@ operator recognises one.
 | The environment override | `SDRCROW_CONFIG_DIR`, and only that name |
 | The Wayland/WM app id | `sdrcrow` |
 | The release suffix | none — tags are `vX.Y.Z` |
+| The look | `UiTheme::Default` is SDRCrow's own: charcoal on a near-black page, the logo's gold on the chrome, its blue as the accent, steel ink and red kept for alerts — and it is the fallback every unknown value lands on. Rainbow keeps Brown's old navy instrument |
 | The splash | the SDRCrow logo (`crates/sdrcrow-ui/assets/splash.png`), 2 s, dismissed at once by a click or a key |
 | Packaging | `packaging/linux/sdrcrow.desktop`, `packaging/icons/sdrcrow-*.png` (the logo, 16 to 512 px), udev rules `60-sdrcrow-*.rules`, `packaging/windows/sdrcrow.ico` and a fresh UpgradeCode, `packaging/macos/sdrcrow.icns` and bundle id `org.sdrcrow.sdrcrow`, headless installers naming SDRCrow |
 | The update check | asks `madmedicnl/sdrcrow` for releases, and nothing else |
@@ -107,7 +108,8 @@ there is no shared directory any more.
 
 - **The documentation**: `README.md`, `AGENTS.md`, `TODO.md`, `CHANGELOG.md`,
   `docs/` and `BUILD-WINDOWS.md` are Brown's text and history, kept because the
-  house rules in them still describe how this work is done. This file is the one
+  house rules in them still describe how this work is done. The manual's
+  screenshots were taken in Brown's navy look, not in this program's. This file is the one
   that says what SDRCrow is.
 - **The engine's shared resources**: SDRCrow and Brown both take the first
   RSP/dongle, TCI port 50001, the server port and rigctld's. Two of them at

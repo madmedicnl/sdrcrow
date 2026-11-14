@@ -12,7 +12,7 @@ layout-mode-tablet = Tablet
 layout-mode-small = Kleiner Bildschirm
 layout-mode-phone = Smartphone
 
-ui-theme-default = Standard
+ui-theme-default = SDRCrow
 ui-theme-light = Hell
 ui-theme-high-contrast = Hoher Kontrast
 ui-theme-green-phosphor = Grüner Phosphor
@@ -8565,7 +8565,7 @@ settings-xvtr-drive-hint =
     
     Ihre Drive-Einstellung wird darunter gehalten statt verschoben, sodass der KW-Wert zurückkommt, wenn die Frequenz das Band verlässt.
 
-settings-brown-build-note = Die Brown-Ausgabe von sdrcrow: das Originalprogramm plus das 11-m-Jedermannfunkband, Kurzwellenhören und Dekodieren. Läuft als gewöhnliche Amateurfunkstation mit diesen zusätzlichen Bändern und Werkzeugen.
+settings-program-note = SDRCrow: eine vollständige Amateurfunkstelle plus das 11-m-Jedermannfunkband, Kurzwellenhören und Dekodieren — die Bänder und Werkzeuge, für die dieses Programm gemacht ist.
 
 settings-gain-by-band = Eingangsverstärkung pro Band merken
 

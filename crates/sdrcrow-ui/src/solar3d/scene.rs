@@ -29,21 +29,21 @@ mod ink {
     }
 
     /// Live accent: the Earth's glow, fresh traffic.
-    pub const CYAN: Color32 = c(0x00d0f4);
+    pub const CYAN: Color32 = c(0x3498dc);
     /// Quiet accent: orbit rings, body labels — present, not shouting.
-    pub const CYAN_DIM: Color32 = c(0x1d9cbe);
+    pub const CYAN_DIM: Color32 = c(0x2a86bb);
     /// Faint structural lines: the Moon's path and the planets' moons'.
-    pub const LINE_LIT: Color32 = c(0x2a4a66);
+    pub const LINE_LIT: Color32 = c(0x2f4a63);
     /// Alarm: the locked satellite, Earth-bound CMEs, high-threat regions.
-    pub const PINK: Color32 = c(0xff2a55);
+    pub const ALERT: Color32 = c(0xff3b30);
     /// Highlight: search hits, the sub-solar point, the solar graticule.
-    pub const YELLOW: Color32 = c(0xffd23f);
+    pub const YELLOW: Color32 = c(0xffc414);
     /// Confirmation: the QTH ring, the aurora ovals, confirmed entities — and
     /// the arc to the station being worked, which is the same statement about
     /// the same operator's own station.
-    pub const GREEN: Color32 = c(0x46e07d);
+    pub const GREEN: Color32 = c(0x4bd08a);
     /// Near-white: live station dots and the pulse crest on the active arc.
-    pub const TEXT_STRONG: Color32 = c(0xe8f4ff);
+    pub const TEXT_STRONG: Color32 = c(0xeef4fb);
 }
 
 /// Per-frame scene constants. 160 bytes; keep in step with `Globals` in the
@@ -758,7 +758,7 @@ fn satellites(
         // and yellow is the one accent nothing else in this layer uses. The
         // locked bird outranks even that, in the one colour louder still.
         let color = match (locked, hit, geo) {
-            (true, ..) => ink::PINK,
+            (true, ..) => ink::ALERT,
             (false, true, _) => ink::YELLOW,
             (false, false, true) => ink::GREEN,
             (false, false, false) => ink::CYAN_DIM,
@@ -816,7 +816,7 @@ fn satellites(
                         home + (pos - home) * t0,
                         home + (pos - home) * t1,
                         2.0,
-                        lin(ink::PINK, 0.85 * fade),
+                        lin(ink::ALERT, 0.85 * fade),
                     ));
                 }
             }
@@ -1363,7 +1363,7 @@ fn spots(
         // are the ones likely to produce something.
         let t = r.threat() as f32;
         let color = if t > 0.5 {
-            ink::PINK
+            ink::ALERT
         } else if t > 0.2 {
             ink::YELLOW
         } else {
@@ -1409,7 +1409,7 @@ fn flares(
         s.sprites.push(SpriteInst {
             center: (dir * (b.sun_r * 1.01)).arr(),
             size_px: 8.0 + 7.0 * (sev - 2.0).clamp(0.0, 2.5),
-            color: lin(ink::PINK, (0.35 + 0.55 * alpha).min(1.0)),
+            color: lin(ink::ALERT, (0.35 + 0.55 * alpha).min(1.0)),
             params: [SPRITE_RING, 0.0, 0.0, 0.0],
         });
     }
@@ -1443,7 +1443,7 @@ fn cones(s: &mut Scene, st: &SolarUi, cmes: &[sdrcrow_solar::CmeEvent], now: i64
         let earth_bound = sdrcrow_solar::earth_impact(a).is_some();
         let color = if earth_bound {
             // The one that matters gets the alarm colour, whatever its speed.
-            ink::PINK
+            ink::ALERT
         } else {
             Color32::from_rgb(
                 (fast * 255.0) as u8,
@@ -3452,26 +3452,26 @@ mod tests {
         assert!(peak((48.0, 11.0)) < peak((35.7, 139.7)));
     }
 
-    /// The scene's inks are the classic palette, frozen — *not* the live
-    /// theme. The Earth shader bakes these hues into the globe itself, and the
-    /// amber theme once recoloured the arcs and orbit rings into the globe's
+    /// The scene's inks are the palette the program ships, frozen — *not* the
+    /// live theme. The Earth shader bakes these hues into the globe itself, and
+    /// the amber theme once recoloured the arcs and orbit rings into the globe's
     /// own brightness range, where they vanished. The atomics are process-wide
     /// and tests run in parallel, so this pins the values instead of flipping
     /// the theme; scene code reaching for `crate::theme` is the thing to catch
     /// in review.
     #[test]
-    fn the_scene_inks_are_the_classic_palette_not_the_theme() {
+    fn the_scene_inks_are_the_shipped_palette_not_the_chosen_one() {
         let p = crate::theme::palette(); // tests never call set_look, so this is the boot-up look
         for (got, want, name) in [
             (ink::CYAN, p.cyan, "cyan"),
             (ink::CYAN_DIM, p.cyan_dim, "cyan_dim"),
             (ink::LINE_LIT, p.line_lit, "line_lit"),
-            (ink::PINK, p.pink, "pink"),
+            (ink::ALERT, p.alert, "alert"),
             (ink::YELLOW, p.yellow, "yellow"),
             (ink::GREEN, p.green, "green"),
             (ink::TEXT_STRONG, p.text_strong, "text_strong"),
         ] {
-            assert_eq!(got, want, "ink::{name} drifted from the classic palette");
+            assert_eq!(got, want, "ink::{name} drifted from the shipped palette");
         }
     }
 

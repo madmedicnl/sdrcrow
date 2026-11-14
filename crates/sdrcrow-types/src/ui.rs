@@ -395,10 +395,14 @@ pub enum UiTheme {
     /// Lauds, the light half of the Compline palette: warm cream grounds and a
     /// cool near-black for ink.
     Lauds,
-    /// The classic navy/cyan/pink look. Declared last because serde demands
-    /// the catch-all be the final variant: it also swallows an unrecognised
-    /// value in a hand-edited config, so a typo degrades to the default theme
-    /// instead of throwing the whole config away.
+    /// **The look SDRCrow ships**: charcoal panels and a near-black page, the
+    /// logo's gold on the chrome, its blue as the working accent and steel for
+    /// ink — dark and quiet for a night's listening, with red kept for alerts.
+    ///
+    /// Declared last because serde demands the catch-all be the final variant:
+    /// it also swallows an unrecognised value in a hand-edited config, so a
+    /// typo degrades to this theme instead of throwing the whole config away.
+    /// That is why it is the fallback as well as the default.
     #[default]
     #[serde(other)]
     Default,
@@ -431,7 +435,7 @@ impl UiTheme {
 
     pub fn label(self) -> &'static str {
         match self {
-            UiTheme::Default => "Default",
+            UiTheme::Default => "SDRCrow",
             UiTheme::Light => "Light",
             UiTheme::HighContrast => "High contrast",
             UiTheme::GreenPhosphor => "Green phosphor",

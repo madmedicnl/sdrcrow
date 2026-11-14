@@ -12,7 +12,7 @@ layout-mode-tablet = Tablet
 layout-mode-small = Klein scherm
 layout-mode-phone = Telefoon
 
-ui-theme-default = Standaard
+ui-theme-default = SDRCrow
 ui-theme-light = Licht
 ui-theme-high-contrast = Hoog contrast
 ui-theme-green-phosphor = Groen fosfor
@@ -8573,7 +8573,7 @@ settings-xvtr-drive-hint =
     
     Je Drive-instelling wordt hieronder gehouden in plaats van verplaatst, zodat het getal dat je op HF gebruikt terugkomt als de afstemming de band verlaat.
 
-settings-brown-build-note = De Brown-build van sdrcrow: het programma van upstream, plus de 11 m-burgerband, kortegolfluisteren en decoderen. Draait als een gewoon amateurstation met die banden en hulpmiddelen erbij.
+settings-program-note = SDRCrow: een volledig amateurstation plus de 11 m-burgerband, kortegolfluisteren en decoderen — de banden en hulpmiddelen waarvoor dit programma gemaakt is.
 
 settings-gain-by-band = Onthoud de front-end-versterking per band
 

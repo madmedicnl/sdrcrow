@@ -17,7 +17,7 @@ layout-mode-tablet = タブレット
 layout-mode-small = 小型画面
 layout-mode-phone = スマートフォン
 
-ui-theme-default = 標準
+ui-theme-default = SDRCrow
 ui-theme-light = ライト
 ui-theme-high-contrast = ハイコントラスト
 ui-theme-green-phosphor = グリーン蛍光
@@ -8523,7 +8523,7 @@ settings-xvtr-drive-hint =
 
     ドライブ設定は移動されずにこの上限の下に保持されるため、ダイヤルがこのバンドを離れると HF で使っている値に戻ります。
 
-settings-brown-build-note = sdrcrow の Brown ビルド: 上流のプログラムに、11 m 市民バンド、短波受信、デコードを加えたものです。これらのバンドとツールが加わった通常のアマチュア局として動作します。
+settings-program-note = SDRCrow: 本格的なアマチュア無線局に、11 m 市民バンド、短波受信、デコードを加えたものです。このプログラムはそのバンドとツールのために作られています。
 
 settings-gain-by-band = バンドごとにフロントエンドゲインを記憶
 

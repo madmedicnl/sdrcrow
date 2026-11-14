@@ -17,7 +17,7 @@ layout-mode-tablet = Tablet
 layout-mode-small = Küçük ekran
 layout-mode-phone = Telefon
 
-ui-theme-default = Varsayılan
+ui-theme-default = SDRCrow
 ui-theme-light = Açık
 ui-theme-high-contrast = Yüksek karşıtlık
 ui-theme-green-phosphor = Yeşil fosfor
@@ -8575,7 +8575,7 @@ settings-xvtr-drive-hint =
 
     Sürüş ayarınız bunun altında tutulur, taşınmaz; böylece HF'de kullandığınız sayı kadran banttan ayrıldığında geri gelir.
 
-settings-brown-build-note = sdrcrow'ın Brown derlemesi: upstream'in programı, artı 11 m vatandaş bandı, kısa dalga dinleme ve çözme. Bu bantlar ve araçlar eklenmiş sıradan bir amatör istasyon olarak çalışır.
+settings-program-note = SDRCrow: tam bir amatör istasyon, artı 11 m vatandaş bandı, kısa dalga dinleme ve çözme — bu programın yapıldığı bantlar ve araçlar.
 
 settings-gain-by-band = Ön uç kazancını bant başına hatırla
 

@@ -2917,7 +2917,7 @@ impl SdrcrowApp {
                 // which is the point of calling it Brown.
                 note_rich(
                     ui,
-                    &tr!("settings-brown-build-note"),
+                    &tr!("settings-program-note"),
                     Some(11.0),
                     None,
                 );

@@ -198,43 +198,49 @@ const fn blend(a: Color32, b: Color32, num: u32, den: u32) -> Color32 {
     )
 }
 
-/// The classic look: dark navy panels, cyan accents, hot-pink strokes. Must
-/// stay bit-exact to the historic constants — it is the default every
-/// screenshot in the manual shows.
+/// **The look SDRCrow ships**: charcoal panels and a near-black page, the
+/// logo's own gold on the chrome, its blue as the working accent, and steel for
+/// ink. Dark on purpose and quiet on purpose — this is the theme somebody
+/// watches for a night's listening, so nothing in it glows at the operator —
+/// and the only loud colour left in it is the red of an alert.
+///
+/// It is also the fallback: [`UiTheme::Default`] is the `serde` catch-all, so a
+/// config written under another name — or one this program does not know —
+/// comes up in these colours rather than in nobody's.
 const DEFAULT: Palette = Palette {
     light: false,
     no_dim: false,
-    bg_deep: c(0x050810),
-    panel: c(0x0b111e),
-    input_bg: c(0x04070e),
-    fill: c(0x101a2c),
-    fill_hover: c(0x17243c),
-    fill_active: c(0x1d2f4d),
-    line: c(0x1a2740),
-    line_lit: c(0x2a4a66),
-    text: c(0xb4c6da),
-    text_strong: c(0xe8f4ff),
-    cyan: c(0x00d0f4),
-    cyan_dim: c(0x1d9cbe),
-    pink: c(0xff2a55),
-    yellow: c(0xffd23f),
-    green: c(0x46e07d),
-    ink_on_cyan: c(0x021019),
+    bg_deep: c(0x06080a),
+    panel: c(0x0c1014),
+    input_bg: c(0x04060a),
+    fill: c(0x141a21),
+    fill_hover: c(0x1c2530),
+    fill_active: c(0x26323f),
+    line: c(0x1b2530),
+    line_lit: c(0x2f4a63),
+    text: c(0xb9c5d2),
+    text_strong: c(0xeef4fb),
+    cyan: c(0x3498dc),
+    cyan_dim: c(0x2a86bb),
+    pink: c(0xd9a521),
+    yellow: c(0xffc414),
+    green: c(0x4bd08a),
+    ink_on_cyan: c(0x04101a),
     ink_on_bright: Color32::BLACK,
-    red_deep: c(0x6e182c),
-    cq_bg: c(0x240c15),
-    tome_bg: c(0x2c2406),
-    done_bg: c(0x082a17),
-    row_bg: c(0x0a101b),
-    row_hover: c(0x141e2e),
-    scroll_track: c(0x0e1626),
-    scroll_handle: c(0x178ead),
-    scroll_handle_hover: c(0x00d0f4), // = cyan
-    scroll_handle_drag: c(0xff2a55),  // = pink
-    faint_bg: c(0x0e1626),
-    alert: c(0xff2a55), // = the historic pink, which doubled as the error colour
-    hazard: c(0xffd23f),
-    hazard_dark: c(0x161204),
+    red_deep: c(0x6b1414),
+    cq_bg: c(0x1f0c0e),
+    tome_bg: c(0x2a2205),
+    done_bg: c(0x062a1a),
+    row_bg: c(0x080c11),
+    row_hover: c(0x121a23),
+    scroll_track: c(0x0a1017),
+    scroll_handle: c(0x2a86bb),
+    scroll_handle_hover: c(0x3498dc), // = cyan
+    scroll_handle_drag: c(0xd9a521),  // = the gold chrome
+    faint_bg: c(0x0a1017),
+    alert: c(0xff3b30), // red, and red in every theme: see `every_theme_keeps_alerts_red`
+    hazard: c(0xffc414),
+    hazard_dark: c(0x171204),
 };
 
 /// Green CRT phosphor: every role brightness-graded within one green family
@@ -1437,10 +1443,11 @@ const fn meter_paper(p: &Palette) -> MeterPalette {
 }
 
 /// Indexed by [`theme_index`], like [`PALETTES`]. Rainbow keeps the historic
-/// navy instrument: its grounds are the default's, and the meter already
-/// reads in the accents the ramps give it.
+/// navy instrument, the one constant left over from before the meter followed
+/// the theme; every other slot, the default included, is derived from its own
+/// palette by [`meter_from`].
 static METER_PALETTES: [MeterPalette; 21] = [
-    METER_DEFAULT,                   // 0  Default
+    meter_from(&DEFAULT),            // 0  Default
     METER_GREEN,                     // 1  Green phosphor
     METER_AMBER,                     // 2  Amber phosphor
     METER_TEAL,                      // 3  Teal / orange
@@ -2984,53 +2991,60 @@ mod tests {
         assert!(phone.scroll.bar_width > desktop.scroll.bar_width);
     }
 
-    /// The default palette is the classic look and must never drift: these are
-    /// the exact values of the `pub const`s the theme system replaced, which
-    /// every screenshot in the manual shows.
+    /// The look SDRCrow ships must not drift: it is what a fresh installation
+    /// and every unknown value in a config land on, so a colour changed here by
+    /// accident repaints the default for everyone who never picked a theme.
     #[test]
-    fn default_palette_is_the_historic_look() {
+    fn the_default_palette_is_the_crow_look() {
         let p = &PALETTES[theme_index(UiTheme::Default) as usize];
         for (got, want, name) in [
-            (p.bg_deep, 0x050810, "bg_deep"),
-            (p.panel, 0x0b111e, "panel"),
-            (p.input_bg, 0x04070e, "input_bg"),
-            (p.fill, 0x101a2c, "fill"),
-            (p.fill_hover, 0x17243c, "fill_hover"),
-            (p.fill_active, 0x1d2f4d, "fill_active"),
-            (p.line, 0x1a2740, "line"),
-            (p.line_lit, 0x2a4a66, "line_lit"),
-            (p.text, 0xb4c6da, "text"),
-            (p.text_strong, 0xe8f4ff, "text_strong"),
-            (p.cyan, 0x00d0f4, "cyan"),
-            (p.cyan_dim, 0x1d9cbe, "cyan_dim"),
-            (p.pink, 0xff2a55, "pink"),
-            (p.yellow, 0xffd23f, "yellow"),
-            (p.green, 0x46e07d, "green"),
-            (p.ink_on_cyan, 0x021019, "ink_on_cyan"),
-            (p.red_deep, 0x6e182c, "red_deep"),
-            (p.cq_bg, 0x240c15, "cq_bg"),
-            (p.tome_bg, 0x2c2406, "tome_bg"),
-            (p.done_bg, 0x082a17, "done_bg"),
-            (p.row_bg, 0x0a101b, "row_bg"),
-            (p.row_hover, 0x141e2e, "row_hover"),
-            (p.scroll_track, 0x0e1626, "scroll_track"),
-            (p.scroll_handle, 0x178ead, "scroll_handle"),
-            (p.scroll_handle_hover, 0x00d0f4, "scroll_handle_hover"),
-            (p.scroll_handle_drag, 0xff2a55, "scroll_handle_drag"),
-            (p.faint_bg, 0x0e1626, "faint_bg"),
-            (p.alert, 0xff2a55, "alert"),
+            (p.bg_deep, 0x06080a, "bg_deep"),
+            (p.panel, 0x0c1014, "panel"),
+            (p.input_bg, 0x04060a, "input_bg"),
+            (p.fill, 0x141a21, "fill"),
+            (p.fill_hover, 0x1c2530, "fill_hover"),
+            (p.fill_active, 0x26323f, "fill_active"),
+            (p.line, 0x1b2530, "line"),
+            (p.line_lit, 0x2f4a63, "line_lit"),
+            (p.text, 0xb9c5d2, "text"),
+            (p.text_strong, 0xeef4fb, "text_strong"),
+            (p.cyan, 0x3498dc, "cyan"),
+            (p.cyan_dim, 0x2a86bb, "cyan_dim"),
+            (p.pink, 0xd9a521, "pink"),
+            (p.yellow, 0xffc414, "yellow"),
+            (p.green, 0x4bd08a, "green"),
+            (p.ink_on_cyan, 0x04101a, "ink_on_cyan"),
+            (p.red_deep, 0x6b1414, "red_deep"),
+            (p.cq_bg, 0x1f0c0e, "cq_bg"),
+            (p.tome_bg, 0x2a2205, "tome_bg"),
+            (p.done_bg, 0x062a1a, "done_bg"),
+            (p.row_bg, 0x080c11, "row_bg"),
+            (p.row_hover, 0x121a23, "row_hover"),
+            (p.scroll_track, 0x0a1017, "scroll_track"),
+            (p.scroll_handle, 0x2a86bb, "scroll_handle"),
+            (p.scroll_handle_hover, 0x3498dc, "scroll_handle_hover"),
+            (p.scroll_handle_drag, 0xd9a521, "scroll_handle_drag"),
+            (p.faint_bg, 0x0a1017, "faint_bg"),
+            (p.alert, 0xff3b30, "alert"),
         ] {
             assert_eq!(got, c(want), "default palette field {name} drifted");
         }
     }
 
-    /// The default S-meter instrument must stay the historic one: these are
-    /// the exact values of the constants `widgets::smeter` carried before the
-    /// instrument followed the theme. Rainbow shares them by design.
+    /// Rainbow keeps the historic instrument: it is the one theme left on the
+    /// instrument `widgets::smeter` carried before the meter followed the theme,
+    /// and the values below are the constants it used then.
+    ///
+    /// The default theme's meter is derived from its own palette like every
+    /// other modern theme's, so the face it draws is not this one — asserted
+    /// here so the two cannot silently become the same again.
     #[test]
-    fn default_meter_palette_is_the_historic_instrument() {
-        let m = &METER_PALETTES[theme_index(UiTheme::Default) as usize];
-        assert_eq!(METER_PALETTES[theme_index(UiTheme::Rainbow) as usize], *m);
+    fn the_rainbow_theme_keeps_the_historic_instrument() {
+        let m = &METER_PALETTES[theme_index(UiTheme::Rainbow) as usize];
+        assert_ne!(
+            METER_PALETTES[theme_index(UiTheme::Default) as usize], *m,
+            "the default theme still wears the historic instrument"
+        );
         for (got, want, name) in [
             (m.face_top, 0x111b2b, "face_top"),
             (m.face_bot, 0x03060c, "face_bot"),
@@ -3050,7 +3064,7 @@ mod tests {
             (m.ramp_mid, 0x1da8cf, "ramp_mid"),
             (m.ramp_hi, 0x8eecff, "ramp_hi"),
         ] {
-            assert_eq!(got, c(want), "default meter palette field {name} drifted");
+            assert_eq!(got, c(want), "Rainbow's meter field {name} drifted");
         }
     }
 

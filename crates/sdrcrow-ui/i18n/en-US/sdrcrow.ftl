@@ -17,7 +17,7 @@ layout-mode-tablet = Tablet
 layout-mode-small = Small screen
 layout-mode-phone = Phone
 
-ui-theme-default = Default
+ui-theme-default = SDRCrow
 ui-theme-light = Light
 ui-theme-high-contrast = High contrast
 ui-theme-green-phosphor = Green phosphor
@@ -8577,7 +8577,7 @@ settings-xvtr-drive-hint =
     
     Your Drive setting is held under this rather than moved, so the number you use on HF comes back when the dial leaves the band.
 
-settings-brown-build-note = The Brown build of sdrcrow: upstream's program, plus the 11 m citizens' band, shortwave listening and decoding. Runs as an ordinary amateur station with those bands and tools added.
+settings-program-note = SDRCrow: a full amateur station plus the 11 m citizens' band, shortwave listening and decoding — the bands and tools this program is made for.
 
 settings-gain-by-band = Remember the front-end gain per band
 

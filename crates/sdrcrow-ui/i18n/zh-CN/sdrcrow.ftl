@@ -17,7 +17,7 @@ layout-mode-tablet = 平板
 layout-mode-small = 小屏幕
 layout-mode-phone = 手机
 
-ui-theme-default = 默认
+ui-theme-default = SDRCrow
 ui-theme-light = 浅色
 ui-theme-high-contrast = 高对比度
 ui-theme-green-phosphor = 绿色荧光
@@ -8513,7 +8513,7 @@ settings-xvtr-drive-hint =
 
     您的驱动设置保持在此值之下而不被改动，因此当频率离开该波段时，您在HF上使用的数值会恢复。
 
-settings-brown-build-note = sdrcrow的Brown版本：上游程序，外加11 m民用波段、短波收听和解码。作为普通业余电台运行，并增加了这些波段和工具。
+settings-program-note = SDRCrow：完整的业余无线电台，外加 11 m 民用波段、短波收听和解码——这个程序正是为这些波段和工具而做的。
 
 settings-gain-by-band = 按波段记住前端增益
 
