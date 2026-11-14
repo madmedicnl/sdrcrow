@@ -54,7 +54,7 @@ tools/check-names.sh                 # the old name has not crept back in
 ```
 
 - `refs/brown-synced` holds the last ported Brown commit, and
-  `docs/internal/BROWN-SYNCED` says the same thing in a file: a ref lives in one
+  `.brown-synced` says the same thing in a file: a ref lives in one
   clone, and without the file a fresh clone would take the merge base — the
   commit this program was cut from — and offer months of commits it already
   has.

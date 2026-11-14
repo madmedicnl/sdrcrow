@@ -11,8 +11,8 @@ conflict in every file the rename touched.
     tools/sync-from-brown.py --dry-run  # say what would be ported
     tools/sync-from-brown.py --base SHA # pretend the last ported commit is SHA
 
-The last ported commit is kept in `refs/brown-synced`, a git ref rather than a
-file, so it travels with the repository and cannot be forgotten in a merge.
+The last ported commit is kept in `refs/brown-synced` and in `.brown-synced`:
+the ref is the fast answer, the file is the one a fresh clone has.
 
 Nothing is pushed and nothing is committed beyond the ported commits
 themselves: the run leaves the tree for a person to test and push, which is the
@@ -32,8 +32,9 @@ MARKER = "refs/brown-synced"
 # The same fact in a file, because a git ref lives in one clone. A fresh clone
 # has no ref, and the merge base with Brown is then the commit this program was
 # cut from — which would make the tool offer to port months of commits it
-# already has.
-MARKER_FILE = "docs/internal/BROWN-SYNCED"
+# already has. At the root rather than under `docs/internal/`, which is
+# git-ignored: a marker nobody commits is a marker a fresh clone does not have.
+MARKER_FILE = ".brown-synced"
 # Where the repository is, so `patch` and the commit run in the right tree even
 # when the script is called from somewhere else.
 REPO = subprocess.run(
