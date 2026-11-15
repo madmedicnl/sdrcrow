@@ -57,6 +57,11 @@ it: `PROTO_VERSION` is one counter between the two repositories, and both of us
 reach the same number independently — on 2026-11-14 the band dock's side and
 `PlaybackCommand::Import` both arrived as 303.
 
+A fix we wrote here and offered back as a PR (SondeHub's live feed, PR #746)
+comes back through Brown's `main` in his names, so there is nothing to port:
+`tools/sync-from-brown.py --mark` prints the commits it is skipping and moves the
+marker, and the tree is compared with Brown's before pushing.
+
 ```sh
 tools/sync-from-brown.py --dry-run   # say what is new, change nothing
 tools/sync-from-brown.py             # port it, then stop

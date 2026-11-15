@@ -13,6 +13,7 @@ decided by looking at the ported source, not at a build of his.
 
     tools/sync-from-brown.py            # port everything new, then stop
     tools/sync-from-brown.py --dry-run  # say what would be ported
+    tools/sync-from-brown.py --mark     # carry nothing, move the marker
     tools/sync-from-brown.py --base SHA # pretend the last ported commit is SHA
 
 The last ported commit is kept in `refs/brown-synced` and in `.brown-synced`:
@@ -261,6 +262,20 @@ def main(argv: list[str]) -> int:
         return 0
 
     print(f"{len(commits)} commit(s) to port, {base[:10]}..{tip[:10]}")
+    if "--mark" in argv:
+        # A change that came across another way — offered as a PR of our own and
+        # merged there, so the code is already here in its renamed form. Porting
+        # it again would duplicate it or fight it; the marker is what says it is
+        # carried.
+        for sha in commits:
+            subject = git("log", "-1", "--format=%s", sha).strip()
+            print(f"   carried already, not ported: {sha[:10]} {subject}")
+        git("update-ref", MARKER, tip)
+        recorded = pathlib.Path(REPO, MARKER_FILE)
+        recorded.write_text(tip + "\n", encoding="utf-8")
+        git("add", MARKER_FILE)
+        print(f"\nmarked {tip[:10]} as ported; check the tree matches Brown before pushing")
+        return 0
     for sha in commits:
         subject = git("log", "-1", "--format=%s", sha).strip()
         print(f"\n== {sha[:10]} {subject}")
