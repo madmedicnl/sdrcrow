@@ -105,6 +105,16 @@ impl RunProgress {
     }
 }
 
+/// **How old a heard CQ may be and still be answered**, in seconds.
+///
+/// The decode list keeps rows long after they were heard, and auto mode picked
+/// the strongest CQ in it — which could be a station that has been gone for an
+/// hour, leaving the run answering an empty band. Ten minutes is the operator's
+/// figure (2026-11-15): long enough to cover a decode that arrived while the
+/// previous contact was finishing, short enough that what is answered is on the
+/// air now.
+pub const CANDIDATE_MAX_AGE_S: i64 = 10 * 60;
+
 /// How long after issuing a command the tick waits before issuing another.
 ///
 /// Only to cover the round trip to the engine: the command is queued and the
@@ -450,17 +460,27 @@ pub fn auto_block_reason(
 /// is borrowed for the whole call and holds up to 200 rows, and this runs every
 /// frame: building a copy of it to drop a handful of rows would cost far more
 /// than the handful of comparisons it saves.
+/// Whether a decode is too old to act on: heard longer ago than
+/// [`CANDIDATE_MAX_AGE_S`].
+///
+/// A slot stamped slightly ahead of the clock (the decode and our own second
+/// disagree) is not old — only the past is counted.
+fn too_old(d: &Decode, now: i64) -> bool {
+    now.saturating_sub(d.slot_utc) > CANDIDATE_MAX_AGE_S
+}
+
 pub fn pick_cq(
     decodes: &[Decode],
     log: &LogIndex,
     my_call: &str,
     my_grid: &str,
     tried: &HashSet<String>,
+    now: i64,
     skip: impl Fn(&Decode) -> bool,
 ) -> Option<AutoTarget> {
     let mut best: Option<&Decode> = None;
     for d in decodes {
-        if skip(d) {
+        if skip(d) || too_old(d, now) {
             continue;
         }
         let Some(from) = d.from.as_deref().filter(|c| !c.is_empty()) else { continue };
@@ -504,6 +524,7 @@ pub fn pick_caller(
     my_call: &str,
     log: &LogIndex,
     tried: &HashSet<String>,
+    now: i64,
     skip: impl Fn(&Decode) -> bool,
 ) -> Option<AutoTarget> {
     let mine = my_call.trim().to_ascii_uppercase();
@@ -512,7 +533,7 @@ pub fn pick_caller(
     }
     let mut best: Option<&Decode> = None;
     for d in decodes {
-        if skip(d) {
+        if skip(d) || too_old(d, now) {
             continue;
         }
         let Some(to) = d.to.as_deref() else { continue };
@@ -654,15 +675,68 @@ mod tests {
     fn picks_the_strongest_new_cq() {
         let d = [cq("19LR121", -5, 1), cq("14AT276", 12, 2), cq("30AO010", 3, 3)];
         let got =
-            pick_cq(&d, &log_with(&[]), "26AT715", "", &HashSet::new(), |_| false).expect("a CQ");
+            pick_cq(&d, &log_with(&[]), "26AT715", "", &HashSet::new(), 4, |_| false).expect("a CQ");
         assert_eq!(got.call, "14AT276");
         assert_eq!(got.snr_db, 12);
+    }
+
+    /// **A CQ heard an hour ago is not a station to answer.** The decode list
+    /// keeps rows long after they were heard, and auto mode picked the strongest
+    /// one in it, so a quiet band could leave the run answering a callsign that
+    /// had been gone for an hour. Reported 2026-11-15: only the last ten minutes
+    /// counts (`CANDIDATE_MAX_AGE_S`).
+    #[test]
+    fn a_stale_cq_is_never_answered() {
+        let now = 10_000;
+        let fresh = cq("19LR121", 0, now - 60);
+        let stale = cq("14AT276", 20, now - CANDIDATE_MAX_AGE_S - 120);
+        let got = pick_cq(
+            &[stale.clone(), fresh],
+            &log_with(&[]),
+            "26AT715",
+            "",
+            &HashSet::new(),
+            now,
+            |_| false,
+        )
+        .expect("the fresh one is a CQ");
+        assert_eq!(got.call, "19LR121", "the strongest CQ is stale, so the fresh one wins");
+        assert!(
+            pick_cq(&[stale], &log_with(&[]), "26AT715", "", &HashSet::new(), now, |_| false)
+                .is_none(),
+            "nothing on the air within the window"
+        );
+        // A slot stamped a second ahead of our clock is not old: only the past
+        // is counted, so clock skew between the decoder and the tick cannot drop
+        // a decode that just arrived.
+        let ahead = cq("30AO010", 0, now + 1);
+        assert!(pick_cq(&[ahead], &log_with(&[]), "26AT715", "", &HashSet::new(), now, |_| false)
+            .is_some());
+    }
+
+    /// The same rule for a station calling **us**: somebody who called ten
+    /// minutes ago and never came back is not "also calling" any more.
+    #[test]
+    fn a_stale_caller_is_not_queued() {
+        let now = 10_000;
+        let mut d = cq("IU5HIU", 0, now - CANDIDATE_MAX_AGE_S - 60);
+        d.is_cq = false;
+        d.to = Some("19DCG373".into());
+        d.from = Some("IU5HIU".into());
+        assert!(
+            pick_caller(&[d.clone()], "19DCG373", &log_with(&[]), &HashSet::new(), now, |_| false)
+                .is_none()
+        );
+        d.slot_utc = now - 30;
+        assert!(
+            pick_caller(&[d], "19DCG373", &log_with(&[]), &HashSet::new(), now, |_| false).is_some()
+        );
     }
 
     #[test]
     fn never_answers_a_call_already_in_the_log() {
         let d = [cq("19LR121", 20, 1)];
-        assert!(pick_cq(&d, &log_with(&["19LR121"]), "26AT715", "", &HashSet::new(), |_| false)
+        assert!(pick_cq(&d, &log_with(&["19LR121"]), "26AT715", "", &HashSet::new(), 4, |_| false)
             .is_none());
     }
 
@@ -670,7 +744,7 @@ mod tests {
     fn skips_a_station_already_tried_this_session() {
         let d = [cq("19LR121", 20, 1)];
         let tried: HashSet<String> = ["19LR121".to_string()].into_iter().collect();
-        assert!(pick_cq(&d, &log_with(&[]), "26AT715", "", &tried, |_| false).is_none());
+        assert!(pick_cq(&d, &log_with(&[]), "26AT715", "", &tried, 4, |_| false).is_none());
     }
 
     #[test]
@@ -681,7 +755,7 @@ mod tests {
         // band, and it must still lose to a weaker one.
         let d = [cq("19LR121", -5, 1), cq("14AT276", 20, 2), cq("30AO010", 3, 3)];
         let muted = ["14AT276".to_string()];
-        let got = pick_cq(&d, &log_with(&[]), "26AT715", "", &HashSet::new(), |d| {
+        let got = pick_cq(&d, &log_with(&[]), "26AT715", "", &HashSet::new(), 4, |d| {
             d.from.as_deref().is_some_and(|c| muted.iter().any(|m| m == c))
         })
         .expect("a CQ");
@@ -693,14 +767,14 @@ mod tests {
         let mut d = cq("JA1ABC", 20, 1);
         d.cq_to = Some("JA".to_string());
         // Not a Japanese station: "CQ JA" is not ours to answer.
-        assert!(pick_cq(&[d], &log_with(&[]), "26AT715", "", &HashSet::new(), |_| false).is_none());
+        assert!(pick_cq(&[d], &log_with(&[]), "26AT715", "", &HashSet::new(), 4, |_| false).is_none());
     }
 
     #[test]
     fn ignores_non_cq_traffic() {
         let mut d = cq("19LR121", 20, 1);
         d.is_cq = false;
-        assert!(pick_cq(&[d], &log_with(&[]), "26AT715", "", &HashSet::new(), |_| false).is_none());
+        assert!(pick_cq(&[d], &log_with(&[]), "26AT715", "", &HashSet::new(), 4, |_| false).is_none());
     }
 
     #[test]
@@ -861,7 +935,7 @@ mod tests {
             // Addressed to another station.
             caller("DL1ABC", "F4NRM", -2, 16),
         ];
-        let t = pick_caller(&d, "19DCG373", &empty, &none, |_| false).expect("IU5HIU is calling");
+        let t = pick_caller(&d, "19DCG373", &empty, &none, 4, |_| false).expect("IU5HIU is calling");
         assert_eq!(t.call, "IU5HIU");
     }
 
@@ -872,11 +946,11 @@ mod tests {
     fn the_queue_takes_the_strongest_caller_once() {
         let empty = LogIndex::build(&[]);
         let d = [caller("WEAK", "19DCG373", -18, 10), caller("LOUD", "19DCG373", -2, 12)];
-        let t = pick_caller(&d, "19DCG373", &empty, &HashSet::new(), |_| false).unwrap();
+        let t = pick_caller(&d, "19DCG373", &empty, &HashSet::new(), 4, |_| false).unwrap();
         assert_eq!(t.call, "LOUD");
         let mut tried = HashSet::new();
         tried.insert("LOUD".to_string());
-        let t = pick_caller(&d, "19DCG373", &empty, &tried, |_| false).unwrap();
+        let t = pick_caller(&d, "19DCG373", &empty, &tried, 4, |_| false).unwrap();
         assert_eq!(t.call, "WEAK", "a station already tried is passed over");
     }
 
@@ -886,8 +960,8 @@ mod tests {
     fn an_unconfigured_callsign_has_no_callers() {
         let empty = LogIndex::build(&[]);
         let d = [caller("IU5HIU", "19DCG373", -8, 10)];
-        assert!(pick_caller(&d, "", &empty, &HashSet::new(), |_| false).is_none());
-        assert!(pick_caller(&d, "   ", &empty, &HashSet::new(), |_| false).is_none());
+        assert!(pick_caller(&d, "", &empty, &HashSet::new(), 4, |_| false).is_none());
+        assert!(pick_caller(&d, "   ", &empty, &HashSet::new(), 4, |_| false).is_none());
     }
 
     // ── a station that is already busy ──
@@ -1080,7 +1154,7 @@ mod tests {
             free_text: false,
             rr73_to: None,
         }];
-        let t = pick_caller(&d, "19DCG373", &empty, &HashSet::new(), |_| false)
+        let t = pick_caller(&d, "19DCG373", &empty, &HashSet::new(), 4, |_| false)
             .expect("a CB station calling us is a caller");
         assert_eq!(t.call, "26AT715");
         assert!(t.grid.is_none(), "11 m carries no locator, and nothing should invent one");

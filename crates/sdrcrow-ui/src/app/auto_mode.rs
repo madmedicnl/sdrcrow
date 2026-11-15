@@ -267,7 +267,7 @@ impl SdrcrowApp {
             }
             crate::app::ignore::is_ignored(&self.session_ignored, d.from.as_deref())
         };
-        auto::pick_caller(&self.digi_decodes, my_call, ix, &self.auto_tried, skip)
+        auto::pick_caller(&self.digi_decodes, my_call, ix, &self.auto_tried, now, skip)
     }
 
     fn auto_target(&mut self, my_call: &str, my_grid: &str) -> Option<auto::AutoTarget> {
@@ -297,7 +297,7 @@ impl SdrcrowApp {
         // times, or one whose latest traffic is with somebody else, is passed
         // over — and becomes eligible again when that traffic goes stale.
         let ignored = &self.session_ignored;
-        auto::pick_cq(&self.digi_decodes, ix, my_call, my_grid, &self.auto_tried, |d| {
+        auto::pick_cq(&self.digi_decodes, ix, my_call, my_grid, &self.auto_tried, now, |d| {
             busy_or_exhausted(d) || crate::app::ignore::is_ignored(ignored, d.from.as_deref())
         })
     }
@@ -480,7 +480,10 @@ mod auto_session_tests {
 
     fn cq(from: &str) -> Decode {
         Decode {
-            slot_utc: 1,
+            // **Now**, not 1970: auto mode only answers a decode from the last
+            // ten minutes (`auto::CANDIDATE_MAX_AGE_S`), so a test decode
+            // stamped at the epoch is a station that left the band in 1970.
+            slot_utc: crate::time::now_unix(),
             snr_db: -7,
             dt: 0.0,
             audio_hz: 1200.0,
