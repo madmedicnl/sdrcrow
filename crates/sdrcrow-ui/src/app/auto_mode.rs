@@ -81,6 +81,16 @@ impl SdrcrowApp {
         } else {
             0
         };
+        // **The run's own work counts as presence.** The inactivity stop exists
+        // for an unattended transmitter nobody is watching, but it used to look
+        // only at the mouse and keyboard — so a run that went on hearing,
+        // answering and calling stopped after twenty minutes because nobody had
+        // touched the window (reported 2026-11-15). A QSO that moves a step, a
+        // line that arrives in its exchange, or a CQ that goes out is the station
+        // doing its job and resets the same clock the operator's input does; a
+        // run that does none of those for the whole timeout still stops.
+        let transcript = self.digi_status.as_ref().map_or(0, |s| s.transcript.len());
+        self.note_run_progress(step, transcript, cq_sent, now);
         let tx_permitted = self.auto_tx_permitted();
         if let Some(reason) = auto::auto_block_reason(mode, watchdog, tx_permitted) {
             self.stop_auto(tr!("auto-stopped-reason", reason = reason), cmds);
@@ -356,6 +366,32 @@ impl SdrcrowApp {
         }
     }
 
+    /// Note that the run heard, answered or called — and reset the inactivity
+    /// clock when it did.
+    ///
+    /// The first look after arming only records where the run starts; after
+    /// that, any change in what it is doing counts as presence, the same as the
+    /// operator's own mouse does. Its own method so the decision (what counts as
+    /// movement) and the effect (the clock) can be looked at apart.
+    pub(in crate::app) fn note_run_progress(
+        &mut self,
+        step: sdrcrow_types::QsoStep,
+        transcript: usize,
+        cq_sent: u32,
+        now: f64,
+    ) {
+        let moved = match &mut self.auto_progress {
+            Some(p) => p.moved_to(step, transcript, cq_sent),
+            slot => {
+                *slot = Some(auto::RunProgress::at(step, transcript, cq_sent));
+                false
+            }
+        };
+        if moved {
+            self.auto_last_activity = now;
+        }
+    }
+
     /// Arm one of the two roles now. Returns `false` (doing nothing) when it may
     /// not run.
     pub(in crate::app) fn arm_auto(&mut self, now: f64, role: auto::AutoRole) -> bool {
@@ -457,6 +493,42 @@ mod auto_session_tests {
             free_text: false,
             rr73_to: None,
         }
+    }
+
+    /// **The inactivity stop watches the run, not only the mouse.** Reported
+    /// 2026-11-15: an unattended run stopped after twenty minutes "no input"
+    /// while it was hearing, answering and calling. A step, a line in the
+    /// exchange or a CQ out now resets the same clock the operator's input does;
+    /// a run that does nothing for the whole timeout still stops, which is the
+    /// only reason the stop exists.
+    #[test]
+    fn an_auto_run_that_is_working_is_not_idle() {
+        use sdrcrow_types::QsoStep;
+        let _guard = crate::multi::frame_test_lock();
+        let mut app = app();
+        let arm = |app: &mut SdrcrowApp| {
+            app.auto_role = Some(auto::AutoRole::Cq);
+            app.auto_progress = None;
+            app.auto_last_activity = 0.0;
+        };
+        // The first look records where the run starts and is not itself a
+        // movement: the clock is left where arming put it.
+        arm(&mut app);
+        app.note_run_progress(QsoStep::CallingCq, 0, 0, 600.0);
+        assert_eq!(app.auto_last_activity, 0.0, "the first look changes nothing");
+
+        // A QSO moving on, a line arriving or a CQ going out each count.
+        app.note_run_progress(QsoStep::TxGrid, 0, 0, 900.0);
+        assert_eq!(app.auto_last_activity, 900.0, "the step moved");
+        app.note_run_progress(QsoStep::TxGrid, 1, 0, 1_000.0);
+        assert_eq!(app.auto_last_activity, 1_000.0, "a line arrived");
+        app.note_run_progress(QsoStep::TxGrid, 1, 1, 1_100.0);
+        assert_eq!(app.auto_last_activity, 1_100.0, "a CQ went out");
+
+        // Standing still is not movement: the clock stays where it was, which is
+        // what lets the timeout fire on a run that is doing nothing.
+        app.note_run_progress(QsoStep::TxGrid, 1, 1, 1_900.0);
+        assert_eq!(app.auto_last_activity, 1_100.0, "nothing happened");
     }
 
     /// The reported fault: a station auto called once — and did not answer, or

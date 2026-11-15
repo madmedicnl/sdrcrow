@@ -72,6 +72,39 @@ pub fn auto_idle_stop_s(minutes: u32, long: bool) -> Option<f64> {
     Some(f64::from(m.min(AUTO_IDLE_STOP_MAX_MIN)) * 60.0)
 }
 
+/// **What an auto run has done**, for the inactivity stop.
+///
+/// That stop exists for an unattended transmitter nobody is watching, and it
+/// counted only the operator's own mouse and keyboard — so a run that was
+/// hearing, answering and calling stopped after twenty minutes because nobody
+/// had touched the window. Reported by madmedicnl on 2026-11-15, who wanted the
+/// run itself to count: a QSO that moves a step, a line that arrives in its
+/// exchange, or a CQ that goes out is the station doing its job, and one that
+/// does none of those for the whole timeout is the one worth stopping.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct RunProgress {
+    step: QsoStep,
+    transcript: usize,
+    cq_sent: u32,
+}
+
+impl RunProgress {
+    /// A run that has just been armed and has done nothing yet.
+    pub fn at(step: QsoStep, transcript: usize, cq_sent: u32) -> Self {
+        RunProgress { step, transcript, cq_sent }
+    }
+
+    /// Note what the run is doing now; `true` when that is a change from the
+    /// last time it was asked.
+    pub fn moved_to(&mut self, step: QsoStep, transcript: usize, cq_sent: u32) -> bool {
+        if *self == (RunProgress { step, transcript, cq_sent }) {
+            return false;
+        }
+        *self = RunProgress { step, transcript, cq_sent };
+        true
+    }
+}
+
 /// How long after issuing a command the tick waits before issuing another.
 ///
 /// Only to cover the round trip to the engine: the command is queued and the
@@ -574,6 +607,23 @@ pub fn band_may_transmit(band: Band, ham_only: bool, cb_tx_allowed: bool) -> boo
 mod tests {
     use super::*;
     use crate::QsoRecord;
+
+    /// **A run that is doing something is not idle.** The stop must still fire
+    /// on a run that does nothing for the whole timeout — that is the only
+    /// reason it exists — and must not fire on one that is hearing, answering
+    /// or calling.
+    #[test]
+    fn a_run_that_moves_is_not_idle() {
+        let mut p = RunProgress::at(QsoStep::Idle, 0, 0);
+        assert!(!p.moved_to(QsoStep::Idle, 0, 0), "nothing happened");
+        assert!(p.moved_to(QsoStep::TxGrid, 0, 0), "the QSO moved on");
+        assert!(!p.moved_to(QsoStep::TxGrid, 0, 0));
+        assert!(p.moved_to(QsoStep::TxGrid, 1, 0), "a line arrived");
+        assert!(p.moved_to(QsoStep::TxGrid, 1, 1), "a CQ went out");
+        assert!(!p.moved_to(QsoStep::TxGrid, 1, 1), "and then nothing");
+        // A new QSO empties the exchange; that is a change too.
+        assert!(p.moved_to(QsoStep::Idle, 0, 1));
+    }
 
     fn cq(from: &str, snr: i16, slot: i64) -> Decode {
         Decode {

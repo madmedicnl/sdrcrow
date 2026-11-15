@@ -1442,8 +1442,13 @@ pub struct SdrcrowApp {
     dab_logo: Option<egui::TextureHandle>,
     /// The station list shows each station's programme type.
     dab_show_pty: bool,
-    /// Frame time of the last input event, for the inactivity stop.
+    /// Frame time of the last input event, **or of the last thing the run
+    /// itself did** (see `tick_auto_mode`): a run that is hearing, answering
+    /// and calling is not idle just because nobody touched the window.
     auto_last_activity: f64,
+    /// What the run was doing the last time the inactivity stop looked, so a
+    /// change — a step, a line in the exchange, a CQ out — counts as activity.
+    auto_progress: Option<sdrcrow_types::auto::RunProgress>,
     /// Frame time before which the tick will not queue another command — the
     /// gap between the command leaving and the engine's status coming back.
     auto_cooldown_until: f64,
@@ -2784,6 +2789,7 @@ impl SdrcrowApp {
             dab_logo: None,
             dab_show_pty: false,
             auto_last_activity: 0.0,
+            auto_progress: None,
             auto_cooldown_until: 0.0,
             auto_resume_at: None,
             auto_tried: std::collections::HashSet::new(),
