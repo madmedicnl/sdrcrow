@@ -1111,6 +1111,16 @@ pub struct UiSettings {
     #[serde(default)]
     pub band_dock_left: bool,
 
+    /// **The audio spectrum under the waterfall**: what the receiver's own audio
+    /// looks like, 50 Hz to 16 kHz, drawn from the same bands the level meter
+    /// already sends (`AudioLevel::bands`).
+    ///
+    /// Presentation only, and this screen's own: a phone with no room for it
+    /// keeps it off. Asked for by the operator on 2026-11-15, beside the SPEC
+    /// chip where the other display choices live.
+    #[serde(default)]
+    pub audio_spectrum: bool,
+
     /// Public SDRs the operator starred, by **address**.
     ///
     /// The address and not the name: it is what a connection is made to and
@@ -1993,6 +2003,7 @@ impl Default for UiSettings {
             theme_file: None,
             band_dock_open: Default::default(),
             band_dock_left: false,
+            audio_spectrum: false,
             public_sdr_favourites: Vec::new(),
             // Off: the dial is what every other radio shows, and an operator
             // who has not asked for the change should not find their readout
@@ -2422,6 +2433,9 @@ pub struct ClientScreen {
     /// default) its right. Appended at the tail: this struct rides the wire
     /// positionally, so a new field goes after the last one, never before it.
     pub band_dock_left: bool,
+    /// **The audio spectrum under the waterfall**, this screen's own display
+    /// choice. Appended last, for the same reason.
+    pub audio_spectrum: bool,
 }
 
 impl Default for ClientScreen {
@@ -2476,6 +2490,7 @@ impl ClientScreen {
             // read. `apply_to` takes the name back out of it.
             theme_file: None,
             band_dock_left: s.band_dock_left,
+            audio_spectrum: s.audio_spectrum,
         }
     }
 
@@ -2507,6 +2522,7 @@ impl ClientScreen {
         s.map_cities = self.map_cities;
         s.simple_ui = self.simple_ui;
         s.band_dock_left = self.band_dock_left;
+        s.audio_spectrum = self.audio_spectrum;
         s.tune_step_round_first = self.tune_step_round_first;
         s.sound_welcome = self.sound_welcome;
         s.keep_screen_on = self.keep_screen_on;

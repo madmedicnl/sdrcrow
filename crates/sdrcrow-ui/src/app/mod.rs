@@ -1442,6 +1442,10 @@ pub struct SdrcrowApp {
     dab_logo: Option<egui::TextureHandle>,
     /// The station list shows each station's programme type.
     dab_show_pty: bool,
+    /// When the audio spectrum's strip last renewed its `WantAudioLevel` lease
+    /// (wall clock): one lease is three seconds, so it is renewed about once a
+    /// second, as the classic panel's meter does.
+    audio_strip_lease_at: f64,
     /// Frame time of the last input event, **or of the last thing the run
     /// itself did** (see `tick_auto_mode`): a run that is hearing, answering
     /// and calling is not idle just because nobody touched the window.
@@ -2786,6 +2790,7 @@ impl SdrcrowApp {
             dab_hidden: Vec::new(),
             dab_slide: None,
             audio_level: None,
+            audio_strip_lease_at: 0.0,
             dab_logo: None,
             dab_show_pty: false,
             auto_last_activity: 0.0,
