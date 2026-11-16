@@ -237,11 +237,36 @@ impl SdrcrowApp {
     /// retry budget: it is asked again only while it is still calling.
     ///
     /// [`QsoMachine`]: sdrcrow_digi::qso::QsoMachine
-    fn auto_caller(&mut self, my_call: &str) -> Option<auto::AutoTarget> {
+    /// Rebuild the log index when the log grew or the band changed the rule.
+    ///
+    /// **11 m keeps no band in the log**, so a station worked there is in the
+    /// log for good and Auto RX would never answer it again — the band has a
+    /// small, stable population and the same operators call CQ all day. There
+    /// the index asks "new, or not worked for a month"; every other band keeps
+    /// the all-time rule. The window is part of the cache key because the same
+    /// log answers differently on 11 m and anywhere else.
+    fn refresh_log_index(&mut self) {
         let len = self.qso_log.len();
-        if self.log_index_cache.as_ref().map(|(l, _)| *l) != Some(len) {
-            self.log_index_cache = Some((len, sdrcrow_types::LogIndex::build(&self.qso_log)));
+        let recall = if sdrcrow_types::Band::containing(self.state.rx_freq_hz())
+            == sdrcrow_types::Band::M11
+        {
+            auto::CB_RECALL_AFTER_S
+        } else {
+            0
+        };
+        let stale = self.log_index_cache.as_ref().map_or(true, |(l, ix)| {
+            *l != len || ix.recall_after_s() != recall
+        });
+        if stale {
+            self.log_index_cache = Some((
+                len,
+                sdrcrow_types::LogIndex::build(&self.qso_log).with_recall_after(recall),
+            ));
         }
+    }
+
+    fn auto_caller(&mut self, my_call: &str) -> Option<auto::AutoTarget> {
+        self.refresh_log_index();
         let ix = &self.log_index_cache.as_ref().expect("just filled").1;
         // **The two rules that make a queue a queue rather than a loop**: a
         // station already called its budget of times is passed over, and one
@@ -271,10 +296,7 @@ impl SdrcrowApp {
     }
 
     fn auto_target(&mut self, my_call: &str, my_grid: &str) -> Option<auto::AutoTarget> {
-        let len = self.qso_log.len();
-        if self.log_index_cache.as_ref().map(|(l, _)| *l) != Some(len) {
-            self.log_index_cache = Some((len, sdrcrow_types::LogIndex::build(&self.qso_log)));
-        }
+        self.refresh_log_index();
         let ix = &self.log_index_cache.as_ref().expect("just filled").1;
         let budget = self.digi_cfg_edit.auto_call_retries;
         let attempts = self.auto_attempts.clone();
@@ -532,6 +554,61 @@ mod auto_session_tests {
         // what lets the timeout fire on a run that is doing nothing.
         app.note_run_progress(QsoStep::TxGrid, 1, 1, 1_900.0);
         assert_eq!(app.auto_last_activity, 1_100.0, "nothing happened");
+    }
+
+    /// **The reported fault (2026-11-16): Auto CQ handed over to Auto RX on
+    /// 11 m and Auto RX answered nobody.** The band keeps no log enumeration, so
+    /// the all-time "never worked this call" rule excluded every station that
+    /// calls CQ there — and on a band with a small, stable population that is
+    /// all of them. The operator's rule: a QSO older than a month may be called
+    /// again. On a band the log can name, the all-time rule still stands.
+    #[test]
+    fn on_eleven_metres_auto_rx_answers_a_station_worked_last_month() {
+        use sdrcrow_types::{Band, QsoRecord};
+        let _guard = crate::multi::frame_test_lock();
+        let now = crate::time::now_unix();
+        let logged = |ago_s: i64| QsoRecord {
+            call: "K1ABC".to_string(),
+            mode: "FT8".to_string(),
+            start_utc: now - ago_s - 60,
+            end_utc: now - ago_s,
+            ..Default::default()
+        };
+
+        let mut app = app();
+        app.state.vfo_a_hz = 27_265_000.0; // the 11 m call channel, where this was reported
+        assert_eq!(Band::containing(app.state.rx_freq_hz()), Band::M11);
+        app.digi_decodes.push(cq("K1ABC"));
+
+        app.qso_log.push(logged(40 * 24 * 3600));
+        app.begin_auto_session(0.0, auto::AutoRole::Rx);
+        assert_eq!(
+            app.auto_target("MM0ABC", "JO22").map(|t| t.call).as_deref(),
+            Some("K1ABC"),
+            "worked over a month ago: a candidate again"
+        );
+
+        app.qso_log.clear();
+        app.qso_log.push(logged(3600));
+        app.log_index_cache = None; // the log changed length-for-length: the app drops it too
+        app.begin_auto_session(1.0, auto::AutoRole::Rx);
+        assert!(
+            app.auto_target("MM0ABC", "JO22").is_none(),
+            "worked an hour ago: not again"
+        );
+
+        // The same old QSO on 20 m changes nothing: that log can name its band,
+        // and the all-time rule is right there.
+        app.state.vfo_a_hz = 14_074_000.0;
+        assert_eq!(Band::containing(app.state.rx_freq_hz()), Band::M20);
+        app.qso_log.clear();
+        app.qso_log.push(logged(40 * 24 * 3600));
+        app.log_index_cache = None;
+        app.begin_auto_session(2.0, auto::AutoRole::Rx);
+        assert!(
+            app.auto_target("MM0ABC", "JO22").is_none(),
+            "20 m keeps the all-time rule"
+        );
     }
 
     /// The reported fault: a station auto called once — and did not answer, or

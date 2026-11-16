@@ -226,6 +226,13 @@ pub struct LogIndex {
     dxcc: std::collections::HashSet<String>,
     dxcc_band: std::collections::HashSet<(String, String)>,
     grids: std::collections::HashSet<String>,
+    /// When each call was last worked, in Unix seconds — the newest QSO with it.
+    /// The sets above answer "ever"; this answers "how long ago", which is what
+    /// a band with no log enumeration needs (see [`Self::with_recall_after`]).
+    call_last: std::collections::HashMap<String, i64>,
+    /// For how long a logged call stays out of the "new call" answer, in
+    /// seconds. 0 is the all-time rule: once in the log, never new again.
+    recall_after_s: i64,
     /// Whether *any* record carries a band. An imported log without band
     /// columns can't support per-band judgements, and claiming everything is
     /// new-on-this-band would be worse than saying nothing.
@@ -253,7 +260,7 @@ impl LogIndex {
             ix.calls.insert(call.clone());
             if !band.is_empty() {
                 ix.has_bands = true;
-                ix.call_band.insert((call, band.clone()));
+                ix.call_band.insert((call.clone(), band.clone()));
             }
             if let Some(ent) = record_entity(q) {
                 ix.dxcc.insert(ent.clone());
@@ -264,8 +271,50 @@ impl LogIndex {
             if let Some(g) = q.grid.as_deref().and_then(grid4) {
                 ix.grids.insert(g);
             }
+            // The newest QSO with this call, whichever band it was on — the
+            // recall window is asked on a band the log cannot name.
+            let at = if q.end_utc > 0 { q.end_utc } else { q.start_utc };
+            if at > 0 {
+                ix.call_last
+                    .entry(call.clone())
+                    .and_modify(|v| *v = (*v).max(at))
+                    .or_insert(at);
+            }
         }
         ix
+    }
+
+    /// Ask "new call" over a window instead of over all time: this call counts
+    /// as new again once its newest QSO is at least `after_s` old.
+    ///
+    /// The all-time rule is right where the band is in the log — a station
+    /// worked on 20 m is not new on 20 m. **11 m has no log enumeration**, so
+    /// there the all-time rule is a lifetime ban, and on a band where the same
+    /// operators call CQ all day Auto RX would answer nobody at all. A window
+    /// fixes that without touching the rule anywhere else.
+    pub fn with_recall_after(mut self, after_s: i64) -> Self {
+        self.recall_after_s = after_s.max(0);
+        self
+    }
+
+    /// The window asked for, in seconds; 0 for the all-time rule. Read back so
+    /// a cached index can tell whether it was built for the band in use.
+    pub fn recall_after_s(&self) -> i64 {
+        self.recall_after_s
+    }
+
+    /// Whether this call may be called again although it is in the log: only
+    /// when a window is set, and only when the newest QSO with it is older than
+    /// that window. A call in the log without a usable time is left alone —
+    /// better to skip a station we cannot date than to call it twice in a row.
+    pub fn may_recall(&self, call: &str, now: i64) -> bool {
+        if self.recall_after_s <= 0 {
+            return false;
+        }
+        match self.call_last.get(&call.trim().to_ascii_uppercase()) {
+            Some(at) => now.saturating_sub(*at) >= self.recall_after_s,
+            None => false,
+        }
     }
 
     /// How interesting a heard station is. `band` is the ADIF band we'd work
@@ -307,6 +356,43 @@ mod tests {
             mode: "FT8".into(),
             ..Default::default()
         }
+    }
+
+    /// **"Worked" can mean "worked lately".** The index answers "ever" for the
+    /// awards and the log, so the window lives here rather than in each caller:
+    /// 11 m asks for a month (its QSOs carry no band, so the all-time rule is a
+    /// lifetime ban there). A call in the log that cannot be dated is left
+    /// alone — skipping it is the safe side.
+    #[test]
+    fn a_recall_window_turns_an_old_qso_into_a_candidate() {
+        let month = 30 * 24 * 60 * 60;
+        let now = 1_800_000_000i64;
+        let at = |ago: i64| LogIndex::build(&[QsoRecord {
+            call: "K1ABC".into(),
+            mode: "FT8".into(),
+            start_utc: now - ago - 60,
+            end_utc: now - ago,
+            ..Default::default()
+        }])
+        .with_recall_after(month);
+
+        assert!(at(month + 60).may_recall("k1abc", now), "a month old: call again");
+        assert!(!at(3600).may_recall("K1ABC", now), "an hour old: leave it");
+        assert!(!at(month - 3600).may_recall("K1ABC", now), "not yet a month");
+
+        // With no window the answer is always no, whatever the age.
+        let ever = LogIndex::build(&[QsoRecord {
+            call: "K1ABC".into(),
+            mode: "FT8".into(),
+            start_utc: now - 400 * 24 * 3600,
+            end_utc: now - 400 * 24 * 3600,
+            ..Default::default()
+        }]);
+        assert!(!ever.may_recall("K1ABC", now), "the all-time rule");
+
+        // In the log without a time: no recall, rather than a guess.
+        let undated = LogIndex::build(&[qso("K1ABC", "20m", None)]).with_recall_after(month);
+        assert!(!undated.may_recall("K1ABC", now), "undated: leave it alone");
     }
 
     #[test]

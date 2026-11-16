@@ -492,8 +492,10 @@ pub fn pick_cq(
             continue;
         }
         // The empty band: 11 m has no ADIF enumeration and no per-band log
-        // judgement, so this is the all-time "never worked this call" test.
-        if !log.novelty(&key, d.grid.as_deref(), "").new_call {
+        // judgement, so this is the all-time "never worked this call" test —
+        // unless the index was built with a recall window, which is what 11 m
+        // asks for (see [`CB_RECALL_AFTER_S`]).
+        if !log.novelty(&key, d.grid.as_deref(), "").new_call && !log.may_recall(&key, now) {
             continue;
         }
         match best {
@@ -551,8 +553,10 @@ pub fn pick_caller(
         if tried.contains(&key) {
             continue;
         }
-        // Nobody is worked twice in a session, the rule Auto Rx already keeps.
-        if !log.novelty(&key, d.grid.as_deref(), "").new_call {
+        // Nobody is worked twice in a session, the rule Auto Rx already keeps —
+        // and, as in `pick_cq`, a call worked longer ago than the index's recall
+        // window is fair game again (11 m).
+        if !log.novelty(&key, d.grid.as_deref(), "").new_call && !log.may_recall(&key, now) {
             continue;
         }
         match best {
@@ -572,6 +576,18 @@ pub fn pick_caller(
 ///
 /// Long enough for the exchange it is in to finish or move on — an FT8 contact
 /// is under two minutes — and short enough that the caller is not forgotten.
+/// **How long a station worked on 11 m stays out of Auto RX's answer.** A month,
+/// set by the operator (madmedicnl, 2026-11-16) after Auto RX went silent on
+/// 27 MHz: 11 m carries no band in the log, so the "never worked this call"
+/// rule was a lifetime ban there, and every station calling CQ on a band with a
+/// small, stable population of operators was already in the log — no candidate,
+/// no answer, and the run sat listening until the inactivity stop ended it.
+///
+/// A month is long enough that a regular is not called over and over in one
+/// week, and short enough that the band keeps working. Anywhere else the
+/// all-time rule stands.
+pub const CB_RECALL_AFTER_S: i64 = 30 * 24 * 60 * 60;
+
 pub const BUSY_DEFER_S: f64 = 150.0;
 
 /// When the decodes say a station is **already working somebody else**, and when
@@ -663,12 +679,81 @@ mod tests {
         }
     }
 
+    /// A log holding one QSO with each call, ended `ago_s` seconds before `now`.
+    fn log_worked_ago(calls: &[&str], ago_s: i64, now: i64) -> LogIndex {
+        let log: Vec<QsoRecord> = calls
+            .iter()
+            .map(|c| QsoRecord {
+                call: (*c).to_string(),
+                mode: "FT8".into(),
+                start_utc: now - ago_s - 60,
+                end_utc: now - ago_s,
+                ..Default::default()
+            })
+            .collect();
+        LogIndex::build(&log)
+    }
+
     fn log_with(calls: &[&str]) -> LogIndex {
         let log: Vec<QsoRecord> = calls
             .iter()
             .map(|c| QsoRecord { call: (*c).to_string(), mode: "FT8".into(), ..Default::default() })
             .collect();
         LogIndex::build(&log)
+    }
+
+    /// **A month on 11 m, then call again.** Reported 2026-11-16 (madmedicnl):
+    /// Auto CQ's run limit handed over to Auto RX, and Auto RX answered nobody,
+    /// because 11 m carries no band in the log and the "never worked this call"
+    /// rule is a lifetime ban on a band with a small, stable population. The
+    /// window is the operator's rule: a QSO older than a month may be called
+    /// again. Both halves matter — what was worked recently stays out.
+    #[test]
+    fn on_eleven_metres_a_qso_older_than_a_month_is_a_candidate_again() {
+        let now = 1_800_000_000i64;
+        let d = [cq("26AT715", -5, now)];
+
+        let month_ago = log_worked_ago(&["26AT715"], CB_RECALL_AFTER_S + 60, now)
+            .with_recall_after(CB_RECALL_AFTER_S);
+        let got = pick_cq(&d, &month_ago, "19DCG373", "", &HashSet::new(), now, |_| false);
+        assert_eq!(got.map(|t| t.call).as_deref(), Some("26AT715"), "over a month: call it");
+
+        let yesterday = log_worked_ago(&["26AT715"], 24 * 3600, now)
+            .with_recall_after(CB_RECALL_AFTER_S);
+        assert!(
+            pick_cq(&d, &yesterday, "19DCG373", "", &HashSet::new(), now, |_| false).is_none(),
+            "worked yesterday: leave it alone"
+        );
+
+        // Everywhere else the all-time rule stands: no window, no recall.
+        let plain = log_worked_ago(&["26AT715"], 400 * 24 * 3600, now);
+        assert!(
+            pick_cq(&d, &plain, "19DCG373", "", &HashSet::new(), now, |_| false).is_none(),
+            "without a window a logged call is never new again"
+        );
+    }
+
+    /// The same for somebody addressing *us*: a station that called us last
+    /// month may be answered today.
+    #[test]
+    fn on_eleven_metres_a_caller_from_last_month_is_answered() {
+        let now = 1_800_000_000i64;
+        let mut d = cq("26AT715", -5, now);
+        d.is_cq = false;
+        d.to = Some("19DCG373".into());
+        d.message = "19DCG373 26AT715 JO22".into();
+
+        let month_ago = log_worked_ago(&["26AT715"], CB_RECALL_AFTER_S + 60, now)
+            .with_recall_after(CB_RECALL_AFTER_S);
+        let got = pick_caller(&[d.clone()], "19DCG373", &month_ago, &HashSet::new(), now, |_| false);
+        assert_eq!(got.map(|t| t.call).as_deref(), Some("26AT715"));
+
+        let yesterday = log_worked_ago(&["26AT715"], 3600, now)
+            .with_recall_after(CB_RECALL_AFTER_S);
+        assert!(
+            pick_caller(&[d], "19DCG373", &yesterday, &HashSet::new(), now, |_| false).is_none(),
+            "worked an hour ago: not again"
+        );
     }
 
     #[test]
