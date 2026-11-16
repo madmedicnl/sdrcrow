@@ -8645,7 +8645,7 @@ settings-radio-auto-stop-label = ferma dopo nessun intervento
 settings-radio-auto-stop-hint-long =
     Per quanto tempo il sequenziatore FT8/FT4/FT2 non presidiato può funzionare senza intervento dell'operatore prima di disarmarsi. Per radio: una può essere lasciata attiva più a lungo di un'altra.
 
-    Su un PlutoSDR arriva fino a sei ore, e DISATTIVA spegne del tutto l'arresto: il modo auto funziona allora finché non lo fermi. Il watchdog di trasmissione e il blocco di banda si applicano comunque.
+    Su un SDRplay o un PlutoSDR arriva fino a sei ore, e DISATTIVA spegne del tutto l'arresto: il modo auto funziona allora finché non lo fermi. Il watchdog di trasmissione e il blocco di banda si applicano comunque.
 
     Ha effetto con Applica.
 

@@ -8636,7 +8636,7 @@ settings-radio-auto-stop-label = parar sem atividade
 settings-radio-auto-stop-hint-long =
     Por quanto tempo o sequenciador FT8/FT4/FT2 sem supervisão pode rodar sem ação do operador antes de se desarmar. Por rádio: um pode ser deixado rodando mais tempo que outro.
 
-    Em um PlutoSDR vai até seis horas, e DESATIVAR desliga a parada por completo: o modo automático então roda até você parar. O watchdog de transmissão e o bloqueio de banda continuam valendo.
+    Em um SDRplay ou PlutoSDR vai até seis horas, e DESATIVAR desliga a parada por completo: o modo automático então roda até você parar. O watchdog de transmissão e o bloqueio de banda continuam valendo.
 
     Tem efeito ao Aplicar.
 

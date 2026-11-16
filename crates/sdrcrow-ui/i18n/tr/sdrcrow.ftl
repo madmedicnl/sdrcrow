@@ -8636,7 +8636,7 @@ settings-radio-auto-stop-label = girdi yoksa dur
 settings-radio-auto-stop-hint-long =
     Gözetimsiz FT8/FT4/FT2 sıralayıcısının, kendini silahsızlandırmadan önce operatör girdisi olmadan ne kadar çalışabileceği. Telsiz başına: bir set diğerinden daha uzun çalışır bırakılabilir.
 
-    PlutoSDR'da altı saate kadar çıkar ve DISABLE durdurmayı tamamen kapatır: otomatik mod siz durdurana kadar çalışır. Gönderim bekçisi ve bant kilidi yine de geçerlidir.
+    SDRplay veya PlutoSDR'da altı saate kadar çıkar ve DISABLE durdurmayı tamamen kapatır: otomatik mod siz durdurana kadar çalışır. Gönderim bekçisi ve bant kilidi yine de geçerlidir.
 
     Uygula'da etkili olur.
 

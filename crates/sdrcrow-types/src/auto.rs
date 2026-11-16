@@ -46,11 +46,15 @@ pub const AUTO_IDLE_STOP_LONG_CHOICES: [u32; 8] =
 /// Whether this radio may set the inactivity stop past
 /// [`AUTO_IDLE_STOP_MAX_MIN`], up to six hours, or switch it off.
 ///
-/// Only the PlutoSDR for now: it is the radio this was asked for and tested
-/// against, and every other backend keeps the 45-minute ceiling until there is
-/// a reason to widen it.
+/// The PlutoSDR and the SDRplay RSP family. It was Pluto-only — "the radio this
+/// was asked for and tested against" — until the operator asked for the same
+/// reach on his RSP1 (2026-11-16), where an Auto RX night on 11 m is left
+/// listening for hours and the 45-minute ceiling was the thing ending a run that
+/// was doing its job. The ceiling was never a hardware fact: it is the "bathroom
+/// break" rule, and how long his own break is belongs to the operator. Every
+/// other backend keeps 45 minutes until one is asked for too.
 pub fn has_long_idle_stop(backend: crate::Backend) -> bool {
-    backend == crate::Backend::Pluto
+    matches!(backend, crate::Backend::Pluto | crate::Backend::SdrPlay)
 }
 
 /// The inactivity stop in seconds, from the operator's choice in minutes, or
@@ -901,13 +905,14 @@ mod tests {
     }
 
     #[test]
-    fn a_pluto_may_run_up_to_six_hours_or_never_stop() {
+    fn a_pluto_or_an_rsp_may_run_up_to_six_hours_or_never_stop() {
         assert!(has_long_idle_stop(crate::Backend::Pluto));
-        assert!(!has_long_idle_stop(crate::Backend::SdrPlay));
-        assert!(!has_long_idle_stop(crate::Backend::RtlSdr));
+        assert!(has_long_idle_stop(crate::Backend::SdrPlay), "an RSP can be left listening");
+        assert!(!has_long_idle_stop(crate::Backend::RtlSdr), "a dongle still stops at 45");
+        assert!(!has_long_idle_stop(crate::Backend::SdrPlay) == false);
         assert_eq!(auto_idle_stop_s(0, true), Some(AUTO_IDLE_STOP_S), "zero means the default");
         for m in [60, 120, 240, 360] {
-            assert_eq!(auto_idle_stop_s(m, true), Some(f64::from(m) * 60.0), "{m} min on a Pluto");
+            assert_eq!(auto_idle_stop_s(m, true), Some(f64::from(m) * 60.0), "{m} min on a radio with the long stop");
         }
         assert_eq!(auto_idle_stop_s(AUTO_IDLE_STOP_NEVER, true), None, "DISABLE never stops");
         assert_eq!(AUTO_IDLE_STOP_LONG_CHOICES[0], (AUTO_IDLE_STOP_S / 60.0) as u32);
