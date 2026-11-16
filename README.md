@@ -1,5 +1,8 @@
 # SDRCrow
 
+<img width="626" height="626" alt="SDRCROW" src="https://github.com/user-attachments/assets/b3e14ac0-f102-4846-bbc3-0bebae4f63e1" />
+
+
 A software-defined-radio receiver and transceiver: a native desktop application,
 a browser client served from the same engine, CAT and network radios, digital
 modes and decoding, and a logbook. This is a detached continuation of **SDR
