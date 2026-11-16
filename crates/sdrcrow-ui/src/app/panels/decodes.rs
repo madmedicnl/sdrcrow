@@ -32,6 +32,9 @@ struct DecodeRow<'a> {
     dist_km: Option<f64>,
     cq: bool,
     novelty: sdrcrow_types::Novelty,
+    /// Days since the newest QSO with this call, for the card's "worked before"
+    /// line; `None` when the log has no date for them.
+    worked_ago: Option<i64>,
     to_me: bool,
 }
 
@@ -493,8 +496,11 @@ impl SdrcrowApp {
                 if cq_only && !cq && !to_me {
                     return None;
                 }
-                let novelty =
-                    log_ix.novelty(d.from.as_deref().unwrap_or(""), d.grid.as_deref(), band);
+                let call = d.from.as_deref().unwrap_or("");
+                let novelty = log_ix.novelty(call, d.grid.as_deref(), band);
+                let worked_ago = log_ix
+                    .last_worked(call)
+                    .map(|at| (crate::time::now_unix() - at).max(0) / 86_400);
                 if new_only && !novelty.is_new() && !to_me {
                     return None;
                 }
@@ -506,7 +512,7 @@ impl SdrcrowApp {
                     })
                     .flatten();
                 let entity = d.from.as_deref().and_then(sdrcrow_types::resolve_callsign);
-                Some(DecodeRow { idx: i, d, entity, dist_km, cq, novelty, to_me })
+                Some(DecodeRow { idx: i, d, entity, dist_km, cq, novelty, worked_ago, to_me })
             })
             .collect();
         // Whether a row still has the width for the one-line layout. Its fixed
@@ -600,7 +606,7 @@ impl SdrcrowApp {
                     ui.separator();
                 }
                 for k in gi..end {
-                    let DecodeRow { idx: i, d, entity, dist_km, cq, novelty, to_me } = items[k];
+                    let DecodeRow { idx: i, d, entity, dist_km, cq, novelty, worked_ago, to_me } = items[k];
                     // Free text names no sender, and a hashed callsign nobody
                     // has heard yet resolves to none either — say which it is
                     // rather than showing a bare "?".
@@ -1003,7 +1009,8 @@ impl SdrcrowApp {
                     // twenty of these on screen.
                     let row = row.on_hover_ui(|ui| {
                         station_card(
-                            ui, flags, d, entity, dist_km, &my_grid, novelty, band, queued, cq,
+                            ui, flags, d, entity, dist_km, &my_grid, novelty, band, worked_ago,
+                            queued, cq,
                         );
                         // What QRZ says about them, when the card is on.
                         if let Some(from) = d.from.as_deref() {

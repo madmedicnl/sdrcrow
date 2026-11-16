@@ -9853,3 +9853,11 @@ topbar-group-audio = AUDIO
 topbar-show-audio-spectrum = AUDIOSPECTRUM TONEN
 
 topbar-draw-receiver-s-own-audio = Een strip onder de waterval met het geluid van de ontvanger zelf, 50 Hz tot 16 kHz — de brom van een voeding of het fluitje van een lader zie je hier, niet op de band
+
+
+widgets-worked-today = vandaag
+
+widgets-worked-days-ago = { $n ->
+        [one] { $n } dag geleden
+       *[other] { $n } dagen geleden
+    }

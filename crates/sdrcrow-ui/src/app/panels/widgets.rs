@@ -26,6 +26,9 @@ pub(in crate::app) fn station_card(
     my_grid: &str,
     novelty: sdrcrow_types::Novelty,
     band: &str,
+    // Days since the newest QSO with this call, when the log has one: "worked
+    // before" is more useful with a date on it.
+    worked_ago: Option<i64>,
     queued: bool,
     cq_for_us: bool,
 ) {
@@ -94,7 +97,7 @@ pub(in crate::app) fn station_card(
     ui.separator();
     // Worked before? The one thing that decides whether this decode is worth
     // acting on, spelled out rather than compressed into a four-letter badge.
-    let (worked, col) = worked_before_line(novelty, band);
+    let (worked, col) = worked_before_line(novelty, band, worked_ago);
     ui.label(RichText::new(worked).size(12.0).color(col));
 
     if let Some(target) = d.cq_to.as_deref() {
@@ -132,8 +135,18 @@ pub(in crate::app) fn station_card(
 pub(in crate::app) fn worked_before_line(
     novelty: sdrcrow_types::Novelty,
     band: &str,
+    worked_ago: Option<i64>,
 ) -> (String, egui::Color32) {
     let band_label = if band.is_empty() { tr!("widgets-band").to_string() } else { band.to_string() };
+    // "Worked before" says which band and, now, when: the age is the difference
+    // between a regular and somebody not heard in years.
+    // Two messages rather than one plural with a zero case: Fluent's variants
+    // are named, and a bare `[0]` is a syntax error there.
+    let with_age = |line: String| match worked_ago {
+        Some(0) => format!("{line} · {}", tr!("widgets-worked-today")),
+        Some(days) => format!("{line} · {}", tr!("widgets-worked-days-ago", n = days)),
+        None => line,
+    };
     if novelty.new_dxcc {
         (tr!("widgets-new-entity-never-worked-any").to_string(), crate::theme::PINK())
     } else if novelty.new_dxcc_band {
@@ -143,7 +156,7 @@ pub(in crate::app) fn worked_before_line(
     } else if novelty.new_call {
         (tr!("widgets-not-worked-before").to_string(), crate::theme::CYAN_DIM())
     } else if novelty.dupe {
-        (tr!("widgets-worked-before", band_label = band_label), crate::theme::gray(130))
+        (with_age(tr!("widgets-worked-before", band_label = band_label)), crate::theme::gray(130))
     } else if band.is_empty() {
         // No ADIF band for this one, so "not on this band" is a question with no
         // answer — and on 11 m it is a nonsense one, since a CB callsign exists
@@ -151,9 +164,9 @@ pub(in crate::app) fn worked_before_line(
         // been worked on. ADIF has no 11 m enumeration (`adif_band` returns ""
         // for 24.99–28.0 MHz on purpose), which is also why a worked-before CB
         // station could never reach the dupe branch above.
-        (tr!("widgets-worked-before-any"), crate::theme::gray(150))
+        (with_age(tr!("widgets-worked-before-any")), crate::theme::gray(150))
     } else {
-        (tr!("widgets-worked-before-but-not-band").to_string(), crate::theme::gray(150))
+        (with_age(tr!("widgets-worked-before-but-not-band").to_string()), crate::theme::gray(150))
     }
 }
 
@@ -789,7 +802,7 @@ mod worked_before_tests {
     #[test]
     fn on_a_band_with_no_adif_name_it_says_worked_before_and_nothing_more() {
         let n = Novelty::default(); // worked before, not a dupe, nothing new
-        let (line, _) = worked_before_line(n, "");
+        let (line, _) = worked_before_line(n, "", None);
         assert_eq!(line, "Worked before", "11 m has no ADIF band to differ from");
         assert!(!line.contains("band"), "the band clause is the whole bug: {line:?}");
     }
@@ -798,11 +811,45 @@ mod worked_before_tests {
     #[test]
     fn a_real_band_still_says_which_band() {
         let n = Novelty::default();
-        let (line, _) = worked_before_line(n, "20m");
+        let (line, _) = worked_before_line(n, "20m", None);
         assert_eq!(line, "Worked before, but not on this band");
         let dupe = Novelty { dupe: true, ..Novelty::default() };
-        let (line, _) = worked_before_line(dupe, "20m");
+        let (line, _) = worked_before_line(dupe, "20m", None);
         assert_eq!(line, "Worked before on 20m");
+    }
+
+    /// **"Worked before" now says when.** Asked for after the 11 m recall rule
+    /// (a month) made the age of a QSO the thing that decides whether a station
+    /// is worth answering: the card carries it, and it reads as a date, not as a
+    /// second opinion.
+    #[test]
+    fn a_worked_before_line_says_how_long_ago() {
+        let worked = Novelty::default();
+        assert_eq!(
+            worked_before_line(worked, "20m", Some(1)).0,
+            "Worked before, but not on this band · 1 day ago"
+        );
+        assert_eq!(
+            worked_before_line(worked, "20m", Some(34)).0,
+            "Worked before, but not on this band · 34 days ago"
+        );
+        assert_eq!(
+            worked_before_line(worked, "", Some(34)).0,
+            "Worked before · 34 days ago",
+            "no ADIF band, still a date"
+        );
+        assert_eq!(
+            worked_before_line(worked, "20m", Some(0)).0,
+            "Worked before, but not on this band · today"
+        );
+        // A new call is not "worked before", so neither age nor band belongs on it.
+        let new_call = Novelty { new_call: true, ..Novelty::default() };
+        assert_eq!(worked_before_line(new_call, "20m", Some(34)).0, "Not worked before");
+        // No date in the log: the sentence stays as it was.
+        assert_eq!(
+            worked_before_line(worked, "20m", None).0,
+            "Worked before, but not on this band"
+        );
     }
 
     /// A station never heard before is unaffected — it is a new call, and that
@@ -810,7 +857,7 @@ mod worked_before_tests {
     #[test]
     fn a_new_call_still_says_so() {
         let n = Novelty { new_call: true, ..Novelty::default() };
-        assert_eq!(worked_before_line(n, "").0, "Not worked before");
-        assert_eq!(worked_before_line(n, "20m").0, "Not worked before");
+        assert_eq!(worked_before_line(n, "", None).0, "Not worked before");
+        assert_eq!(worked_before_line(n, "20m", None).0, "Not worked before");
     }
 }

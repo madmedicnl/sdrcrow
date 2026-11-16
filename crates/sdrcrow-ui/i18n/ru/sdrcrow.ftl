@@ -9868,3 +9868,13 @@ topbar-group-audio = ЗВУК
 topbar-show-audio-spectrum = ПОКАЗЫВАТЬ СПЕКТР ЗВУКА
 
 topbar-draw-receiver-s-own-audio = Полоса под водопадом со звуком самого приёмника, от 50 Гц до 16 кГц — гул блока питания или свист зарядного устройства видны здесь, а не на диапазоне
+
+
+widgets-worked-today = сегодня
+
+widgets-worked-days-ago = { $n ->
+        [one] { $n } день назад
+        [few] { $n } дня назад
+        [many] { $n } дней назад
+       *[other] { $n } дня назад
+    }

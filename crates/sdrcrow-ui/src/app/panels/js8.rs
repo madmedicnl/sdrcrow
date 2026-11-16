@@ -611,6 +611,13 @@ impl SdrcrowApp {
                     let entity = sdrcrow_types::resolve_callsign(&h.call);
                     let continent = entity.map(|e| e.continent).unwrap_or("");
                     let flag = entity.map(|e| e.flag).unwrap_or("");
+                    let worked_ago = self
+                        .log_index_cache
+                        .as_ref()
+                        .expect("just refreshed")
+                        .1
+                        .last_worked(&h.call)
+                        .map(|at| (crate::time::now_unix() - at).max(0) / 86_400);
                     let novelty = self.log_index_cache.as_ref().expect("just refreshed").1.novelty(
                         &h.call,
                         grid.as_deref(),
@@ -873,7 +880,7 @@ impl SdrcrowApp {
                             let d = js8_station_decode(h, grid.clone(), msg);
                             station_card(
                                 ui, &mut flags, &d, entity, dist_km, &my_grid, novelty, band,
-                                false, calling,
+                                worked_ago, false, calling,
                             );
                             crate::callsign_card::section(ui, &h.call);
                         });

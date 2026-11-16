@@ -9845,3 +9845,11 @@ topbar-group-audio = AUDIO
 topbar-show-audio-spectrum = AUDIOSPEKTRUM ZEIGEN
 
 topbar-draw-receiver-s-own-audio = Ein Streifen unter dem Wasserfall mit dem eigenen Audio des Empfängers, 50 Hz bis 16 kHz — das Brummen eines Netzteils oder das Pfeifen eines Ladegeräts zeigt sich hier, nicht im Band
+
+
+widgets-worked-today = heute
+
+widgets-worked-days-ago = { $n ->
+        [one] vor { $n } Tag
+       *[other] vor { $n } Tagen
+    }

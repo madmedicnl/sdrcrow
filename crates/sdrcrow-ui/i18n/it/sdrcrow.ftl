@@ -9862,3 +9862,11 @@ topbar-group-audio = AUDIO
 topbar-show-audio-spectrum = MOSTRA SPETTRO AUDIO
 
 topbar-draw-receiver-s-own-audio = Una striscia sotto il waterfall con l'audio del ricevitore stesso, da 50 Hz a 16 kHz — il ronzio di un alimentatore o il fischio di un caricabatterie si vedono qui, non sulla banda
+
+
+widgets-worked-today = oggi
+
+widgets-worked-days-ago = { $n ->
+        [one] { $n } giorno fa
+       *[other] { $n } giorni fa
+    }

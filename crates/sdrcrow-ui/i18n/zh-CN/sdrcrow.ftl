@@ -9791,3 +9791,10 @@ topbar-group-audio = 音频
 topbar-show-audio-spectrum = 显示音频频谱
 
 topbar-draw-receiver-s-own-audio = 瀑布图下方显示接收机自身的声音，50 Hz 至 16 kHz——电源的嗡声或充电器的啸叫在这里，而不是在波段上
+
+
+widgets-worked-today = 今天
+
+widgets-worked-days-ago = { $n ->
+       *[other] { $n } 天前
+    }

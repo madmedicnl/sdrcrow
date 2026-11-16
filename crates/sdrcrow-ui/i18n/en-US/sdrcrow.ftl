@@ -9882,3 +9882,13 @@ topbar-group-audio = AUDIO
 topbar-show-audio-spectrum = SHOW AUDIO SPECTRUM
 
 topbar-draw-receiver-s-own-audio = A strip under the waterfall with the receiver's own audio, 50 Hz to 16 kHz — the hum of a supply or the whistle of a charger shows up here, not on the band
+
+
+# Beside "worked before" in the decode card: the last QSO with that station was today.
+widgets-worked-today = today
+
+# Beside "worked before" in the decode card: how long ago the last QSO with that station was, in days.
+widgets-worked-days-ago = { $n ->
+        [one] { $n } day ago
+       *[other] { $n } days ago
+    }

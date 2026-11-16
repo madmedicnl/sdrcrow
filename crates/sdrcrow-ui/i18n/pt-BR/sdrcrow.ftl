@@ -9853,3 +9853,11 @@ topbar-group-audio = ÁUDIO
 topbar-show-audio-spectrum = MOSTRAR ESPECTRO DE ÁUDIO
 
 topbar-draw-receiver-s-own-audio = Uma faixa abaixo do waterfall com o áudio do próprio receptor, de 50 Hz a 16 kHz — o zumbido de uma fonte ou o assobio de um carregador aparecem aqui, não na faixa
+
+
+widgets-worked-today = hoje
+
+widgets-worked-days-ago = { $n ->
+        [one] há { $n } dia
+       *[other] há { $n } dias
+    }

@@ -9844,3 +9844,11 @@ topbar-group-audio = AUDIO
 topbar-show-audio-spectrum = MOSTRAR ESPECTRO DE AUDIO
 
 topbar-draw-receiver-s-own-audio = Una banda bajo la cascada con el audio del propio receptor, de 50 Hz a 16 kHz — el zumbido de una fuente o el silbido de un cargador se ven aquí, no en la banda
+
+
+widgets-worked-today = hoy
+
+widgets-worked-days-ago = { $n ->
+        [one] hace { $n } día
+       *[other] hace { $n } días
+    }

@@ -9853,3 +9853,11 @@ topbar-group-audio = SES
 topbar-show-audio-spectrum = SES SPEKTRUMUNU GÖSTER
 
 topbar-draw-receiver-s-own-audio = Şelalenin altında alıcının kendi sesi, 50 Hz ile 16 kHz arası — bir güç kaynağının uğultusu ya da şarj cihazının ıslığı burada görünür, bantta değil
+
+
+widgets-worked-today = bugün
+
+widgets-worked-days-ago = { $n ->
+        [one] { $n } gün önce
+       *[other] { $n } gün önce
+    }

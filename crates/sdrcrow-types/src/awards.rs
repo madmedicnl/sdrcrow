@@ -303,6 +303,13 @@ impl LogIndex {
         self.recall_after_s
     }
 
+    /// When this call was last worked, in Unix seconds — the newest QSO with
+    /// it, whichever band it was on. `None` when the log has no usable time for
+    /// it, which is also the case for a call that is not in the log at all.
+    pub fn last_worked(&self, call: &str) -> Option<i64> {
+        self.call_last.get(&call.trim().to_ascii_uppercase()).copied()
+    }
+
     /// Whether this call may be called again although it is in the log: only
     /// when a window is set, and only when the newest QSO with it is older than
     /// that window. A call in the log without a usable time is left alone —

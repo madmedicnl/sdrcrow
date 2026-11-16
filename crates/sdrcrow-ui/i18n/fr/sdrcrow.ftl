@@ -9856,3 +9856,11 @@ topbar-group-audio = AUDIO
 topbar-show-audio-spectrum = AFFICHER LE SPECTRE AUDIO
 
 topbar-draw-receiver-s-own-audio = Une bande sous la cascade avec l'audio du récepteur lui-même, de 50 Hz à 16 kHz — le ronflement d'une alimentation ou le sifflement d'un chargeur se voient ici, pas sur la bande
+
+
+widgets-worked-today = aujourd'hui
+
+widgets-worked-days-ago = { $n ->
+        [one] il y a { $n } jour
+       *[other] il y a { $n } jours
+    }
