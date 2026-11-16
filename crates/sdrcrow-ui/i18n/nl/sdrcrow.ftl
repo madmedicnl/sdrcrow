@@ -8634,7 +8634,7 @@ settings-radio-auto-stop-label = stop na geen invoer
 settings-radio-auto-stop-hint-long =
     Hoe lang de onbewaakte FT8/FT4/FT2-sequencer mag draaien zonder invoer van de operator voordat hij zich uitschakelt. Per radio: de ene set kan langer blijven draaien dan de andere.
     
-    Op een SDRplay of een PlutoSDR gaat het tot zes uur, en UITSCHAKELEN zet de stop helemaal uit: de automodus draait dan tot je stopt. De zendwatchdog en de bandblokkade blijven gelden.
+    Op een set met USB-geluidskaart, of een PlutoSDR, gaat het tot zes uur, en UITSCHAKELEN zet de stop helemaal uit: de automodus draait dan tot je stopt. De zendwatchdog en de bandblokkade blijven gelden.
     
     Wordt actief na Toepassen.
 

@@ -8637,7 +8637,7 @@ settings-radio-auto-stop-label = arrêt sans action de l'opérateur
 settings-radio-auto-stop-hint-long =
     Durée pendant laquelle le séquenceur FT8/FT4/FT2 sans surveillance peut tourner sans action de l'opérateur avant de se désarmer. Par radio : un poste peut tourner plus longtemps qu'un autre.
     
-    Sur un SDRplay ou un PlutoSDR, cela monte à six heures, et AUCUN ARRÊT supprime tout arrêt : le mode auto tourne alors jusqu'à ce que vous l'arrêtiez. Le chien de garde d'émission et le verrouillage de bande s'appliquent toujours.
+    Sur un poste à carte son USB, ou un PlutoSDR, cela monte à six heures, et AUCUN ARRÊT supprime tout arrêt : le mode auto tourne alors jusqu'à ce que vous l'arrêtiez. Le chien de garde d'émission et le verrouillage de bande s'appliquent toujours.
     
     Prend effet avec Appliquer.
 

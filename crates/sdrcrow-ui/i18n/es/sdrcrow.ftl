@@ -8625,7 +8625,7 @@ settings-radio-auto-stop-label = detener tras no haber actividad
 settings-radio-auto-stop-hint-long =
     Cuánto tiempo puede funcionar el secuenciador FT8/FT4/FT2 desatendido sin intervención del operador antes de desarmarse. Por radio: un equipo puede dejarse funcionando más tiempo que otro.
     
-    En un SDRplay o un PlutoSDR llega hasta seis horas, y SIN LÍMITE desactiva el paro por completo: el modo automático funciona hasta que usted lo detenga. El vigilante de transmisión y el bloqueo de banda siguen aplicándose.
+    En un equipo con tarjeta de sonido USB, o un PlutoSDR, llega hasta seis horas, y SIN LÍMITE desactiva el paro por completo: el modo automático funciona hasta que usted lo detenga. El vigilante de transmisión y el bloqueo de banda siguen aplicándose.
     
     Surte efecto con Aplicar.
 

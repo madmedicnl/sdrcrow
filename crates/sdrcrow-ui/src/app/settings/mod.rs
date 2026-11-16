@@ -3357,7 +3357,7 @@ impl SdrcrowApp {
                     // Auto mode's inactivity stop. Per radio because one set
                     // may be left running longer than another, and capped
                     // because auto mode is for a break, not a contest — except
-                    // on an RSP or a PlutoSDR, which offer up to six hours or no stop.
+                    // on a sound-card rig or a PlutoSDR, which offer up to six hours or no stop.
                     ui.label(RichText::new(tr!("settings-radio-auto-mode")).strong());
                     ui.end_row();
                     let long = sdrcrow_types::auto::has_long_idle_stop(cfg.backend);

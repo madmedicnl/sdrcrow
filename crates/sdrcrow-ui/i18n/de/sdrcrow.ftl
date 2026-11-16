@@ -8626,7 +8626,7 @@ settings-radio-auto-stop-label = Stopp nach Inaktivität
 settings-radio-auto-stop-hint-long =
     Wie lange der unbeaufsichtigte FT8/FT4/FT2-Sequenzer ohne Eingabe des Bedieners laufen darf, bevor er sich entschärft. Je Gerät: Ein Gerät kann länger laufen gelassen werden als ein anderes.
     
-    Beim SDRplay oder PlutoSDR reicht es bis zu sechs Stunden, und DEAKTIVIEREN schaltet den Stopp ganz ab: Der Automatikmodus läuft dann, bis Sie ihn stoppen. Sende-Watchdog und Bandsperre gelten weiterhin.
+    Bei einem Gerät mit USB-Soundkarte oder einem PlutoSDR reicht es bis zu sechs Stunden, und DEAKTIVIEREN schaltet den Stopp ganz ab: Der Automatikmodus läuft dann, bis Sie ihn stoppen. Sende-Watchdog und Bandsperre gelten weiterhin.
     
     Wird mit Übernehmen wirksam.
 

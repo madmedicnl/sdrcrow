@@ -8638,7 +8638,7 @@ settings-radio-auto-stop-label = stop after no input
 settings-radio-auto-stop-hint-long =
     How long the unattended FT8/FT4/FT2 sequencer may run with no operator input before it disarms. Per radio: one set can be left running longer than another.
     
-    On an SDRplay or a PlutoSDR it goes up to six hours, and DISABLE switches the stop off altogether: auto mode then runs until you stop it. The transmit watchdog and the band lockout still apply.
+    On a rig whose audio comes over a USB sound card, or a PlutoSDR, it goes up to six hours, and DISABLE switches the stop off altogether: auto mode then runs until you stop it. The transmit watchdog and the band lockout still apply.
     
     Takes effect on Apply.
 
