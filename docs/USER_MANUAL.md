@@ -1,6 +1,6 @@
-# SDRoxide User Manual
+# SDRCrow User Manual
 
-SDRoxide is a PowerSDR/Thetis-style software-defined-radio transceiver. It gives
+SDRCrow is a PowerSDR/Thetis-style software-defined-radio transceiver. It gives
 you a panadapter and waterfall, dual VFOs, a full set of receive and transmit
 controls, FT8/FT4/FT2 digital modes with an integrated logbook, a wideband CW
 skimmer, and the ability to drive either a SoapySDR device or a CAT-controlled
@@ -1474,7 +1474,7 @@ in an attenuator, until it goes.
 
 **Troubleshooting: the S-meter moves when you move the mouse.** On a CAT rig
 (USB audio, no IQ front end) the S-meter shows the *audio level*, not a real
-signal-strength measurement — the rig has no S-meter that SDRoxide can read.
+signal-strength measurement — the rig has no S-meter that SDRCrow can read.
 A wireless mouse radiates RF into the receiver (notably the CRT SS9900v and
 similar rigs) and that noise is picked up as audio, so both the number and the
 needle jump. This is a **hardware** problem, not a software bug. Fixes: use a
@@ -3187,7 +3187,7 @@ Arch it is the `nrsc5-git` AUR package; elsewhere it is usually built from the
 nrsc5 source, whose `sudo make install` puts it in `/usr/local/lib`, where
 sdrcrow looks. On Windows, put `libnrsc5.dll` and the DLLs it needs beside
 `sdrcrow.exe`; anywhere, `libnrsc5` beside the executable is found, and the
-`SDROXIDE_NRSC5_LIB` environment variable names a library in any other place.
+`SDRCROW_NRSC5_LIB` environment variable names a library in any other place.
 **Restart sdrcrow after installing it** — the library is looked for once, at
 startup. With a remote client it is the *station's* computer that needs it, not
 the one the client runs on.
@@ -3420,7 +3420,7 @@ both in the name and in the file's `auxi` chunk, because those are the two
 places those programs look, so a capture opens tuned to where it was made:
 
 ```
-SDRoxide_20260829_134507Z_14074000Hz_2400000sps_IQ.wav
+SDRCrow_20260829_134507Z_14074000Hz_2400000sps_IQ.wav
 ```
 
 It also plays back here, with nothing to type — `sdrcrow --file <capture>`
@@ -5185,7 +5185,7 @@ one of the two.
   shows exactly what will be transmitted, banner and all.
 - **Banner…** opens the editor for the strip across the top of every picture
   this station sends. Out of the box it is the one sdrcrow has always drawn: a
-  red→black strip with your **callsign** at the top left and `SDRoxide` + the
+  red→black strip with your **callsign** at the top left and `SDRCrow` + the
   version at the top right. All of it is yours to change:
   - **Top left** and **Top right** are free text, with three placeholders
     substituted when the picture is composed — `{call}` (your callsign, put into
@@ -6110,7 +6110,7 @@ inside a chip:
 An RTL-SDR at its default 2.4 Msps is the classic receiver for this and sits
 exactly on the line. So do an Airspy, a HackRF, an SDRplay, a Pluto and a
 LimeSDR. On a receiver whose window width you choose — the RX-888's **panadapter
-width** setting, for example — pick 4 MHz or more; SDRoxide keeps whatever it is
+width** setting, for example — pick 4 MHz or more; SDRCrow keeps whatever it is
 given, up to 9 MHz, because more samples per chip is strictly better here and
 nothing is gained by throwing them away.
 
@@ -6255,7 +6255,7 @@ by default. While it is on, the card you open asks the station's relay for that
 aircraft alone, one lookup at a time, and shows its type, operator, route and
 photo with no click. Switch it off and nothing leaves the station; the station keeps
 your choice across restarts. If you are not signed in, or the operator holds the
-relay with `SDROXIDE_AIRCRAFT_ONLINE` (`=0` holds it off, `=1` on; unset leaves it to
+relay with `SDRCROW_AIRCRAFT_ONLINE` (`=0` holds it off, `=1` on; unset leaves it to
 the switch), the card or a short note says so. With no station to connect to there is
 no switch.
 
@@ -6327,7 +6327,7 @@ script. One row per aircraft: ICAO address, callsign, registration, category, ty
 operator, origin and destination (airport codes), first and last heard in UTC, how
 many positions the station kept, and a *source* of `radio`, `online` or
 `radio + online`. When the station you are connected to keeps a history
-(`SDROXIDE_AIRCRAFT_HISTORY=1`) the file is its last 24 hours, with the relay's cards;
+(`SDRCROW_AIRCRAFT_HISTORY=1`) the file is its last 24 hours, with the relay's cards;
 otherwise, or with no station, the program writes what it holds now, the aircraft heard
 in the last ten minutes and the cards the relay has already answered for, and a line in
 the window says which you got and why. The file never holds a position, an altitude,
@@ -6381,7 +6381,7 @@ and the aircraft heard least recently go first; a test that fills it to those
 ceilings measures about 4.6 MB of JSON. Should the file ever pass 5 MB it is
 written gzipped, under the same name, and read back either way. Nothing is kept about who was looking.
 **It is off by default**: the station's operator switches it on with
-`SDROXIDE_AIRCRAFT_HISTORY=1` (also `true`, `yes` or `on`), and until then nothing
+`SDRCROW_AIRCRAFT_HISTORY=1` (also `true`, `yes` or `on`), and until then nothing
 is read, kept, written or served. It asks nobody for anything: it only writes down
 what has already arrived. HFDL is not in it, and a program running its own radio,
 with no station to connect to, has none.
@@ -6410,7 +6410,7 @@ the card says so.
 
 #### What is decoded, and what is believed
 
-Two kinds of transmission arrive on this channel, and SDRoxide treats them very
+Two kinds of transmission arrive on this channel, and SDRCrow treats them very
 differently.
 
 **Extended squitters** (downlink formats 17 and 18) are what an aircraft
@@ -6425,7 +6425,7 @@ interrogator already knew who it had asked — which means that to a receiver
 listening passively there is nothing in the frame to check it against. Taken
 alone, any 56 bits of noise "decode" to some address.
 
-So SDRoxide accepts one only when the address it yields already belongs to an
+So SDRCrow accepts one only when the address it yields already belongs to an
 aircraft heard from a verified squitter, recently. That is what buys you the
 squawk column and the faster altitude updates without inventing aeroplanes. It
 is also why a squawk appears for some aircraft and not others: it depends on
@@ -6459,11 +6459,11 @@ decoder finds in them. Point it at a checkout of
 [rsadsb/dump1090_rs](https://github.com/rsadsb/dump1090_rs):
 
 ```
-SDROXIDE_ADSB_IQ=/path/to/dump1090_rs/test_iq \
+SDRCROW_ADSB_IQ=/path/to/dump1090_rs/test_iq \
   cargo test -p sdrcrow-adsb --test reference_corpus -- --nocapture
 ```
 
-SDRoxide finds all fourteen messages in those three captures, and nothing the
+SDRCrow finds all fourteen messages in those three captures, and nothing the
 reference does not also find.
 
 #### If nothing is decoding
@@ -6589,7 +6589,7 @@ the middle of the group, and the decoder places its own window from there to
 take in as many of the fourteen channels as your receiver can reach. The
 **136.8125** button in the panel header puts it back if you wander off.
 
-![SDRoxide in VDL2: the whole datalink group on the waterfall, the message log and the stations sending it](images/vdl2-panel.jpg)
+![SDRCrow in VDL2: the whole datalink group on the waterfall, the message log and the stations sending it](images/vdl2-panel.jpg)
 
 The waterfall above the panel is the whole group at once, so the transmissions
 are visible as short bright dashes on whichever channel carried them — which is
@@ -6663,7 +6663,7 @@ read.
 | MHz | Which of the fourteen channels it arrived on. |
 | From → To | The two 24-bit addresses. For an aircraft this is its ICAO address — the same number its ADS-B squitters carry, so an aeroplane heard on both bands is recognisably one aeroplane. |
 | Type | The link control field: `I` for information (with its sequence numbers), `RR`/`REJ` and friends for flow control, `UI` for a broadcast, `XID` for link management. |
-| Message | The ACARS label and text, the kind of XID exchange, or — for a payload SDRoxide does not read — what it appears to be and how long. |
+| Message | The ACARS label and text, the kind of XID exchange, or — for a payload SDRCrow does not read — what it appears to be and how long. |
 
 Click a line to open the full card below it: every field, the signal figures,
 and the frame as hex. The filter box searches an address, a registration, a
@@ -6717,17 +6717,17 @@ in, and the first one that stops counting names the problem:
 | --- | --- |
 | no **bursts** | Nothing is rising above the noise. The aerial, or a receiver that is not looking here. |
 | bursts but no **sync** | Something is on these channels and it is not VDL2. |
-| sync but no frames, with **HDLC bad** climbing | The transmission header is being read and the frame inside it is not. That is SDRoxide's fault rather than the band's, and worth reporting. |
+| sync but no frames, with **HDLC bad** climbing | The transmission header is being read and the frame inside it is not. That is SDRCrow's fault rather than the band's, and worth reporting. |
 | sync but no frames, with both low | Real VDL2 arriving too damaged to decode — a weak signal or the wrong aerial. |
 | **bad FCS** climbing with frames | Frames arriving damaged. A few among many is ordinary at the edge of coverage. |
 
-One thing not to read too much into: SDRoxide's Reed-Solomon parameters do not
+One thing not to read too much into: SDRCrow's Reed-Solomon parameters do not
 match what is actually on the air, so the error correction repairs nothing and
 every frame you see arrived intact and passed its own check sequence. That is
 why there is no "blocks repaired" counter to watch. It costs the marginal
 frames a stronger receiver would have rescued; it costs nothing in wrong ones,
 because the check sequence is what admits a frame either way. If you have a
-recording of a band SDRoxide decodes poorly, that is the thing most likely to
+recording of a band SDRCrow decodes poorly, that is the thing most likely to
 fix it.
 
 #### Setup
@@ -6752,7 +6752,7 @@ its own frame check sequence and shown with its addresses and type.
 sequence number and text. This is where nearly all the readable content is.
 
 **XID, in summary.** What kind of exchange it is — a ground station's beacon, a
-link establishment, a handoff — and the parameters SDRoxide knows: connection
+link establishment, a handoff — and the parameters SDRCrow knows: connection
 management, sequencing, modulation support, alternate ground stations, aircraft
 and ground-station positions, and the frequency lists a station advertises.
 Parameters it does not know are shown with their identifier and their bytes and
@@ -7583,7 +7583,7 @@ open — like SAT and SCAN, because it is spending a receiver on your behalf
 whether or not you are watching. Closing the window therefore leaves it lit. The
 switch is **DECODING** inside the window itself.
 
-There are two sets of decoders behind that window. SDRoxide's own read a handful
+There are two sets of decoders behind that window. SDRCrow's own read a handful
 of protocols on the European 868 MHz channels, in detail and with every checksum
 verified — those are what the rest of this section describes first. The
 **rtl_433** decoders ([§5.4](#54-the-rtl_433-decoders)) add several hundred more
@@ -7600,7 +7600,7 @@ across 315, 345, 433, 868 and 915 MHz. Most people will want both switched on.
 - The family buttons — **WEATHER**, **METERS**, **HOME**, **LORA** — choose what
   to listen for. Only **WEATHER** is implemented so far; the others are drawn
   greyed out rather than hidden, because those devices are on the air whether or
-  not SDRoxide can read them yet.
+  not SDRCrow can read them yet.
 
 ### 5.1 Where it listens, and where to tune
 
@@ -7667,7 +7667,7 @@ how many frames have been accepted from it, and the readings.
   ago" is answered.
 - The **bursts / decoded** line under the channel list is the honest measure of
   what is happening. Many bursts and no decodes means the band is busy with
-  devices SDRoxide cannot read yet — which around 868 MHz it usually is.
+  devices SDRCrow cannot read yet — which around 868 MHz it usually is.
 
 ### 5.3 What is decoded so far
 
@@ -7737,7 +7737,7 @@ water-leakage sensor, and the units rebadged from them (Froggit among others).
 - A Bresser **rain gauge** shares the framing with a payload meaning something
   else; it is listed as present without a reading.
 
-> **The 7-in-1 is the weakest frame in the band that SDRoxide accepts**, and worth
+> **The 7-in-1 is the weakest frame in the band that SDRCrow accepts**, and worth
 > knowing as such. A 5-in-1 carries about a hundred bits of redundancy and a
 > leakage sensor a 16-bit CRC plus five checkable flag bits; a 7-in-1 has a
 > 16-bit digest and nothing else, so one random burst in 65 536 passes it before
@@ -7760,7 +7760,7 @@ rather than at the data rate. Each report names the **home identifier**, the
 the application layer and not the link layer: the mesh has to be able to route a
 frame without opening it, so the routing header is in clear even on a secured
 network. The command class is named where it is a familiar one. A frame carrying
-a secured command class is marked `payload encrypted` — SDRoxide holds no keys.
+a secured command class is marked `payload encrypted` — SDRCrow holds no keys.
 
 This one was not transcribed from a write-up: the frame layout was derived from a
 capture taken off the air with `ism_forensics`, and confirmed by its own checksum
@@ -7823,13 +7823,13 @@ Wireless M-Bus and LoRa recognition are not implemented yet.
 
 > **On encrypted meters:** when wireless M-Bus support arrives, most modern
 > German and Austrian meters will still only report their manufacturer, serial
-> and device type — their readings are AES-encrypted and SDRoxide holds no keys.
+> and device type — their readings are AES-encrypted and SDRCrow holds no keys.
 > That is a useful meter inventory, but it is not a meter reading.
 
 ### 5.4 The rtl_433 decoders
 
 Under **RTL_433 DECODERS** is a second set of decoders, from the rtl_433
-project, built into SDRoxide. It adds several hundred device protocols and,
+project, built into SDRCrow. It adds several hundred device protocols and,
 unlike the decoders above, reads **OOK** as well as FSK — which is most of what
 is on the air below 868 MHz.
 
@@ -7852,7 +7852,7 @@ megahertz apart and no receiver covers two at once.
 | **345 MHz US** | North America | Honeywell/Ademco, 2GIG and Vivint alarm sensors — door and window contacts, glass-break detectors, motion sensors |
 
 433.92 MHz is the one worth trying first if you have never looked: it is busy
-almost everywhere, and none of SDRoxide's own decoders reach it.
+almost everywhere, and none of SDRCrow's own decoders reach it.
 
 #### Bandwidth
 
@@ -7904,22 +7904,22 @@ protocol column and the device's model name beside it.
 #### Where it takes over
 
 Where both sets of decoders can read a device, rtl_433 reads it, because it
-knows far more variants — fifteen LaCrosse decoders to SDRoxide's one, nineteen
+knows far more variants — fifteen LaCrosse decoders to SDRCrow's one, nineteen
 Fine Offset to seven, eight Bresser to four. The channel list says
 `handled by rtl_433` for those, and the panel lists them under **handled by
 rtl_433**. This is why a sensor you know as `Bresser` may appear as `rtl_433`
 with a model of `Bresser-6in1` — same device, better decoder. Select a band
-somewhere else and SDRoxide's own decoders take 868 MHz back.
+somewhere else and SDRCrow's own decoders take 868 MHz back.
 
 **Z-Wave and Homematic are never handed over** — rtl_433 has no decoder for
-either, so those two stay with SDRoxide's own regardless of what band is
+either, so those two stay with SDRCrow's own regardless of what band is
 selected.
 
 ### 5.5 Adding your own decoders (flex specs)
 
 If you have a device nothing decodes, you can describe it yourself — no code, no
 rebuild. A **flex spec** is a few lines of text saying how a device modulates
-and frames its data, and SDRoxide turns it into a working decoder.
+and frames its data, and SDRCrow turns it into a working decoder.
 
 They live in one file:
 
@@ -7930,7 +7930,7 @@ They live in one file:
 | Windows | `%APPDATA%\sdrcrow\sdrcrow\config-brown\rtl433_flex.conf` |
 
 The file is created for you, with a worked example commented out, the first time
-the ISM decoder runs. **SDRoxide never rewrites it**, so what you put there stays
+the ISM decoder runs. **SDRCrow never rewrites it**, so what you put there stays
 exactly as you wrote it — including your comments and spacing.
 
 #### The syntax
@@ -8003,7 +8003,7 @@ load**, so one typo costs you one decoder rather than all of them.
 The check is deliberately stricter than rtl_433's own command line. rtl_433
 reports a bad spec by printing a message and stopping the program, which is fine
 for a command-line tool and not fine for a receiver you are operating; so
-anything SDRoxide cannot confirm is safe gets refused with an explanation
+anything SDRCrow cannot confirm is safe gets refused with an explanation
 instead. If a spec is rejected that you believe is valid, the message says which
 part was not understood.
 
@@ -12277,7 +12277,7 @@ sudo install -m 755 elad-firmware-2.0-intel /usr/local/bin/elad-firmware
 
 sdrcrow then runs it for you every time it opens the receiver, loading the
 image for the sample rate you picked. It takes about six seconds, once per
-session. If you keep the loader somewhere else, point `SDROXIDE_ELAD_FIRMWARE`
+session. If you keep the loader somewhere else, point `SDRCROW_ELAD_FIRMWARE`
 at it. If sdrcrow cannot find it at all, it says so on screen rather than
 retrying in silence.
 
@@ -13926,7 +13926,7 @@ tab itself is:
   stations as spots** adds them to the panadapter, world map and SPOTS window
   under the **FREEDV** filter.
 - The status lines underneath show exactly how you are being reported
-  (`OE3JJS / JN78ve — SDRoxide 0.8.0`) and whether the connection is up.
+  (`OE3JJS / JN78ve — SDRCrow 0.8.0`) and whether the connection is up.
 - **APPLY** connects or disconnects and saves.
 
 ### 6.7 Uploads: callsign lookup and QSL services
@@ -16576,9 +16576,9 @@ map. The heard layer follows the mode.
 ### 10.5 FreeDV Reporter (qso.freedv.org)
 
 [FreeDV Reporter](https://qso.freedv.org/) is where FreeDV operators announce
-where they are listening and who they are hearing. SDRoxide talks to it in both
+where they are listening and who they are hearing. SDRCrow talks to it in both
 directions: your station appears on the site, and everyone else's appears in
-SDRoxide as spots.
+SDRCrow as spots.
 
 Turn it on and point it at a server on the **FreeDV** tab of Settings
 ([§6.6](#66-freedv-freedv-reporter)). You are only *shown* to others while the
@@ -16586,9 +16586,9 @@ radio is in **RADE** mode; in any other mode the connection stays up but your
 station is hidden, so the site never lists you as working FreeDV when you are
 actually on CW.
 
-While the feature is on, SDRoxide reports your transmit frequency as you tune and
+While the feature is on, SDRCrow reports your transmit frequency as you tune and
 your transmit/receive state as you key up, and reports your software as
-`SDRoxide <version>`.
+`SDRCrow <version>`.
 
 **With more than one radio** the entry is still the *station's*, not the tab's:
 the session belongs to the first radio in the roster, but whichever radio is in
@@ -16598,7 +16598,7 @@ the station's, so applying them from any radio's window changes the one session
 rather than opening a second under the same callsign.
 
 **Callsign exchange.** RADE carries a callsign in the frame at the end of each
-over. SDRoxide transmits the callsign from your digital-mode configuration there,
+over. SDRCrow transmits the callsign from your digital-mode configuration there,
 so other FreeDV stations can identify you, and decodes the far end's, showing it
 as the DX call and reporting it. This uses the same over-the-air format as
 FreeDV GUI, so the two interoperate.
@@ -16610,7 +16610,7 @@ to anyone.
 
 ### 10.6 Broadcast stations on longwave and shortwave
 
-SDRoxide labels longwave and shortwave broadcast stations on the waterfall in
+SDRCrow labels longwave and shortwave broadcast stations on the waterfall in
 orange, alongside the network spots — so a carrier on 225 kHz comes up as
 *Polskie Radio Program 1, Solec Kujawski* rather than as an unexplained signal.
 Click one to tune it in AM; unlike a cluster spot it opens no log entry and looks
@@ -16671,7 +16671,7 @@ a path that vanished would read as "no path".
 
 #### The schedule downloads itself
 
-Shortwave schedules are reissued twice a year, so SDRoxide keeps its own copies
+Shortwave schedules are reissued twice a year, so SDRCrow keeps its own copies
 current instead of shipping a snapshot that goes stale. **Three sources are
 fetched**, each on its own terms, and all of them go into **one store**:
 
@@ -16716,7 +16716,7 @@ unless it looks like a season's worth of transmissions.
 
 #### Your own stations
 
-`broadcast_stations.json` in the config directory is yours alone. SDRoxide never
+`broadcast_stations.json` in the config directory is yours alone. SDRCrow never
 writes it, and merges it over the downloaded schedule each time it loads:
 
 - an entry with the **same name and frequency** as a scheduled one **replaces**
@@ -16747,7 +16747,7 @@ expect to hear — and is not the reception log, which records what you did hear
 
 **This is a schedule, not the log.** The SWL LOG records what you *heard*; this
 records what is expected to be on air, which is what the waterfall labels against.
-Mixing them would put a station in the picture that was never transmitted. (Upgrading from an earlier SDRoxide
+Mixing them would put a station in the picture that was never transmitted. (Upgrading from an earlier SDRCrow
 that seeded a full copy here: that copy is moved aside to
 `broadcast_stations.json.bak` on first start, because laying a stale season back
 over a fresh one would duplicate hundreds of transmissions. Nothing you wrote
@@ -16807,7 +16807,7 @@ broadcaster's evening is the thing it is for.
 
 #### Where the data comes from
 
-The shortwave entries are EiBi's seasonal schedule, parsed by SDRoxide itself —
+The shortwave entries are EiBi's seasonal schedule, parsed by SDRCrow itself —
 the same code path for a downloaded file and for the compiled-in one, so they
 cannot behave differently. Transmitter coordinates and the language, country and
 target-area names come from EiBi's README, which changes very rarely and is
@@ -17003,7 +17003,7 @@ The **Find** box searches the whole catalogue instead of the dial — "weather",
 type, and reads as a map of what is out there rather than a description of what
 is playing.
 
-The catalogue is built into SDRoxide and describes signals, not stations: around
+The catalogue is built into SDRCrow and describes signals, not stations: around
 sixty entries covering the amateur, broadcast, marine, aviation, utility, time
 and satellite services the receiver knows. It carries no waterfall images or
 audio samples and nothing copied from another identification database — the
