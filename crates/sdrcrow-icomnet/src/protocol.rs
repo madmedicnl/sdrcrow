@@ -1217,7 +1217,9 @@ mod tests {
         assert_eq!(p.len(), LOGIN_SIZE);
         assert_eq!(&p[0x40..0x43], &passcode("bob")[..3]);
         assert_eq!(&p[0x50..0x56], &passcode("secret")[..6]);
-        assert_eq!(&p[0x60..0x68], b"sdrcrow");
+        assert_eq!(&p[0x60..0x67], b"sdrcrow");
+        // The name field is zero-padded, not length-prefixed.
+        assert_eq!(p[0x67], 0);
         assert_eq!(u32_be_at(&p, 0x10), (LOGIN_SIZE - HEADER) as u32);
         assert_eq!(u16_be_at(&p, 0x16), 3);
         assert_eq!(u16_at(&p, 0x1a), 0xabcd);

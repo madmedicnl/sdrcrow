@@ -36,14 +36,14 @@ sdrcrow-config = { path = "../sdrcrow-config" }
 ureq = "3.4"
 
 sdrcrow-digi = { path = "../sdrcrow-digi" }
-sdrcrow-kiss = { path = "../sdrcrow-kiss" }
+sdrcrow-kiss.workspace = true
 sdrcrow-ax25 = { path = "../sdrcrow-ax25" }
 sdrcrow-skimmer = { path = "../sdrcrow-skimmer" }
-sdrcrow-ism = { path = "../sdrcrow-ism" }
-sdrcrow-adsb = { path = "../sdrcrow-adsb" }
-sdrcrow-vdl2 = { path = "../sdrcrow-vdl2" }
-sdrcrow-vor = { path = "../sdrcrow-vor" }
-sdrcrow-ais = { path = "../sdrcrow-ais" }
+sdrcrow-ism.workspace = true
+sdrcrow-adsb.workspace = true
+sdrcrow-vdl2.workspace = true
+sdrcrow-vor.workspace = true
+sdrcrow-ais.workspace = true
 sdrcrow-dab = { path = "../sdrcrow-dab" }
 sdrcrow-qo100 = { path = "../sdrcrow-qo100" }
 # Native-only, like the rest of the `on_rx_iq` lanes: the HFDL decoder runs
@@ -53,7 +53,7 @@ sdrcrow-sonde = { path = "../sdrcrow-sonde" }
 sdrcrow-meshtastic = { path = "../sdrcrow-meshtastic", features = ["engine"] }
 sdrcrow-wxsat = { path = "../sdrcrow-wxsat" }
 sdrcrow-net = { path = "../sdrcrow-net" }
-sdrcrow-winlink = { path = "../sdrcrow-winlink" }
+sdrcrow-winlink.workspace = true
 # Only for `tlesub`: the engine persists the satellite subscriptions and, being
 # the machine with the config directory, is also the one that fetches them and
 # reports what each listing holds. No tracking happens here — that is the UI's.
@@ -63,8 +63,8 @@ sdrcrow-solar = { path = "../sdrcrow-solar" }
 sdrcrow-tci.workspace = true
 # The built-in rigctld server: control-only, so unlike TCI it carries no
 # streams — the engine just publishes state and drains requests.
-sdrcrow-rigctld = { path = "../sdrcrow-rigctld" }
-sdrcrow-rotator = { path = "../sdrcrow-rotator" }
+sdrcrow-rigctld.workspace = true
+sdrcrow-rotator.workspace = true
 # Uploading received pictures to an FTP server — station-side, native only.
 sdrcrow-picup.workspace = true
 # The station's external T/R switch: the relay that grounds the SDR's antenna

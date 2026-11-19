@@ -43,6 +43,11 @@ use num_complex::Complex32;
 use thiserror::Error;
 use tracing::warn;
 
+// The AAC decoder calls this crate's faad2 from `aac.rs`'s shim, which the build
+// script links; naming it here is what tells Cargo the archive is wanted (the
+// same line `sdrcrow-drm` carries).
+use sdrcrow_faad2 as _;
+
 pub mod aac;
 
 pub use aac::AacDecoder;

@@ -5687,7 +5687,6 @@ version = "1.0.0"
 dependencies = [
  "crossbeam-channel",
  "rtrb",
- "sdrcrow-types",
  "thiserror 2.0.20",
  "tracing",
  "tracing-subscriber",
@@ -5880,7 +5879,6 @@ dependencies = [
  "rustfft",
  "sdrcrow-dsp",
  "sdrcrow-types",
- "tracing",
 ]
 
 [[package]]

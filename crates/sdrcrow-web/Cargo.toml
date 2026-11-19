@@ -3,15 +3,20 @@ name = "sdrcrow-web"
 version.workspace = true
 edition.workspace = true
 
-[dependencies]
+# This crate is the browser front end: every line of it lives behind
+# `cfg(target_arch = "wasm32")`, so all of its dependencies belong to that
+# target. A native `cargo check` then needs nothing at all instead of reporting
+# each of them as unused.
+[target.'cfg(target_arch = "wasm32")'.dependencies]
 sdrcrow-types.workspace = true
 sdrcrow-proto.workspace = true
 sdrcrow-version.workspace = true
-sdrcrow-ui = { workspace = true, features = ["remote"] }
 eframe = { version = "0.36.1", default-features = false, features = ["default_fonts", "wgpu", "persistence"] }
 wasm-bindgen = "0.2"
+sdrcrow-ui = { workspace = true, features = ["remote"] }
 wasm-bindgen-futures = "0.4"
 js-sys = "0.3"
+console_error_panic_hook = "0.1"
 web-sys = { version = "0.3", features = [
     "Window",
     "Location",
@@ -22,4 +27,3 @@ web-sys = { version = "0.3", features = [
     "Navigator",
     "StorageManager",
 ] }
-console_error_panic_hook = "0.1"
