@@ -7,7 +7,7 @@
     <key>CFBundleDisplayName</key>
     <string>sdrcrow</string>
     <key>CFBundleIdentifier</key>
-    <string>com.github.dividebysandwich.sdrcrow</string>
+    <string>com.github.madmedicnl.sdrcrow</string>
     <key>CFBundleExecutable</key>
     <string>sdrcrow</string>
     <!-- Resources/sdrcrow.icns; this is what Finder, the Dock and Launchpad
