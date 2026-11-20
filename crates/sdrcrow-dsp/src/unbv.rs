@@ -183,8 +183,32 @@ impl Unbv {
     /// The narrow signal in, speech out: shifted back, sped up, band-limited and
     /// levelled. About `1/factor` of the input's length.
     pub fn decode(&self, narrow: &[f32], settings: UnbvSettings) -> Vec<f32> {
+        self.decode_tuned(narrow, settings, 0.0, 0.0)
+    }
+
+    /// [`Self::decode`] with the correction the operator dials in by hand, the
+    /// way the original's SSB drift corrector does: `fine_hz` moves the whole
+    /// decode off the nominal centre, and `drift_hz` is the total frequency
+    /// error across the recording, applied as a straight ramp (negative when the
+    /// sender drifted down). A receiver or sender that is 5 Hz off puts the
+    /// message 5 Hz off in the slice, and every factor multiplies that error by
+    /// the same factor on the way back.
+    pub fn decode_tuned(
+        &self,
+        narrow: &[f32],
+        settings: UnbvSettings,
+        fine_hz: f64,
+        drift_hz: f64,
+    ) -> Vec<f32> {
         let settings = settings.sane();
-        let back = shift(narrow, -settings.centre_hz, self.rate);
+        // A message that drifted *up* needs a shift that goes down further as it
+        // goes on, and `shift` counts positive as down — hence the minus.
+        let back = shift_ramped(
+            narrow,
+            -settings.centre_hz - fine_hz,
+            -drift_hz,
+            self.rate,
+        );
         let fast = compress(&back, settings.factor);
         let band = band_limit(&fast, SPEECH_LO_HZ, SPEECH_HI_HZ, self.rate);
         normalise(band)
@@ -301,6 +325,27 @@ fn shift(signal: &[f32], hz: f64, rate: f64) -> Vec<f32> {
             ((*i as f64) * phase.cos() - (*q as f64) * phase.sin()) as f32
         })
         .collect()
+}
+
+/// [`shift`] with a straight ramp on top: the shift starts at `hz - drift/2` and
+/// ends at `hz + drift/2`, so a message that wandered is followed rather than
+/// chased at one setting.
+fn shift_ramped(signal: &[f32], hz: f64, drift: f64, rate: f64) -> Vec<f32> {
+    if hz == 0.0 && drift == 0.0 {
+        return signal.to_vec();
+    }
+    let quadrature = hilbert(signal);
+    let n = signal.len().max(1) as f64;
+    // Radians per sample at the first sample, and how much more each sample adds.
+    let base = TAU * (hz - drift / 2.0) / rate;
+    let ramp = TAU * (drift / n) / rate;
+    let mut phase = 0.0f64;
+    let mut out = Vec::with_capacity(signal.len());
+    for (k, (i, q)) in signal.iter().zip(quadrature.iter()).enumerate() {
+        out.push(((*i as f64) * phase.cos() - (*q as f64) * phase.sin()) as f32);
+        phase += base + ramp * k as f64;
+    }
+    out
 }
 
 /// The imaginary part of the analytic signal: a 127-tap windowed Hilbert FIR,
@@ -464,6 +509,37 @@ mod tests {
         assert!((hz - 1200.0).abs() < 6.0, "1200 Hz came back at {hz:.1} Hz (level {level:.3})");
         let ratio = back.len() as f64 / input.len() as f64;
         assert!((ratio - 1.0).abs() < 0.05, "length came back at {ratio:.3} of the input");
+    }
+
+    #[test]
+    fn a_constant_error_is_dialled_out_by_hand() {
+        let unbv = Unbv::new(RATE);
+        let settings = UnbvSettings::default();
+        // The message as it arrives, three Hz high: every factor multiplies a
+        // carrier error by the same number, which is why the fine-tune is here.
+        let narrow = unbv.encode(&tone(700.0, 0.5), settings);
+        // Three Hz high as received: `shift` moves a real signal downward for a
+        // positive number, so the arrival a station hears high is made with a
+        // negative one.
+        let received = shift(&narrow, -3.0, RATE);
+        let (rec_hz, _) = peak_in(&received, 1000.0, 1050.0, 0.2);
+        assert!((rec_hz - 1017.0).abs() < 1.0, "the arrival should be at 1017 Hz, it is {rec_hz:.1}");
+        let back = unbv.decode_tuned(&received, settings, 3.0, 0.0);
+        let (hz, _) = peak_in(&back, 650.0, 750.0, 0.5);
+        assert!((hz - 700.0).abs() < 3.0, "fine-tuned back to {hz:.1} Hz, wanted 700");
+    }
+
+    #[test]
+    fn a_drift_is_followed_by_a_ramp() {
+        let unbv = Unbv::new(RATE);
+        let settings = UnbvSettings::default();
+        let narrow = unbv.encode(&tone(700.0, 0.5), settings);
+        // Two Hz low at the start, eight high at the end: six Hz of drift, and
+        // the same inversion of the shift's sign as above.
+        let received = shift_ramped(&narrow, -5.0, -6.0, RATE);
+        let back = unbv.decode_tuned(&received, settings, 5.0, 6.0);
+        let (hz, _) = peak_in(&back, 650.0, 750.0, 0.5);
+        assert!((hz - 700.0).abs() < 4.0, "drift corrected to {hz:.1} Hz, wanted 700");
     }
 
     #[test]

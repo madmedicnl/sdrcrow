@@ -9889,3 +9889,7 @@ unbv-recording = Aufnahme
 unbv-decode-button = Dekodieren
 
 unbv-decoded-to = Dekodiert nach { $path }
+
+unbv-fine = Feinabstimmung
+
+unbv-drift = Drift

@@ -9834,3 +9834,7 @@ unbv-recording = 录音
 unbv-decode-button = 解码
 
 unbv-decoded-to = 已解码到 { $path }
+
+unbv-fine = 微调
+
+unbv-drift = 漂移

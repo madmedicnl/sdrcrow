@@ -9897,3 +9897,7 @@ unbv-recording = Opname
 unbv-decode-button = Decoderen
 
 unbv-decoded-to = Gedecodeerd naar { $path }
+
+unbv-fine = Fijnafstemming
+
+unbv-drift = Drift

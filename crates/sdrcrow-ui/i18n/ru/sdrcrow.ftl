@@ -9914,3 +9914,7 @@ unbv-recording = Запись
 unbv-decode-button = Декодировать
 
 unbv-decoded-to = Декодировано в { $path }
+
+unbv-fine = Подстройка
+
+unbv-drift = Дрейф

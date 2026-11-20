@@ -9897,3 +9897,7 @@ unbv-recording = Kayıt
 unbv-decode-button = Çöz
 
 unbv-decoded-to = { $path } konumuna çözüldü
+
+unbv-fine = İnce ayar
+
+unbv-drift = Kayma

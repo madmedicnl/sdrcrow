@@ -9844,3 +9844,7 @@ unbv-recording = 録音
 unbv-decode-button = 復調
 
 unbv-decoded-to = { $path } に復調しました
+
+unbv-fine = 微調整
+
+unbv-drift = ドリフト

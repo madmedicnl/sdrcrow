@@ -3935,7 +3935,14 @@ mod tests {
     #[test]
     fn a_unbv_over_round_trips_and_is_appended_last() {
         let start = Command::UnbvStart { slot: 3, factor: 50.0, centre_hz: 1000.0, id_minutes: 9.0 };
-        for cmd in [start, Command::UnbvStop] {
+        let decode_one = Command::UnbvDecode {
+            recording: "2026-11-20 21-00-00.wav".into(),
+            factor: 50.0,
+            centre_hz: 1000.0,
+            fine_hz: 3.0,
+            drift_hz: -6.0,
+        };
+        for cmd in [start, Command::UnbvStop, decode_one] {
             let m = ClientMsg::Command(cmd);
             assert_eq!(decode::<ClientMsg>(&encode(&m).unwrap()).unwrap(), m);
         }

@@ -19191,8 +19191,11 @@ Tune the sideband as usual and record what the receiver hears (**Ctrl+R** for
 the recorder, see [section 2](#2-basic-operation)); the message will sound like a
 low, slow rumble. The *decode* side of the window takes a recording, shifts it
 back down and speeds it up by the same factor. A drift in either station's
-carrier multiplies by the factor too, so a long message may need the fine-tune
-field; KC8COM's own drift corrector does the same job by hand.
+carrier multiplies by the factor too, so the window offers the same two manual
+corrections KC8COM's drift corrector has: **Fine-tune** for a message that
+arrived off the centre, and **Drift** for the total error across the recording
+(positive when the message wandered up), applied as a straight ramp. Nothing
+about it is automatic — you listen, you turn the knob, you decode again.
 
 ### The spectrogram
 

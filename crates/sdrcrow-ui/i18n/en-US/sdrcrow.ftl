@@ -9946,3 +9946,9 @@ unbv-decode-button = Decode
 
 # Where the decoded speech was written.
 unbv-decoded-to = Decoded to { $path }
+
+# Constant carrier offset for a message that arrives off the centre.
+unbv-fine = Fine-tune
+
+# Total drift across the recording, positive when the message wandered up.
+unbv-drift = Drift

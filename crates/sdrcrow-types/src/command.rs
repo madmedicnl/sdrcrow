@@ -1609,7 +1609,16 @@ pub enum Command {
     /// reported in [`crate::UnbvStatus::decoded`].
     ///
     /// Appended last.
-    UnbvDecode { recording: String, factor: f32, centre_hz: f32 },
+    UnbvDecode {
+        recording: String,
+        factor: f32,
+        centre_hz: f32,
+        /// The operator's manual correction, as the original's drift corrector
+        /// offers it: a constant offset for a carrier that is off, and the total
+        /// drift across the recording.
+        fine_hz: f32,
+        drift_hz: f32,
+    },
 }
 
 /// What a [`Command::GetKnownCalls`] was answered with.

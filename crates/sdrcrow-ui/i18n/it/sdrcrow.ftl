@@ -9906,3 +9906,7 @@ unbv-recording = Registrazione
 unbv-decode-button = Decodifica
 
 unbv-decoded-to = Decodificato in { $path }
+
+unbv-fine = Sintonia fine
+
+unbv-drift = Deriva

@@ -9897,3 +9897,7 @@ unbv-recording = Gravação
 unbv-decode-button = Descodificar
 
 unbv-decoded-to = Descodificado para { $path }
+
+unbv-fine = Ajuste fino
+
+unbv-drift = Deriva

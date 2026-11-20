@@ -960,6 +960,10 @@ pub struct SdrcrowApp {
     pub(in crate::app) unbv_slot: u8,
     /// The recording the receive half is decoding, as typed.
     pub(in crate::app) unbv_recording: String,
+    /// The manual correction for the receive side: a carrier offset and the
+    /// drift across the recording, both in Hz.
+    pub(in crate::app) unbv_fine_hz: f32,
+    pub(in crate::app) unbv_drift_hz: f32,
     voice_name_edit: Option<(usize, String)>,
     /// When the band/mode, FFT and skimmer popups opened (egui time), for their
     /// auto-fade.
@@ -2608,6 +2612,8 @@ impl SdrcrowApp {
             unbv_sideband: None,
             unbv_slot: 1,
             unbv_recording: String::new(),
+            unbv_fine_hz: 0.0,
+            unbv_drift_hz: 0.0,
             show_voice: false,
             voice_name_edit: None,
             mode_popup_since: None,

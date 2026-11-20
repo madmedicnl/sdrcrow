@@ -12701,8 +12701,14 @@ impl Engine {
                 self.stop_voice_play();
                 return;
             }
-            UnbvDecode { recording, factor, centre_hz } => {
-                self.decode_unbv(&recording, factor as f64, centre_hz as f64);
+            UnbvDecode { recording, factor, centre_hz, fine_hz, drift_hz } => {
+                self.decode_unbv(
+                    &recording,
+                    factor as f64,
+                    centre_hz as f64,
+                    fine_hz as f64,
+                    drift_hz as f64,
+                );
                 return;
             }
             TestRelay { channel } => {
@@ -22184,7 +22190,14 @@ impl Engine {
     /// Decode a recording back to speech: shift it down from the centre and
     /// speed it up by the factor, and write the result beside the recording as
     /// `unbv-<name>.wav`. The screen learns the path from the status.
-    fn decode_unbv(&mut self, recording: &str, factor: f64, centre_hz: f64) {
+    fn decode_unbv(
+        &mut self,
+        recording: &str,
+        factor: f64,
+        centre_hz: f64,
+        fine_hz: f64,
+        drift_hz: f64,
+    ) {
         let name = recording.trim();
         if name.is_empty() {
             return;
@@ -22212,7 +22225,9 @@ impl Engine {
             return;
         }
         let settings = sdrcrow_dsp::unbv::UnbvSettings { factor, centre_hz };
-        let speech = sdrcrow_dsp::unbv::Unbv::new(rate).decode(&samples, settings);
+        let speech = sdrcrow_dsp::unbv::Unbv::new(rate).decode_tuned(
+            &samples, settings, fine_hz, drift_hz,
+        );
         let stem = path.file_stem().unwrap_or_default().to_string_lossy().into_owned();
         let out = path.with_file_name(format!("unbv-{stem}.wav"));
         let written = crate::audio_wav::AudioWavWriter::create(&out, rate as u32, 1)

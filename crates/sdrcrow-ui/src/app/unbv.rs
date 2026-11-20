@@ -184,11 +184,19 @@ impl SdrcrowApp {
                     .hint_text(tr!("unbv-recording"))
                     .desired_width(240.0),
             );
+            ui.label(tr!("unbv-fine"));
+            ui.add(egui::DragValue::new(&mut self.unbv_fine_hz).range(-100.0..=100.0).suffix(" Hz"));
+            ui.label(tr!("unbv-drift"));
+            ui.add(
+                egui::DragValue::new(&mut self.unbv_drift_hz).range(-100.0..=100.0).suffix(" Hz"),
+            );
             if ui.button(tr!("unbv-decode-button")).clicked() {
                 cmds.push(Command::UnbvDecode {
                     recording: self.unbv_recording.clone(),
                     factor: self.unbv_factor,
                     centre_hz: self.unbv_centre_hz,
+                    fine_hz: self.unbv_fine_hz,
+                    drift_hz: self.unbv_drift_hz,
                 });
             }
         });

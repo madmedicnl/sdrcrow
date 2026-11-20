@@ -9900,3 +9900,7 @@ unbv-recording = Enregistrement
 unbv-decode-button = Décoder
 
 unbv-decoded-to = Décodé vers { $path }
+
+unbv-fine = Accord fin
+
+unbv-drift = Dérive
