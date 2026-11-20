@@ -42,13 +42,9 @@ on:
   # (the release is gated on a tag), so it published nothing and cost fourteen
   # builds a day.
   #
-  # **A release happens only when somebody asks for one: a tag is pushed, or
-  # this is dispatched by hand — and that is now true of the nightly as well.**
-  # Its 18:00 cron was removed on 2026-10-18 at the operator's instruction
-  # ("disable all auto releases"), after a nightly appeared overnight unasked
-  # (and late: GitHub's scheduler started it at 20:21 UTC, not 18:00). The
-  # arrangement that replaces it: **Kevin cuts the pre-releases**, and a full
-  # release waits until everything is good and he says so.
+  # **A release happens only when the operator asks for one**: a tag is pushed,
+  # or this workflow is dispatched by hand. Nothing here runs on a schedule, and
+  # nothing publishes by itself.
 
 permissions:
   contents: write
