@@ -293,8 +293,8 @@ jobs:
     # So the About box in a browser client agrees with the server that served
     # it, rather than naming the release the nightly was cut from.
     env:
-      SDROXIDE_BUILD: ${{ needs.targets.outputs.stamp }}
-      SDROXIDE_RELEASE: ${{ needs.targets.outputs.release }}
+      SDRCROW_BUILD: ${{ needs.targets.outputs.stamp }}
+      SDRCROW_RELEASE: ${{ needs.targets.outputs.release }}
     steps:
       # The client compiles none of the vendored code, but cargo reads every
       # workspace member's manifest before building any of them, and
@@ -360,8 +360,8 @@ jobs:
     # Empty for every non-compat entry, which means "no container".
     container: ${{ matrix.container }}
     env:
-      SDROXIDE_BUILD: ${{ needs.targets.outputs.stamp }}
-      SDROXIDE_RELEASE: ${{ needs.targets.outputs.release }}
+      SDRCROW_BUILD: ${{ needs.targets.outputs.stamp }}
+      SDRCROW_RELEASE: ${{ needs.targets.outputs.release }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.targets.outputs.combos) }}

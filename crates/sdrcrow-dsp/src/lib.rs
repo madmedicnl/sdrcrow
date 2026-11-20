@@ -65,6 +65,7 @@ mod spectrum_paint;
 mod sstv;
 mod sstv_slant;
 pub mod stanag4285;
+pub mod unbv;
 pub mod stanag4285_fec;
 mod tonegen;
 pub mod vad;
