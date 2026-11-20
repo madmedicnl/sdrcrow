@@ -9881,3 +9881,11 @@ unbv-stop = Senden stoppen
 unbv-spectrum = Der Abschnitt der Nachricht
 
 unbv-block = Block { $n } von { $total }
+
+unbv-decode = Aufnahme dekodieren
+
+unbv-recording = Aufnahme
+
+unbv-decode-button = Dekodieren
+
+unbv-decoded-to = Dekodiert nach { $path }

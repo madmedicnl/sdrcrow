@@ -24,6 +24,9 @@ pub struct UnbvStatus {
     /// The slice's spectrum in dBFS, low frequency first — one snapshot of the
     /// whole message at the moment it was encoded.
     pub bins: Vec<f32>,
+    /// Where the last decoded recording went, if one has been decoded this
+    /// session.
+    pub decoded: Option<String>,
 }
 
 impl UnbvStatus {
@@ -53,6 +56,7 @@ mod tests {
             centre_hz: 1000.0,
             slice_hz: (1002.0, 1048.0),
             bins: Vec::new(),
+            decoded: None,
         };
         let line = status.summary();
         assert!(line.starts_with("2/3"), "{line}");

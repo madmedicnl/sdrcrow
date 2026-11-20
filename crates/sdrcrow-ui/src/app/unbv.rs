@@ -16,6 +16,18 @@ use sdrcrow_types::{Command, Mode};
 use super::SdrcrowApp;
 use crate::i18n::tr;
 
+/// The chip on the experimental bench, beside Meshtastic's: the experiment is a
+/// window that works on the sideband you are on, not a band and not a mode, so
+/// it belongs where the modes that are still being proven live.
+pub(in crate::app) fn bench_chip(ui: &mut egui::Ui, open: &mut bool) {
+    if crate::chrome::chip(ui, *open, "UNBV")
+        .on_hover_text(tr!("windows-unbv"))
+        .clicked()
+    {
+        *open = !*open;
+    }
+}
+
 impl SdrcrowApp {
     /// Draw the window, if the chip has it open.
     pub(in crate::app) fn unbv_window(&mut self, ctx: &egui::Context, cmds: &mut Vec<Command>) {
@@ -162,6 +174,31 @@ impl SdrcrowApp {
                 );
             }
         });
+
+        // The receiving side: a recorded narrow message turned back to speech.
+        ui.add_space(6.0);
+        ui.label(egui::RichText::new(tr!("unbv-decode")).strong().size(11.5));
+        ui.horizontal(|ui| {
+            ui.add(
+                egui::TextEdit::singleline(&mut self.unbv_recording)
+                    .hint_text(tr!("unbv-recording"))
+                    .desired_width(240.0),
+            );
+            if ui.button(tr!("unbv-decode-button")).clicked() {
+                cmds.push(Command::UnbvDecode {
+                    recording: self.unbv_recording.clone(),
+                    factor: self.unbv_factor,
+                    centre_hz: self.unbv_centre_hz,
+                });
+            }
+        });
+        if let Some(path) = self.unbv.decoded.as_ref() {
+            ui.label(
+                egui::RichText::new(tr!("unbv-decoded-to", path = path.clone()))
+                    .weak()
+                    .size(11.0),
+            );
+        }
 
         // The slice itself. The receiver's waterfall cannot show a few tens of
         // hertz, which is the whole reason this is drawn here.

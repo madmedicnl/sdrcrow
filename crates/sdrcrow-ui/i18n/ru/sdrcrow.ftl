@@ -9906,3 +9906,11 @@ unbv-stop = Остановить передачу
 unbv-spectrum = Участок сообщения
 
 unbv-block = Блок { $n } из { $total }
+
+unbv-decode = Декодировать запись
+
+unbv-recording = Запись
+
+unbv-decode-button = Декодировать
+
+unbv-decoded-to = Декодировано в { $path }

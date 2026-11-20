@@ -175,6 +175,27 @@ impl AudioReader {
         (total > 0).then_some(total)
     }
 
+    /// Every sample of the file's first channel, read as fast as the disk
+    /// allows — for a job that processes a whole recording rather than playing
+    /// it (the ultra narrowband voice experiment decodes one back to speech).
+    pub fn read_all_mono(&mut self) -> Vec<f32> {
+        let mut out = Vec::new();
+        let mut pending = VecDeque::new();
+        loop {
+            match self.decode_next(&mut pending) {
+                Ok(true) => {
+                    out.extend(pending.drain(..).map(|c| c.re));
+                }
+                Ok(false) | Err(_) => break,
+            }
+            if out.len() > 48_000 * 3600 {
+                break;
+            }
+        }
+        out.extend(pending.drain(..).map(|c| c.re));
+        out
+    }
+
     pub fn rate(&self) -> u32 {
         self.rate
     }
@@ -498,6 +519,42 @@ pub fn playback_caps(name: &str) -> sdrcrow_types::DeviceCaps {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_whole_recording_reads_back_as_samples() {
+        // The UNBV decoder reads a recording whole; this is the reader it uses,
+        // checked against a file written by our own writer.
+        let dir = scratch("read-all");
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("tone.wav");
+        let rate = 48_000.0;
+        let seconds = 0.5;
+        let tone: Vec<f32> = (0..(rate * seconds) as usize)
+            .map(|i| (std::f64::consts::TAU * 1024.0 * i as f64 / rate).sin() as f32 * 0.5)
+            .collect();
+        let mut writer = crate::audio_wav::AudioWavWriter::create(&path, 48_000, 1)
+            .expect("write the test recording");
+        writer.write(&tone).expect("samples");
+        writer.finish().expect("finish the file");
+
+        let mut reader = AudioReader::open(&path).expect("open it again");
+        assert_eq!(reader.rate(), 48_000);
+        let got = reader.read_all_mono();
+        let want = (rate * seconds) as usize;
+        assert!(
+            got.len().abs_diff(want) < 512,
+            "read {} samples, wrote {want}",
+            got.len()
+        );
+        // And it is the tone, not silence: count zero crossings at the tone's rate.
+        let crossings = got.windows(2).filter(|w| (w[0] < 0.0) != (w[1] < 0.0)).count();
+        let expected = 2.0 * 1024.0 * seconds;
+        assert!(
+            (crossings as f64 - expected).abs() < expected * 0.05,
+            "{crossings} zero crossings, expected about {expected}"
+        );
+        let _ = std::fs::remove_dir_all(&dir);
+    }
 
     #[test]
     fn imports_preserve_existing_audio_and_remove_invalid_copies() {

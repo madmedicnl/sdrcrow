@@ -9934,3 +9934,15 @@ unbv-spectrum = The message's slice
 
 # Which block of the plan is on the air.
 unbv-block = Block { $n } of { $total }
+
+# The receiving side: a recorded narrow message turned back into speech.
+unbv-decode = Decode a recording
+
+# Name of a file in the recordings folder.
+unbv-recording = Recording
+
+# Shifts it back down and speeds it up by the same factor, writing unbv-<name>.wav beside it.
+unbv-decode-button = Decode
+
+# Where the decoded speech was written.
+unbv-decoded-to = Decoded to { $path }

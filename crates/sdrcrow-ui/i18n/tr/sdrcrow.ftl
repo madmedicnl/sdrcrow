@@ -9889,3 +9889,11 @@ unbv-stop = Gönderimi durdur
 unbv-spectrum = Mesajın dilimi
 
 unbv-block = Blok { $n } / { $total }
+
+unbv-decode = Kaydı çöz
+
+unbv-recording = Kayıt
+
+unbv-decode-button = Çöz
+
+unbv-decoded-to = { $path } konumuna çözüldü

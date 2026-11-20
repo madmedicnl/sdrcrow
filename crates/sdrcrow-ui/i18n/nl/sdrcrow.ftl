@@ -9889,3 +9889,11 @@ unbv-stop = Verzenden stoppen
 unbv-spectrum = De plak van de boodschap
 
 unbv-block = Blok { $n } van { $total }
+
+unbv-decode = Een opname decoderen
+
+unbv-recording = Opname
+
+unbv-decode-button = Decoderen
+
+unbv-decoded-to = Gedecodeerd naar { $path }

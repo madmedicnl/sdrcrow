@@ -9836,3 +9836,11 @@ unbv-stop = 送信を止める
 unbv-spectrum = メッセージの帯域
 
 unbv-block = ブロック { $n } / { $total }
+
+unbv-decode = 録音を復調
+
+unbv-recording = 録音
+
+unbv-decode-button = 復調
+
+unbv-decoded-to = { $path } に復調しました

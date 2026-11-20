@@ -1603,6 +1603,13 @@ pub enum Command {
     ///
     /// Appended last.
     UnbvStop,
+
+    /// Decode a recording back to speech: shift it down from `centre_hz` and
+    /// speed it up by `factor`, writing `unbv-<name>.wav` beside it. The path is
+    /// reported in [`crate::UnbvStatus::decoded`].
+    ///
+    /// Appended last.
+    UnbvDecode { recording: String, factor: f32, centre_hz: f32 },
 }
 
 /// What a [`Command::GetKnownCalls`] was answered with.

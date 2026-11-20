@@ -9898,3 +9898,11 @@ unbv-stop = Ferma l'invio
 unbv-spectrum = La fetta del messaggio
 
 unbv-block = Blocco { $n } di { $total }
+
+unbv-decode = Decodifica una registrazione
+
+unbv-recording = Registrazione
+
+unbv-decode-button = Decodifica
+
+unbv-decoded-to = Decodificato in { $path }

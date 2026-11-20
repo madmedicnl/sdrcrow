@@ -9905,22 +9905,6 @@ pub(in crate::app) fn band_mode_menu(
     }
     match *tab {
         BandMenuTab::Operate => {
-            ui.add_space(6.0);
-            // The experiment's chip, under the caption the bench of modes uses:
-            // it is not a band and not a mode, it is a window that works on the
-            // sideband you are already on.
-            ui.add_space(6.0);
-            crate::chrome::menu_caption(ui, &tr!("topbar-caption-experimental"));
-            ui.horizontal(|ui| {
-                if ui
-                    .selectable_label(*show_unbv, "UNBV")
-                    .on_hover_text(tr!("windows-unbv"))
-                    .clicked()
-                {
-                    *show_unbv = !*show_unbv;
-                }
-            });
-            ui.add_space(6.0);
             crate::chrome::menu_caption(ui, &tr!("topbar-caption-mode"));
             // Rows of five — the operator's ask: a trimmed, left-aligned grid
             // reads better than a ragged wrap, and five is the count that fits a
@@ -9976,6 +9960,7 @@ pub(in crate::app) fn band_mode_menu(
             crate::chrome::menu_caption(ui, &tr!("topbar-caption-experimental"));
             mode_chip_grid(ui, mode, &Mode::EXPERIMENTAL, band, state, false, cmds);
             super::meshtastic::bench_chip(ui);
+            super::unbv::bench_chip(ui, show_unbv);
         }
         BandMenuTab::Listen => {
             ui.add_space(6.0);
@@ -10002,6 +9987,7 @@ pub(in crate::app) fn band_mode_menu(
             crate::chrome::menu_caption(ui, &tr!("topbar-caption-experimental"));
             mode_chip_grid(ui, mode, &Mode::EXPERIMENTAL, band, state, true, cmds);
             super::meshtastic::bench_chip(ui);
+            super::unbv::bench_chip(ui, show_unbv);
         }
     }
 }

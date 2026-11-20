@@ -9826,3 +9826,11 @@ unbv-stop = 停止发送
 unbv-spectrum = 消息所在的片段
 
 unbv-block = 第 { $n } 块，共 { $total } 块
+
+unbv-decode = 解码录音
+
+unbv-recording = 录音
+
+unbv-decode-button = 解码
+
+unbv-decoded-to = 已解码到 { $path }

@@ -958,6 +958,8 @@ pub struct SdrcrowApp {
     /// Which voice-keyer slot holds the speech to send, counting from 1 as the
     /// window shows it.
     pub(in crate::app) unbv_slot: u8,
+    /// The recording the receive half is decoding, as typed.
+    pub(in crate::app) unbv_recording: String,
     voice_name_edit: Option<(usize, String)>,
     /// When the band/mode, FFT and skimmer popups opened (egui time), for their
     /// auto-fade.
@@ -2605,6 +2607,7 @@ impl SdrcrowApp {
             unbv_id_minutes: sdrcrow_dsp::unbv::DEFAULT_ID_MINUTES as f32,
             unbv_sideband: None,
             unbv_slot: 1,
+            unbv_recording: String::new(),
             show_voice: false,
             voice_name_edit: None,
             mode_popup_since: None,

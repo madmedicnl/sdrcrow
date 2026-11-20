@@ -9889,3 +9889,11 @@ unbv-stop = Parar o envio
 unbv-spectrum = A faixa da mensagem
 
 unbv-block = Bloco { $n } de { $total }
+
+unbv-decode = Descodificar uma gravação
+
+unbv-recording = Gravação
+
+unbv-decode-button = Descodificar
+
+unbv-decoded-to = Descodificado para { $path }

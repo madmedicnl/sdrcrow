@@ -3736,6 +3736,8 @@ struct Engine {
     /// after the message itself has played out, so the live microphone can
     /// never leak into the end of a keyer over.
     voice_tx: bool,
+    /// Where the last decoded UNBV recording went, so the screen can say so.
+    unbv_decoded: Option<String>,
     /// A UNBV over being sent: the planned message and how far it has played.
     /// It rides the keyer's over (`voice_tx`) — the same guards, the same PTT —
     /// but its buffer is its own, because a message slowed fifty times is far
@@ -5707,6 +5709,7 @@ fn engine_thread(
         cw_monitor_warned: false,
         voice_started: None,
         unbv_tx: None,
+        unbv_decoded: None,
         voice_tick: None,
         tx_pace: None,
         channel_analyzer: None,
@@ -12696,6 +12699,10 @@ impl Engine {
             }
             UnbvStop => {
                 self.stop_voice_play();
+                return;
+            }
+            UnbvDecode { recording, factor, centre_hz } => {
+                self.decode_unbv(&recording, factor as f64, centre_hz as f64);
                 return;
             }
             TestRelay { channel } => {
@@ -22164,10 +22171,60 @@ impl Engine {
                 centre_hz: tx.settings.centre_hz as f32,
                 slice_hz: (tx.plan.slice_hz.0 as f32, tx.plan.slice_hz.1 as f32),
                 bins: tx.bins.clone(),
+                decoded: self.unbv_decoded.clone(),
             },
-            None => sdrcrow_types::UnbvStatus::default(),
+            None => sdrcrow_types::UnbvStatus {
+                decoded: self.unbv_decoded.clone(),
+                ..sdrcrow_types::UnbvStatus::default()
+            },
         };
         let _ = self.event_tx.send(RadioEvent::UnbvStatus(Box::new(status)));
+    }
+
+    /// Decode a recording back to speech: shift it down from the centre and
+    /// speed it up by the factor, and write the result beside the recording as
+    /// `unbv-<name>.wav`. The screen learns the path from the status.
+    fn decode_unbv(&mut self, recording: &str, factor: f64, centre_hz: f64) {
+        let name = recording.trim();
+        if name.is_empty() {
+            return;
+        }
+        let Ok(dir) = sdrcrow_config::recordings_dir() else {
+            warn!("unbv: no recordings directory");
+            return;
+        };
+        let path = if std::path::Path::new(name).is_absolute() {
+            std::path::PathBuf::from(name)
+        } else {
+            dir.join(name)
+        };
+        let mut reader = match crate::playback::AudioReader::open(&path) {
+            Ok(r) => r,
+            Err(e) => {
+                warn!("unbv: cannot open {}: {e}", path.display());
+                return;
+            }
+        };
+        let rate = reader.rate() as f64;
+        let samples = reader.read_all_mono();
+        if samples.is_empty() {
+            warn!("unbv: {} holds no audio", path.display());
+            return;
+        }
+        let settings = sdrcrow_dsp::unbv::UnbvSettings { factor, centre_hz };
+        let speech = sdrcrow_dsp::unbv::Unbv::new(rate).decode(&samples, settings);
+        let stem = path.file_stem().unwrap_or_default().to_string_lossy().into_owned();
+        let out = path.with_file_name(format!("unbv-{stem}.wav"));
+        let written = crate::audio_wav::AudioWavWriter::create(&out, rate as u32, 1)
+            .and_then(|mut w| w.write(&speech));
+        match written {
+            Ok(()) => {
+                self.unbv_decoded = Some(out.display().to_string());
+                info!("unbv: decoded {} -> {}", path.display(), out.display());
+            }
+            Err(e) => warn!("unbv: cannot write {}: {e}", out.display()),
+        }
+        self.emit_unbv_status();
     }
 
     /// Stop a message and end the over (the operator pressed stop, or an
