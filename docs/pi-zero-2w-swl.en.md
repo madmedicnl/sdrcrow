@@ -74,7 +74,7 @@ for Raspberry Pi OS Bookworm. Download it on the Pi itself:
 
 ```sh
 cd /tmp
-wget https://github.com/madmedicnl/sdroxide-brown/releases/latest/download/sdrcrow-linux-aarch64-compat.AppImage
+wget https://github.com/madmedicnl/sdrcrow/releases/latest/download/sdrcrow-linux-aarch64-compat.AppImage
 chmod +x sdrcrow-linux-aarch64-compat.AppImage
 ./sdrcrow-linux-aarch64-compat.AppImage --version
 ```
@@ -238,7 +238,7 @@ Check it with `systemctl status sdrcrow`, and follow its log with
   screen by screen.
 - [USER_MANUAL.md](USER_MANUAL.md) — the manual, control by control.
 - [README](../README.md) — the full overview of the fork.
-- [Releases](https://github.com/madmedicnl/sdroxide-brown/releases/latest) — the
+- [Releases](https://github.com/madmedicnl/sdrcrow/releases/latest) — the
   `linux-aarch64-compat` build for the Pi.
 
 Good listening, and good DX! 73
