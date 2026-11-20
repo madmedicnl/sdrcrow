@@ -2597,7 +2597,9 @@ impl SdrcrowApp {
             settings_scroll_top: true,
             voice: sdrcrow_types::VoiceStatus::default(),
             unbv: sdrcrow_types::UnbvStatus::default(),
-            show_unbv: false,
+            // Like the settings window: a way to open it for a screenshot, and
+            // how the layout was checked without a mouse.
+            show_unbv: std::env::var("SDRCROW_OPEN_UNBV").is_ok(),
             unbv_factor: sdrcrow_dsp::unbv::DEFAULT_FACTOR as f32,
             unbv_centre_hz: sdrcrow_dsp::unbv::DEFAULT_CENTRE_HZ as f32,
             unbv_id_minutes: sdrcrow_dsp::unbv::DEFAULT_ID_MINUTES as f32,
