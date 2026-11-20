@@ -9892,3 +9892,45 @@ widgets-worked-days-ago = { $n ->
         [one] { $n } day ago
        *[other] { $n } days ago
     }
+
+# The experiment's window: slowed speech, shifted into a narrow slice of the SSB passband.
+windows-unbv = Ultra Narrowband Voice (experimental)
+
+# Explains the idea in one line, under the window's title.
+unbv-hint = Speech is recorded, slowed by the factor and shifted into a narrow slice of the sideband; the other station shifts it back and speeds it up. The same power in a narrower band.
+
+# The two sides LSB and USB sit beside this caption; the band's own offer is preselected.
+unbv-sideband = Sideband
+
+# 2 to 100; the bandwidth shrinks by the same number. Fifty is the original's default.
+unbv-factor = Slowing factor
+
+# Where the slowed speech is put, in Hz.
+unbv-centre = Centre in the passband
+
+# Minutes between identifications, five to fifteen, nine by default.
+unbv-id-every = Identify every
+
+# The slice the settings put the message in, computed from factor and centre.
+unbv-slice = The message sits in { $lo }–{ $hi } Hz
+
+# Which voice-keyer slot holds the speech to send.
+unbv-slot = Message slot
+
+# Records into the slot until pressed again, like the voice keyer's REC.
+unbv-record = Record
+
+# Stops the slot's recording.
+unbv-record-stop = Stop recording
+
+# Encodes the slot and keys the transmitter with it, in blocks with the call between them.
+unbv-send = Send
+
+# Ends the over.
+unbv-stop = Stop sending
+
+# A spectrum of the slice, low frequency first — the receiver's waterfall cannot show a few tens of hertz.
+unbv-spectrum = The message's slice
+
+# Which block of the plan is on the air.
+unbv-block = Block { $n } of { $total }

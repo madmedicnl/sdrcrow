@@ -9798,3 +9798,31 @@ widgets-worked-today = 今天
 widgets-worked-days-ago = { $n ->
        *[other] { $n } 天前
     }
+
+windows-unbv = 超窄带语音（实验性）
+
+unbv-hint = 语音被录制，按倍数放慢并移入边带的狭窄片段；对方再移回并加速。同样的功率进入更窄的频带。
+
+unbv-sideband = 边带
+
+unbv-factor = 放慢倍数
+
+unbv-centre = 通带中心
+
+unbv-id-every = 每隔
+
+unbv-slice = 消息位于 { $lo }–{ $hi } Hz
+
+unbv-slot = 消息槽
+
+unbv-record = 录制
+
+unbv-record-stop = 停止录制
+
+unbv-send = 发送
+
+unbv-stop = 停止发送
+
+unbv-spectrum = 消息所在的片段
+
+unbv-block = 第 { $n } 块，共 { $total } 块

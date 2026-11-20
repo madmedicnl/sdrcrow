@@ -9808,3 +9808,31 @@ widgets-worked-today = 今日
 widgets-worked-days-ago = { $n ->
        *[other] { $n } 日前
     }
+
+windows-unbv = 超狭帯域音声（実験的）
+
+unbv-hint = 音声を録音し、係数だけ遅くし、側波帯の狭い一部分へ移します。相手局はそれを戻して速めます。同じ電力がより狭い帯域に入ります。
+
+unbv-sideband = 側波帯
+
+unbv-factor = 遅くする係数
+
+unbv-centre = 通過帯域の中心
+
+unbv-id-every = 識別間隔
+
+unbv-slice = メッセージは { $lo }–{ $hi } Hz に収まります
+
+unbv-slot = メッセージ枠
+
+unbv-record = 録音
+
+unbv-record-stop = 録音を止める
+
+unbv-send = 送信
+
+unbv-stop = 送信を止める
+
+unbv-spectrum = メッセージの帯域
+
+unbv-block = ブロック { $n } / { $total }

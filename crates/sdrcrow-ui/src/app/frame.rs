@@ -1964,6 +1964,7 @@ impl eframe::App for SdrcrowApp {
         self.drm_window(&ctx, &mut cmds);
         self.hd_window(&ctx, &mut cmds);
         self.voice_window(&ctx, &mut cmds);
+        self.unbv_window(&ctx, &mut cmds);
         self.settings_window(&ctx, &mut cmds);
         self.digi_settings_window(&ctx, &mut cmds);
         self.logbook_window(&ctx, &mut cmds);
@@ -4828,6 +4829,7 @@ impl SdrcrowApp {
                     self.rigctld_status = Some(TciServerStatus { running, addr, clients, error });
                 }
                 RadioEvent::VoiceStatus(v) => self.voice = v,
+                RadioEvent::UnbvStatus(s) => self.unbv = *s,
                 RadioEvent::ImagePresets(p) => self.sstv.on_presets(p, &ctx),
                 RadioEvent::ImageSlotSource { slot, version, png } => {
                     self.sstv.on_slot_source(slot, version, &png);

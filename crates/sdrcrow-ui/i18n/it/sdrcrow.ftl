@@ -9870,3 +9870,31 @@ widgets-worked-days-ago = { $n ->
         [one] { $n } giorno fa
        *[other] { $n } giorni fa
     }
+
+windows-unbv = Voce a banda ultrastretta (sperimentale)
+
+unbv-hint = La voce viene registrata, rallentata del fattore e spostata in una fetta stretta della banda laterale; l'altra stazione la riporta indietro e la accelera. La stessa potenza in una banda più stretta.
+
+unbv-sideband = Banda laterale
+
+unbv-factor = Fattore di rallentamento
+
+unbv-centre = Centro nella banda passante
+
+unbv-id-every = Identificazione ogni
+
+unbv-slice = Il messaggio sta in { $lo }–{ $hi } Hz
+
+unbv-slot = Slot del messaggio
+
+unbv-record = Registra
+
+unbv-record-stop = Ferma la registrazione
+
+unbv-send = Invia
+
+unbv-stop = Ferma l'invio
+
+unbv-spectrum = La fetta del messaggio
+
+unbv-block = Blocco { $n } di { $total }

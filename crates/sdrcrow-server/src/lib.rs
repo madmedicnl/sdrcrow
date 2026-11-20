@@ -1375,6 +1375,7 @@ fn handle_event(shared: &Shared, ev: RadioEvent) {
             RadioEvent::HellColumns { seq, rows, cols } => {
                 Some(ServerMsg::HellColumns { seq, rows, cols })
             }
+            RadioEvent::UnbvStatus(s) => Some(ServerMsg::UnbvStatus(s)),
             RadioEvent::VoiceStatus(v) => {
                 latest.voice = Some(v.clone());
                 Some(ServerMsg::VoiceStatus(v))

@@ -102,6 +102,7 @@ mod ui;
 mod uvpacket;
 mod vdl2;
 mod vor;
+pub mod unbv;
 mod voice;
 mod wavelog;
 mod wefax;
@@ -417,6 +418,7 @@ pub use vdl2::{
     Vdl2Payload, Vdl2Settings, Vdl2Station, Vdl2Status, Vdl2Xid,
 };
 pub use voice::{VOICE_MAX_LEN_S, VOICE_SLOTS, VoiceSlotInfo, VoiceStatus, slot_label};
+pub use unbv::UnbvStatus;
 pub use wavelog::{
     WavelogBatch, WavelogConfig, WavelogMerge, WavelogProbe, WavelogResync, WavelogStation,
     WavelogSyncState, apply_resync, fingerprint_display, merge_from_wavelog, plan_resync,

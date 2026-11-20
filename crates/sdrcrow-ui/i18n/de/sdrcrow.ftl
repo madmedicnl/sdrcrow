@@ -9853,3 +9853,31 @@ widgets-worked-days-ago = { $n ->
         [one] vor { $n } Tag
        *[other] vor { $n } Tagen
     }
+
+windows-unbv = Ultra-Schmalband-Sprache (experimentell)
+
+unbv-hint = Sprache wird aufgenommen, um den Faktor verlangsamt und in einen schmalen Abschnitt des Seitenbands verschoben; die Gegenstelle schiebt sie zurück und beschleunigt sie. Dieselbe Leistung in einem schmaleren Band.
+
+unbv-sideband = Seitenband
+
+unbv-factor = Verlangsamungsfaktor
+
+unbv-centre = Mitte im Durchlassbereich
+
+unbv-id-every = Identifikation alle
+
+unbv-slice = Die Nachricht liegt in { $lo }–{ $hi } Hz
+
+unbv-slot = Nachrichtenspeicher
+
+unbv-record = Aufnehmen
+
+unbv-record-stop = Aufnahme stoppen
+
+unbv-send = Senden
+
+unbv-stop = Senden stoppen
+
+unbv-spectrum = Der Abschnitt der Nachricht
+
+unbv-block = Block { $n } von { $total }

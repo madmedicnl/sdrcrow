@@ -9861,3 +9861,31 @@ widgets-worked-days-ago = { $n ->
         [one] há { $n } dia
        *[other] há { $n } dias
     }
+
+windows-unbv = Voz de banda ultralarga (experimental)
+
+unbv-hint = A voz é gravada, desacelerada pelo fator e deslocada para uma faixa estreita da banda lateral; a outra estação a desloca de volta e a acelera. A mesma potência numa banda mais estreita.
+
+unbv-sideband = Banda lateral
+
+unbv-factor = Fator de desaceleração
+
+unbv-centre = Centro na banda passante
+
+unbv-id-every = Identificar a cada
+
+unbv-slice = A mensagem fica em { $lo }–{ $hi } Hz
+
+unbv-slot = Compartimento da mensagem
+
+unbv-record = Gravar
+
+unbv-record-stop = Parar a gravação
+
+unbv-send = Enviar
+
+unbv-stop = Parar o envio
+
+unbv-spectrum = A faixa da mensagem
+
+unbv-block = Bloco { $n } de { $total }

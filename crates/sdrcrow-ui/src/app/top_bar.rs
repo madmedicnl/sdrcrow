@@ -1602,6 +1602,7 @@ impl SdrcrowApp {
                     self.daylight,
                     atsmini,
                     &mut self.show_ism,
+                    &mut self.show_unbv,
                     &mut radio,
                     self.ui_settings.listen_tab_hides_tx,
                     cmds,
@@ -3099,6 +3100,7 @@ impl SdrcrowApp {
                 daylight,
                 atsmini,
                 &mut self.show_ism,
+                &mut self.show_unbv,
                 &mut radio,
                 self.ui_settings.listen_tab_hides_tx,
                 cmds,
@@ -3259,6 +3261,7 @@ impl SdrcrowApp {
             self.daylight,
             atsmini,
             &mut self.show_ism,
+            &mut self.show_unbv,
             &mut radio,
             self.ui_settings.listen_tab_hides_tx,
             cmds,
@@ -9754,6 +9757,9 @@ pub(in crate::app) fn band_mode_menu(
     // Whether the ISM decoder window is open — the chip lives in the Wideband
     // row now, so the menu needs to read and write it.
     show_ism: &mut bool,
+    // The experiment's window: its chip sits under *Experimental* at the top of
+    // the operate tab, for the same reason as ISM's — a window, not a band.
+    show_unbv: &mut bool,
     // The RADIO chip beside ISM: RADIO CLASSIC is a face, not a mode, so the
     // click is handed back for the app to act on.
     radio: &mut RadioChip,
@@ -9899,6 +9905,21 @@ pub(in crate::app) fn band_mode_menu(
     }
     match *tab {
         BandMenuTab::Operate => {
+            ui.add_space(6.0);
+            // The experiment's chip, under the caption the bench of modes uses:
+            // it is not a band and not a mode, it is a window that works on the
+            // sideband you are already on.
+            ui.add_space(6.0);
+            crate::chrome::menu_caption(ui, &tr!("topbar-caption-experimental"));
+            ui.horizontal(|ui| {
+                if ui
+                    .selectable_label(*show_unbv, "UNBV")
+                    .on_hover_text(tr!("windows-unbv"))
+                    .clicked()
+                {
+                    *show_unbv = !*show_unbv;
+                }
+            });
             ui.add_space(6.0);
             crate::chrome::menu_caption(ui, &tr!("topbar-caption-mode"));
             // Rows of five — the operator's ask: a trimmed, left-aligned grid
@@ -12344,6 +12365,7 @@ mod tests {
                     true,
                     false,
                     &mut false,
+                    &mut false,
                     &mut RadioChip::new(false),
                     false,
                     cmds,
@@ -12484,6 +12506,7 @@ mod tests {
                     None,
                     true,
                     false,
+                    &mut false,
                     &mut false,
                     &mut RadioChip::new(false),
                     false,

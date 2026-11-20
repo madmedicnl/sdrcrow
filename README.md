@@ -36,6 +36,17 @@ The Linux builds and the web client are on the
 macOS and Windows are not in this release: they need the release workflow,
 which is the next piece of work. Everything below builds from source.
 
+## The ultra narrowband voice experiment (UNBV)
+
+The **UNBV** chip under *Experimental* in the band menu opens an experiment after
+**KC8COM's Ultra Narrowband Voice Experimenter**: recorded speech is slowed by a
+factor (2 to 100) and shifted into a narrow slice of the sideband, and the other
+station shifts it back and speeds it up. At factor 50 the voice sits in about
+46 Hz around 1 kHz, and a phrase takes fifty times as long to send. It rides
+USB/LSB — LSB on 160/80/40 m, USB elsewhere, and the window lets you overrule —
+with the identification in Morse between the blocks. It is an experiment, not a
+mode; section 18 of the [manual](docs/USER_MANUAL.md) has the details.
+
 ## Where things are
 
 - **`SDRCROW.md`** — what was changed to detach this build, and what is still

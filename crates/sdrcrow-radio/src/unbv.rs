@@ -60,6 +60,11 @@ impl UnbvPlan {
 pub struct UnbvTx {
     pub plan: UnbvPlan,
     pub position: usize,
+    /// The spectrum of the whole message's slice, taken once when it was
+    /// encoded — the receiver's waterfall cannot show a few tens of hertz, and
+    /// this is what the panel draws.
+    pub bins: Vec<f32>,
+    pub settings: UnbvSettings,
 }
 
 /// Encode a recorded slot and plan the whole over around it.

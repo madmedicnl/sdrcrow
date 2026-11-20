@@ -543,6 +543,11 @@ pub enum RadioEvent {
     /// not the engine. Only a browser acts on it; a native client keeps its own
     /// in `operator_ptt.json`.
     OperatorPtt(Box<crate::PttInputsConfig>),
+    /// The ultra narrowband voice experiment: whether a message is on the air,
+    /// which block of how many, and the spectrum of the slice it occupies.
+    ///
+    /// Appended last, for the usual reason.
+    UnbvStatus(Box<crate::UnbvStatus>),
 }
 
 /// Snapshot of the frontend's switchable sound devices (native clients).

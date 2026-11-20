@@ -21987,7 +21987,10 @@ impl Engine {
             if !self.tx_active && !self.digi_tx {
                 self.voice_tx = false;
                 self.voice.stop_play();
-                self.unbv_tx = None;
+                let had_unbv = self.unbv_tx.take().is_some();
+                if had_unbv {
+                    self.emit_unbv_status();
+                }
                 self.mic_fifo.clear();
                 self.voice_tick = None;
                 self.emit_voice_status();
@@ -22001,6 +22004,9 @@ impl Engine {
             if due {
                 self.voice_tick = Some(now);
                 self.emit_voice_status();
+                if self.unbv_tx.is_some() {
+                    self.emit_unbv_status();
+                }
             }
         }
     }
@@ -22121,8 +22127,16 @@ impl Engine {
         if plan.is_empty() {
             return false;
         }
+        // One snapshot of the message's slice for the panel, taken here because
+        // the audio will not be around afterwards.
+        let (lo, hi) = plan.slice_hz;
+        let bins = sdrcrow_dsp::unbv::SliceSpectrum::new(
+            crate::voice::VOICE_RATE,
+            sdrcrow_dsp::unbv::SPECTRUM_FFT,
+        )
+        .slice(&plan.audio, (lo + hi) / 2.0, (hi - lo).max(20.0));
         self.end_tci_tx();
-        self.unbv_tx = Some(crate::unbv::UnbvTx { plan, position: 0 });
+        self.unbv_tx = Some(crate::unbv::UnbvTx { plan, position: 0, bins, settings });
         self.voice_tx = true;
         self.voice_started = Some(Instant::now());
         self.mic_fifo.clear();
@@ -22134,7 +22148,26 @@ impl Engine {
         }
         let _ = self.event_tx.send(RadioEvent::State(self.state.clone()));
         self.emit_voice_status();
+        self.emit_unbv_status();
         self.tx_active
+    }
+
+    /// Tell the screen where the experiment is: which block of how many, and the
+    /// spectrum of the slice it went out in.
+    fn emit_unbv_status(&mut self) {
+        let status = match self.unbv_tx.as_ref() {
+            Some(tx) => sdrcrow_types::UnbvStatus {
+                active: true,
+                block: tx.plan.block_at(tx.position) as u32,
+                blocks: tx.plan.blocks as u32,
+                factor: tx.settings.factor as f32,
+                centre_hz: tx.settings.centre_hz as f32,
+                slice_hz: (tx.plan.slice_hz.0 as f32, tx.plan.slice_hz.1 as f32),
+                bins: tx.bins.clone(),
+            },
+            None => sdrcrow_types::UnbvStatus::default(),
+        };
+        let _ = self.event_tx.send(RadioEvent::UnbvStatus(Box::new(status)));
     }
 
     /// Stop a message and end the over (the operator pressed stop, or an
@@ -22144,7 +22177,11 @@ impl Engine {
             return;
         }
         self.voice.stop_play();
+        let had_unbv = self.unbv_tx.is_some();
         self.unbv_tx = None;
+        if had_unbv {
+            self.emit_unbv_status();
+        }
         self.release_voice_tx();
         self.voice_tx = false;
         self.mic_fifo.clear();

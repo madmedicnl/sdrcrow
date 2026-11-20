@@ -91,6 +91,7 @@ pub(in crate::app) mod spots;
 mod swl_log;
 pub(in crate::app) mod top_bar;
 mod tx_bands;
+mod unbv;
 /// The update check — native only (a browser has no updater to point at).
 #[cfg(not(target_arch = "wasm32"))]
 pub(in crate::app) mod update;
@@ -940,6 +941,23 @@ pub struct SdrcrowApp {
     /// row is UI-owned, so the status echo can't fight the keyboard).
     voice: sdrcrow_types::VoiceStatus,
     show_voice: bool,
+    /// The ultra narrowband voice experiment: whether a message is on the air
+    /// and which block of it, from `RadioEvent::UnbvStatus`.
+    pub(in crate::app) unbv: sdrcrow_types::UnbvStatus,
+    /// Whether its window is open. The chip under *Experimental* in the band
+    /// menu toggles it; nothing of it shows otherwise.
+    pub(in crate::app) show_unbv: bool,
+    /// What the next over is made with: the factor (2 to 100, fifty by default),
+    /// the centre in the passband, and the minutes between identifications.
+    pub(in crate::app) unbv_factor: f32,
+    pub(in crate::app) unbv_centre_hz: f32,
+    pub(in crate::app) unbv_id_minutes: f32,
+    /// The sideband the operator chose for the experiment, when they overrode
+    /// what the band offers.
+    pub(in crate::app) unbv_sideband: Option<sdrcrow_types::Mode>,
+    /// Which voice-keyer slot holds the speech to send, counting from 1 as the
+    /// window shows it.
+    pub(in crate::app) unbv_slot: u8,
     voice_name_edit: Option<(usize, String)>,
     /// When the band/mode, FFT and skimmer popups opened (egui time), for their
     /// auto-fade.
@@ -2578,6 +2596,13 @@ impl SdrcrowApp {
                 || std::env::var("SDRCROW_OPEN_SETTINGS").is_ok(),
             settings_scroll_top: true,
             voice: sdrcrow_types::VoiceStatus::default(),
+            unbv: sdrcrow_types::UnbvStatus::default(),
+            show_unbv: false,
+            unbv_factor: sdrcrow_dsp::unbv::DEFAULT_FACTOR as f32,
+            unbv_centre_hz: sdrcrow_dsp::unbv::DEFAULT_CENTRE_HZ as f32,
+            unbv_id_minutes: sdrcrow_dsp::unbv::DEFAULT_ID_MINUTES as f32,
+            unbv_sideband: None,
+            unbv_slot: 1,
             show_voice: false,
             voice_name_edit: None,
             mode_popup_since: None,

@@ -9861,3 +9861,31 @@ widgets-worked-days-ago = { $n ->
         [one] { $n } dag geleden
        *[other] { $n } dagen geleden
     }
+
+windows-unbv = Ultra smalbandige spraak (experimenteel)
+
+unbv-hint = Spraak wordt opgenomen, met de factor vertraagd en in een smalle plak van de zijband geschoven; de andere kant schuift hem terug en versnelt hem. Hetzelfde vermogen in een smaller band.
+
+unbv-sideband = Zijband
+
+unbv-factor = Vertragingsfactor
+
+unbv-centre = Midden in de doorlaatband
+
+unbv-id-every = Identificeren elke
+
+unbv-slice = De boodschap zit in { $lo }–{ $hi } Hz
+
+unbv-slot = Berichtslot
+
+unbv-record = Opnemen
+
+unbv-record-stop = Opname stoppen
+
+unbv-send = Verzenden
+
+unbv-stop = Verzenden stoppen
+
+unbv-spectrum = De plak van de boodschap
+
+unbv-block = Blok { $n } van { $total }

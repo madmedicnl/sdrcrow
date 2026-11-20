@@ -51,6 +51,7 @@ or connects to a remote sdrcrow server.
 15. [Radio-specific notes](#15-radio-specific-notes)
 16. [Appendix: keyboard shortcuts, modes, bands](#16-appendix)
 17. [Addendum: a headless station on a Raspberry Pi Zero 2 W](#17-addendum-a-headless-station-on-a-raspberry-pi-zero-2-w)
+18. [The ultra narrowband voice experiment (UNBV)](#18-the-ultra-narrowband-voice-experiment-unbv)
 
 ---
 
@@ -19148,3 +19149,62 @@ the quick-starts:
 > For a graphical sdrcrow on the Pi itself, or for the wideband decoders, step
 > up to a **Pi 4 (2 GB+)** or **Pi 5** — see the README's Raspberry Pi note about
 > Mesa's V3DV Vulkan driver and the OpenGL fallback.
+
+---
+
+## 18. The ultra narrowband voice experiment (UNBV)
+
+**An experiment, not a mode.** UNBV — the *Ultra Narrowband Voice Experimenter*,
+after KC8COM's program of that name — trades time for bandwidth: speech is
+slowed by a factor and shifted into a narrow slice of the sideband, and the other
+station shifts it back and speeds it up. The same power then arrives in a band
+`factor` times narrower, which is all the gain there is; a message also takes
+`factor` times as long to say.
+
+It is not a mode because it rides one: the **band menu's *Experimental* caption**
+carries a **UNBV** chip, and the window behind it works on whatever sideband you
+are on. Opening UNBV offers the sideband voice uses on that band — **LSB on 160,
+80 and 40 m, USB everywhere else**, 60 m, 30 m and 11 m CB included — and the two
+chips let you overrule it. The experiment is refused in any other mode.
+
+### Sending
+
+1. Record the phrase into a voice-keyer slot: **Message slot** picks one (the
+   keyer's own REC and PLAY work on the same slots), **Record** starts and stops.
+2. Set the **Slowing factor** (2 to 100, fifty by default), the **centre** in the
+   passband (1 kHz by default) and the **identify every** interval (5 to 15
+   minutes, nine by default). The line under the sliders says which slice the
+   message will occupy — 1002–1048 Hz at the defaults.
+3. **Send** keys the transmitter. The message goes out in blocks of at most the
+   interval, and between the blocks — and after the last — the station's
+   callsign goes out in Morse as a sidetone *inside the same sideband*, so the
+   rig never switches mode mid-over. **Block n of m** in the window says where
+   it is; **Stop sending** ends the over.
+
+At factor 50, a five-second phrase is four minutes of transmitter time, and the
+whole of it sits in about 46 Hz. That is the experiment: it is not a mode to chat
+on, it is a way to be heard when nothing else gets through.
+
+### Receiving
+
+Tune the sideband as usual and record what the receiver hears (**Ctrl+R** for
+the recorder, see [section 2](#2-basic-operation)); the message will sound like a
+low, slow rumble. The *decode* side of the window takes a recording, shifts it
+back down and speeds it up by the same factor. A drift in either station's
+carrier multiplies by the factor too, so a long message may need the fine-tune
+field; KC8COM's own drift corrector does the same job by hand.
+
+### The spectrogram
+
+The slice is a few tens of hertz wide — a fraction of a pixel on the waterfall —
+so the window draws its own: the message's spectrum in dBFS across the slice,
+with the band's edges written on it.
+
+### Credits and limits
+
+The idea, the parameters and the block-and-identify rhythm are KC8COM's
+(*KC8COM - Ultra Narrowband Voice Experimenter*, freeware, Windows); this is an
+independent implementation in the program's own DSP, so nothing of his code is
+here. There is no regulatory recognition of the technique and no agreed
+frequencies: keep it inside the phone segments of the bands you are licensed
+for, identify as the window does, and treat it as an experiment.

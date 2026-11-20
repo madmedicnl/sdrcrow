@@ -754,6 +754,9 @@ impl RemoteController {
                 self.voice_recording = v.recording.is_some();
                 self.pending.push_back(RadioEvent::VoiceStatus(v));
             }
+            ServerMsg::UnbvStatus(s) => {
+                self.pending.push_back(RadioEvent::UnbvStatus(s))
+            }
             ServerMsg::Spots(s) => self.pending.push_back(RadioEvent::Spots(s)),
             ServerMsg::BandOpenings(o) => self.pending.push_back(RadioEvent::BandOpenings(o)),
             ServerMsg::NetStatus(s) => self.pending.push_back(RadioEvent::NetStatus(s)),

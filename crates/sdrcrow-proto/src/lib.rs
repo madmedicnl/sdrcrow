@@ -3101,6 +3101,10 @@ pub enum ServerMsg {
     /// on connect, and echoed after a [`ClientMsg::SetOperatorPtt`]. Client-local:
     /// it does not touch the engine. Appended last (v302).
     OperatorPtt(Box<sdrcrow_types::PttInputsConfig>),
+    /// The ultra narrowband voice experiment: whether a message is on the air,
+    /// which block of how many, and the spectrum of the slice it occupies.
+    /// Appended last (v306).
+    UnbvStatus(Box<sdrcrow_types::UnbvStatus>),
 }
 
 /// What [`ServerMsg::ClientSettings`] carries.

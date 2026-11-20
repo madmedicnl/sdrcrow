@@ -9861,3 +9861,31 @@ widgets-worked-days-ago = { $n ->
         [one] { $n } gün önce
        *[other] { $n } gün önce
     }
+
+windows-unbv = Ultra dar bant ses (deneysel)
+
+unbv-hint = Konuşma kaydedilir, çarpan kadar yavaşlatılır ve yan bant içinde dar bir dilime kaydırılır; karşı istasyon geri kaydırıp hızlandırır. Aynı güç daha dar bir bantta.
+
+unbv-sideband = Yan bant
+
+unbv-factor = Yavaşlatma çarpanı
+
+unbv-centre = Geçirme bandındaki merkez
+
+unbv-id-every = Her
+
+unbv-slice = Mesaj { $lo }–{ $hi } Hz arasında oturur
+
+unbv-slot = Mesaj yuvası
+
+unbv-record = Kaydet
+
+unbv-record-stop = Kaydı durdur
+
+unbv-send = Gönder
+
+unbv-stop = Gönderimi durdur
+
+unbv-spectrum = Mesajın dilimi
+
+unbv-block = Blok { $n } / { $total }
