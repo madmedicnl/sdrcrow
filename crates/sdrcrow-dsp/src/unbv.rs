@@ -70,6 +70,91 @@ impl UnbvSettings {
     }
 }
 
+/// The slice, seen as a spectrum: what the original's live spectrogram shows and
+/// what an RF waterfall cannot — at factor 50 the whole message is 46 Hz wide
+/// around 1 kHz, which is a fraction of a pixel on a receiver's display.
+pub struct SliceSpectrum {
+    rate: f64,
+    size: usize,
+    fft: std::sync::Arc<dyn realfft::RealToComplex<f32>>,
+    window: Vec<f32>,
+    window_gain: f32,
+    scratch: Vec<f32>,
+    spectrum: Vec<realfft::num_complex::Complex32>,
+}
+
+/// The window the original offers for its spectrogram: 65536 points, 1.4 s at
+/// 48 kHz, 0.72 Hz per bin.
+pub const SPECTRUM_FFT: usize = 65_536;
+
+impl SliceSpectrum {
+    pub fn new(rate: f64, size: usize) -> Self {
+        let size = size.max(1024).next_power_of_two();
+        let mut planner = realfft::RealFftPlanner::<f32>::new();
+        let fft = planner.plan_fft_forward(size);
+        let mut window = vec![0.0f32; size];
+        for (i, slot) in window.iter_mut().enumerate() {
+            let x = std::f64::consts::TAU * i as f64 / size as f64;
+            *slot = (0.42 - 0.5 * x.cos() + 0.08 * (2.0 * x).cos()) as f32;
+        }
+        let window_gain = window.iter().sum::<f32>() / 2.0;
+        Self {
+            rate,
+            size,
+            scratch: fft.make_input_vec(),
+            spectrum: fft.make_output_vec(),
+            fft,
+            window,
+            window_gain,
+        }
+    }
+
+    pub fn size(&self) -> usize {
+        self.size
+    }
+
+    /// Hz between bins.
+    pub fn bin_hz(&self) -> f64 {
+        self.rate / self.size as f64
+    }
+
+    /// The bins a slice covers, so a caller can label an axis with the same
+    /// numbers the values belong to.
+    pub fn bin_range(&self, centre_hz: f64, bandwidth_hz: f64) -> std::ops::RangeInclusive<usize> {
+        let bin = self.bin_hz();
+        let lo = (centre_hz - bandwidth_hz / 2.0).max(0.0);
+        let hi = centre_hz + bandwidth_hz / 2.0;
+        let first = (lo / bin).floor() as usize;
+        let last = ((hi / bin).ceil() as usize).min(self.spectrum.len() - 1);
+        first..=last.max(first)
+    }
+
+    /// dBFS for each bin in `centre ± bandwidth/2`, low frequency first. The
+    /// caller gets as many bins as the band holds, so a 50 Hz slice at 0.72 Hz
+    /// per bin is about seventy values. The first value belongs to
+    /// [`bin_range`](Self::bin_range)'s first bin, not to the band's exact edge.
+    pub fn slice(&mut self, samples: &[f32], centre_hz: f64, bandwidth_hz: f64) -> Vec<f32> {
+        let n = samples.len().min(self.size);
+        if n == 0 {
+            return Vec::new();
+        }
+        for (i, slot) in self.scratch.iter_mut().enumerate() {
+            *slot = if i < n { samples[samples.len() - n + i] * self.window[i] } else { 0.0 };
+        }
+        if self.fft.process(&mut self.scratch, &mut self.spectrum).is_err() {
+            return Vec::new();
+        }
+        let range = self.bin_range(centre_hz, bandwidth_hz);
+        let gain = self.window_gain.max(1e-9);
+        range
+            .map(|i| {
+                let magnitude = self.spectrum[i].norm() / gain;
+                (20.0 * magnitude.max(1e-9).log10()).clamp(-160.0, 0.0)
+            })
+            .collect()
+    }
+}
+
 /// Encode, decode and answer questions about the slice, at one sample rate.
 #[derive(Clone, Copy, Debug)]
 pub struct Unbv {
@@ -386,6 +471,30 @@ mod tests {
         let settings = UnbvSettings { factor: 900.0, centre_hz: 10.0 }.sane();
         assert_eq!(settings.factor, MAX_FACTOR);
         assert_eq!(settings.centre_hz, 200.0);
+    }
+
+    #[test]
+    fn the_spectrogram_finds_the_slice_and_only_the_slice() {
+        let mut spectrum = SliceSpectrum::new(RATE, 16_384);
+        let inside = tone(1024.0, 0.5);
+        let bins = spectrum.slice(&inside, 1000.0, 50.0);
+        assert!(!bins.is_empty(), "a 50 Hz slice at 48 kHz must have bins");
+        let (loudest, level) = bins
+            .iter()
+            .enumerate()
+            .fold((0, f32::MIN), |best, (i, db)| if *db > best.1 { (i, *db) } else { best });
+        let first = *spectrum.bin_range(1000.0, 50.0).start();
+        let hz = (first + loudest) as f64 * spectrum.bin_hz();
+        assert!((hz - 1024.0).abs() < 2.0, "the loudest bin is at {hz:.1} Hz, wanted 1024");
+        assert!(level > -12.0 && level < 0.0, "a half-scale tone reads {level:.1} dBFS");
+
+        // A tone outside the slice must not appear in it.
+        let elsewhere = spectrum.slice(&tone(700.0, 0.5), 1000.0, 50.0);
+        let loudest_elsewhere = elsewhere.iter().cloned().fold(f32::MIN, f32::max);
+        assert!(
+            loudest_elsewhere < level - 40.0,
+            "a 700 Hz tone reads {loudest_elsewhere:.1} dBFS inside a 1000±25 Hz slice"
+        );
     }
 
     #[test]
