@@ -7,7 +7,7 @@
 #   ├── install.sh                 ← this file
 #   ├── install.py                 (same job, macOS and Windows as well)
 #   ├── sdrcrow-2.0.13.1-linux-x86_64.deb     ← the package, any of the shapes below
-#   └── config/                    ← a copy of a *configured* ~/.config/sdrcrow-brown
+#   └── config/                    ← a copy of a *configured* ~/.config/sdrcrow
 #
 # It is written for the club's software manager: configure one machine properly,
 # copy its config directory here, and every other machine is one command with no
@@ -24,7 +24,7 @@
 set -euo pipefail
 
 PROGRAM="sdrcrow"
-CONFIG_NAME="sdrcrow-brown"
+CONFIG_NAME="sdrcrow"
 DRY_RUN=0
 VERBOSE=0
 TARGET_USER=""

@@ -59,7 +59,7 @@ zoals ze op het scherm staan. `Settings > Radio` is een menupad.
 ## Installeren
 
 - **Windows** — de installer (`.msi`) of de portable `.zip`: zie de
-  [Releases-pagina](https://github.com/madmedicnl/sdroxide-brown/releases/latest).
+  [Releases-pagina](https://github.com/madmedicnl/sdrcrow/releases/latest).
 - **Linux** — de **AppImage** (één bestand, `chmod +x` en starten), de `.deb`,
   of de portable tarball.
 - **macOS** — de `.dmg`.
@@ -258,7 +258,7 @@ lucht is, of de radio die al op zijn eigen PTT staat.
 - [README](../README.md) — het volledige overzicht van de fork.
 - [USER_MANUAL.md](USER_MANUAL.md) — de handleiding; §3.6 is SSTV in het
   volledig.
-- [Releases](https://github.com/madmedicnl/sdroxide-brown/releases/latest) — de
+- [Releases](https://github.com/madmedicnl/sdrcrow/releases/latest) — de
   nieuwste versie voor elk platform.
 
 Tot ziens op 27,700! 73

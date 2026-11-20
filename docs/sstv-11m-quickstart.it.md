@@ -59,7 +59,7 @@ menu.
 ## Installazione
 
 - **Windows** — l'installer (`.msi`) o lo `.zip` portatile: vedi la
-  [pagina Releases](https://github.com/madmedicnl/sdroxide-brown/releases/latest).
+  [pagina Releases](https://github.com/madmedicnl/sdrcrow/releases/latest).
 - **Linux** — l'**AppImage** (un solo file, `chmod +x` ed esegui), il `.deb`, o
   l'archivio portatile.
 - **macOS** — il `.dmg`.
@@ -259,7 +259,7 @@ in aria, o la radio già manipolata dal suo stesso PTT.
 
 - [README](../README.md) — la panoramica completa del fork.
 - [USER_MANUAL.md](USER_MANUAL.md) — il manuale; §3.6 è la SSTV per intero.
-- [Releases](https://github.com/madmedicnl/sdroxide-brown/releases/latest) — l'ultima
+- [Releases](https://github.com/madmedicnl/sdrcrow/releases/latest) — l'ultima
   versione per ogni piattaforma.
 
 Ci vediamo sui 27,700! 73

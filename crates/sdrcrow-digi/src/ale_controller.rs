@@ -183,7 +183,7 @@ fn open_log() -> Option<std::fs::File> {
         std::env::var("XDG_CONFIG_HOME").map(std::path::PathBuf::from).ok().or_else(|| {
             std::env::var("HOME").ok().map(|h| std::path::PathBuf::from(h).join(".config"))
         })?;
-    let dir = base.join("sdrcrow-brown");
+    let dir = base.join("sdrcrow");
     let _ = std::fs::create_dir_all(&dir);
     std::fs::OpenOptions::new().create(true).append(true).open(dir.join("ale.log")).ok()
 }

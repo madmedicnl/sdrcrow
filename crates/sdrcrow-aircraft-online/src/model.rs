@@ -118,7 +118,7 @@ impl Request {
 /// The `User-Agent` both services ask for: the application and a contact.
 pub fn user_agent() -> String {
     format!(
-        "SDR-Oxide-Brown/{} (+https://github.com/madmedicnl/sdroxide-brown)",
+        "SDRCrow/{} (+https://github.com/madmedicnl/sdrcrow)",
         env!("CARGO_PKG_VERSION")
     )
 }
@@ -195,8 +195,8 @@ mod tests {
     #[test]
     fn the_user_agent_names_the_program_and_gives_a_contact() {
         let ua = user_agent();
-        assert!(ua.starts_with("SDR-Oxide-Brown/"), "{ua}");
-        assert!(ua.ends_with("(+https://github.com/madmedicnl/sdroxide-brown)"), "{ua}");
+        assert!(ua.starts_with("SDRCrow/"), "{ua}");
+        assert!(ua.ends_with("(+https://github.com/madmedicnl/sdrcrow)"), "{ua}");
     }
 
     #[test]

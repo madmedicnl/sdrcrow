@@ -38,7 +38,7 @@ from datetime import datetime
 from pathlib import Path
 
 PROGRAM = "sdrcrow"
-CONFIG_NAME = "sdrcrow-brown"
+CONFIG_NAME = "sdrcrow"
 HERE = Path(__file__).resolve().parent
 
 # The package shapes this understands, most specific first. A `.deb` is Linux,

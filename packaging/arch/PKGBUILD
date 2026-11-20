@@ -19,7 +19,7 @@ pkgver=1.6.7
 pkgrel=1
 pkgdesc="PowerSDR/Thetis-style SDR transceiver tuned for CB/11m — native GUI, web UI, FT8/FT4, CW, SSTV"
 arch=('x86_64')
-url="https://github.com/madmedicnl/sdrcrow-brown"
+url="https://github.com/madmedicnl/sdrcrow"
 license=('GPL-3.0-or-later')
 depends=('alsa-lib')
 optdepends=('libfdk-aac: optional xHE-AAC DRM shortwave decoding')
@@ -63,7 +63,7 @@ package() {
   install -Dm644 packaging/icons/sdrcrow-256.png "$pkgdir/usr/share/icons/hicolor/scalable/apps/sdrcrow-256.png"
   local s
   for s in 16 24 32 48 64 128 256 512; do
-    install -Dm644 "packaging/icons/sdrcrow-brown-$s.png" "$pkgdir/usr/share/icons/hicolor/${s}x${s}/apps/sdrcrow-brown.png"
+    install -Dm644 "packaging/icons/sdrcrow-$s.png" "$pkgdir/usr/share/icons/hicolor/${s}x${s}/apps/sdrcrow.png"
   done
   # The .deb installs all ten udev rules; so does this package.
   install -Dm644 packaging/linux/60-sdrcrow-*.rules "$pkgdir/usr/lib/udev/rules.d/"

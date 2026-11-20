@@ -13,7 +13,7 @@
     <!-- Resources/sdrcrow.icns; this is what Finder, the Dock and Launchpad
          show for the bundle. -->
     <key>CFBundleIconFile</key>
-    <string>sdrcrow-brown</string>
+    <string>sdrcrow</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>

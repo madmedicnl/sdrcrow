@@ -41,7 +41,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 MANUAL = REPO / "docs" / "USER_MANUAL.md"
 # Where the images live on main, so a wiki page shows the repo's current copy.
-RAW_IMAGE_BASE = "https://raw.githubusercontent.com/madmedicnl/sdrcrow-brown/main/docs/images/"
+RAW_IMAGE_BASE = "https://raw.githubusercontent.com/madmedicnl/sdrcrow/main/docs/images/"
 
 HEADING = re.compile(r"^(#{2,4})\s+(.*?)\s*$")
 # An internal link, whole: `[text](#anchor)`. The text is kept; only the target

@@ -29,7 +29,7 @@
              which is where the release workflow runs `wix build`. -->
         <Icon Id="SdrcrowIcon" SourceFile="packaging/windows/sdrcrow.ico" />
         <Property Id="ARPPRODUCTICON" Value="SdrcrowIcon" />
-        <Property Id="ARPURLINFOABOUT" Value="https://github.com/madmedicnl/sdrcrow-brown" />
+        <Property Id="ARPURLINFOABOUT" Value="https://github.com/madmedicnl/sdrcrow" />
         <!-- The shortcuts are authored advertised (so they may use the file as
              their KeyPath and pass ICE43); this converts them to ordinary
              non-advertised .lnk files at install, so clicking one launches the
@@ -37,10 +37,9 @@
         <Property Id="DISABLEADVTSHORTCUTS" Value="1" />
 
         <StandardDirectory Id="ProgramFiles64Folder">
-            <!-- Its own folder, not upstream's: the executable is `sdrcrow.exe`
-                 in both builds (shared identity), so a shared folder would have
-                 one install overwrite the other's binary. -->
-            <Directory Id="INSTALLFOLDER" Name="sdrcrow-brown">
+            <!-- Its own folder: the executable is `sdrcrow.exe`, and
+                 Program Files\sdrcrow keeps it apart from anything else. -->
+            <Directory Id="INSTALLFOLDER" Name="sdrcrow">
                 <Component Id="MainExe" Guid="DE7788FB-C6E5-47E2-87D8-F24D5E6ADBE5">
                     <!-- **The shortcuts live in the executable's own component**,
                          so their KeyPath is the file they launch — a per-machine

@@ -339,7 +339,7 @@ fn fetch(url: &str, cookie: Option<&str>) -> Result<String, Why> {
 #[cfg(not(target_arch = "wasm32"))]
 fn get(agent: &ureq::Agent, url: &str, cookie: Option<&str>) -> Result<(u16, String), Why> {
     let mut req =
-        agent.get(url).header("User-Agent", "sdrcrow-brown").header("Accept", "application/json");
+        agent.get(url).header("User-Agent", "sdrcrow").header("Accept", "application/json");
     if let Some(c) = cookie {
         req = req.header("Cookie", c);
     }
