@@ -1,7 +1,7 @@
 # Antenna utility — prototype
 
 A **standalone** prototype for the antenna utility idea in
-[`docs/antenna-tool-ideas.md`](../../docs/antenna-tool-ideas.md), on branch
+the project's antenna-tool notes, kept with the workshop notes, on branch
 `fork/antenna-tool`. Nothing here is on `main` and nothing is wired into the
 program yet.
 
