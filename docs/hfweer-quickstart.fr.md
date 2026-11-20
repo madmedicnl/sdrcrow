@@ -152,4 +152,3 @@ nous ne pouvons pas le trouver sans quelqu'un qui écoute.
 ## Pour aller plus loin
 
 - [`USER_MANUAL.md` §3.3a](USER_MANUAL.md) — la référence complète de ce décodeur.
-- `docs/synop-notes.md` dans le dépôt — d'où vient le format, et ce qui reste incertain.

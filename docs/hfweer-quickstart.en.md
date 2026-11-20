@@ -149,5 +149,3 @@ listening.
 ## Where to read more
 
 - [`USER_MANUAL.md` §3.3a](USER_MANUAL.md) — the full reference for this decoder.
-- `docs/synop-notes.md` in the source repository — where the format came from,
-  and which parts are still uncertain.

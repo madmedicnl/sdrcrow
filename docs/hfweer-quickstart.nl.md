@@ -148,5 +148,3 @@ juiste, en wij kunnen het niet vinden zonder iemand die meeluistert.
 ## Meer lezen
 
 - [`USER_MANUAL.md` §3.3a](USER_MANUAL.md) — de volledige referentie voor deze decoder.
-- `docs/synop-notes.md` in de broncode — waar het format vandaan komt, en welke
-  delen nog onzeker zijn.

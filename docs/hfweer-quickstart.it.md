@@ -147,5 +147,3 @@ possiamo scoprirlo senza qualcuno che ascolta.
 ## Per saperne di più
 
 - [`USER_MANUAL.md` §3.3a](USER_MANUAL.md) — il riferimento completo di questo decodificatore.
-- `docs/synop-notes.md` nel sorgente — da dove viene il formato e quali parti sono
-  ancora incerte.
