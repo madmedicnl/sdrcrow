@@ -1,13 +1,13 @@
-# Listening quick-start (sdrcrow — shortwave & broadcast)
+# Listening quick-start (SDRCrow — shortwave & broadcast)
 
-A short, task-oriented walkthrough for using **sdrcrow** as a **listener**:
+A short, task-oriented walkthrough for using **SDRCrow** as a **listener**:
 browse the broadcast schedule, tune longwave, medium wave and shortwave, log
 what you hear and send a reception report. Nothing here needs a licence or a
 transmitter — the listener's screen is a clean receiver by design. For the
 reference detail behind each control see [`USER_MANUAL.md`](USER_MANUAL.md); for
 the why of this fork see the [README](../README.md).
 
-> This is the CB/SWL fork of sdrcrow. The listening tools are added on top of
+> SDRCrow is the CB/SWL build. The listening tools are added on top of
 > the amateur program; the amateur side, and everything else, is upstream and
 > unchanged.
 
@@ -23,7 +23,7 @@ they appear on screen. `Settings > Radio` is a menu path.
 
 ## What you need
 
-- **An SDR or a radio sdrcrow supports.** Any of them will do; for listening the
+- **An SDR or a radio SDRCrow supports.** Any of them will do; for listening the
   usual choices are:
   - **RTL-SDR** (dongle) — native, no SoapySDR needed.
   - **RX-888 / RX-888 Mk2** — native; the firmware is uploaded automatically.
@@ -35,7 +35,7 @@ they appear on screen. `Settings > Radio` is a menu path.
     **CAT rig** over a serial port + sound card, TCI, OpenHPSDR, or SoapySDR.
 - **An antenna.** For shortwave even a long wire works wonders; a broadcast band
   wants more wire than an 11 m whip.
-- **sdrcrow installed** (below).
+- **SDRCrow installed** (below).
 
 ## Installing
 
@@ -45,7 +45,7 @@ they appear on screen. `Settings > Radio` is a menu path.
   the portable tarball.
 - **macOS** — the `.dmg`.
 
-You can also run sdrcrow as a **server** and open it in a browser:
+You can also run SDRCrow as a **server** and open it in a browser:
 `sdrcrow --server`, then `http://localhost:4950`.
 
 ---

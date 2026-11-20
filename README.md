@@ -24,8 +24,9 @@ read nor touched; copying it across is a `cp -a` and a decision.
 - **`SDRCROW.md`** — what was changed to detach this build, and what is still
   Brown underneath (the i18n domain, the old config variable, the packaging for
   other platforms).
-- **`AGENTS.md`** — how work on this tree is done: the gate, the tests, the
-  wire, translations, and the rules that keep two people from colliding.
+- **`tools/build-quickstart-pdfs.py`** — rebuilds the quickstart PDFs from their
+  Markdown, with the emblem on the cover and a contents list; it needs
+  `weasyprint` and `markdown`, and the page style is `docs/quickstart-pdf.css`.
 - **`docs/README-brown.md`** — the Brown README as it was, kept for the parts
   that are still true: the mode list, the screenshots, the hardware notes.
 

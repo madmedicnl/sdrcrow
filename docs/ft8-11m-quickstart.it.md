@@ -1,7 +1,7 @@
-# FT8 sugli 11 m — avvio rapido (sdrcrow — CB/11 m)
+# FT8 sugli 11 m — avvio rapido (SDRCrow — CB/11 m)
 
 Una guida breve e pratica per lavorare in **FT8 sulla banda 11 m (27 MHz)** con
-**sdrcrow**: quale frequenza, come configurarla, come leggere i decodificati e
+**SDRCrow**: quale frequenza, come configurarla, come leggere i decodificati e
 come rispondere a una stazione. Sugli 11 m tutto lo scambio segue le convenzioni
 del client della comunità
 [WSJT-CB](https://github.com/vash909/WSJT-CB) e non quelle della FT8 amatoriale —
@@ -9,7 +9,7 @@ perché è chi c'è sulla banda. Per il dettaglio di ogni comando vedi
 [`USER_MANUAL.md`](USER_MANUAL.md) §3.2.8 e §3.2; per lo spirito di questo fork
 vedi il [README](../README.md).
 
-> Questo è il fork CB/SWL di sdrcrow. La FT8 in sé è upstream; ciò che questo
+> SDRCrow è la versione CB/SWL. La FT8 in sé è upstream; ciò che questo
 > fork aggiunge sugli 11 m sono la banda, i piani canali per paese, lo scambio
 > WSJT-CB e le bandiere dei paesi.
 
@@ -39,11 +39,11 @@ menu.
 
 ## Cosa serve
 
-- **Un SDR o una radio che sdrcrow supporta**: RTL-SDR, RX-888, Airspy HF+,
+- **Un SDR o una radio che SDRCrow supporta**: RTL-SDR, RX-888, Airspy HF+,
   SDRplay RSP, HackRF, ELAD, PlutoSDR, una **radio CAT** via seriale + scheda
   audio, TCI, OpenHPSDR o SoapySDR.
 - **Un'antenna per i 27 MHz** adatta al tuo ricevitore.
-- **sdrcrow installato** (sotto).
+- **SDRCrow installato** (sotto).
 - **Un orologio preciso.** La FT8 non decodifica se l'orologio del computer è
   fuori di più di circa un secondo. Attiva la sincronizzazione automatica
   dell'ora (NTP).
@@ -56,7 +56,7 @@ menu.
   l'archivio portatile.
 - **macOS** — il `.dmg`.
 
-Puoi anche avviare sdrcrow come **server** e aprirlo nel browser:
+Puoi anche avviare SDRCrow come **server** e aprirlo nel browser:
 `sdrcrow --server`, poi `http://localhost:4950`.
 
 ---
@@ -72,7 +72,7 @@ Apri **SETTINGS** e vai alla scheda **Radio**. Scegli l'interfaccia (per esempio
 Le modifiche valgono subito dopo **Apply / reconnect**.
 
 - **Linux — ricevitori USB:** installa le regole udev fornite, altrimenti
-  sdrcrow vede il dispositivo ma non riesce ad aprirlo:
+  SDRCrow vede il dispositivo ma non riesce ad aprirlo:
   `sudo cp 60-sdrcrow-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, poi ricollega.
 - **Windows — RX-888:** associa il dispositivo a **WinUSB** una volta con
   [Zadig](https://zadig.akeo.ie/) — per **entrambi** gli id USB (`04B4:00F3` e

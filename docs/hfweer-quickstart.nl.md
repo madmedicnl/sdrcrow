@@ -1,11 +1,11 @@
-# Weer op de kortegolf — snelstart (sdrcrow)
+# Weer op de kortegolf — snelstart (SDRCrow)
 
 De eenvoudigste dienst op de kortegolfband, en vrijwel niemand luistert er naar.
 Schepen en weerstations zenden de **weersituatie waar ze werkelijk zijn** uit als
 gecodeerde cijfers op HF RTTY, om de paar uur. Geen internet, geen account, geen
 reserveringsslot — alleen een schemaatje op een papiertje.
 
-sdrcrow decodes those numbers and shows you the wind, the pressure, the
+SDRCrow decodes those numbers and shows you the wind, the pressure, the
 temperature and the sea state. This card gets you listening in about five minutes.
 
 > **Deze is BETA.** De decoder is getest op vier echte, gepubliceerde berichten
@@ -25,7 +25,7 @@ scherm staan. `Settings > Radio` is een menupad.
 
 ## What you need
 
-- **Elke ontvanger die sdrcrow ondersteunt**, met een antenne die HF haalt.
+- **Elke ontvanger die SDRCrow ondersteunt**, met een antenne die HF haalt.
 - **Verder niets.** U luistert, u zendt niet, en een vergunning is niet nodig.
 
 Een draadantenne van een paar meter voldoet. Hebt u al een HF-opstelling voor

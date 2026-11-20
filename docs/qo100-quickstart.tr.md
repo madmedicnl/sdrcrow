@@ -1,7 +1,7 @@
-# QO-100'e çıkış — hızlı başlangıç (sdrcrow + ADALM-Pluto)
+# QO-100'e çıkış — hızlı başlangıç (SDRCrow + ADALM-Pluto)
 
 **ADALM-Pluto** ve **Ku-band LNB** ile bir istasyonu QO-100 (Es'hail-2) sabit
-yörüngeli transponderına sdrcrow üzerinden çıkarmak için görev odaklı bir
+yörüngeli transponderına SDRCrow üzerinden çıkarmak için görev odaklı bir
 anlatım. Bir kerelik istasyon ayarlarını, uyduya kilitlenmeyi ve QO-100
 beacon senkronizasyon sekmesini kapsar. Her kontrolün ayrıntısı için
 [`USER_MANUAL.md`](USER_MANUAL.md) §2.22 (QO-100 beacon plugin) ve §6.2.7
@@ -15,7 +15,7 @@ beacon senkronizasyon sekmesini kapsar. Her kontrolün ayrıntısı için
 - Ara frekansı (LO) **9750 MHz** olan üniversal **Ku-band LNB** — QO-100'de
   kullandığımız standart.
 - Çanak anten, LNB'den gelen koaks ve 2,4 GHz uplink anteni.
-- Kurulu **sdrcrow**. Pluto sürücüsü dahilidir; başka bir şey kurmaya gerek
+- Kurulu **SDRCrow**. Pluto sürücüsü dahilidir; başka bir şey kurmaya gerek
   yoktur.
 
 ## Frekans zinciri
@@ -35,7 +35,7 @@ uplink      2400.xxx MHz <-- Pluto (doğrudan, çevrilmez)
 Bir kez yapılır ve saklanır. Hepsi **Settings** penceresinde, **General** ve
 **Radio** sekmelerinde.
 
-### 1. sdrcrow'yi başlatın
+### 1. SDRCrow'yi başlatın
 
 Programı açın. Ana pencerede üstte kontrol çubuğu, altında panadapter ve şelale
 bulunur.

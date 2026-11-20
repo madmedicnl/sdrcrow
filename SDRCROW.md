@@ -127,7 +127,7 @@ there is no shared directory any more.
 
 ## What is still Brown
 
-- **The documentation**: `README.md`, `AGENTS.md`, `TODO.md`, `CHANGELOG.md`,
+- **The documentation**: `README.md`, `CHANGELOG.md`,
   `docs/` and `BUILD-WINDOWS.md` are Brown's text and history, kept because the
   house rules in them still describe how this work is done. The manual's
   screenshots were taken in Brown's navy look, not in this program's. This file is the one

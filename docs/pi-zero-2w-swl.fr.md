@@ -1,4 +1,4 @@
-# Raspberry Pi Zero 2 W en station SWL sans écran (sdrcrow)
+# Raspberry Pi Zero 2 W en station SWL sans écran (SDRCrow)
 
 Un guide court et pratique pour transformer un **Raspberry Pi Zero 2 W** et une
 clé SDR bon marché en **station d'écoute en réseau** pour les ondes courtes et la
@@ -33,7 +33,7 @@ tapent dans le shell du Pi.
 
 - **Un Raspberry Pi Zero 2 W** (le quadricœur — *pas* le Zero W monocœur, qui est
   32 bits et trop lent). Une carte microSD de 16 Go ou plus.
-- **Une clé SDR.** Une **RTL-SDR** est le choix facile : sdrcrow lui parle
+- **Une clé SDR.** Une **RTL-SDR** est le choix facile : SDRCrow lui parle
   directement, sans bibliothèque supplémentaire. Un SDRplay RSP fonctionne aussi,
   mais exige d'abord le service de l'API SDRplay — plus de pièces mobiles sur une
   petite carte.
@@ -63,7 +63,7 @@ tapent dans le shell du Pi.
    ```sh
    ssh pi@swl.local
    ```
-3. Mettez à jour, et installez les paquets dont sdrcrow a besoin :
+3. Mettez à jour, et installez les paquets dont SDRCrow a besoin :
    ```sh
    sudo apt update && sudo apt full-upgrade -y
    sudo apt install -y libasound2-dev libopus-dev
@@ -74,7 +74,7 @@ l'emploi.
 
 ---
 
-## Partie 2 — Installer sdrcrow
+## Partie 2 — Installer SDRCrow
 
 Le Zero 2 W est 64 bits (`armv8`), il exécute donc la version **`aarch64-compat`**
 faite pour Raspberry Pi OS Bookworm. Téléchargez-la sur le Pi lui-même :
@@ -168,7 +168,7 @@ les fenêtres SCHEDULE et SWL LOG, les décodeurs, le journal de réception. Le 
 fait la réception et le décodage ; le navigateur fait le dessin, et c'est
 exactement ainsi qu'une carte de 512 Mo reste utile.
 
-Un sdrcrow **natif** sur un autre ordinateur peut aussi le piloter, avec
+Un SDRCrow **natif** sur un autre ordinateur peut aussi le piloter, avec
 `sdrcrow --connect swl.local:4950`.
 
 ### Le laisser tourner

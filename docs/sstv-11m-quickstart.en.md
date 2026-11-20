@@ -1,7 +1,7 @@
-# SSTV on 11 m quick-start (sdrcrow — CB/11 m)
+# SSTV on 11 m quick-start (SDRCrow — CB/11 m)
 
 A short, task-oriented walkthrough for sending and receiving **SSTV pictures on
-the 11 m (27 MHz) citizens' band** with **sdrcrow**: which frequency, how to
+the 11 m (27 MHz) citizens' band** with **SDRCrow**: which frequency, how to
 set it up, how to receive a picture and how to send one. SSTV is an analogue
 image mode — a picture is sent as tones, line by line, over a normal sideband —
 and on 11 m it is the community's picture mode, alongside the FT8 traffic. For
@@ -9,7 +9,7 @@ the reference detail behind each control see [`USER_MANUAL.md`](USER_MANUAL.md)
 §3.6 and the 11 m band in §6.1; for the why of this fork see the
 [README](../README.md).
 
-> This is the CB/SWL fork of sdrcrow. SSTV itself is upstream's; what this fork
+> SDRCrow is the CB/SWL build. SSTV itself is upstream's; what this fork
 > adds on 11 m is the band, the per-country channel plans, the 11 m SSTV calling
 > channels and the CB callsign in the banner.
 
@@ -46,11 +46,11 @@ as they appear on screen. `Settings > Radio` is a menu path.
 
 ## What you need
 
-- **An SDR or radio sdrcrow supports**: RTL-SDR, RX-888, Airspy HF+, SDRplay
+- **An SDR or radio SDRCrow supports**: RTL-SDR, RX-888, Airspy HF+, SDRplay
   RSP, HackRF, ELAD, PlutoSDR, a **CAT rig** over serial + sound card, TCI,
   OpenHPSDR or SoapySDR.
 - **A 27 MHz antenna** suited to your receiver.
-- **sdrcrow installed** (below).
+- **SDRCrow installed** (below).
 - **To *send* a picture you need a transceiver**, keyed by **VOX** (a sound-card
   rig) or **CAT**. A receive-only dongle hears and decodes pictures but cannot
   send them.
@@ -63,7 +63,7 @@ as they appear on screen. `Settings > Radio` is a menu path.
   the portable tarball.
 - **macOS** — the `.dmg`.
 
-You can also run sdrcrow as a **server** and open it in a browser:
+You can also run SDRCrow as a **server** and open it in a browser:
 `sdrcrow --server`, then `http://localhost:4950`.
 
 ---
@@ -78,7 +78,7 @@ Open **SETTINGS** and go to the **Radio** tab. Pick your interface (for example
 **RTL-SDR**, **RX-888** or **Airspy HF+**), then the **sample rate** and the
 **gain**. Changes apply right after **Apply / reconnect**.
 
-- **Linux — USB receivers:** install the bundled udev rules, or sdrcrow will
+- **Linux — USB receivers:** install the bundled udev rules, or SDRCrow will
   see the device but fail to open it:
   `sudo cp 60-sdrcrow-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, then replug.
 - **Windows — RX-888:** bind the device to **WinUSB** once with

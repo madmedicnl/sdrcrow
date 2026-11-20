@@ -1,11 +1,11 @@
-# Il meteo sulle onde corte — avvio rapido (sdrcrow)
+# Il meteo sulle onde corte — avvio rapido (SDRCrow)
 
 Il servizio più semplice della banda onde corte, e quasi nessuno lo ascolta.
 Navi e stazioni meteo trasmettono **il tempo dove si trovano davvero** come cifre
 codificate in RTTY HF, ogni poche ore. Niente internet, niente account, niente
 fasce orarie da prenotare — solo un orario scritto su un foglio di carta.
 
-sdrcrow decodes those numbers and shows you the wind, the pressure, the
+SDRCrow decodes those numbers and shows you the wind, the pressure, the
 temperature and the sea state. This card gets you listening in about five minutes.
 
 > **Questo è in versione BETA.** Il decodificatore è stato provato su quattro
@@ -26,7 +26,7 @@ sullo schermo. `Settings > Radio` è un percorso di menu.
 
 ## What you need
 
-- **Qualsiasi ricevitore supportato da sdrcrow** e un'antenna che raggiunga le HF.
+- **Qualsiasi ricevitore supportato da SDRCrow** e un'antenna che raggiunga le HF.
 - **Nient'altro.** Si ascolta, non si trasmette, e non serve alcuna licenza.
 
 Basta un'antenna a filo di pochi metri. Se avete già un impianto HF per FT8 o RTTY,

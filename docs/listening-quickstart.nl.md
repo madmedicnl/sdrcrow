@@ -1,6 +1,6 @@
-# Luister-quickstart (sdrcrow — kortegolf & omroep)
+# Luister-quickstart (SDRCrow — kortegolf & omroep)
 
-Een korte, taakgerichte handleiding om **sdrcrow** als **luisteraar** te
+Een korte, taakgerichte handleiding om **SDRCrow** als **luisteraar** te
 gebruiken: door het omroepschema bladeren, lange golf, middengolf en kortegolf
 afstemmen, opschrijven wat je hoort en een ontvangstrapport versturen. Niets
 hiervan vraagt een licentie of een zender — het luisterscherm is met opzet een
@@ -8,7 +8,7 @@ schone ontvanger. Voor de volledige uitleg per knop zie
 [`USER_MANUAL.md`](USER_MANUAL.md); voor het waarom van deze fork zie de
 [README](../README.md).
 
-> Dit is de CB/SWL-fork van sdrcrow. De luisterhulpmiddelen zijn bovenop het
+> SDRCrow is de CB/SWL-versie. De luisterhulpmiddelen zijn bovenop het
 > amateurprogramma gezet; de amateurkant, en al het andere, is upstream en
 > ongewijzigd.
 
@@ -24,7 +24,7 @@ ze op het scherm staan. `Settings > Radio` is een menupad.
 
 ## Wat je nodig hebt
 
-- **Een SDR of een radio die sdrcrow ondersteunt.** Elk exemplaar volstaat; om
+- **Een SDR of een radio die SDRCrow ondersteunt.** Elk exemplaar volstaat; om
   te luisteren zijn dit de gebruikelijke keuzes:
   - **RTL-SDR** (dongle) — native, geen SoapySDR nodig.
   - **RX-888 / RX-888 Mk2** — native; de firmware wordt automatisch geüpload.
@@ -36,7 +36,7 @@ ze op het scherm staan. `Settings > Radio` is een menupad.
     **CAT-radio** via seriële poort + geluidskaart, TCI, OpenHPSDR of SoapySDR.
 - **Een antenne.** Voor kortegolf doet zelfs een lange draad wonderen; een
   omroepband wil meer draad dan een 11 m-spriet.
-- **sdrcrow geïnstalleerd** (hieronder).
+- **SDRCrow geïnstalleerd** (hieronder).
 
 ## Installeren
 
@@ -46,7 +46,7 @@ ze op het scherm staan. `Settings > Radio` is een menupad.
   of de draagbare tarball.
 - **macOS** — de `.dmg`.
 
-Je kunt sdrcrow ook als **server** draaien en in een browser openen:
+Je kunt SDRCrow ook als **server** draaien en in een browser openen:
 `sdrcrow --server`, dan `http://localhost:4950`.
 
 ---

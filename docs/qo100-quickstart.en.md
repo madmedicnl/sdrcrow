@@ -1,7 +1,7 @@
-# QO-100 quick-start (sdrcrow + ADALM-Pluto)
+# QO-100 quick-start (SDRCrow + ADALM-Pluto)
 
 A task-oriented walkthrough for getting an **ADALM-Pluto** + **Ku-band LNB**
-station onto the QO-100 (Es'hail-2) geostationary transponder with sdrcrow. It
+station onto the QO-100 (Es'hail-2) geostationary transponder with SDRCrow. It
 covers the one-time station setup, locking onto the bird, and the QO-100
 beacon-sync tab. For the reference detail behind each control, see
 [`USER_MANUAL.md`](USER_MANUAL.md) §2.22 (QO-100 beacon plugin) and §6.2.7
@@ -16,7 +16,7 @@ Pluto directly.
 - A universal **Ku-band LNB** with a **9750 MHz** local oscillator — the usual
   QO-100 choice.
 - A dish, the coax from the LNB, and a 2.4 GHz uplink antenna.
-- **sdrcrow** installed. The Pluto driver is built in; there is nothing else to
+- **SDRCrow** installed. The Pluto driver is built in; there is nothing else to
   install.
 
 ## The frequency chain
@@ -36,7 +36,7 @@ screen. `Settings > Radio` is a menu path; `192.168.2.1` is a value you type.
 Done once and saved. Everything is in the **Settings** window, on the **General**
 and **Radio** tabs.
 
-### 1. Start sdrcrow
+### 1. Start SDRCrow
 
 Open the program. The main window has the control bar across the top and the
 panadapter and waterfall below it.

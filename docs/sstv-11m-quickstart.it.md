@@ -1,7 +1,7 @@
-# SSTV sugli 11 m — avvio rapido (sdrcrow — CB/11 m)
+# SSTV sugli 11 m — avvio rapido (SDRCrow — CB/11 m)
 
 Una guida breve e pratica per ricevere e trasmettere **immagini SSTV sugli
-11 m (27 MHz)** con **sdrcrow**: quale frequenza, come configurarla, come
+11 m (27 MHz)** con **SDRCrow**: quale frequenza, come configurarla, come
 ricevere un'immagine e come inviarne una. La SSTV è un modo immagine analogico —
 un'immagine viene inviata come toni, riga per riga, su una normale banda
 laterale — e sugli 11 m è il modo immagine della comunità, accanto al traffico
@@ -9,7 +9,7 @@ FT8. Per il dettaglio di ogni comando vedi [`USER_MANUAL.md`](USER_MANUAL.md)
 §3.6 e la banda 11 m in §6.1; per lo spirito di questo fork vedi il
 [README](../README.md).
 
-> Questo è il fork CB/SWL di sdrcrow. La SSTV in sé è upstream; ciò che questo
+> SDRCrow è la versione CB/SWL. La SSTV in sé è upstream; ciò che questo
 > fork aggiunge sugli 11 m sono la banda, i piani canali per paese, i canali
 > SSTV degli 11 m e l'indicativo CB nella bandierina.
 
@@ -47,11 +47,11 @@ menu.
 
 ## Cosa serve
 
-- **Un SDR o una radio che sdrcrow supporta**: RTL-SDR, RX-888, Airspy HF+,
+- **Un SDR o una radio che SDRCrow supporta**: RTL-SDR, RX-888, Airspy HF+,
   SDRplay RSP, HackRF, ELAD, PlutoSDR, una **radio CAT** via seriale + scheda
   audio, TCI, OpenHPSDR o SoapySDR.
 - **Un'antenna per i 27 MHz** adatta al tuo ricevitore.
-- **sdrcrow installato** (sotto).
+- **SDRCrow installato** (sotto).
 - **Per *trasmettere* un'immagine serve un transceiver**, manipolato via **VOX**
   (una radio con scheda audio) oppure via **CAT**. Un dongle in sola ricezione
   sente e decodifica le immagini ma non può trasmetterle.
@@ -64,7 +64,7 @@ menu.
   l'archivio portatile.
 - **macOS** — il `.dmg`.
 
-Puoi anche avviare sdrcrow come **server** e aprirlo nel browser:
+Puoi anche avviare SDRCrow come **server** e aprirlo nel browser:
 `sdrcrow --server`, poi `http://localhost:4950`.
 
 ---
@@ -80,7 +80,7 @@ Apri **SETTINGS** e vai alla scheda **Radio**. Scegli l'interfaccia (per esempio
 Le modifiche valgono subito dopo **Apply / reconnect**.
 
 - **Linux — ricevitori USB:** installa le regole udev fornite, altrimenti
-  sdrcrow vede il dispositivo ma non riesce ad aprirlo:
+  SDRCrow vede il dispositivo ma non riesce ad aprirlo:
   `sudo cp 60-sdrcrow-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, poi ricollega.
 - **Windows — RX-888:** associa il dispositivo a **WinUSB** una volta con
   [Zadig](https://zadig.akeo.ie/) — per **entrambi** gli id USB (`04B4:00F3` e

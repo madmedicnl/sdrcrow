@@ -1,4 +1,4 @@
-# Raspberry Pi Zero 2 W as a headless SWL station (sdrcrow)
+# Raspberry Pi Zero 2 W as a headless SWL station (SDRCrow)
 
 A short, task-oriented guide to turning a **Raspberry Pi Zero 2 W** and a cheap
 SDR dongle into a **network listening station** for shortwave and broadcast: the
@@ -30,7 +30,7 @@ they appear on screen. Commands in grey boxes are typed at the Pi's shell.
 
 - **A Raspberry Pi Zero 2 W** (the quad-core one — *not* the single-core Zero W,
   which is 32-bit and too slow). A 16 GB or larger microSD card.
-- **An SDR dongle.** An **RTL-SDR** is the easy choice: sdrcrow talks to it
+- **An SDR dongle.** An **RTL-SDR** is the easy choice: SDRCrow talks to it
   directly, with no extra library to install. An SDRplay RSP runs too, but needs
   the SDRplay API service set up first — more moving parts on a small board.
 - **A powered USB hub.** This is not optional. The Zero 2 W has a single USB OTG
@@ -57,7 +57,7 @@ they appear on screen. Commands in grey boxes are typed at the Pi's shell.
    ```sh
    ssh pi@swl.local
    ```
-3. Update, and install the packages sdrcrow needs:
+3. Update, and install the packages SDRCrow needs:
    ```sh
    sudo apt update && sudo apt full-upgrade -y
    sudo apt install -y libasound2-dev libopus-dev
@@ -67,7 +67,7 @@ You do **not** install a compiler. The released build is a ready-made binary.
 
 ---
 
-## Part 2 — Install sdrcrow
+## Part 2 — Install SDRCrow
 
 The Zero 2 W is 64-bit (`armv8`), so it runs the **`aarch64-compat`** build made
 for Raspberry Pi OS Bookworm. Download it on the Pi itself:
@@ -159,7 +159,7 @@ SCHEDULE and SWL LOG windows, the decoders, the reception log. The Pi does the
 receiving and the decoding; the browser does the drawing, which is exactly how a
 512 MB board stays useful.
 
-A **native** sdrcrow on another computer can drive it too, with
+A **native** SDRCrow on another computer can drive it too, with
 `sdrcrow --connect swl.local:4950`.
 
 ### Keep it running

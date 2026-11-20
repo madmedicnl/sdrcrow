@@ -1,12 +1,12 @@
-# Démarrage rapide CB (sdrcrow — 11 m)
+# Démarrage rapide CB (SDRCrow — 11 m)
 
-Un guide court et pratique pour mettre en route **sdrcrow** sur la bande
+Un guide court et pratique pour mettre en route **SDRCrow** sur la bande
 **11 m (27 MHz)** : régler votre SDR ou votre poste CAT, utiliser les plans de
 canaux par pays et suivre le trafic numérique WSJT-CB. Pour le détail de chaque
 commande, voir [`USER_MANUAL.md`](USER_MANUAL.md) ; pour l'esprit de ce fork,
 voir le [README](../README.md).
 
-> Ceci est le fork CB/SWL de sdrcrow. La bande 11 m et les bandes de
+> SDRCrow est la version CB/SWL. La bande 11 m et les bandes de
 > radiodiffusion sont ajoutées par-dessus ; les bandes amateurs et tout le
 > reste viennent d'upstream et sont inchangés.
 
@@ -32,7 +32,7 @@ menu.
     ou un **poste CAT** (Icom/Yaesu/Xiegu) via port série + carte son, TCI,
     OpenHPSDR ou SoapySDR.
 - **Une antenne 27 MHz** adaptée à votre récepteur.
-- **sdrcrow installé** (ci-dessous).
+- **SDRCrow installé** (ci-dessous).
 
 ## Installation
 
@@ -42,7 +42,7 @@ menu.
   `.deb`, ou l'archive portable.
 - **macOS** — le `.dmg`.
 
-Vous pouvez aussi lancer sdrcrow en **serveur** et l'ouvrir dans un
+Vous pouvez aussi lancer SDRCrow en **serveur** et l'ouvrir dans un
 navigateur : `sdrcrow --server`, puis `http://localhost:4950`. Pratique quand
 l'antenne est ailleurs.
 
@@ -52,7 +52,7 @@ l'antenne est ailleurs.
 
 Tout est enregistré sous `~/.config/sdrcrow/`, donc à faire une seule fois.
 
-### 1. Lancer sdrcrow
+### 1. Lancer SDRCrow
 
 La fenêtre principale a la barre de commandes en haut, et le panadapter et la
 cascade en dessous.
@@ -65,7 +65,7 @@ d'échantillonnage** et le **gain**. Les changements s'appliquent après
 **Apply / reconnect**.
 
 - **Linux — récepteurs USB :** installez les règles udev fournies, sinon
-  sdrcrow verra l'appareil mais ne pourra pas l'ouvrir :
+  SDRCrow verra l'appareil mais ne pourra pas l'ouvrir :
   `sudo cp 60-sdrcrow-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, puis rebranchez.
 - **Windows — RX-888 :** liez l'appareil à **WinUSB** une fois avec
   [Zadig](https://zadig.akeo.ie/) — pour **les deux** identifiants USB
@@ -111,7 +111,7 @@ Ce fork parle le même échange WSJT haché que
    plan CB.
 3. Dans la **liste de décodage** : cliquez une ligne pour amener votre audio
    sur ce signal, puis **REPLY** ou **Call CQ**.
-4. Chaque station décodée affiche son **drapeau de pays** — sdrcrow suit les
+4. Chaque station décodée affiche son **drapeau de pays** — SDRCrow suit les
    conventions d'indicatif et la numérotation des pays de WSJT-CB.
 5. En **SWL mode**, vous pouvez tout lire sans émettre.
 

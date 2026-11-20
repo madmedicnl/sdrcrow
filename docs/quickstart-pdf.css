@@ -1,0 +1,393 @@
+/* The quick-start PDFs: SDRCrow's colours on paper.
+ *
+ * The screen theme is a near-black ground with a blue accent and gold chrome,
+ * which is unreadable on a printed page. This keeps the identity — the blue,
+ * the gold, the condensed type, the mono for anything typed — on a light,
+ * quiet page: dark ink on off-white, accents used as rules and marks rather
+ * than as fills behind text.
+ *
+ * Colours: ink #12181d, muted #5a6873, rule #d7dfe5, paper #fbfcfd,
+ * panel #f1f5f8, blue #1c6aa8, gold #a8791b, green #2c7d55, red #b3271e.
+ */
+
+@page {
+    size: A4;
+    margin: 22mm 18mm 18mm;
+
+    @top-left {
+        content: "SDRCrow";
+        font: 700 8pt "DejaVu Sans Condensed", sans-serif;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+        color: #1c6aa8;
+    }
+    @top-right {
+        content: string(kind);
+        font: 8pt "DejaVu Sans Condensed", sans-serif;
+        letter-spacing: .06em;
+        color: #8b98a3;
+    }
+    @bottom-left {
+        content: string(source);
+        font: 7.5pt "DejaVu Sans Mono", monospace;
+        color: #9aa6b0;
+    }
+    @bottom-right {
+        content: counter(page) " / " counter(pages);
+        font: 8pt "DejaVu Sans Mono", monospace;
+        color: #5a6873;
+    }
+}
+
+/* The cover carries its own marks, so the running head and foot stay off it. */
+@page cover {
+    margin: 0;
+
+    @top-left { content: none; }
+    @top-right { content: none; }
+    @bottom-left { content: none; }
+    @bottom-right { content: none; }
+}
+
+html {
+    font-size: 10.5pt;
+    color: #12181d;
+    background: #fbfcfd;
+}
+
+body {
+    font-family: "DejaVu Sans", sans-serif;
+    line-height: 1.5;
+    margin: 0;
+    hyphens: auto;
+}
+
+/* ---------------------------------------------------------------- cover -- */
+
+.cover {
+    page: cover;
+    height: 297mm;
+    width: 210mm;
+    position: relative;
+    background: #fbfcfd;
+    page-break-after: always;
+}
+
+.cover .band {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 96mm;
+    background: #0b1016;
+}
+
+/* The gold hairline under the band: the theme's chrome, doing the same job. */
+.cover .band::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1.6mm;
+    background: linear-gradient(90deg, #d9a521 0%, #ffc414 45%, #3498dc 100%);
+}
+
+.cover .mark {
+    position: absolute;
+    top: 17mm;
+    left: 18mm;
+    width: 46mm;
+    height: 46mm;
+}
+
+.cover .wordmark {
+    position: absolute;
+    top: 26mm;
+    left: 72mm;
+    right: 18mm;
+}
+
+.cover .wordmark .name {
+    font-family: "DejaVu Sans Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 38pt;
+    letter-spacing: -.01em;
+    line-height: 1;
+    color: #eef4fb;
+}
+
+.cover .wordmark .name em {
+    font-style: normal;
+    color: #ffc414;
+}
+
+.cover .wordmark .tagline {
+    margin-top: 3mm;
+    font-size: 10pt;
+    line-height: 1.35;
+    color: #b9c5d2;
+    max-width: 96mm;
+}
+
+.cover .titles {
+    position: absolute;
+    top: 112mm;
+    left: 18mm;
+    right: 18mm;
+}
+
+.cover .kicker {
+    font-family: "DejaVu Sans Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 9pt;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: #a8791b;
+}
+
+.cover h1.doctitle {
+    margin: 3mm 0 0;
+    font-family: "DejaVu Sans Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 31pt;
+    line-height: 1.12;
+    letter-spacing: -.005em;
+    color: #12181d;
+    border: none;
+    padding: 0;
+}
+
+.cover .subtitle {
+    margin-top: 2.5mm;
+    font-family: "DejaVu Sans Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 14pt;
+    letter-spacing: .02em;
+    color: #5a6873;
+}
+
+.cover .subtitle:empty {
+    display: none;
+}
+
+.cover .rule {
+    margin: 6mm 0 5mm;
+    height: 1.2mm;
+    width: 48mm;
+    background: #1c6aa8;
+}
+
+.cover .lang {
+    display: inline-block;
+    padding: 1.4mm 3.5mm;
+    border: .5pt solid #1c6aa8;
+    border-radius: 1mm;
+    font-family: "DejaVu Sans Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 9pt;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #1c6aa8;
+}
+
+.cover .standfirst {
+    margin: 7mm 0 0;
+    max-width: 118mm;
+    font-size: 10.5pt;
+    line-height: 1.5;
+    color: #5a6873;
+}
+
+.cover .toc {
+    list-style: none;
+    margin: 9mm 0 0;
+    padding: 0;
+    max-width: 145mm;
+    font-size: 9.5pt;
+    color: #5a6873;
+}
+
+.cover .toc li {
+    margin: 1.4mm 0;
+    padding: 0;
+}
+
+.cover .toc a {
+    color: #12181d;
+    text-decoration: none;
+    border: none;
+}
+
+.cover .toc a::after {
+    content: leader("·") " " target-counter(attr(href), page);
+    color: #1c6aa8;
+    font-family: "DejaVu Sans Mono", monospace;
+    font-size: 8.5pt;
+}
+
+.cover .foot {
+    position: absolute;
+    left: 18mm;
+    right: 18mm;
+    bottom: 16mm;
+    border-top: .4pt solid #d7dfe5;
+    padding-top: 3mm;
+    font-family: "DejaVu Sans Mono", monospace;
+    font-size: 8pt;
+    color: #5a6873;
+}
+
+.cover .foot .repo {
+    color: #1c6aa8;
+}
+
+/* ----------------------------------------------------------------- body -- */
+
+.body h2 {
+    margin: 9mm 0 2.5mm;
+    padding: 0 0 0 3mm;
+    border-left: 1.4mm solid #1c6aa8;
+    font-family: "DejaVu Sans Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 16pt;
+    line-height: 1.2;
+    color: #12181d;
+    break-after: avoid;
+}
+
+.body h3 {
+    margin: 6mm 0 1.5mm;
+    font-family: "DejaVu Sans Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 11.5pt;
+    letter-spacing: .02em;
+    color: #a8791b;
+    break-after: avoid;
+}
+
+.body h4 {
+    margin: 5mm 0 1mm;
+    font-size: 10.5pt;
+    color: #12181d;
+    break-after: avoid;
+}
+
+.body p,
+.body li {
+    orphans: 3;
+    widows: 3;
+}
+
+.body a {
+    color: #1c6aa8;
+    text-decoration: none;
+    border-bottom: .3pt dotted #9dc0da;
+    word-break: break-word;
+}
+
+.body strong {
+    color: #12181d;
+}
+
+.body ul,
+.body ol {
+    margin: 1.5mm 0 3mm 5.5mm;
+    padding: 0;
+}
+
+.body li {
+    margin: .8mm 0;
+}
+
+.body li::marker {
+    color: #1c6aa8;
+}
+
+.body hr {
+    border: none;
+    border-top: .4pt solid #d7dfe5;
+    margin: 7mm 0;
+}
+
+.body code {
+    font-family: "DejaVu Sans Mono", monospace;
+    font-size: 9pt;
+    background: #eef3f7;
+    border: .3pt solid #d7dfe5;
+    border-radius: .8mm;
+    padding: 0 .8mm;
+    color: #12181d;
+}
+
+.body pre {
+    margin: 3mm 0 4mm;
+    padding: 3mm 4mm;
+    background: #f1f5f8;
+    border-left: 1mm solid #1c6aa8;
+    border-radius: .8mm;
+    font-size: 8.6pt;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    break-inside: avoid;
+}
+
+.body pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: inherit;
+}
+
+.body blockquote {
+    margin: 4mm 0;
+    padding: 2.5mm 4mm 2.5mm 4.5mm;
+    border-left: 1mm solid #d9a521;
+    background: #fdf8ec;
+    color: #3b4650;
+    break-inside: avoid;
+}
+
+.body blockquote p {
+    margin: 0;
+}
+
+.body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 3mm 0 5mm;
+    font-size: 9.5pt;
+    break-inside: avoid;
+}
+
+.body th {
+    text-align: left;
+    font-family: "DejaVu Sans Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 9pt;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: #fbfcfd;
+    background: #1c6aa8;
+    padding: 1.6mm 2mm;
+}
+
+.body td {
+    padding: 1.4mm 2mm;
+    border-bottom: .4pt solid #d7dfe5;
+    vertical-align: top;
+}
+
+.body tr:nth-child(even) td {
+    background: #f6f9fb;
+}
+
+.body img {
+    max-width: 100%;
+    border-radius: 1mm;
+}
+
+.body .langlinks {
+    font-size: 8.5pt;
+    color: #5a6873;
+}

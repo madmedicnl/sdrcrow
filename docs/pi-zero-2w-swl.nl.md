@@ -1,4 +1,4 @@
-# Raspberry Pi Zero 2 W als headless SWL-station (sdrcrow)
+# Raspberry Pi Zero 2 W als headless SWL-station (SDRCrow)
 
 Een korte, taakgerichte handleiding om van een **Raspberry Pi Zero 2 W** en een
 goedkope SDR-dongle een **netwerk-luisterstation** te maken voor kortegolf en
@@ -31,7 +31,7 @@ ze op het scherm staan. Commando's in grijze vakken typ je in de shell van de Pi
 
 - **Een Raspberry Pi Zero 2 W** (de quad-core — *niet* de single-core Zero W, die
   32-bit is en te traag). Een microSD-kaart van 16 GB of groter.
-- **Een SDR-dongle.** Een **RTL-SDR** is de makkelijkste keuze: sdrcrow praat er
+- **Een SDR-dongle.** Een **RTL-SDR** is de makkelijkste keuze: SDRCrow praat er
   direct mee, zonder extra bibliotheek. Een SDRplay RSP werkt ook, maar vraagt
   eerst de SDRplay API-service — meer onderdelen op een klein bord.
 - **Een powered USB-hub.** Dit is niet optioneel. De Zero 2 W heeft één USB-OTG-
@@ -58,7 +58,7 @@ ze op het scherm staan. Commando's in grijze vakken typ je in de shell van de Pi
    ```sh
    ssh pi@swl.local
    ```
-3. Werk bij, en installeer de pakketten die sdrcrow nodig heeft:
+3. Werk bij, en installeer de pakketten die SDRCrow nodig heeft:
    ```sh
    sudo apt update && sudo apt full-upgrade -y
    sudo apt install -y libasound2-dev libopus-dev
@@ -69,7 +69,7 @@ binair bestand.
 
 ---
 
-## Deel 2 — sdrcrow installeren
+## Deel 2 — SDRCrow installeren
 
 De Zero 2 W is 64-bit (`armv8`), dus hij draait de **`aarch64-compat`**-build voor
 Raspberry Pi OS Bookworm. Download hem op de Pi zelf:
@@ -163,7 +163,7 @@ SCHEDULE- en SWL LOG-vensters, de decoders, het ontvangstlogboek. De Pi doet het
 ontvangen en het decoderen; de browser doet het tekenwerk, en precies daarmee
 blijft een bord van 512 MB bruikbaar.
 
-Een **native** sdrcrow op een andere computer kan hem ook aansturen, met
+Een **native** SDRCrow op een andere computer kan hem ook aansturen, met
 `sdrcrow --connect swl.local:4950`.
 
 ### Laat hem draaien

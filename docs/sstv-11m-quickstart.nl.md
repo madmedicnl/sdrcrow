@@ -1,7 +1,7 @@
-# SSTV op de 11 meter — quickstart (sdrcrow — CB/11 m)
+# SSTV op de 11 meter — quickstart (SDRCrow — CB/11 m)
 
 Een korte, taakgerichte handleiding om **SSTV-foto's op de 11 meter (27 MHz)**
-te ontvangen en te verzenden met **sdrcrow**: welke frequentie, hoe je het
+te ontvangen en te verzenden met **SDRCrow**: welke frequentie, hoe je het
 instelt, hoe je een foto ontvangt en hoe je er een verzendt. SSTV is een analoog
 beeldmode — een foto wordt regel voor regel als tonen over een gewone zijband
 gestuurd — en op de 11 m is het de beeldmode van de community, naast het
@@ -9,7 +9,7 @@ FT8-verkeer. Voor de volledige uitleg per knop zie
 [`USER_MANUAL.md`](USER_MANUAL.md) §3.6 en de 11 m-band in §6.1; voor het waarom
 van deze fork zie de [README](../README.md).
 
-> Dit is de CB/SWL-fork van sdrcrow. SSTV zelf is upstream; wat deze fork op de
+> SDRCrow is de CB/SWL-versie. SSTV zelf is upstream; wat deze fork op de
 > 11 m toevoegt zijn de band, de kanaalplannen per land, de 11 m-SSTV-kanalen en
 > de CB-roepnaam in de banner.
 
@@ -47,11 +47,11 @@ zoals ze op het scherm staan. `Settings > Radio` is een menupad.
 
 ## Wat je nodig hebt
 
-- **Een SDR of radio die sdrcrow ondersteunt**: RTL-SDR, RX-888, Airspy HF+,
+- **Een SDR of radio die SDRCrow ondersteunt**: RTL-SDR, RX-888, Airspy HF+,
   SDRplay RSP, HackRF, ELAD, PlutoSDR, een **CAT-radio** via serieel +
   geluidskaart, TCI, OpenHPSDR of SoapySDR.
 - **Een 27 MHz-antenne** die bij je ontvanger past.
-- **sdrcrow geïnstalleerd** (zie hieronder).
+- **SDRCrow geïnstalleerd** (zie hieronder).
 - **Om een foto te *zenden* heb je een transceiver nodig**, getast via **VOX**
   (een radio met geluidskaart) of via **CAT**. Een dongle die alleen ontvangt
   hoort en decodeert foto's wel, maar kan ze niet zenden.
@@ -64,7 +64,7 @@ zoals ze op het scherm staan. `Settings > Radio` is een menupad.
   of de portable tarball.
 - **macOS** — de `.dmg`.
 
-Je kunt sdrcrow ook als **server** draaien en in de browser openen:
+Je kunt SDRCrow ook als **server** draaien en in de browser openen:
 `sdrcrow --server` en dan `http://localhost:4950`.
 
 ---
@@ -81,7 +81,7 @@ Open **SETTINGS** en ga naar het tabblad **Radio**. Kies je interface
 reconnect**.
 
 - **Linux — USB-ontvangers:** installeer de meegeleverde udev-regels, anders
-  ziet sdrcrow het apparaat wel maar kan het niet openen:
+  ziet SDRCrow het apparaat wel maar kan het niet openen:
   `sudo cp 60-sdrcrow-*.rules /usr/lib/udev/rules.d/ && sudo udevadm control --reload`, daarna opnieuw aansluiten.
 - **Windows — RX-888:** bind het apparaat eenmalig aan **WinUSB** met
   [Zadig](https://zadig.akeo.ie/) — voor **beide** USB-id's (`04B4:00F3` en
