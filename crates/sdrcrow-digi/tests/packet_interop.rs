@@ -8,10 +8,14 @@
 //! by construction, and the agreement says nothing about whether either matches
 //! the deployed network.
 //!
+//! The frames in them were made while the program still carried its old name,
+//! so the payload says `Hello from sdroxide packet` — a reference file is not
+//! ours to rename, and the test reads what Direwolf encoded.
+//!
 //! Regenerate with:
 //!
 //! ```text
-//! printf 'OE3JJS>APDW12:Hello from sdrcrow packet\n\
+//! printf 'OE3JJS>APDW12:Hello from sdroxide packet\n\
 //!         OE3JJS-7>APRS,WIDE1-1:=4812.00N/01620.00E-test\n' > msgs.txt
 //! gen_packets -o ref1200.wav -B 1200 -r 48000 msgs.txt   # and -B 300, -B 9600
 //! ```
@@ -21,7 +25,7 @@ use sdrcrow_dsp::{AfskProfile, AfskRx};
 
 /// The two frames in every reference file, as (source, destination, payload).
 const EXPECTED: [(&str, &str, &str); 2] = [
-    ("OE3JJS", "APDW12", "Hello from sdrcrow packet\n"),
+    ("OE3JJS", "APDW12", "Hello from sdroxide packet\n"),
     ("OE3JJS-7", "APRS", "=4812.00N/01620.00E-test\n"),
 ];
 
@@ -357,7 +361,7 @@ fn the_codec_parses_direwolfs_frames() {
     let first = sdrcrow_ax25::Packet::parse(&frames[0], Some(false)).expect("parsing frame 1");
     match first.packet_type() {
         PacketType::Ui(ui) => {
-            assert_eq!(ui.payload, b"Hello from sdrcrow packet\n");
+            assert_eq!(ui.payload, b"Hello from sdroxide packet\n");
             assert_eq!(ui.pid, 0xF0, "no layer 3");
         }
         other => panic!("expected a UI frame, got {other:?}"),
@@ -409,7 +413,7 @@ fn the_controller_monitors_a_1200_baud_channel() {
     assert_eq!(heard[0].from, "OE3JJS");
     assert_eq!(heard[0].to, "APDW12");
     assert_eq!(heard[0].kind, "UI");
-    assert_eq!(heard[0].text, "Hello from sdrcrow packet");
+    assert_eq!(heard[0].text, "Hello from sdroxide packet");
     assert!(heard[0].via.is_empty(), "the first frame is direct");
 
     assert_eq!(heard[1].from, "OE3JJS-7");
@@ -424,7 +428,7 @@ fn the_controller_monitors_a_9600_baud_channel() {
         sdrcrow_types::PacketBaud::Vhf9600,
     );
     assert_eq!(heard.len(), 2, "expected two frames, got {heard:?}");
-    assert_eq!(heard[0].text, "Hello from sdrcrow packet");
+    assert_eq!(heard[0].text, "Hello from sdroxide packet");
 }
 
 #[test]
@@ -435,7 +439,7 @@ fn the_controller_monitors_an_hf_channel() {
         sdrcrow_types::PacketBaud::Hf300,
     );
     assert_eq!(heard.len(), 2, "expected two frames, got {heard:?}");
-    assert_eq!(heard[0].text, "Hello from sdrcrow packet");
+    assert_eq!(heard[0].text, "Hello from sdroxide packet");
 }
 
 /// The channel-busy flag has to follow a real transmission, or CSMA will key

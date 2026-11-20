@@ -228,7 +228,9 @@ async fn a_client_adds_renames_switches_and_closes_the_stations_radios() {
     match recv_msg(&mut second).await {
         ServerMsg::HelloAck { caps, state, .. } => {
             assert_eq!(caps.label, "Added radio");
-            assert_eq!(state.sample_rate, 2_048_000.0);
+            // A radio added without settings takes the configuration's defaults,
+            // and `Settings::default()` asks for 1.536 MS/s.
+            assert_eq!(state.sample_rate, 1_536_000.0);
         }
         other => panic!("expected HelloAck from the added radio, got {other:?}"),
     }

@@ -648,11 +648,18 @@ mod tests {
 
     #[test]
     fn hello_states_the_version_then_the_name() {
-        let f = frame_hello("sdrcrow");
+        let name = "sdrcrow";
+        let f = frame_hello(name);
         assert_eq!(&f[0..4], &0u32.to_le_bytes(), "command type HELLO");
-        assert_eq!(&f[4..8], &12u32.to_le_bytes(), "4 bytes of version + 8 of name");
+        // The body is the version word and then the name, with no length byte
+        // of its own: the frame's length says where the name ends.
+        assert_eq!(
+            &f[4..8],
+            &(4 + name.len() as u32).to_le_bytes(),
+            "4 bytes of version plus the name"
+        );
         assert_eq!(&f[8..12], &PROTOCOL_VERSION.to_le_bytes());
-        assert_eq!(&f[12..], b"sdrcrow", "the name has no terminator");
+        assert_eq!(&f[12..], name.as_bytes(), "the name has no terminator");
         assert_eq!(PROTOCOL_VERSION, 0x0200_06A4);
     }
 

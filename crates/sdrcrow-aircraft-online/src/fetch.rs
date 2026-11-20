@@ -190,7 +190,7 @@ mod tests {
         assert!(matches!(reply, Reply::Adsbdb(Lookup::Found(_))), "{reply:?}");
         let head = seen.recv().unwrap();
         assert!(head.starts_with("GET /v0/aircraft/484006?callsign=KLM1234 HTTP/1.1"), "{head}");
-        assert!(head.to_ascii_lowercase().contains("user-agent: sdr-oxide-brown/"), "{head}");
+        assert!(head.to_ascii_lowercase().contains("user-agent: sdrcrow/"), "{head}");
         assert!(!head.to_ascii_lowercase().contains("cookie"), "nothing of the client goes out");
     }
 
@@ -267,7 +267,7 @@ mod tests {
             head.starts_with("GET /api/rest_v1/page/summary/Amsterdam_Airport_Schiphol HTTP/1.1"),
             "{head}"
         );
-        assert!(head.to_ascii_lowercase().contains("user-agent: sdr-oxide-brown/"), "{head}");
+        assert!(head.to_ascii_lowercase().contains("user-agent: sdrcrow/"), "{head}");
         assert!(!head.to_ascii_lowercase().contains("cookie"), "nothing of the client goes out");
     }
 
@@ -301,7 +301,7 @@ mod tests {
             ),
             "{head}"
         );
-        assert!(head.to_ascii_lowercase().contains("user-agent: sdr-oxide-brown/"), "{head}");
+        assert!(head.to_ascii_lowercase().contains("user-agent: sdrcrow/"), "{head}");
         assert!(!head.to_ascii_lowercase().contains("cookie"), "nothing of the client goes out");
     }
 

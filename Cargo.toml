@@ -287,8 +287,8 @@ embed-web = ["sdrcrow-server/embed-web"]
 # Base .deb = the standard (non-SoapySDR) build: drives CAT/OpenHPSDR/TCI and
 # needs no libSoapySDR, so no SoapySDR recommendation. Package name `sdrcrow`.
 [package.metadata.deb]
-maintainer = "Josef Jahn <josef.jahn@gmail.com>"
-copyright = "2026, Josef Jahn"
+maintainer = "Roy Schuurmans <royschuurmans@gmail.com>"
+copyright = "2026, Roy Schuurmans"
 extended-description = """\
 PowerSDR/Thetis-style software-defined-radio transceiver client with an egui \
 GUI. Runs as a native desktop application or as a server that streams the same \
@@ -297,6 +297,9 @@ FT8/FT4 digital modes and an integrated logbook. For SoapySDR device support \
 (HackRF, RTL-SDR, etc.) install the sdrcrow-soapysdr package instead."""
 section = "hamradio"
 priority = "optional"
+# `dpkg-shlibdeps` is not on every machine that builds this, so the libraries
+# the binary links are named here rather than left to $auto.
+depends = "libasound2, libc6, libgcc-s1, libstdc++6"
 license-file = ["LICENSE", "0"]
 features = ["embed-web"]
 assets = [
@@ -345,6 +348,7 @@ assets = [
 # installs Recommends by default). Built with `cargo deb --variant soapysdr`.
 [package.metadata.deb.variants.soapysdr]
 name = "sdrcrow-soapysdr"
+depends = "libasound2, libc6, libgcc-s1, libstdc++6, libsoapysdr0.8"
 recommends = "soapysdr-module-all"
 extended-description = """\
 PowerSDR/Thetis-style software-defined-radio transceiver client built on \
