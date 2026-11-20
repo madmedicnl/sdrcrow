@@ -30,11 +30,15 @@ The Linux builds and the web client are on the
 | `sdrcrow-v1.1.0-linux-x86_64.deb` | the same as a Debian package |
 | `sdrcrow-v1.1.0-linux-x86_64-soapysdr.deb` | with SoapySDR device support |
 | `sdrcrow-v1.1.0-linux-x86_64.AppImage` | one file, run it |
+| `sdrcrow-v1.1.0-macos-x86_64.dmg` / `.tar.gz` | the macOS build for Intel Macs |
+| `sdrcrow-v1.1.0-macos-aarch64.dmg` / `.tar.gz` | the macOS build for Apple silicon |
+| `sdrcrow-v1.1.0-windows-x86_64.msi` / `.zip` | the Windows installer and the portable folder |
 | `sdrcrow-web-v1.1.0.zip` | the browser client, to serve from a web server |
 | `SHA256SUMS` | the checksums |
 
-macOS and Windows are not in this release: they need the release workflow,
-which is the next piece of work. Everything below builds from source.
+The macOS and Windows builds come from `.github/workflows/release.yml`; the
+`-soapysdr` variants of each platform are built the same way. Everything below
+builds from source.
 
 ## The ultra narrowband voice experiment (UNBV)
 
