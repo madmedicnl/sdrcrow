@@ -13,6 +13,11 @@ on:
       # `["linux-aarch64"]`. Empty builds all of them, which is what a tag push
       # and the nightly do. Narrowing a run is how the aarch64 link probe is
       # afforded without paying for fourteen builds.
+      version:
+        description: 'Version for the asset names, e.g. v1.1.0 (empty = the tag, or dev-<sha>)'
+        required: false
+        default: ''
+        type: string
       wanted:
         description: 'Platform labels to build (JSON list; empty = all)'
         required: false
@@ -399,7 +404,11 @@ jobs:
 
       - name: Compute version
         run: |
-          if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
+          if [[ -n "${{ inputs.version }}" ]]; then
+            # A dispatch on a branch, asked for by a release: name the assets as
+            # the release does, so they can be attached to it.
+            RELEASE_VERSION="${{ inputs.version }}"
+          elif [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
             RELEASE_VERSION="$GITHUB_REF_NAME"
           else
             RELEASE_VERSION="dev-${GITHUB_SHA::7}"
