@@ -19,6 +19,23 @@ Brown installation lives beside it in `~/.config/sdroxide-brown` and is neither
 read nor touched; copying it across is a `cp -a` and a decision.
 `SDRCROW_CONFIG_DIR` points the program at another profile.
 
+## Download
+
+The Linux builds and the web client are on the
+[releases page](https://github.com/madmedicnl/sdrcrow/releases):
+
+| file | what |
+|---|---|
+| `sdrcrow-v1.1.0-linux-x86_64.tar.gz` | the standard Linux build — CAT, OpenHPSDR, TCI, RTL-SDR, Airspy, RX-888, ELAD; no SoapySDR needed |
+| `sdrcrow-v1.1.0-linux-x86_64.deb` | the same as a Debian package |
+| `sdrcrow-v1.1.0-linux-x86_64-soapysdr.deb` | with SoapySDR device support |
+| `sdrcrow-v1.1.0-linux-x86_64.AppImage` | one file, run it |
+| `sdrcrow-web-v1.1.0.zip` | the browser client, to serve from a web server |
+| `SHA256SUMS` | the checksums |
+
+macOS and Windows are not in this release: they need the release workflow,
+which is the next piece of work. Everything below builds from source.
+
 ## Where things are
 
 - **`SDRCROW.md`** — what was changed to detach this build, and what is still
