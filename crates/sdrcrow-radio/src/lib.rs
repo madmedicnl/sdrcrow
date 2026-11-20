@@ -16,7 +16,7 @@ mod recorder;
 pub mod scanner;
 mod source;
 pub mod ptt_inputs;
-mod unbv;
+pub mod unbv;
 mod tr_switch;
 mod tx_gate;
 mod voice;
