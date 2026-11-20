@@ -15,12 +15,13 @@ What it does **not** do, deliberately:
 - nothing is fetched at build or run time. This is a working note generator, run
   by hand, and its output is committed as `docs/internal/SHOC-MODES.md`.
 
-    python3 tools/shoc-index/fetch.py > /tmp/opencode/shoc.md
+    python3 tools/shoc-index/fetch.py > $TMPDIR/shoc.md
 
 Pages that fail are listed at the end rather than silently skipped, because a
 catalogue with a hole in it reads as though the mode has no parameters.
 """
 import re
+import tempfile
 import sys
 import time
 

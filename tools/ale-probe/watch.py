@@ -11,6 +11,7 @@ those sound about once an hour and are the predictable traffic; the military
 channels go last because their traffic is not on a schedule.
 """
 import os
+import tempfile
 import subprocess
 import sys
 import time
@@ -20,7 +21,7 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RSPCAP = os.path.normpath(os.path.join(HERE, "..", "rsp1-capture", "target", "release", "rspcap"))
-OUT = "/tmp/opencode/ale-watch"
+OUT = tempfile.gettempdir() + "/ale-watch"
 
 # kHz, in the order to visit them.
 CHANNELS = [

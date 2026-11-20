@@ -10,8 +10,8 @@ import argparse
 import sys
 import time
 
-sys.path.insert(0, "/tmp/opencode/atsmini")
-from probe import Radio, fmt, dial_hz  # noqa: E402
+# probe.py sits beside this file, which is where Python looks first.
+from probe import Radio, fmt, dial_hz
 
 
 def main():

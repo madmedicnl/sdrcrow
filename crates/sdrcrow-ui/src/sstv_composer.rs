@@ -989,7 +989,7 @@ mod tests {
             let mut img = mosaic_rgb.clone();
             draw_onto(&doc, &mut img, w, h);
             let png = crate::sstv::encode_png(&img, w, h).unwrap();
-            let path = format!("/tmp/opencode/sstv-mosaic-{name}.png");
+            let path = format!("{}/sstv-mosaic-{name}.png", std::env::temp_dir().display());
             std::fs::write(&path, png).unwrap();
             eprintln!("wrote {path}");
         }
@@ -1053,8 +1053,9 @@ mod tests {
         });
         let (img, w, h) = render(&c, 320, 256, None, AT);
         let png = crate::sstv::encode_png(&img, w, h).unwrap();
-        std::fs::write("/tmp/opencode/composer-sample.png", png).unwrap();
-        eprintln!("wrote /tmp/opencode/composer-sample.png");
+        let path = std::env::temp_dir().join("composer-sample.png");
+        std::fs::write(&path, png).unwrap();
+        eprintln!("wrote {}", path.display());
         let _ = frame(w, h);
     }
 }

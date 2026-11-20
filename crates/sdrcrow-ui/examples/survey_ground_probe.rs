@@ -34,7 +34,7 @@ fn main() {
                 png.put_pixel(x, y, Rgb([px.r(), px.g(), px.b()]));
             }
             let name = style.label().to_lowercase();
-            let path = format!("/tmp/opencode/ground-{name}{tag}.png");
+            let path = format!("{}/ground-{name}{tag}.png", std::env::temp_dir().display());
             match png.save(&path) {
                 Ok(()) => println!("wrote {path}"),
                 Err(e) => println!("could not write {path}: {e}"),

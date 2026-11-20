@@ -114,7 +114,7 @@ operator recognises one.
 | The Wayland/WM app id | `sdrcrow` |
 | The release suffix | none — tags are `vX.Y.Z` |
 | The look | `UiTheme::Default` is SDRCrow's own: charcoal on a near-black page, the logo's gold on the chrome, its blue as the accent, steel ink and red kept for alerts — and it is the fallback every unknown value lands on. Rainbow keeps Brown's old navy instrument |
-| The manual's pictures | `tools/manual_shot.py` takes a settings page from the running program on a throw-away configuration; `docs/internal/SCREENSHOT-PLAN.md` says which pictures still need the operator |
+| The manual's pictures | `tools/manual_shot.py` takes a settings page from the running program on a throw-away configuration, so every picture is of this program's own screens |
 | The splash | the SDRCrow logo (`crates/sdrcrow-ui/assets/splash.png`), 2 s, dismissed at once by a click or a key |
 | Packaging | `packaging/linux/sdrcrow.desktop`, `packaging/icons/sdrcrow-*.png` (the logo, 16 to 512 px), udev rules `60-sdrcrow-*.rules`, `packaging/windows/sdrcrow.ico` and a fresh UpgradeCode, `packaging/macos/sdrcrow.icns` and bundle id `org.sdrcrow.sdrcrow`, headless installers naming SDRCrow |
 | The update check | asks `madmedicnl/sdrcrow` for releases, and nothing else |

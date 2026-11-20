@@ -1593,6 +1593,6 @@ those are kept for the record.
 [1.9.5_brown]: https://github.com/madmedicnl/sdroxide-brown/compare/999a1ce70b86f24bbc48273a6537de213f7d6e59...fed08486990fd8711a4f415a86c82cac4c9a4bb5
 
 <!-- Boundary commits are used above for 1.9.5–1.9.9: their tags were removed
-     on 2026-09-30 (see AGENTS.md → "Cutting a release"), and a compare link to
+     on 2026-09-30 (the release rules say a tag is never re-cut), and a compare link to
      a tag that no longer exists is a 404. -->
 

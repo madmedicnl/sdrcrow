@@ -5,17 +5,24 @@
 // signal at 12 kHz. Nothing here changes the decoder — this only replaces the
 // Octave glue, so the same bits come out without Octave installed.
 //
-//   ffmpeg -i capture.wav -ac 1 -ar 12000 -f f32le /tmp/opencode/cap.raw
-//   ./driver /tmp/opencode/cap.raw 2 > bits.txt
+//   ffmpeg -i capture.wav -ac 1 -ar 12000 -f f32le "$TMPDIR/cap.raw"
+//   ./driver "$TMPDIR/cap.raw" 2 > bits.txt
 //
 // argv[1] = raw mono f32le at 12 kHz, argv[2] = modulation bits per symbol.
 
 #include <cstdio>
+#include <cassert>
+#include <cstdint>
 #include <cstdlib>
+#include <algorithm>
 #include <cmath>
 #include <complex>
+#include <iostream>
 #include <vector>
 
+// The reference headers (vendor/s4285-ref) were written for an older compiler:
+// they use std::cout, std::max_element and assert without including what
+// declares them, which the includes above put in scope.
 #include "s4285_bitstream_decoder.hpp"
 
 // 101-tap windowed Hilbert transformer: real in, analytic out.
@@ -95,11 +102,18 @@ int main(int argc, char** argv) {
   }
 
   fprintf(stderr, "chunks %d bits %zu frames %zu\n", d.chunks, d.bits.size(), d.soft.size()/128);
-  if (FILE* sf = fopen("/tmp/opencode/ref_soft.bin", "wb")) {
+  // Where the Rust test looks for them: the system's temp directory.
+  const char* tmp = getenv("TMPDIR");
+  if (!tmp || !*tmp) tmp = "/tmp";
+  char soft_path[4096];
+  char bits_path[4096];
+  snprintf(soft_path, sizeof soft_path, "%s/ref_soft.bin", tmp);
+  snprintf(bits_path, sizeof bits_path, "%s/ref_bits_clean.txt", tmp);
+  if (FILE* sf = fopen(soft_path, "wb")) {
     fwrite(d.soft.data(), 1, d.soft.size(), sf);
     fclose(sf);
   }
-  if (FILE* bf = fopen("/tmp/opencode/ref_bits_clean.txt", "w")) {
+  if (FILE* bf = fopen(bits_path, "w")) {
     for (size_t i = 0; i < d.bits.size(); ++i) fputc(d.bits[i] ? '1' : '0', bf);
     fclose(bf);
   }
