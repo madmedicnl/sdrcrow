@@ -11,6 +11,36 @@ everything before 1.9.5) is described in the
 [User Manual](https://github.com/madmedicnl/sdroxide-brown/blob/main/docs/USER_MANUAL.md)
 and the [README](https://github.com/madmedicnl/sdroxide-brown#readme).
 
+## [1.1.0] - 2026-11-20
+
+The first release of **SDRCrow**. It is the 1.0.0 tree — the program detached
+from SDR Oxide Brown, with everything ported from Brown's `main` up to
+`725ff96fee` (`PROTO_VERSION` 305) — under its own name, with its own
+configuration directory, icon, packaging and documentation.
+
+### Changed
+- **The name is the program's own.** Executable and crates are `sdrcrow` and
+  `sdrcrow-*`, the configuration lives in `~/.config/sdrcrow`
+  (`org.sdrcrow.sdrcrow`), and the identifier, icons, desktop entry, installer
+  folder, user agents and download links all say SDRCrow. What was Brown's and
+  still is — the manuals' provenance, the issue links into
+  `dividebysandwich/sdroxide`, the first-start import that offers to copy
+  Brown's or upstream's configuration — keeps his name.
+- **Quick-start PDFs rebuilt** for all five languages: new cover with the
+  emblem, a contents list with page numbers, a light page with the program's
+  blue and gold as marks, and the current download links (the Pi Zero guide's
+  `wget` line named a file that did not exist).
+- **The repository is public**, and carries the program rather than the
+  workshop: the internal notes and the queue are kept out of it.
+
+### Added
+- **`tools/build-quickstart-pdfs.py`** builds the quick-start PDFs from their
+  Markdown, so a later change to the text can reach the PDFs.
+
+### Fixed
+- **The Windows icon** `resource.rc` asks for (`sdrcrow.ico`) exists; the tree
+  only had `sdroxide-brown.ico`, so a Windows build had nothing to embed.
+
 ## [Unreleased]
 
 ### Fixed
