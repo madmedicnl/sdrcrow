@@ -654,6 +654,23 @@ impl Mode {
         matches!(self, Mode::Olivia | Mode::Thor | Mode::Rifp)
     }
 
+    /// The sideband voice rides on at this frequency: the phone table, so
+    /// **LSB on 160, 80 and 40 m** and **USB everywhere else** — 60 m, 30 m and
+    /// 11 m CB included. The operator may override it; this is the offer.
+    pub fn sideband_for(freq_hz: f64) -> Mode {
+        if PHONE_LSB_BANDS.iter().any(|&(lo, hi)| freq_hz >= lo && freq_hz <= hi) {
+            Mode::Lsb
+        } else {
+            Mode::Usb
+        }
+    }
+
+    /// Whether this is one of the two sidebands — the only modes the ultra
+    /// narrowband voice experiment can ride on.
+    pub fn is_sideband(self) -> bool {
+        matches!(self, Mode::Lsb | Mode::Usb)
+    }
+
     /// The digital modes handled by a dedicated decode/encode engine (the
     /// slotted FT8/FT4 modes, the continuous keyboard modes, Hell, SSTV, RIFP,
     /// packet, RF Paint). All are USB underneath except RIFP, VHF packet and
@@ -3317,4 +3334,24 @@ mod auto_notch_tests {
             assert!(m.auto_notch_applies(), "{m:?}");
         }
     }
+    #[test]
+    fn the_sideband_follows_the_convention_on_every_band() {
+        // 160, 80 and 40 m are LSB; 30 m upwards, 11 m included, are USB.
+        for hz in [1_850_000.0, 3_700_000.0, 7_100_000.0, 7_290_000.0] {
+            assert_eq!(Mode::sideband_for(hz), Mode::Lsb, "{hz} Hz");
+        }
+        // 60 m and 30 m are not in the phone table: USB, like 11 m and above.
+        for hz in [5_357_000.0, 10_120_000.0, 14_200_000.0, 21_200_000.0, 27_185_000.0, 28_500_000.0] {
+            assert_eq!(Mode::sideband_for(hz), Mode::Usb, "{hz} Hz");
+        }
+    }
+
+    #[test]
+    fn only_the_two_sidebands_carry_the_experiment() {
+        assert!(Mode::Lsb.is_sideband() && Mode::Usb.is_sideband());
+        for mode in [Mode::Am, Mode::Nfm, Mode::Cw, Mode::Ft8, Mode::Sstv] {
+            assert!(!mode.is_sideband(), "{mode:?}");
+        }
+    }
+
 }
