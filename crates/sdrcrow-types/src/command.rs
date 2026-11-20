@@ -1609,6 +1609,13 @@ pub enum Command {
     /// reported in [`crate::UnbvStatus::decoded`].
     ///
     /// Appended last.
+    /// Send a UNBV message made from a file the operator picked, instead of a
+    /// keyer slot: the same chain, with the file read whole and resampled to the
+    /// transmit rate first.
+    ///
+    /// Appended last.
+    UnbvSendFile { path: String, factor: f32, centre_hz: f32, id_minutes: f32 },
+
     UnbvDecode {
         recording: String,
         factor: f32,

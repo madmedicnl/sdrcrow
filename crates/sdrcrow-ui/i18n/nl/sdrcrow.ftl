@@ -9901,3 +9901,7 @@ unbv-decoded-to = Gedecodeerd naar { $path }
 unbv-fine = Fijnafstemming
 
 unbv-drift = Drift
+
+unbv-load-file = Bestand laden…
+
+unbv-browse = Bladeren…

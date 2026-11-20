@@ -19171,6 +19171,8 @@ chips let you overrule it. The experiment is refused in any other mode.
 
 1. Record the phrase into a voice-keyer slot: **Message slot** picks one (the
    keyer's own REC and PLAY work on the same slots), **Record** starts and stops.
+   Or skip the keyer altogether and **Load a file…** — a WAV, MP3, OGG or FLAC
+   from the disk goes through the same chain (it is resampled to 48 kHz first).
 2. Set the **Slowing factor** (2 to 100, fifty by default), the **centre** in the
    passband (1 kHz by default) and the **identify every** interval (5 to 15
    minutes, nine by default). The line under the sliders says which slice the
@@ -19190,7 +19192,8 @@ on, it is a way to be heard when nothing else gets through.
 Tune the sideband as usual and record what the receiver hears (**Ctrl+R** for
 the recorder, see [section 2](#2-basic-operation)); the message will sound like a
 low, slow rumble. The *decode* side of the window takes a recording, shifts it
-back down and speeds it up by the same factor. A drift in either station's
+back down and speeds it up by the same factor. **Browse…** picks the file from the
+disk; a name typed into the field is taken from the recordings folder. A drift in either station's
 carrier multiplies by the factor too, so the window offers the same two manual
 corrections KC8COM's drift corrector has: **Fine-tune** for a message that
 arrived off the centre, and **Drift** for the total error across the recording

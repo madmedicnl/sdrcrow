@@ -9910,3 +9910,7 @@ unbv-decoded-to = Decodificato in { $path }
 unbv-fine = Sintonia fine
 
 unbv-drift = Deriva
+
+unbv-load-file = Carica un file…
+
+unbv-browse = Sfoglia…

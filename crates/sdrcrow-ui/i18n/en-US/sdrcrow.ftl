@@ -9952,3 +9952,9 @@ unbv-fine = Fine-tune
 
 # Total drift across the recording, positive when the message wandered up.
 unbv-drift = Drift
+
+# Sends a file from disk through the same chain, instead of a keyer slot.
+unbv-load-file = Load a file…
+
+# Picks the recording to decode from the disk.
+unbv-browse = Browse…

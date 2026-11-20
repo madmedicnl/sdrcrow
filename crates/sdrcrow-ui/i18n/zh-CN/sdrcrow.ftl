@@ -9838,3 +9838,7 @@ unbv-decoded-to = 已解码到 { $path }
 unbv-fine = 微调
 
 unbv-drift = 漂移
+
+unbv-load-file = 载入文件…
+
+unbv-browse = 浏览…

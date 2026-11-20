@@ -9901,3 +9901,7 @@ unbv-decoded-to = { $path } konumuna çözüldü
 unbv-fine = İnce ayar
 
 unbv-drift = Kayma
+
+unbv-load-file = Dosya yükle…
+
+unbv-browse = Gözat…

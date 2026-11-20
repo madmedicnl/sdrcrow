@@ -162,6 +162,17 @@ impl SdrcrowApp {
             if stop.clicked() {
                 cmds.push(Command::UnbvStop);
             }
+            let pick = ui.add_enabled(!self.unbv.active, egui::Button::new(tr!("unbv-load-file")));
+            if pick.clicked() {
+                if let Some(path) = pick_audio_file() {
+                    cmds.push(Command::UnbvSendFile {
+                        path,
+                        factor: self.unbv_factor,
+                        centre_hz: self.unbv_centre_hz,
+                        id_minutes: self.unbv_id_minutes,
+                    });
+                }
+            }
             if self.unbv.active {
                 ui.label(
                     egui::RichText::new(tr!(
@@ -190,6 +201,11 @@ impl SdrcrowApp {
             ui.add(
                 egui::DragValue::new(&mut self.unbv_drift_hz).range(-100.0..=100.0).suffix(" Hz"),
             );
+            if ui.button(tr!("unbv-browse")).clicked() {
+                if let Some(path) = pick_audio_file() {
+                    self.unbv_recording = path;
+                }
+            }
             if ui.button(tr!("unbv-decode-button")).clicked() {
                 cmds.push(Command::UnbvDecode {
                     recording: self.unbv_recording.clone(),
@@ -218,6 +234,24 @@ impl SdrcrowApp {
             unbv_plot(ui, &self.unbv.bins, self.unbv.slice_hz);
         }
     }
+}
+
+/// Pick an audio file for the experiment: to send from, or to decode. Native
+/// only; the browser client has no file dialog and takes the name instead.
+#[cfg(not(target_arch = "wasm32"))]
+fn pick_audio_file() -> Option<String> {
+    if cfg!(test) {
+        return None;
+    }
+    rfd::FileDialog::new()
+        .add_filter("WAV / MP3 / OGG / FLAC", &sdrcrow_types::playback::PLAYABLE_EXTENSIONS)
+        .pick_file()
+        .map(|path| path.display().to_string())
+}
+
+#[cfg(target_arch = "wasm32")]
+fn pick_audio_file() -> Option<String> {
+    None
 }
 
 /// A thin line plot of the slice: one point per bin, −100 dBFS to 0, with the

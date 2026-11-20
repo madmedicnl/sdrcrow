@@ -9848,3 +9848,7 @@ unbv-decoded-to = { $path } に復調しました
 unbv-fine = 微調整
 
 unbv-drift = ドリフト
+
+unbv-load-file = ファイルを読み込む…
+
+unbv-browse = 参照…

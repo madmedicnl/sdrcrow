@@ -9918,3 +9918,7 @@ unbv-decoded-to = Декодировано в { $path }
 unbv-fine = Подстройка
 
 unbv-drift = Дрейф
+
+unbv-load-file = Загрузить файл…
+
+unbv-browse = Обзор…

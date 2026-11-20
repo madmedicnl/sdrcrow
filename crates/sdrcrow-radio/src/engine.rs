@@ -12701,6 +12701,14 @@ impl Engine {
                 self.stop_voice_play();
                 return;
             }
+            UnbvSendFile { path, factor, centre_hz, id_minutes } => {
+                let settings = sdrcrow_dsp::unbv::UnbvSettings {
+                    factor: factor as f64,
+                    centre_hz: centre_hz as f64,
+                };
+                self.send_unbv_file(&path, settings, id_minutes as f64);
+                return;
+            }
             UnbvDecode { recording, factor, centre_hz, fine_hz, drift_hz } => {
                 self.decode_unbv(
                     &recording,
@@ -22140,6 +22148,70 @@ impl Engine {
         if plan.is_empty() {
             return false;
         }
+        self.begin_unbv_over(plan, settings)
+    }
+
+    /// Send a message made from a file the operator picked instead of a keyer
+    /// slot: the same chain, with the file read whole and resampled to the
+    /// transmit rate first.
+    pub fn send_unbv_file(
+        &mut self,
+        path: &str,
+        settings: sdrcrow_dsp::unbv::UnbvSettings,
+        id_minutes: f64,
+    ) -> bool {
+        if !self.state.rx[0].mode.allows_voice_keyer() {
+            warn!("unbv: not available in {}", self.state.rx[0].mode.label());
+            return false;
+        }
+        if self.state.tx.tune {
+            warn!("unbv: TUNE is active; turn it off first");
+            return false;
+        }
+        let mut reader = match crate::playback::AudioReader::open(std::path::Path::new(path)) {
+            Ok(r) => r,
+            Err(e) => {
+                warn!("unbv: cannot open {path}: {e}");
+                return false;
+            }
+        };
+        let rate = reader.rate() as f64;
+        let mut speech = reader.read_all_mono();
+        if speech.is_empty() {
+            warn!("unbv: {path} holds no audio");
+            return false;
+        }
+        if (rate - crate::voice::VOICE_RATE).abs() > 1.0 {
+            let Some(mut resampler) =
+                sdrcrow_dsp::MonoResampler::new(rate, crate::voice::VOICE_RATE)
+            else {
+                warn!("unbv: cannot resample {path} from {rate} Hz");
+                return false;
+            };
+            let mut resampled = Vec::new();
+            resampler.push(&speech, &mut resampled);
+            speech = resampled;
+        }
+        let call = self.radio_call.clone();
+        let plan = crate::unbv::plan(
+            &speech,
+            crate::voice::VOICE_RATE,
+            settings,
+            id_minutes,
+            &call,
+        );
+        if plan.is_empty() {
+            return false;
+        }
+        self.begin_unbv_over(plan, settings)
+    }
+
+    /// Key the transmitter with a planned UNBV over and meter it out.
+    fn begin_unbv_over(
+        &mut self,
+        plan: crate::unbv::UnbvPlan,
+        settings: sdrcrow_dsp::unbv::UnbvSettings,
+    ) -> bool {
         // One snapshot of the message's slice for the panel, taken here because
         // the audio will not be around afterwards.
         let (lo, hi) = plan.slice_hz;

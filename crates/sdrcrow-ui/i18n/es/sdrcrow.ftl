@@ -9892,3 +9892,7 @@ unbv-decoded-to = Decodificado en { $path }
 unbv-fine = Ajuste fino
 
 unbv-drift = Deriva
+
+unbv-load-file = Cargar un archivo…
+
+unbv-browse = Examinar…
