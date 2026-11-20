@@ -126,6 +126,12 @@ impl VoiceKeyer {
         self.preview.is_some()
     }
 
+    /// The samples a slot holds, for a caller that wants to process a recorded
+    /// message rather than transmit it as it is (the UNBV experiment does).
+    pub fn slot_samples(&self, slot: usize) -> &[f32] {
+        self.slots.get(slot).map(|s| s.samples.as_slice()).unwrap_or(&[])
+    }
+
     pub fn has_audio(&self, slot: usize) -> bool {
         self.slots.get(slot).is_some_and(|s| !s.samples.is_empty())
     }

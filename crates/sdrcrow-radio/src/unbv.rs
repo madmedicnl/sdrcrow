@@ -55,6 +55,13 @@ impl UnbvPlan {
     }
 }
 
+/// A UNBV over in flight: the planned message and the cursor through it.
+#[derive(Clone, Debug)]
+pub struct UnbvTx {
+    pub plan: UnbvPlan,
+    pub position: usize,
+}
+
 /// Encode a recorded slot and plan the whole over around it.
 ///
 /// `id_minutes` is the longest a block may run before the identification is due

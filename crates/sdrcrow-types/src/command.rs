@@ -1587,6 +1587,22 @@ pub enum Command {
     ///
     /// Appended for the usual reason — postcard numbers variants by position.
     RescanPttInputs,
+
+    /// Send a UNBV message: the keyer slot at `slot`, slowed by `factor` and
+    /// shifted to `centre_hz` in the SSB passband, cut into blocks of at most
+    /// `id_minutes` with the station's call in Morse between them. The
+    /// experiment rides a sideband only, and the engine refuses it anywhere
+    /// else; the operator's factor is the window's slider (2 to 100, fifty by
+    /// default) and the interval five to fifteen minutes (nine by default).
+    ///
+    /// Appended last, for the usual reason — postcard numbers variants by
+    /// position.
+    UnbvStart { slot: u8, factor: f32, centre_hz: f32, id_minutes: f32 },
+
+    /// Stop a UNBV over that is on the air.
+    ///
+    /// Appended last.
+    UnbvStop,
 }
 
 /// What a [`Command::GetKnownCalls`] was answered with.

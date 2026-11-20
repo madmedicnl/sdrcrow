@@ -3736,6 +3736,11 @@ struct Engine {
     /// after the message itself has played out, so the live microphone can
     /// never leak into the end of a keyer over.
     voice_tx: bool,
+    /// A UNBV over being sent: the planned message and how far it has played.
+    /// It rides the keyer's over (`voice_tx`) — the same guards, the same PTT —
+    /// but its buffer is its own, because a message slowed fifty times is far
+    /// longer than a keyer slot may hold.
+    unbv_tx: Option<crate::unbv::UnbvTx>,
     /// Scratch for microphone audio on its way into a recording.
     voice_rec_buf: Vec<f32>,
     /// Local monitor ("preview") playback: the message resampled to the speaker
@@ -5701,6 +5706,7 @@ fn engine_thread(
         cw_monitor_out: Vec::new(),
         cw_monitor_warned: false,
         voice_started: None,
+        unbv_tx: None,
         voice_tick: None,
         tx_pace: None,
         channel_analyzer: None,
@@ -12673,6 +12679,23 @@ impl Engine {
             RescanPttInputs => {
                 crate::ptt_inputs::hub().rescan();
                 self.ptt_inputs_last = None;
+                return;
+            }
+            UnbvStart {
+                slot,
+                factor,
+                centre_hz,
+                id_minutes,
+            } => {
+                let settings = sdrcrow_dsp::unbv::UnbvSettings {
+                    factor: factor as f64,
+                    centre_hz: centre_hz as f64,
+                };
+                self.start_unbv_play(slot as usize, settings, id_minutes as f64);
+                return;
+            }
+            UnbvStop => {
+                self.stop_voice_play();
                 return;
             }
             TestRelay { channel } => {
@@ -21951,7 +21974,11 @@ impl Engine {
         // `play_finished` only means the message has been read *out of* the
         // keyer; the last blocks are still in the transmit FIFO, and unkeying
         // on it alone would chop the tail.
-        if self.voice_tx && self.voice.play_finished() && self.mic_fifo.len() < TX_AUDIO_BLOCK {
+        let over_read_out = match self.unbv_tx.as_ref() {
+            Some(tx) => tx.position >= tx.plan.len(),
+            None => self.voice.play_finished(),
+        };
+        if self.voice_tx && over_read_out && self.mic_fifo.len() < TX_AUDIO_BLOCK {
             // The message is out. Unkey through the mode's own path, then let
             // go of the transmitter once the over has actually ended — a
             // digital-voice mode still has its end-of-over frame to send, and
@@ -21960,6 +21987,7 @@ impl Engine {
             if !self.tx_active && !self.digi_tx {
                 self.voice_tx = false;
                 self.voice.stop_play();
+                self.unbv_tx = None;
                 self.mic_fifo.clear();
                 self.voice_tick = None;
                 self.emit_voice_status();
@@ -22055,6 +22083,60 @@ impl Engine {
         self.emit_voice_status();
     }
 
+    /// Key the transmitter with a UNBV message made from a keyer slot: the
+    /// speech slowed and shifted into the narrow slice, cut into blocks with the
+    /// station's call in Morse between them. It rides the keyer's over — same
+    /// guards, same PTT — with a buffer of its own, because a message slowed
+    /// fifty times is far longer than a keyer slot may hold.
+    pub fn start_unbv_play(
+        &mut self,
+        slot: usize,
+        settings: sdrcrow_dsp::unbv::UnbvSettings,
+        id_minutes: f64,
+    ) -> bool {
+        if !self.state.rx[0].mode.allows_voice_keyer() {
+            warn!("unbv: not available in {}", self.state.rx[0].mode.label());
+            return false;
+        }
+        if self.state.tx.tune {
+            warn!("unbv: TUNE is active; turn it off first");
+            return false;
+        }
+        if self.voice.is_recording() {
+            self.voice.stop_record();
+        }
+        let speech = self.voice.slot_samples(slot).to_vec();
+        if speech.is_empty() {
+            warn!("unbv: slot {slot} holds nothing to send");
+            return false;
+        }
+        let call = self.radio_call.clone();
+        let plan = crate::unbv::plan(
+            &speech,
+            crate::voice::VOICE_RATE,
+            settings,
+            id_minutes,
+            &call,
+        );
+        if plan.is_empty() {
+            return false;
+        }
+        self.end_tci_tx();
+        self.unbv_tx = Some(crate::unbv::UnbvTx { plan, position: 0 });
+        self.voice_tx = true;
+        self.voice_started = Some(Instant::now());
+        self.mic_fifo.clear();
+        self.state.tx.ptt = true;
+        self.sync_tx_state();
+        if !self.tx_active {
+            self.voice_tx = false;
+            self.unbv_tx = None;
+        }
+        let _ = self.event_tx.send(RadioEvent::State(self.state.clone()));
+        self.emit_voice_status();
+        self.tx_active
+    }
+
     /// Stop a message and end the over (the operator pressed stop, or an
     /// external control asked us to).
     fn stop_voice_play(&mut self) {
@@ -22062,6 +22144,7 @@ impl Engine {
             return;
         }
         self.voice.stop_play();
+        self.unbv_tx = None;
         self.release_voice_tx();
         self.voice_tx = false;
         self.mic_fifo.clear();
@@ -22091,6 +22174,7 @@ impl Engine {
             return;
         }
         self.voice.stop_play();
+        self.unbv_tx = None;
         self.voice_tx = false;
         self.mic_fifo.clear();
         self.voice_tick = None;
@@ -22240,6 +22324,16 @@ impl Engine {
         if self.voice_tx {
             if let Some(mic) = self.mic.as_mut() {
                 while mic.consumer.pop().is_ok() {}
+            }
+            // A UNBV message is its own buffer; the keyer is not playing.
+            if let Some(tx) = self.unbv_tx.as_mut() {
+                while tx.position < tx.plan.len() && self.mic_fifo.len() < voice_depth {
+                    let take = (tx.plan.len() - tx.position).min(TX_AUDIO_BLOCK);
+                    self.mic_fifo
+                        .extend_from_slice(&tx.plan.audio[tx.position..tx.position + take]);
+                    tx.position += take;
+                }
+                return true;
             }
             while !self.voice.play_finished() && self.mic_fifo.len() < voice_depth {
                 let mut block = [0.0f32; TX_AUDIO_BLOCK];
