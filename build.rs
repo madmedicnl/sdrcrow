@@ -4,7 +4,7 @@ fn main() {
     if std::env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("windows") {
         // The installer's Start Menu and desktop shortcuts are advertised, so
         // Windows Installer draws their icon from the executable rather than a
-        // .ico. Embed the Brown icon with `windres` (the MinGW resource
+        // .ico. Embed the program's icon with `windres` (the MinGW resource
         // compiler) into a COFF object and hand that to the linker.
         //
         // MSYS2's `windres` passes backslash paths to the GCC preprocessor,
