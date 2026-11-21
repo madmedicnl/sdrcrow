@@ -124,6 +124,25 @@ audio, of a KiwiSDR, or of a receiver on the desk beside the transmitter.
   French, Italian and Dutch, each as Markdown and as a PDF.
 - **[CHANGELOG](CHANGELOG.md)** — what each release changed.
 
+## Thank you
+
+This program is built by one operator for other operators, and a lot of what
+makes the bands work is done by people who are not paid for it and rarely hear
+thanks. So, sincerely:
+
+- to **[Dutch CB Group](https://dutchcbgroup.nl)** — for the channel plans and
+  the division list that Dutch 11 m operators actually use, kept current year
+  after year;
+- to the **[VERON](https://veron.nl)** — for a century of representing and
+  teaching Dutch radio amateurs, and for the material that makes the hobby
+  approachable to someone new;
+- to **[LOG11DX](https://log11dx.com)** and **[11DX.net](https://11dx.net)** —
+  for the DX logs, the spots and the news that keep 11 metres a living band
+  rather than a frequency on a chart.
+
+Thank you for the work you do for the radio community. If this program is useful
+on your desk, some of the credit is yours.
+
 ## Licence
 
 SDRCrow is free software under the **GNU General Public License, version 3 or
