@@ -9958,3 +9958,6 @@ unbv-load-file = Load a file…
 
 # Picks the recording to decode from the disk.
 unbv-browse = Browse…
+
+# SP2 (the undocked second spectrum) chip in the SPEC menu: what the window is for and that clicking it tunes.
+topbar-sp2-second-waterfall = A second waterfall: zoom it in and it stays sharp, because the radio resolves that window itself. A click tunes the dial.

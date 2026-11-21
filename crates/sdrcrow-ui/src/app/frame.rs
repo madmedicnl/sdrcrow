@@ -3902,6 +3902,15 @@ impl SdrcrowApp {
     ///
     /// Closing the window closes the lane, so a receiver nobody is watching
     /// twice pays for one analyser and not two.
+    #[cfg(target_arch = "wasm32")]
+    fn sync_zoom_view(&mut self) {
+        // The browser draws one panadapter: it has no second pane to put in a
+        // window of its own, so the lane stays closed there. Everything the
+        // window needs is on the wire already — the server computes the frames
+        // and sends them — so a browser SP2 is a pane away, not a protocol away.
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
     fn sync_zoom_view(&mut self) {
         let open = self.module_window_wanted(sdrcrow_types::DetachableModule::AuxPanadapter)
             && !self.aux_view.is_unset();

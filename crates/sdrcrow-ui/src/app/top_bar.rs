@@ -6577,6 +6577,27 @@ impl SdrcrowApp {
             {
                 cfg.waterfall_freeze_on_tx = !cfg.waterfall_freeze_on_tx;
             }
+            // **The second waterfall, from the waterfall's own switches.** SP2
+            // is the waterfall an operator opens *because* the main one is too
+            // wide to work on, so it belongs beside the chips that set the main
+            // one rather than buried in the windows list. Native only: a browser
+            // session has no second OS window to put it in, and a chip that
+            // cannot do anything is worse than one that is not there.
+            #[cfg(not(target_arch = "wasm32"))]
+            {
+                let out = self
+                    .ui_settings
+                    .is_detached(sdrcrow_types::DetachableModule::AuxPanadapter);
+                if crate::chrome::chip(ui, out, "SP2")
+                    .on_hover_text(tr!("topbar-sp2-second-waterfall"))
+                    .clicked()
+                {
+                    self.set_module_detached(
+                        sdrcrow_types::DetachableModule::AuxPanadapter,
+                        !out,
+                    );
+                }
+            }
         });
         if cfg != self.ui_settings {
             self.ui_settings = cfg;
