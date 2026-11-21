@@ -652,7 +652,7 @@ jobs:
           cp assets/voices/LICENSE-voice.txt stage/sdrcrow/
           # The .deb registers the menu entry itself; the portable tarball
           # carries the same files plus a script that installs them per-user.
-          cp packaging/linux/sdrcrow.desktop packaging/icons/sdrcrow.svg stage/sdrcrow/
+          cp packaging/linux/sdrcrow.desktop packaging/icons/sdrcrow-512.png stage/sdrcrow/
           cp packaging/linux/install-desktop-entry.sh stage/sdrcrow/
           # Likewise the udev rules: the .deb drops them in
           # /usr/lib/udev/rules.d, but a tarball user has to install them by
@@ -817,19 +817,22 @@ jobs:
           # /tmp/.mount_XXXX/usr/bin.
           rm -rf AppDir
           mkdir -p AppDir/usr/bin AppDir/usr/share/applications \
-                   AppDir/usr/share/icons/hicolor/scalable/apps \
+                   AppDir/usr/share/icons/hicolor/512x512/apps \
                    AppDir/usr/share/doc/sdrcrow
           cp target/release/sdrcrow AppDir/usr/bin/
           cp -r stage/sdrcrow/voices AppDir/usr/bin/
           cp stage/sdrcrow/*.txt stage/sdrcrow/LICENSE stage/sdrcrow/*.rules \
              AppDir/usr/share/doc/sdrcrow/
           cp packaging/linux/sdrcrow.desktop AppDir/usr/share/applications/
-          cp packaging/icons/sdrcrow.svg AppDir/usr/share/icons/hicolor/scalable/apps/
+          # The tree carries PNGs, not an SVG: the 512 one is the size the
+          # hicolor theme wants here and what appimagetool draws.
+          cp packaging/icons/sdrcrow-512.png \
+             AppDir/usr/share/icons/hicolor/512x512/apps/sdrcrow.png
           # appimagetool wants the desktop entry and the icon at the AppDir root
           # as well, and `.DirIcon` is what a file manager shows.
           cp packaging/linux/sdrcrow.desktop AppDir/
-          cp packaging/icons/sdrcrow.svg AppDir/
-          cp packaging/icons/sdrcrow.svg AppDir/.DirIcon
+          cp packaging/icons/sdrcrow-512.png AppDir/sdrcrow.png
+          cp packaging/icons/sdrcrow-512.png AppDir/.DirIcon
           # AppRun rather than a symlink to the binary: `exec` keeps the process
           # id, so a desktop that started the AppImage still owns the window,
           # and "$@" passes the command line through — `--server`, `--probe` and
