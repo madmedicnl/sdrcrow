@@ -3023,13 +3023,19 @@ mod tests {
         crate::theme::apply_visuals(&ctx);
         crate::theme::apply_metrics(&ctx, crate::layout::Tier::Desktop);
         let mut after = None;
-        let _ = ctx.run_ui(Default::default(), |ui| {
+        let mut out = ctx.run_ui(Default::default(), |ui| {
             {
                 let solid = ui.style().spacing.scroll.clone();
                 crate::theme::thin_floating_scroll(ui);
                 after = Some((solid, ui.style().spacing.scroll.clone()));
             }
         });
+        // There is no GPU here and nothing to upload the frame's font atlas to.
+        // egui hands the frame's textures back with its output, and epaint
+        // asserts when a delta is dropped unapplied — so they are cleared on
+        // purpose, the same two lines every other test in this tree that runs a
+        // frame carries (see `panels::cw` and `settings::mod`).
+        out.textures_delta.clear();
         let (solid, thin) = after.expect("a frame ran");
         assert!(!solid.floating, "the default bar still takes its own width");
         assert!(thin.floating, "the narrow columns float their bar");
