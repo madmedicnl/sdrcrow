@@ -15,7 +15,7 @@
 # Make sure pkgver matches the tag being released (the workflow edits it for you).
 
 pkgname=sdrcrow
-pkgver=1.1.0
+pkgver=1.2.0
 pkgrel=1
 pkgdesc="PowerSDR/Thetis-style SDR transceiver tuned for CB/11m — native GUI, web UI, FT8/FT4, CW, SSTV"
 arch=('x86_64')

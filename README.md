@@ -21,19 +21,19 @@ read nor touched; copying it across is a `cp -a` and a decision.
 
 ## Download
 
-The Linux builds and the web client are on the
-[releases page](https://github.com/madmedicnl/sdrcrow/releases):
+The Linux, macOS and Windows builds and the web client are on the
+[latest release](https://github.com/madmedicnl/sdrcrow/releases):
 
-| file | what |
+| file (`<v>` is the version, e.g. `1.2.0`) | what |
 |---|---|
-| `sdrcrow-v1.1.0-linux-x86_64.tar.gz` | the standard Linux build — CAT, OpenHPSDR, TCI, RTL-SDR, Airspy, RX-888, ELAD; no SoapySDR needed |
-| `sdrcrow-v1.1.0-linux-x86_64.deb` | the same as a Debian package |
-| `sdrcrow-v1.1.0-linux-x86_64-soapysdr.deb` | with SoapySDR device support |
-| `sdrcrow-v1.1.0-linux-x86_64.AppImage` | one file, run it |
-| `sdrcrow-v1.1.0-macos-x86_64.dmg` / `.tar.gz` | the macOS build for Intel Macs |
-| `sdrcrow-v1.1.0-macos-aarch64.dmg` / `.tar.gz` | the macOS build for Apple silicon |
-| `sdrcrow-v1.1.0-windows-x86_64.msi` / `.zip` | the Windows installer and the portable folder |
-| `sdrcrow-web-v1.1.0.zip` | the browser client, to serve from a web server |
+| `sdrcrow-v<v>-linux-x86_64.tar.gz` | the standard Linux build — CAT, OpenHPSDR, TCI, RTL-SDR, Airspy, RX-888, ELAD; no SoapySDR needed |
+| `sdrcrow-v<v>-linux-x86_64.deb` | the same as a Debian package |
+| `sdrcrow-v<v>-linux-x86_64-soapysdr.deb` | with SoapySDR device support |
+| `sdrcrow-v<v>-linux-x86_64.AppImage` | one file, run it |
+| `sdrcrow-v<v>-macos-x86_64.dmg` / `.tar.gz` | macOS, Intel |
+| `sdrcrow-v<v>-macos-aarch64.dmg` / `.tar.gz` | macOS, Apple silicon |
+| `sdrcrow-v<v>-windows-x86_64.msi` / `.zip` | Windows installer and portable folder |
+| `sdrcrow-web-v<v>.zip` | the browser client, to serve from a web server |
 | `SHA256SUMS` | the checksums |
 
 The macOS and Windows builds come from `.github/workflows/release.yml`; the

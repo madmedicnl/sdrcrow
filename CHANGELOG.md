@@ -11,6 +11,35 @@ everything before 1.9.5) is described in the
 [User Manual](https://github.com/madmedicnl/sdroxide-brown/blob/main/docs/USER_MANUAL.md)
 and the [README](https://github.com/madmedicnl/sdroxide-brown#readme).
 
+## [1.2.0] - 2026-11-21
+
+### Added
+- **The ultra narrowband voice experiment (UNBV)**, after KC8COM's program of
+  that name. Recorded speech is slowed by a factor (2 to 100, fifty by default)
+  and shifted into a narrow slice of the sideband; the other end shifts it back
+  and speeds it up, so the same power arrives in a band `factor` times narrower
+  and the message takes `factor` times as long. A **UNBV** chip sits on the
+  experimental bench at the top of the band menu and opens its own window: the
+  band's sideband offer (LSB on 160/80/40 m, USB elsewhere) with an override,
+  the factor, the centre and the identification interval as sliders, the slice in
+  Hz, a slot picker with the keyer's own record button, **Load a file…** for a
+  message from the disk, Send and Stop with "block n of m", and a plot of the
+  message's spectrum across the slice. On the air the message is cut into blocks
+  of at most the identification interval, and between them — and after the last —
+  the station's callsign goes out in Morse inside the same sideband.
+- **A receiving half**: a recording is decoded back to speech (`unbv-<name>.wav`)
+  with the same factor and centre, and the two manual corrections the original's
+  drift corrector offers — a fine-tune and a total drift across the recording,
+  applied as a straight ramp. Nothing about it is automatic.
+- `Command::UnbvStart`, `UnbvStop`, `UnbvSendFile` and `UnbvDecode`, with
+  `ServerMsg::UnbvStatus`. `PROTO_VERSION` 305 → 307 (`0x7D` → `0x7F`).
+
+### Fixed
+- **The browser client could not build** after the experiment's first cut: its
+  defaults reached for `sdrcrow-dsp`, which the screen only depends on for native
+  targets. The numbers live in `sdrcrow-types::unbv` now, where both sides see
+  them.
+
 ## [1.1.0] - 2026-11-20
 
 The first release of **SDRCrow**. It is the 1.0.0 tree — the program detached

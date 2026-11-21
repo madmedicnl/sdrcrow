@@ -5308,7 +5308,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 
 [[package]]
 name = "sdrcrow"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -5351,7 +5351,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-adsb"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "num-complex",
@@ -5362,7 +5362,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-aircraft-history"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "flate2",
  "sdrcrow-aircraft-history",
@@ -5372,7 +5372,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-aircraft-online"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -5381,7 +5381,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-airspy"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "nusb",
@@ -5395,7 +5395,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-airspyhf"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "num-complex",
@@ -5411,7 +5411,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-ais"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "num-complex",
@@ -5423,7 +5423,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-aprs"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "sdrcrow-types",
  "thiserror 2.0.20",
@@ -5431,7 +5431,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-atchat"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -5452,7 +5452,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-audio"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "alsa",
  "cpal",
@@ -5465,7 +5465,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-ax25"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "thiserror 2.0.20",
@@ -5474,7 +5474,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-cat"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "roxmltree",
@@ -5487,7 +5487,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-config"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "directories",
  "encoding_rs",
@@ -5503,7 +5503,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-dab"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "cc",
  "dabradio",
@@ -5517,7 +5517,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-deepcw"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "rten",
@@ -5529,7 +5529,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-digi"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "fax 0.3.0",
@@ -5558,7 +5558,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-drm"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "bindgen",
  "cc",
@@ -5575,7 +5575,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-dsp"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "deep_filter",
  "hound",
@@ -5591,7 +5591,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-elad"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "nusb",
@@ -5605,18 +5605,18 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-enigma"
-version = "1.1.0"
+version = "1.2.0"
 
 [[package]]
 name = "sdrcrow-faad2"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "cc",
 ]
 
 [[package]]
 name = "sdrcrow-fobos"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "libloading 0.9.0",
@@ -5629,7 +5629,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-hackrf"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "nusb",
@@ -5643,7 +5643,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-hfdl"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "sdrcrow-dsp",
@@ -5655,7 +5655,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-hpsdr"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "network-interface",
@@ -5668,7 +5668,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-hydrasdr"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "nusb",
@@ -5683,7 +5683,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-icomnet"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "rtrb",
@@ -5694,7 +5694,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-ism"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "bindgen",
  "cc",
@@ -5708,7 +5708,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-kiss"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "sdrcrow-ax25",
@@ -5717,7 +5717,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-kiwisdr"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "rtrb",
@@ -5731,7 +5731,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-lime"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "libloading 0.9.0",
  "num-complex",
@@ -5744,7 +5744,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-limerfe"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "libc",
@@ -5757,7 +5757,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-meshtastic"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "aes",
  "crossbeam-channel",
@@ -5770,7 +5770,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-midi"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "midir",
@@ -5780,7 +5780,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-net"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "image",
@@ -5798,7 +5798,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-nrsc5"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "libloading 0.9.0",
  "num-complex",
@@ -5811,7 +5811,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-olivia"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "cc",
  "hound",
@@ -5819,7 +5819,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-picup"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "ab_glyph",
  "chrono",
@@ -5835,7 +5835,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-pluto"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "network-interface",
@@ -5849,7 +5849,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-proto"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "image",
  "postcard",
@@ -5862,7 +5862,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-pttin"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "sdrcrow-midi",
  "sdrcrow-relay",
@@ -5873,7 +5873,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-qo100"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "rustfft",
@@ -5883,7 +5883,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-r82xx"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "thiserror 2.0.20",
  "tracing",
@@ -5891,7 +5891,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-rade"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "anyhow",
  "bindgen",
@@ -5909,7 +5909,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-radio"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "image",
@@ -5960,7 +5960,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-relay"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "libc",
@@ -5974,7 +5974,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-rigctld"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "sdrcrow-types",
@@ -5983,7 +5983,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-rotator"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "sdrcrow-types",
@@ -5993,7 +5993,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-rtlsdr"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "nusb",
@@ -6007,7 +6007,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-rx888"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "nusb",
@@ -6022,7 +6022,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-s4285"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "cc",
  "hound",
@@ -6031,7 +6031,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-sdrplay"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "libloading 0.9.0",
@@ -6045,7 +6045,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-server"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "axum",
  "crossbeam-channel",
@@ -6079,7 +6079,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-skimmer"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "num-complex",
@@ -6092,7 +6092,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-smartsdr"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "rtrb",
@@ -6105,7 +6105,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-solar"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "image",
@@ -6121,7 +6121,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-sonde"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "rustfft",
@@ -6133,7 +6133,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-speech"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "hound",
@@ -6153,7 +6153,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-spyserver"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "rtrb",
@@ -6165,7 +6165,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-tci"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "rtrb",
@@ -6177,7 +6177,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-types"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "postcard",
  "serde",
@@ -6186,7 +6186,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-ui"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "ab_glyph",
  "antenna-model",
@@ -6239,7 +6239,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-vdl2"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "num-complex",
@@ -6251,15 +6251,15 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-version"
-version = "1.1.0"
+version = "1.2.0"
 
 [[package]]
 name = "sdrcrow-vor"
-version = "1.1.0"
+version = "1.2.0"
 
 [[package]]
 name = "sdrcrow-web"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "console_error_panic_hook",
  "eframe",
@@ -6275,7 +6275,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-winlink"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "md-5",
@@ -6288,7 +6288,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-wsjtx"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "sdrcrow-types",
  "tracing",
@@ -6296,7 +6296,7 @@ dependencies = [
 
 [[package]]
 name = "sdrcrow-wxsat"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "crossbeam-channel",
  "rustfft",
