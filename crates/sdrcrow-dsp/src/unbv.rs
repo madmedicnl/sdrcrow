@@ -22,20 +22,16 @@ use std::f64::consts::TAU;
 pub const SPEECH_LO_HZ: f64 = 100.0;
 pub const SPEECH_HI_HZ: f64 = 2400.0;
 
-/// Where the slowed speech is put in the SSB passband.
-pub const DEFAULT_CENTRE_HZ: f64 = 1000.0;
-
-/// The slowing factor: the original's window starts at 50 and offers the whole
-/// range; the ends are ours.
-pub const MIN_FACTOR: f64 = 2.0;
-pub const MAX_FACTOR: f64 = 100.0;
-pub const DEFAULT_FACTOR: f64 = 50.0;
-
-/// The ID interval the operator may set, in minutes — the original interrupts a
-/// long transmission every nine to identify itself.
-pub const MIN_ID_MINUTES: f64 = 5.0;
-pub const MAX_ID_MINUTES: f64 = 15.0;
-pub const DEFAULT_ID_MINUTES: f64 = 9.0;
+/// Where the slowed speech is put, the factor's range and the identification
+/// interval — defined in `sdrcrow-types` so the screen (which cannot depend on
+/// this crate on wasm) and the engine agree on one set of numbers.
+pub const DEFAULT_CENTRE_HZ: f64 = sdrcrow_types::unbv::DEFAULT_CENTRE_HZ;
+pub const MIN_FACTOR: f64 = sdrcrow_types::unbv::MIN_FACTOR;
+pub const MAX_FACTOR: f64 = sdrcrow_types::unbv::MAX_FACTOR;
+pub const DEFAULT_FACTOR: f64 = sdrcrow_types::unbv::DEFAULT_FACTOR;
+pub const MIN_ID_MINUTES: f64 = sdrcrow_types::unbv::MIN_ID_MINUTES;
+pub const MAX_ID_MINUTES: f64 = sdrcrow_types::unbv::MAX_ID_MINUTES;
+pub const DEFAULT_ID_MINUTES: f64 = sdrcrow_types::unbv::DEFAULT_ID_MINUTES;
 
 /// One block of speech turned into the narrow signal, or back.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -57,7 +53,10 @@ impl UnbvSettings {
     pub fn sane(self) -> Self {
         Self {
             factor: self.factor.clamp(MIN_FACTOR, MAX_FACTOR),
-            centre_hz: self.centre_hz.clamp(200.0, 2800.0),
+            centre_hz: self.centre_hz.clamp(
+                sdrcrow_types::unbv::MIN_CENTRE_HZ,
+                sdrcrow_types::unbv::MAX_CENTRE_HZ,
+            ),
         }
     }
 

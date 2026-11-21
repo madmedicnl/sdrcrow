@@ -7,6 +7,18 @@
 
 use serde::{Deserialize, Serialize};
 
+/// The experiment's ranges and defaults, in the crate the screen can reach:
+/// they are what the window's sliders start on and what the engine clamps to.
+pub const MIN_FACTOR: f64 = 2.0;
+pub const MAX_FACTOR: f64 = 100.0;
+pub const DEFAULT_FACTOR: f64 = 50.0;
+pub const DEFAULT_CENTRE_HZ: f64 = 1000.0;
+pub const MIN_CENTRE_HZ: f64 = 200.0;
+pub const MAX_CENTRE_HZ: f64 = 2800.0;
+pub const MIN_ID_MINUTES: f64 = 5.0;
+pub const MAX_ID_MINUTES: f64 = 15.0;
+pub const DEFAULT_ID_MINUTES: f64 = 9.0;
+
 /// One look at the experiment: nothing running, or a message on the air.
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct UnbvStatus {
