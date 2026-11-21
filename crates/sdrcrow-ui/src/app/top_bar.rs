@@ -6491,6 +6491,12 @@ impl SdrcrowApp {
         // the operator asks for, so both boxes are always offered.
         let w = panadapter_group_w(ui);
         let mut cfg = self.ui_settings.clone();
+        // The SP2 window's switch is left here rather than applied where it is
+        // clicked: the working copy below is written back over `ui_settings` at
+        // the end of this function, which would undo it in the same frame and
+        // leave the chip looking dead. See the end of the function.
+        #[cfg(not(target_arch = "wasm32"))]
+        let mut detach_second_waterfall: Option<bool> = None;
         crate::chrome::menu_group(ui, &tr!("topbar-group-spectrum"), w, |ui| {
             ui.horizontal_wrapped(|ui| {
                 let on = self.view.spectrum_visible();
@@ -6592,16 +6598,19 @@ impl SdrcrowApp {
                     .on_hover_text(tr!("topbar-zoom-second-waterfall"))
                     .clicked()
                 {
-                    self.set_module_detached(
-                        sdrcrow_types::DetachableModule::AuxPanadapter,
-                        !out,
-                    );
+                    detach_second_waterfall = Some(!out);
                 }
             }
         });
         if cfg != self.ui_settings {
             self.ui_settings = cfg;
             crate::app::persist::persist_ui_settings(&self.ui_settings);
+        }
+        // And the switch the working copy has just been written over: applied
+        // here, where nothing follows it that could put the window back.
+        #[cfg(not(target_arch = "wasm32"))]
+        if let Some(on) = detach_second_waterfall {
+            self.set_module_detached(sdrcrow_types::DetachableModule::AuxPanadapter, on);
         }
     }
 

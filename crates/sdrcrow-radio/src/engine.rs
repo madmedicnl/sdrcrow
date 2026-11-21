@@ -7816,6 +7816,14 @@ impl Engine {
         }
         let dev_center = self.display_center_hz();
         let span = req.span_hz.min(in_rate);
+        // A window as wide as the stream has nothing to trade: the device-wide
+        // analyser *is* that picture, and a second transform over everything is
+        // the cost issue #195 taught us to refuse. `make_zoom_view_frame` pools
+        // the window out of that analyser instead — no lane, no transform.
+        if span >= in_rate * 0.98 {
+            self.zoom_view_lane = None;
+            return;
+        }
         let decim = sdrcrow_types::zoom_lane_decimation(in_rate, span);
         if let Some(lane) = self.zoom_view_lane.as_mut() {
             if lane.serves((req.center_hz, decim), in_rate)
