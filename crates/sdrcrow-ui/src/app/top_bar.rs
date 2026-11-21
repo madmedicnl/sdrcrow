@@ -6555,15 +6555,51 @@ impl SdrcrowApp {
             }
         });
         crate::chrome::menu_group(ui, &tr!("topbar-group-waterfall"), w, |ui| {
-            let on = self.view.waterfall_visible();
-            if crate::chrome::chip(ui, on, tr!("topbar-show-waterfall"))
-                .on_hover_text(
-                    tr!("topbar-draw-scrolling-waterfall-below-spectrum"),
-                )
-                .clicked()
-            {
-                self.view.set_waterfall_visible(!on);
-            }
+            // **One flow of chips, then the labelled rows**, the shape the
+            // spectrum box above has. Each switch on a line of its own was what
+            // this box looked like once the second waterfall joined the three
+            // that were there — the operator's screenshot, and fair: a stack of
+            // one-chip rows reads as a form, not as a row of switches.
+            ui.horizontal_wrapped(|ui| {
+                let on = self.view.waterfall_visible();
+                if crate::chrome::chip(ui, on, tr!("topbar-show-waterfall"))
+                    .on_hover_text(tr!("topbar-draw-scrolling-waterfall-below-spectrum"))
+                    .clicked()
+                {
+                    self.view.set_waterfall_visible(!on);
+                }
+                if crate::chrome::chip(ui, self.view.decode_labels, tr!("topbar-decode-labels"))
+                    .on_hover_text(tr!("topbar-mark-every-decoded-station-waterfall"))
+                    .clicked()
+                {
+                    self.view.decode_labels = !self.view.decode_labels;
+                }
+                if crate::chrome::chip(ui, cfg.waterfall_freeze_on_tx, "FREEZE ON TX")
+                    .on_hover_text(tr!("topbar-freeze-on-tx-hint"))
+                    .clicked()
+                {
+                    cfg.waterfall_freeze_on_tx = !cfg.waterfall_freeze_on_tx;
+                }
+                // **The second waterfall, from the waterfall's own switches.**
+                // SP2 is the waterfall an operator opens *because* the main one
+                // is too wide to work on, so it belongs beside the chips that set
+                // the main one rather than buried in the windows list. Native
+                // only: a browser session has no second OS window to put it in,
+                // and a chip that cannot do anything is worse than one that is
+                // not there.
+                #[cfg(not(target_arch = "wasm32"))]
+                {
+                    let out = self
+                        .ui_settings
+                        .is_detached(sdrcrow_types::DetachableModule::AuxPanadapter);
+                    if crate::chrome::chip(ui, out, tr!("topbar-chip-zoom"))
+                        .on_hover_text(tr!("topbar-zoom-second-waterfall"))
+                        .clicked()
+                    {
+                        detach_second_waterfall = Some(!out);
+                    }
+                }
+            });
             speed_row(
                 ui,
                 &tr!("topbar-caption-scroll"),
@@ -6571,36 +6607,6 @@ impl SdrcrowApp {
                 &Speed::WATERFALL,
                 &tr!("topbar-how-fast-waterfall-scrolls-lines"),
             );
-            if crate::chrome::chip(ui, self.view.decode_labels, tr!("topbar-decode-labels"))
-                .on_hover_text(tr!("topbar-mark-every-decoded-station-waterfall"))
-                .clicked()
-            {
-                self.view.decode_labels = !self.view.decode_labels;
-            }
-            if crate::chrome::chip(ui, cfg.waterfall_freeze_on_tx, "FREEZE ON TX")
-                .on_hover_text(tr!("topbar-freeze-on-tx-hint"))
-                .clicked()
-            {
-                cfg.waterfall_freeze_on_tx = !cfg.waterfall_freeze_on_tx;
-            }
-            // **The second waterfall, from the waterfall's own switches.** SP2
-            // is the waterfall an operator opens *because* the main one is too
-            // wide to work on, so it belongs beside the chips that set the main
-            // one rather than buried in the windows list. Native only: a browser
-            // session has no second OS window to put it in, and a chip that
-            // cannot do anything is worse than one that is not there.
-            #[cfg(not(target_arch = "wasm32"))]
-            {
-                let out = self
-                    .ui_settings
-                    .is_detached(sdrcrow_types::DetachableModule::AuxPanadapter);
-                if crate::chrome::chip(ui, out, tr!("topbar-chip-zoom"))
-                    .on_hover_text(tr!("topbar-zoom-second-waterfall"))
-                    .clicked()
-                {
-                    detach_second_waterfall = Some(!out);
-                }
-            }
         });
         if cfg != self.ui_settings {
             self.ui_settings = cfg;
