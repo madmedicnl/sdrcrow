@@ -21,6 +21,7 @@ async fn main() {
     };
     let (_spec_in, spectrum_out) = triple_buffer::triple_buffer(&frame);
     let (_wide_in, wide_spectrum_out) = triple_buffer::triple_buffer(&frame);
+    let (_zoom_in, zoom_spectrum_out) = triple_buffer::triple_buffer(&frame);
     let (cmd_tx, _cmd_rx) = crossbeam_channel::unbounded();
     let (_event_tx, event_rx) = crossbeam_channel::unbounded();
     let (_audio_tx, audio_rx) = rtrb::RingBuffer::<f32>::new(96_000);
@@ -33,6 +34,7 @@ async fn main() {
             event_rx,
             spectrum_out,
             wide_spectrum_out,
+            zoom_spectrum_out,
             audio_rx,
             mic_tx,
         }],

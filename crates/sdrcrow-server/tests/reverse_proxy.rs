@@ -56,6 +56,7 @@ async fn spawn_server(port: u16) {
             event_rx: handles.event_rx,
             spectrum_out: handles.spectrum_out,
             wide_spectrum_out: handles.wide_spectrum_out,
+        zoom_spectrum_out: handles.zoom_spectrum_out,
             audio_rx: audio_consumer,
             mic_tx: mic_producer,
         }],

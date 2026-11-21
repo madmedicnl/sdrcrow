@@ -628,6 +628,7 @@ impl RemoteController {
             }
             ServerMsg::Spectrum(f) => self.pending.push_back(RadioEvent::Spectrum(f)),
             ServerMsg::WideSpectrum(f) => self.pending.push_back(RadioEvent::WideSpectrum(f)),
+            ServerMsg::ZoomSpectrum(f) => self.pending.push_back(RadioEvent::ZoomSpectrum(f)),
             ServerMsg::Meters(m) => self.pending.push_back(RadioEvent::Meters(m)),
             ServerMsg::Memories(m) => self.pending.push_back(RadioEvent::Memories(m)),
             ServerMsg::MemoryFolders(f) => self.pending.push_back(RadioEvent::MemoryFolders(f)),

@@ -13357,6 +13357,17 @@ Set each under its row on this tab — **Docked in this window** (the default) o
 **Undocked — its own window**. Closing an undocked window docks it again, and its
 size and place are remembered for next time.
 
+**AUX SP is not a magnified copy.** It is a second *view* of the same receiver —
+its own centre, its own span, its own resolution — so the main waterfall can stay
+wide enough to see the whole band while the small window is zoomed in on one
+signal. Zoom it with the wheel or a pinch: the engine mixes that window down and
+decimates to its width, so zooming in makes the picture *sharper* rather than
+blockier. Clicking in it tunes the dial to the frequency clicked (the main
+waterfall follows, since there is one dial), and the passband edges drag as they
+do on the main waterfall — so fine tuning and filter width are both a gesture
+away, in the window that is zoomed in far enough to see what you are doing. It
+costs one more analyser while it is open, and nothing when it is closed.
+
 You can also do it from the window itself: the **🪟 WINDOWS** chip at the right of
 the **radio-tab strip** — the row of radio names at the top of the main window —
 opens a list of the module windows (**SP1 — the spectrum**, **SP2 (AUX) — a second

@@ -1626,6 +1626,16 @@ pub enum Command {
         fine_hz: f32,
         drift_hz: f32,
     },
+
+    /// Ask for a second waterfall, zoomed around `center_hz` over `span_hz`,
+    /// independent of the panadapter's own zoom — SDRuno's SP2 and the Kiwi's
+    /// zoom window: the main waterfall stays wide so nothing is missed, and a
+    /// narrow one beside it is where the fine work happens. `span_hz` of zero
+    /// closes it. The client chooses the columns and the waterfall's row rate,
+    /// as it does for the main display.
+    ///
+    /// Appended last, for the usual reason.
+    SetZoomView { center_hz: f64, span_hz: f64, bins: u16, rows_per_sec: u8 },
 }
 
 /// What a [`Command::GetKnownCalls`] was answered with.

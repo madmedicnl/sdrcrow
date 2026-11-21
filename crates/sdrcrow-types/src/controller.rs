@@ -548,6 +548,12 @@ pub enum RadioEvent {
     ///
     /// Appended last, for the usual reason.
     UnbvStatus(Box<crate::UnbvStatus>),
+    /// A frame for the zoom window: its own centre, its own span, its own
+    /// resolution — a lane of its own on the engine, so it does not go through
+    /// [`RadioEvent::Spectrum`] and cannot be mistaken for the panadapter's.
+    ///
+    /// Appended last, for the usual reason.
+    ZoomSpectrum(Box<crate::SpectrumFrame>),
 }
 
 /// Snapshot of the frontend's switchable sound devices (native clients).

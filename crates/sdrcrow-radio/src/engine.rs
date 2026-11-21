@@ -704,6 +704,12 @@ pub struct EngineHandles {
     /// source. Separate from `spectrum_out` rather than multiplexed onto it
     /// because the two have different rates, spans and lifetimes.
     pub wide_spectrum_out: triple_buffer::Output<SpectrumFrame>,
+    /// The zoom window's own waterfall: a span and a resolution of its own,
+    /// beside the panadapter's rather than instead of it. Empty until a client
+    /// opens the window (`Command::SetZoomView`), and empty again when it
+    /// closes — the frames of a window nobody is drawing cost nothing but the
+    /// pooling, and there is none without a request.
+    pub zoom_spectrum_out: triple_buffer::Output<SpectrumFrame>,
     /// Runtime device swaps: audio-device changes (rebuilt cpal ring endpoints)
     /// and radio-interface changes (rebuild the IQ source from the persisted
     /// config, no restart).
@@ -882,6 +888,7 @@ pub fn start(source: Box<dyn IqSource>, caps: DeviceCaps, cfg: EngineConfig) -> 
     };
     let (spec_in, spectrum_out) = triple_buffer::triple_buffer(&empty);
     let (wide_in, wide_spectrum_out) = triple_buffer::triple_buffer(&empty);
+    let (zoom_in, zoom_spectrum_out) = triple_buffer::triple_buffer(&empty);
 
     // Radio 0 keeps the historical name — profiling notes and thread filters
     // key on it — and every further radio is distinguishable at a glance.
@@ -892,7 +899,9 @@ pub fn start(source: Box<dyn IqSource>, caps: DeviceCaps, cfg: EngineConfig) -> 
     let thread = std::thread::Builder::new()
         .name(thread_name)
         .spawn(move || {
-            engine_thread(source, caps, cfg, cmd_rx, swap_rx, event_tx, spec_in, wide_in)
+            engine_thread(
+                source, caps, cfg, cmd_rx, swap_rx, event_tx, spec_in, wide_in, zoom_in,
+            )
         })
         .expect("spawn dsp thread");
 
@@ -901,6 +910,7 @@ pub fn start(source: Box<dyn IqSource>, caps: DeviceCaps, cfg: EngineConfig) -> 
         event_rx,
         spectrum_out,
         wide_spectrum_out,
+        zoom_spectrum_out,
         swap_tx,
         thread: Some(thread),
     }
@@ -3206,6 +3216,16 @@ const SAT_SLOW_INTERVAL_S: f64 = 300.0;
 /// API, [`RadioState::gains`] and `session.json` all use.
 type GainSet = Vec<(String, f64)>;
 
+/// What the zoom window asks for: its own centre and span, its own columns and
+/// waterfall rate. `None` (no request) closes it.
+#[derive(Clone, Copy, Debug)]
+struct ZoomViewRequest {
+    center_hz: f64,
+    span_hz: f64,
+    bins: usize,
+    rows_per_sec: f64,
+}
+
 /// The panadapter's zoom lane: the window the operator is actually looking at,
 /// mixed down to baseband and decimated to its own width, so the FFT over it
 /// resolves the *view* rather than the whole of what the front end streams.
@@ -3239,6 +3259,11 @@ struct ZoomLane {
     /// A retune moves the front end out from under the lane, and this has to
     /// follow or the window would slide across the band with it.
     offset_hz: f64,
+    /// The window's width in signal terms: what [`analysis_window`] was chosen
+    /// from. A window that widens or narrows needs a different window function,
+    /// so this is part of what a lane is rebuilt for — where a pan, which
+    /// changes only where it sits, is not.
+    view_span_hz: f64,
     buf: Vec<Complex32>,
 }
 
@@ -3291,6 +3316,7 @@ impl ZoomLane {
             in_rate_hz,
             decim,
             offset_hz,
+            view_span_hz,
             buf: Vec::new(),
         }
     }
@@ -3736,6 +3762,22 @@ struct Engine {
     /// after the message itself has played out, so the live microphone can
     /// never leak into the end of a keyer over.
     voice_tx: bool,
+    /// What the zoom window asked for, and the lane that serves it once the
+    /// samples flow. `None` while the window is closed.
+    zoom_view_request: Option<ZoomViewRequest>,
+    /// The zoom window's own lane: a second decimation off the same samples,
+    /// pointed where the window is looking rather than where the panadapter is.
+    zoom_view_lane: Option<ZoomLane>,
+    /// The zoom window's waterfall: rows clocked off its lane at the rate its
+    /// client asked for, and the axis they were taken on. Its own batch because
+    /// a row of the window is not a row of the panadapter.
+    zoom_view_batch: Vec<u8>,
+    zoom_view_axis: Option<(f64, f64, usize)>,
+    /// Samples since the window's last row.
+    zoom_view_row_samples: usize,
+    /// Rows the window has clocked — its frame's `rows_clocked`, which tells
+    /// the client to wait rather than scroll for itself.
+    zoom_view_rows_clocked: u64,
     /// Where the last decoded UNBV recording went, so the screen can say so.
     unbv_decoded: Option<String>,
     /// A UNBV over being sent: the planned message and how far it has played.
@@ -5048,6 +5090,7 @@ fn engine_thread(
     event_tx: Sender<RadioEvent>,
     mut spec_in: triple_buffer::Input<SpectrumFrame>,
     mut wide_in: triple_buffer::Input<SpectrumFrame>,
+    mut zoom_in: triple_buffer::Input<SpectrumFrame>,
 ) {
     // Answered by the source rather than assembled with the rest of the
     // capabilities, so every backend reports it without having to remember to:
@@ -5710,6 +5753,12 @@ fn engine_thread(
         voice_started: None,
         unbv_tx: None,
         unbv_decoded: None,
+        zoom_view_request: None,
+        zoom_view_lane: None,
+        zoom_view_batch: Vec::new(),
+        zoom_view_axis: None,
+        zoom_view_row_samples: 0,
+        zoom_view_rows_clocked: 0,
         voice_tick: None,
         tx_pace: None,
         channel_analyzer: None,
@@ -6460,6 +6509,14 @@ fn engine_thread(
                     lane_dropped += 1;
                 }
                 lane_frames += 1;
+            }
+            // The zoom window's own picture, at the same frame cadence: its
+            // span, its resolution and its axis are not the panadapter's, so
+            // it cannot ride the frame above. `None` while the window is
+            // closed, and nothing is published then.
+            if let Some(frame) = engine.make_zoom_view_frame() {
+                *zoom_in.input_buffer_mut() = frame;
+                zoom_in.publish();
             }
         }
         // Once a second, and only where somebody asked for it: this is the
@@ -7730,6 +7787,74 @@ impl Engine {
                 }
             },
         }
+    }
+
+    /// Keep the zoom window's lane in step with what the window asked for.
+    ///
+    /// A request of its own rather than the panadapter's viewport, because the
+    /// two being different is the whole point: the main waterfall stays wide so
+    /// nothing is missed, and this one is wherever the operator put it, at its
+    /// own resolution and its own row rate.
+    ///
+    /// Settled once at the top of [`Engine::feed_panadapter`], like the
+    /// panadapter's own lane: nothing inside one block can change the answer.
+    fn sync_zoom_view(&mut self) {
+        let Some(req) = self.zoom_view_request else {
+            self.zoom_view_lane = None;
+            self.zoom_view_batch.clear();
+            self.zoom_view_axis = None;
+            self.zoom_view_row_samples = 0;
+            return;
+        };
+        let in_rate = self.state.sample_rate;
+        // A CAT rig hands us demodulated audio, not I/Q, so there is nothing to
+        // mix down; [`Engine::make_zoom_view_frame`] pools the device-wide
+        // analyser over the same window instead, coarser but live.
+        if self.audio_mode || !(in_rate.is_finite() && in_rate > 0.0) {
+            self.zoom_view_lane = None;
+            return;
+        }
+        let dev_center = self.display_center_hz();
+        let span = req.span_hz.min(in_rate);
+        let decim = sdrcrow_types::zoom_lane_decimation(in_rate, span);
+        if let Some(lane) = self.zoom_view_lane.as_mut() {
+            if lane.serves((req.center_hz, decim), in_rate)
+                && (lane.view_span_hz - span).abs() < 1.0
+            {
+                lane.aim(req.center_hz, dev_center);
+                return;
+            }
+        }
+        let fft = zoom_lane_fft(req.bins);
+        let mut lane = ZoomLane::new(
+            in_rate,
+            decim,
+            req.center_hz,
+            dev_center,
+            self.cfg.avg_tc,
+            fft,
+            span,
+            req.rows_per_sec,
+        );
+        // The same courtesy the panadapter's lane gets: start on the picture
+        // the device-wide analyser already has of this window, so opening the
+        // window draws something at once rather than a black band.
+        lane.analyzer.seed_from(
+            &self.analyzer,
+            span_fraction(dev_center, in_rate, lane.center_hz, lane.rate_hz),
+        );
+        debug!(
+            center = lane.center_hz,
+            rate = lane.rate_hz,
+            decim = lane.decim,
+            fft,
+            span,
+            "zoom window lane built"
+        );
+        self.zoom_view_lane = Some(lane);
+        self.zoom_view_batch.clear();
+        self.zoom_view_axis = None;
+        self.zoom_view_row_samples = 0;
     }
 
     /// Demod-audio (CAT rig) RX: the source hands us already-demodulated real
@@ -10055,6 +10180,7 @@ impl Engine {
         // Which window the zoom lane covers cannot change inside one block, so
         // it is settled once here rather than per piece.
         self.sync_zoom();
+        self.sync_zoom_view();
         let per_row = self.row_period_samples();
         let mut off = 0;
         while off < iq.len() {
@@ -10065,11 +10191,24 @@ impl Engine {
             if let Some(zoom) = self.zoom.as_mut() {
                 zoom.process(chunk);
             }
+            if let Some(view) = self.zoom_view_lane.as_mut() {
+                view.process(chunk);
+            }
             self.row_samples += take;
             off += take;
             if self.row_samples >= per_row {
                 self.row_samples = 0;
                 self.push_row();
+            }
+            // The window's own clock, at the rate its client asked for: a
+            // second waterfall does not have to scroll at the panadapter's
+            // speed, and a narrow one usually wants to scroll slower.
+            if self.zoom_view_lane.is_some() {
+                self.zoom_view_row_samples += take;
+                if self.zoom_view_row_samples >= self.zoom_view_row_period_samples() {
+                    self.zoom_view_row_samples = 0;
+                    self.push_zoom_view_row();
+                }
             }
         }
     }
@@ -10104,6 +10243,118 @@ impl Engine {
             self.row_batch.drain(..cols);
         }
         self.row_batch.extend_from_slice(&row.bins);
+    }
+
+    /// Samples between the zoom window's rows, at the rate its client asked
+    /// for. Its own period rather than the panadapter's: a narrow waterfall
+    /// usually wants to scroll slower than a wide one.
+    fn zoom_view_row_period_samples(&self) -> usize {
+        let rows = self.zoom_view_request.map_or(20.0, |r| r.rows_per_sec);
+        (self.state.sample_rate / rows.max(1.0)).max(1.0) as usize
+    }
+
+    /// Clock one row of the zoom window into its batch.
+    ///
+    /// The same hold ritual as [`Engine::make_row`], for one lane instead of a
+    /// choice between them: read the held peaks, then start a new row from where
+    /// the spectrum is now.
+    fn push_zoom_view_row(&mut self) {
+        let (floor, ceil) = (self.cfg.db_floor, self.cfg.db_ceil);
+        let Some(req) = self.zoom_view_request else { return };
+        let row = {
+            let Some(lane) = self.zoom_view_lane.as_mut().filter(|l| l.analyzer.primed())
+            else {
+                return;
+            };
+            let vp = (
+                lane.center_hz - lane.view_span_hz / 2.0,
+                lane.center_hz + lane.view_span_hz / 2.0,
+            );
+            lane.analyzer.set_read_hold(true);
+            let row = lane.analyzer.make_frame(
+                lane.center_hz,
+                lane.rate_hz,
+                floor,
+                ceil,
+                req.bins,
+                Some(vp),
+            );
+            lane.analyzer.set_read_hold(false);
+            if lane.analyzer.took_row() {
+                lane.analyzer.set_row_hold(true);
+                lane.analyzer.reset_hold();
+            }
+            row
+        };
+        let cols = row.bins.len();
+        if cols == 0 {
+            return;
+        }
+        let axis = (row.center_hz, row.span_hz, cols);
+        if self.zoom_view_axis != Some(axis) {
+            self.zoom_view_batch.clear();
+            self.zoom_view_axis = Some(axis);
+        }
+        self.zoom_view_rows_clocked = self.zoom_view_rows_clocked.wrapping_add(1);
+        while self.zoom_view_batch.len() / cols >= MAX_BATCH_ROWS {
+            self.zoom_view_batch.drain(..cols);
+        }
+        self.zoom_view_batch.extend_from_slice(&row.bins);
+    }
+
+    /// The zoom window's frame: its own span at its own resolution, carrying
+    /// whatever rows its lane clocked since the last one.
+    ///
+    /// `None` while no window is open, and the pane it was last drawn in is the
+    /// client's to close. Where there is no I/Q to mix down — a CAT rig's
+    /// demodulated audio — the same window is pooled out of the device-wide
+    /// analyser: coarser, but live, and better than a window that never draws.
+    fn make_zoom_view_frame(&mut self) -> Option<SpectrumFrame> {
+        let req = self.zoom_view_request?;
+        let (floor, ceil) = (self.cfg.db_floor, self.cfg.db_ceil);
+        if let Some(lane) = self.zoom_view_lane.as_mut().filter(|l| l.analyzer.primed()) {
+            let vp = (
+                lane.center_hz - lane.view_span_hz / 2.0,
+                lane.center_hz + lane.view_span_hz / 2.0,
+            );
+            let mut frame = lane.analyzer.make_frame(
+                lane.center_hz,
+                lane.rate_hz,
+                floor,
+                ceil,
+                req.bins,
+                Some(vp),
+            );
+            let cols = frame.bins.len();
+            let axis = (frame.center_hz, frame.span_hz, cols);
+            frame.rows_clocked = self.zoom_view_rows_clocked > 0;
+            if cols > 0 && self.zoom_view_axis == Some(axis) {
+                frame.rows = std::mem::take(&mut self.zoom_view_batch);
+            } else {
+                self.zoom_view_batch.clear();
+            }
+            return Some(frame);
+        }
+        // No lane: pool the window out of the whole-span analyser.
+        let full = self.state.sample_rate;
+        if !(full.is_finite() && full > 0.0) {
+            return None;
+        }
+        let span = req.span_hz.min(full);
+        if !(span > 0.0) {
+            return None;
+        }
+        let vp = (req.center_hz - span / 2.0, req.center_hz + span / 2.0);
+        let center = self.display_center_hz();
+        let mut frame =
+            self.analyzer.make_frame(center, full, floor, ceil, req.bins, Some(vp));
+        // No rows clocked for this one, so the client scrolls the picture it
+        // gets on its own wall clock rather than waiting for history that is
+        // not coming.
+        frame.rows_clocked = false;
+        frame.rows.clear();
+        self.zoom_view_batch.clear();
+        Some(frame)
     }
 
     /// Hand the batch to a frame about to go out, if the rows are of that
@@ -12682,6 +12933,16 @@ impl Engine {
             RescanPttInputs => {
                 crate::ptt_inputs::hub().rescan();
                 self.ptt_inputs_last = None;
+                return;
+            }
+            SetZoomView { center_hz, span_hz, bins, rows_per_sec } => {
+                self.zoom_view_request =
+                    (span_hz > 0.0).then_some(ZoomViewRequest {
+                        center_hz,
+                        span_hz,
+                        bins: bins.max(64) as usize,
+                        rows_per_sec: f64::from(rows_per_sec.max(1)),
+                    });
                 return;
             }
             UnbvStart {

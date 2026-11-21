@@ -3071,9 +3071,23 @@ impl SdrcrowApp {
                 self.draw_detached_panadapter(module, ctx, &spec, seed, now, &mut cmds)
             }
             M::AuxPanadapter => {
+                // Its **own lane's** picture, once the engine has sent one:
+                // the panadapter's frame is pooled for the window the main
+                // view is drawn in, and magnifying it is what this window used
+                // to do — and what stair-stepped when the operator zoomed in on
+                // it. Until the first zoom frame lands (or where the lane
+                // cannot run at all), the panadapter's picture is still the
+                // right thing to show: live, just coarser.
+                let own = self.zoom_frame.is_some() && !self.aux_view.is_unset();
+                if own {
+                    std::mem::swap(&mut self.frame, &mut self.zoom_frame);
+                }
                 std::mem::swap(&mut self.view, &mut self.aux_view);
                 self.draw_detached_panadapter(module, ctx, &spec, seed, now, &mut cmds);
                 std::mem::swap(&mut self.view, &mut self.aux_view);
+                if own {
+                    std::mem::swap(&mut self.frame, &mut self.zoom_frame);
+                }
             }
             M::Panel => {
                 // Only reached for a mode that has a panel — the shell asks
@@ -3871,6 +3885,66 @@ impl SdrcrowApp {
         self.ui_settings.is_detached(module) && self.focused && self.view.panadapter_visible()
     }
 
+    /// Keep the engine's zoom lane pointed where the AUX SP window is looking.
+    ///
+    /// AUX SP is a second *view* of the receiver, and until now it was drawn by
+    /// pooling the panadapter's own frame into a narrower window: zoom past
+    /// what that frame resolves and the trace stair-steps, which is the one
+    /// thing a second waterfall is for. The engine has a lane of its own for
+    /// exactly this — the same lane the panadapter uses when it is zoomed in,
+    /// mixed down and decimated to the window's width — so the window asks for
+    /// its centre and its span, and draws what comes back.
+    ///
+    /// Called every frame and sends almost never: the window is repainted sixty
+    /// times a second and a request per repaint would be a command per repaint.
+    /// A drag moves the centre by a fraction of a pixel at a time, so the
+    /// compare is against what was *sent*, at a tolerance far under a pixel.
+    ///
+    /// Closing the window closes the lane, so a receiver nobody is watching
+    /// twice pays for one analyser and not two.
+    fn sync_zoom_view(&mut self) {
+        let open = self.module_window_wanted(sdrcrow_types::DetachableModule::AuxPanadapter)
+            && !self.aux_view.is_unset();
+        let want = open.then(|| {
+            let v = &self.aux_view;
+            ((v.view_lo_hz + v.view_hi_hz) / 2.0, v.span())
+        });
+        let Some((center, span)) = want.filter(|(_, span)| span.is_finite() && *span > 0.0)
+        else {
+            if self.zoom_view_sent.take().is_some() {
+                self.ctrl.send(Command::SetZoomView {
+                    center_hz: 0.0,
+                    span_hz: 0.0,
+                    bins: 0,
+                    rows_per_sec: 0,
+                });
+            }
+            self.zoom_frame = None;
+            return;
+        };
+        if let Some((sent_center, sent_span)) = self.zoom_view_sent
+            && (sent_center - center).abs() < (span * 0.0005).max(0.5)
+            && (sent_span - span).abs() < (span * 0.005).max(1.0)
+        {
+            return;
+        }
+        // The same columns and the same row rate the panadapter's own frame is
+        // asked for: one texture width and one scroll speed, both a property of
+        // the screen rather than of the radio.
+        let bins = self.panadapter_bins().clamp(64, 8192) as u16;
+        let rows = (self.ui_settings.waterfall_rows_per_sec() * self.wf_row_scale)
+            .round()
+            .clamp(1.0, f32::from(sdrcrow_types::MAX_ROWS_PER_SEC).min(255.0))
+            as u8;
+        self.ctrl.send(Command::SetZoomView {
+            center_hz: center,
+            span_hz: span,
+            bins,
+            rows_per_sec: rows,
+        });
+        self.zoom_view_sent = Some((center, span));
+    }
+
     /// The operating-panel window should exist this frame: undocked on the
     /// focused radio **and** the mode has a panel to show. A mode with none —
     /// a voice mode — gets no window at all; the operator is told why by the
@@ -4056,6 +4130,9 @@ impl SdrcrowApp {
     }
 
     pub(crate) fn drain_events(&mut self, ctx: &egui::Context, now: f64) {
+        // Before the events, so a zoom frame arriving in this pass is already
+        // the one the window was asking for.
+        self.sync_zoom_view();
         let _plan = sdrcrow_types::ThreadPlanGuard::enter(self.band_plan_cur);
         // The settings row's explicit "save to profile" / "back to profile",
         // for the same reason as the answers below: the dialog is drawn from
@@ -4235,6 +4312,13 @@ impl SdrcrowApp {
                 // not evidence that the tuned receiver is producing samples.
                 RadioEvent::WideSpectrum(f) => {
                     self.wide_frame = Some(std::sync::Arc::new(f));
+                }
+                // The AUX SP window's own lane. Deliberately not
+                // `last_spectrum_at`: this is a second look at a receiver that
+                // is already drawing, and a window nobody has open yet hears
+                // nothing at all.
+                RadioEvent::ZoomSpectrum(f) => {
+                    self.zoom_frame = Some(std::sync::Arc::new(*f));
                 }
                 RadioEvent::Meters(m) => {
                     // The operator's S-meter calibration for this radio, put

@@ -141,6 +141,10 @@ pub struct RadioParams {
     pub event_rx: crossbeam_channel::Receiver<RadioEvent>,
     pub spectrum_out: triple_buffer::Output<SpectrumFrame>,
     pub wide_spectrum_out: triple_buffer::Output<SpectrumFrame>,
+    /// The zoom window's own waterfall (`Command::SetZoomView`). A lane of its
+    /// own beside `spectrum_out`, not a replacement for it: empty until a client
+    /// opens the window.
+    pub zoom_spectrum_out: triple_buffer::Output<SpectrumFrame>,
     /// Interleaved stereo 48 kHz demod audio from the engine.
     pub audio_rx: rtrb::Consumer<f32>,
     /// Mono 48 kHz mic samples into the engine.
@@ -581,6 +585,7 @@ impl Station {
     fn attach(self: &Arc<Self>, r: RadioParams, primary: bool) -> Arc<Shared> {
         let (spectrum_watch, spectrum_rx) = watch::channel(None);
         let (wide_watch, wide_spectrum_rx) = watch::channel(None);
+        let (zoom_watch, zoom_spectrum_rx) = watch::channel(None);
         let shared = Arc::new(Shared {
             id: r.id,
             name: Mutex::new(r.name),
@@ -592,6 +597,7 @@ impl Station {
             mic_tx: Mutex::new(r.mic_tx),
             spectrum_rx,
             wide_spectrum_rx,
+            zoom_spectrum_rx,
             solar: self.solar.clone(),
             history: self.history.clone(),
             auth: self.auth.clone(),
@@ -614,9 +620,11 @@ impl Station {
                     r.event_rx,
                     r.spectrum_out,
                     r.wide_spectrum_out,
+                    r.zoom_spectrum_out,
                     r.audio_rx,
                     spectrum_watch,
                     wide_watch,
+                    zoom_watch,
                 )
             })
             .expect("spawn pump thread");
@@ -649,6 +657,8 @@ pub(crate) struct Shared {
     pub mic_tx: Mutex<rtrb::Producer<f32>>,
     pub spectrum_rx: watch::Receiver<Option<SpectrumFrame>>,
     pub wide_spectrum_rx: watch::Receiver<Option<SpectrumFrame>>,
+    /// The zoom window's frames — its own span and resolution, latest wins.
+    pub zoom_spectrum_rx: watch::Receiver<Option<SpectrumFrame>>,
     /// The solar-system viewers on `/solar-ws`. Independent of `busy`: they
     /// control nothing, so any number may watch alongside the one control
     /// client. See [`solar`].
@@ -997,9 +1007,11 @@ fn pump(
     event_rx: crossbeam_channel::Receiver<RadioEvent>,
     mut spectrum_out: triple_buffer::Output<SpectrumFrame>,
     mut wide_spectrum_out: triple_buffer::Output<SpectrumFrame>,
+    mut zoom_spectrum_out: triple_buffer::Output<SpectrumFrame>,
     mut audio_rx: rtrb::Consumer<f32>,
     spectrum_watch: watch::Sender<Option<SpectrumFrame>>,
     wide_watch: watch::Sender<Option<SpectrumFrame>>,
+    zoom_watch: watch::Sender<Option<SpectrumFrame>>,
 ) {
     let mut mono = Vec::<f32>::new();
     let mut opus_enc: Option<opus::Encoder> = None;
@@ -1051,6 +1063,14 @@ fn pump(
             let f = spectrum_out.output_buffer();
             if !f.bins.is_empty() {
                 let _ = spectrum_watch.send_replace(Some(f.clone()));
+            }
+        }
+        // The zoom window's lane, latest wins like the panadapter's: a client
+        // that repaints slower loses frames, never history.
+        if zoom_spectrum_out.update() {
+            let f = zoom_spectrum_out.output_buffer();
+            if !f.bins.is_empty() {
+                let _ = zoom_watch.send_replace(Some(f.clone()));
             }
         }
 
@@ -1255,6 +1275,8 @@ fn handle_event(shared: &Shared, ev: RadioEvent) {
             }
             RadioEvent::Meters(m) => Some(ServerMsg::Meters(m)),
             RadioEvent::Spectrum(_) => None, // spectrum travels via the watch lane
+            // The zoom window's frames travel the same way, on their own watch lane.
+            RadioEvent::ZoomSpectrum(_) => None,
             RadioEvent::WideSpectrum(_) => None, // ...and so does the full-band lane
             RadioEvent::ConnectionLost(e) => Some(ServerMsg::Error(e)),
             // Forwarded: a notice is about the radio this client is operating —

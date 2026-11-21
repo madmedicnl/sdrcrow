@@ -2473,8 +2473,8 @@ use sdrcrow_types::{
 /// `audio_spectrum` at its tail — this screen's own display choice, so a browser
 /// and the station agree on what is drawn. Appended, so an older peer reads the
 /// screen it knows. `PROTO_VERSION` 304 → 305, `VERSION_BYTE` 0x7C → 0x7D.
-pub const PROTO_VERSION: u16 = 307;
-const VERSION_BYTE: u8 = 0x7F;
+pub const PROTO_VERSION: u16 = 308;
+const VERSION_BYTE: u8 = 0x80;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ProtoError {
@@ -3105,6 +3105,9 @@ pub enum ServerMsg {
     /// which block of how many, and the spectrum of the slice it occupies.
     /// Appended last (v306).
     UnbvStatus(Box<sdrcrow_types::UnbvStatus>),
+    /// A frame for the zoom window, with its own centre, span and resolution.
+    /// Appended last (v308).
+    ZoomSpectrum(Box<sdrcrow_types::SpectrumFrame>),
 }
 
 /// What [`ServerMsg::ClientSettings`] carries.
@@ -3838,7 +3841,7 @@ mod tests {
         // v296: the SSTV clock layer (`TextLayer::clock`) appended at the tail
         // of a `Composer` layer, which rides the picture preset messages.
         // v300: the theme-from-a-file at the tail of `ClientScreen`.
-        assert_eq!((PROTO_VERSION, VERSION_BYTE), (307, 0x7F));
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (308, 0x80));
         // v297: the strip height at the tail of `ClientScreen`, and it comes
         // back as sent — with, since v300, the theme file's name and text.
         let screen_text = "name = \"Vending machines\"\n".to_string();
@@ -3927,7 +3930,7 @@ mod tests {
             }
             other => panic!("the answer did not round-trip: {other:?}"),
         }
-        assert_eq!((PROTO_VERSION, VERSION_BYTE), (307, 0x7F));
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (308, 0x80));
     }
 
     /// v301: the desk microphone and the pedal (issue #636) ride the wire, and
@@ -4000,7 +4003,7 @@ mod tests {
         let back: sdrcrow_types::StationConfig =
             postcard::from_bytes(&postcard::to_allocvec(&station).unwrap()).unwrap();
         assert_eq!(back.ptt_inputs, cfg);
-        assert_eq!((PROTO_VERSION, VERSION_BYTE), (307, 0x7F));
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (308, 0x80));
     }
 
     /// v302: the browser's microphone and pedal are kept on the server, and their
@@ -4025,7 +4028,7 @@ mod tests {
         assert_eq!(decode::<ServerMsg>(&bytes).unwrap(), down);
         let prev = ServerMsg::PttInputsStatus(Box::default());
         assert_eq!(bytes[1], encode(&prev).unwrap()[1] + 1, "OperatorPtt must be last");
-        assert_eq!((PROTO_VERSION, VERSION_BYTE), (307, 0x7F));
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (308, 0x80));
     }
 
     /// v286: the QRZ card rides `CallsignResult` — photo, age and all.
@@ -4047,7 +4050,49 @@ mod tests {
             ServerMsg::CallsignResult(back) => assert_eq!(back, info),
             other => panic!("the card did not round-trip: {other:?}"),
         }
-        assert_eq!((PROTO_VERSION, VERSION_BYTE), (307, 0x7F));
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (308, 0x80));
+    }
+
+    /// v308: the zoom window asks for a waterfall of its own — its centre, its
+    /// span, its columns and its row rate — and a zero span closes it; the
+    /// frames come back on their own message, so they cannot be mistaken for
+    /// the panadapter's.
+    #[test]
+    fn the_zoom_window_round_trips() {
+        let open = sdrcrow_types::Command::SetZoomView {
+            center_hz: 27_185_500.0,
+            span_hz: 20_000.0,
+            bins: 2048,
+            rows_per_sec: 25,
+        };
+        let back: sdrcrow_types::Command = decode(&encode(&open).unwrap()).unwrap();
+        assert_eq!(back, open);
+        let close = sdrcrow_types::Command::SetZoomView {
+            center_hz: 0.0,
+            span_hz: 0.0,
+            bins: 0,
+            rows_per_sec: 0,
+        };
+        assert_eq!(
+            decode::<sdrcrow_types::Command>(&encode(&close).unwrap()).unwrap(),
+            close
+        );
+        let frame = sdrcrow_types::SpectrumFrame {
+            seq: 12,
+            center_hz: 27_185_500.0,
+            span_hz: 20_000.0,
+            db_floor: -110.0,
+            db_ceil: -10.0,
+            bins: vec![0, 64, 128, 255],
+            rows: vec![1, 2, 3, 4],
+            rows_clocked: true,
+        };
+        let msg = encode(&ServerMsg::ZoomSpectrum(Box::new(frame.clone()))).unwrap();
+        match decode::<ServerMsg>(&msg).unwrap() {
+            ServerMsg::ZoomSpectrum(f) => assert_eq!(*f, frame),
+            other => panic!("the zoom frame did not round-trip: {other:?}"),
+        }
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (308, 0x80));
     }
 
     /// The VOR read-out rides the wire whole, locked or not, and the message is
@@ -5183,14 +5228,14 @@ mod tests {
         let ServerMsg::Ft8Status(s) = back else { panic!("not a status") };
         assert!(!s.config.wefax_auto_slant);
         assert_eq!(s.config.wefax_slant_ppm, -37.5);
-        assert_eq!((PROTO_VERSION, VERSION_BYTE), (307, 0x7F));
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (308, 0x80));
     }
 
     /// v289: the satellite lock's CTCSS tone rides the end of `SatLockConfig`,
     /// and the rig's own keying the end of `TxState`; the version is pinned.
     #[test]
     fn the_sat_lock_tone_and_the_rig_keyed_flag_round_trip() {
-        assert_eq!((PROTO_VERSION, VERSION_BYTE), (307, 0x7F));
+        assert_eq!((PROTO_VERSION, VERSION_BYTE), (308, 0x80));
         let cfg = sdrcrow_types::SatLockConfig {
             norad_id: 25544,
             ctcss_hz: Some(67.0),

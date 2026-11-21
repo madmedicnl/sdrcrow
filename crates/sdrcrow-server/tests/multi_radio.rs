@@ -86,6 +86,7 @@ fn radio(id: u32, name: &str, label: &str, rate: f64) -> RadioParams {
         event_rx: handles.event_rx,
         spectrum_out: handles.spectrum_out,
         wide_spectrum_out: handles.wide_spectrum_out,
+        zoom_spectrum_out: handles.zoom_spectrum_out,
         audio_rx: sdrcrow_radio::rtrb::RingBuffer::<f32>::new(96_000).1,
         mic_tx: sdrcrow_radio::rtrb::RingBuffer::<f32>::new(48_000).0,
     }

@@ -348,6 +348,13 @@ pub struct SdrcrowApp {
     /// persisted, this one is not yet.
     #[cfg(not(target_arch = "wasm32"))]
     aux_view: ViewState,
+    /// The AUX SP window's own frames: a lane on the engine pointed at that
+    /// window's centre and span, at its own resolution. Not the panadapter's
+    /// picture magnified — see `SdrcrowApp::sync_zoom_view`.
+    zoom_frame: Option<std::sync::Arc<sdrcrow_types::SpectrumFrame>>,
+    /// The centre and span last asked of that lane, so the request goes out
+    /// when the window moves and not sixty times a second when it does not.
+    zoom_view_sent: Option<(f64, f64)>,
     peaks: spectrum_view::PeakHold,
     /// UI-side smoothing for the spectrum *line* (waterfall stays un-averaged).
     spec_smooth: spectrum_view::SpectrumSmooth,
@@ -2369,6 +2376,8 @@ impl SdrcrowApp {
             view,
             #[cfg(not(target_arch = "wasm32"))]
             aux_view: ViewState::default(),
+            zoom_frame: None,
+            zoom_view_sent: None,
             peaks: spectrum_view::PeakHold::default(),
             spec_smooth: spectrum_view::SpectrumSmooth::default(),
             error: None,
