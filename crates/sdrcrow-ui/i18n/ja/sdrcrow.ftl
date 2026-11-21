@@ -9853,4 +9853,6 @@ unbv-load-file = ファイルを読み込む…
 
 unbv-browse = 参照…
 
-topbar-sp2-second-waterfall = 2つ目のウォーターフォール。拡大しても鮮明なままです。無線機がその窓を自前で分解するからです。クリックすると同調します。
+topbar-zoom-second-waterfall = 2つ目のウォーターフォール。拡大しても鮮明なままです。無線機がその窓を自前で分解するからです。クリックすると同調します。
+
+topbar-chip-zoom = ズーム

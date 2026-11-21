@@ -9906,4 +9906,6 @@ unbv-load-file = Dosya yükle…
 
 unbv-browse = Gözat…
 
-topbar-sp2-second-waterfall = İkinci bir şelale: yakınlaştıkça net kalır, çünkü radyo o pencereyi kendisi çözer. Üzerine tıklamak frekansı ayarlar.
+topbar-zoom-second-waterfall = İkinci bir şelale: yakınlaştıkça net kalır, çünkü radyo o pencereyi kendisi çözer. Üzerine tıklamak frekansı ayarlar.
+
+topbar-chip-zoom = YAKINLAŞTIR

@@ -9906,4 +9906,6 @@ unbv-load-file = Carregar um ficheiro…
 
 unbv-browse = Escolher…
 
-topbar-sp2-second-waterfall = Uma segunda cascata: aproxime e ela continua nítida, porque o rádio resolve essa janela sozinho. Um clique sintoniza o dial.
+topbar-zoom-second-waterfall = Uma segunda cascata: aproxime e ela continua nítida, porque o rádio resolve essa janela sozinho. Um clique sintoniza o dial.
+
+topbar-chip-zoom = ZOOM

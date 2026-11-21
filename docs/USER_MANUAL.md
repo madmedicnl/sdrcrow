@@ -13377,10 +13377,10 @@ all back. The
 chip is lit while any of them is out of the main window. It acts on the radio you
 are looking at.
 
-**SP2** also has a chip of its own, where the operator reaches for it: **SP2** in
-the **SPEC** popup's waterfall row, beside **SHOW WATERFALL** and the scroll
-speed. It opens and closes the second waterfall, and it is lit while that window
-is out.
+The second waterfall also has a chip of its own, where the operator reaches for
+it: **ZOOM** in the **SPEC** popup's waterfall row, beside **SHOW WATERFALL** and
+the scroll speed. It opens and closes the SP2 window, and it is lit while that
+window is out.
 
 This is the same arrangement as the rows on this tab, from the face of the program
 — a window arrangement is something you change while watching the program, not

@@ -6588,8 +6588,8 @@ impl SdrcrowApp {
                 let out = self
                     .ui_settings
                     .is_detached(sdrcrow_types::DetachableModule::AuxPanadapter);
-                if crate::chrome::chip(ui, out, "SP2")
-                    .on_hover_text(tr!("topbar-sp2-second-waterfall"))
+                if crate::chrome::chip(ui, out, tr!("topbar-chip-zoom"))
+                    .on_hover_text(tr!("topbar-zoom-second-waterfall"))
                     .clicked()
                 {
                     self.set_module_detached(

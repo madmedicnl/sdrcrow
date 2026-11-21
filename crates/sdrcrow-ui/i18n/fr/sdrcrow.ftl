@@ -9909,4 +9909,6 @@ unbv-load-file = Charger un fichier…
 
 unbv-browse = Parcourir…
 
-topbar-sp2-second-waterfall = Une seconde cascade : zoomez et elle reste nette, car le récepteur calcule lui-même cette fenêtre. Un clic accorde le récepteur.
+topbar-zoom-second-waterfall = Une seconde cascade : zoomez et elle reste nette, car le récepteur calcule lui-même cette fenêtre. Un clic accorde le récepteur.
+
+topbar-chip-zoom = ZOOM

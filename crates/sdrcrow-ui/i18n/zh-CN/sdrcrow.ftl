@@ -9843,4 +9843,6 @@ unbv-load-file = 载入文件…
 
 unbv-browse = 浏览…
 
-topbar-sp2-second-waterfall = 第二个瀑布图：放大后依然清晰，因为电台自己解算这个窗口。点击即可调谐频率。
+topbar-zoom-second-waterfall = 第二个瀑布图：放大后依然清晰，因为电台自己解算这个窗口。点击即可调谐频率。
+
+topbar-chip-zoom = 缩放

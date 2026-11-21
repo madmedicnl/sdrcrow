@@ -9897,4 +9897,6 @@ unbv-load-file = Cargar un archivo…
 
 unbv-browse = Examinar…
 
-topbar-sp2-second-waterfall = Una segunda cascada: amplíala y sigue nítida, porque el equipo resuelve esa ventana él mismo. Un clic sintoniza el dial.
+topbar-zoom-second-waterfall = Una segunda cascada: amplíala y sigue nítida, porque el equipo resuelve esa ventana él mismo. Un clic sintoniza el dial.
+
+topbar-chip-zoom = ZOOM

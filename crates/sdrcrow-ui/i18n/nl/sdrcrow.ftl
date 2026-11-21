@@ -9906,4 +9906,6 @@ unbv-load-file = Bestand laden…
 
 unbv-browse = Bladeren…
 
-topbar-sp2-second-waterfall = Een tweede waterval: zoom erin en hij blijft scherp, want de radio rekent dat venster zelf uit. Een klik erin stemt de dial af.
+topbar-zoom-second-waterfall = Een tweede waterval: zoom erin en hij blijft scherp, want de radio rekent dat venster zelf uit. Een klik erin stemt de dial af.
+
+topbar-chip-zoom = ZOOM

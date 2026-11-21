@@ -9898,4 +9898,6 @@ unbv-load-file = Datei laden…
 
 unbv-browse = Durchsuchen…
 
-topbar-sp2-second-waterfall = Ein zweites Wasserfallbild: hineingezoomt bleibt es scharf, weil das Gerät dieses Fenster selbst auflöst. Ein Klick stimmt ab.
+topbar-zoom-second-waterfall = Ein zweites Wasserfallbild: hineingezoomt bleibt es scharf, weil das Gerät dieses Fenster selbst auflöst. Ein Klick stimmt ab.
+
+topbar-chip-zoom = ZOOM

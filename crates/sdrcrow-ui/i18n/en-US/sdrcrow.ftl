@@ -9960,4 +9960,7 @@ unbv-load-file = Load a file…
 unbv-browse = Browse…
 
 # SP2 (the undocked second spectrum) chip in the SPEC menu: what the window is for and that clicking it tunes.
-topbar-sp2-second-waterfall = A second waterfall: zoom it in and it stays sharp, because the radio resolves that window itself. A click tunes the dial.
+topbar-zoom-second-waterfall = A second waterfall: zoom it in and it stays sharp, because the radio resolves that window itself. A click tunes the dial.
+
+# Chip in the SPEC popup that opens the second waterfall (SP2), beside SHOW WATERFALL.
+topbar-chip-zoom = ZOOM
