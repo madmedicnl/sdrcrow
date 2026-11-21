@@ -880,6 +880,11 @@ pub fn menu_group<R>(ui: &mut Ui, title: &str, width: f32, add: impl FnOnce(&mut
             ui.set_min_width(width);
             ui.set_max_width(width);
             menu_caption(ui, title);
+            // The caption is a heading, so the box's controls start under it and
+            // not against it: at the theme's row spacing the first chip touched
+            // the title, and a heading with no air under it reads as a label on
+            // the same line that wrapped.
+            ui.add_space(3.0);
             add(ui)
         })
         .inner

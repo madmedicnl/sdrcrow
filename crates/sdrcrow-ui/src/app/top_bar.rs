@@ -8451,9 +8451,13 @@ fn readout_for_audio(
 /// is for will point, and a paragraph repeated on every chip is a paragraph
 /// nobody reads.
 fn speed_row(ui: &mut egui::Ui, caption: &str, value: &mut Speed, steps: &[Speed], hint: &str) {
+    // **The caption is a heading over its chips, not a tag beside the first
+    // one.** The waterfall's row carries five steps, and a tag sharing the line
+    // with them left the last one hanging over the edge of the box — the
+    // operator's screenshot, and his words: a line break after the word.
+    ui.label(RichText::new(caption).size(10.0).color(crate::theme::CYAN_DIM()))
+        .on_hover_text(hint);
     ui.horizontal_wrapped(|ui| {
-        ui.label(RichText::new(caption).size(10.0).color(crate::theme::CYAN_DIM()))
-            .on_hover_text(hint);
         for step in steps {
             if crate::chrome::chip(ui, value == step, step.tr().to_uppercase()).clicked() {
                 *value = *step;
